@@ -97,16 +97,14 @@
             <table class="w-full text-left text-sm whitespace-nowrap">
                 <thead>
                     <tr class="bg-gray-900/40 text-gray-400 font-semibold uppercase text-[10px] tracking-wider border-b border-gray-800">
-                        <th class="px-4 py-3 text-xs md:text-sm">Código OT</th>
-                        <th class="px-4 py-3 text-xs md:text-sm">Cliente</th>
-                        <th class="px-4 py-3 text-xs md:text-sm">Equipo / Dispositivo</th>
-                        <th class="px-4 py-3 text-xs md:text-sm">Estado</th>
-                        <th class="px-4 py-3 text-xs md:text-sm">Mano de Obra</th>
-                        <th class="px-4 py-3 text-xs md:text-sm">Abono</th>
-                        <th class="px-4 py-3 text-xs md:text-sm">Fecha de Ingreso</th>
-                        <th class="px-4 py-3 text-xs md:text-sm">Garantía</th>
+                        <th class="px-3 py-3 text-xs md:text-xs">Código</th>
+                        <th class="px-3 py-3 text-xs md:text-xs">Cliente</th>
+                        <th class="px-3 py-3 text-xs md:text-xs">Equipo / Dispositivo</th>
+                        <th class="px-3 py-3 text-xs md:text-xs">Estado</th>
+                        <th class="px-3 py-3 text-xs md:text-xs">Finanzas</th>
+                        <th class="px-3 py-3 text-xs md:text-xs">Fechas / Gar.</th>
                         @if(auth()->user()->hasRole(['admin', 'tecnico', 'recepcionista']))
-                            <th class="px-4 py-3 text-center">Acciones</th>
+                            <th class="px-3 py-3 text-center text-xs md:text-xs">Acciones</th>
                         @endif
                     </tr>
                 </thead>
@@ -114,27 +112,27 @@
                     @forelse($workOrders as $order)
                         <tr class="hover:bg-gray-900/20 transition">
                             <!-- Code -->
-                            <td class="px-4 py-3">
+                            <td class="px-3 py-3">
                                 <span class="font-mono text-xs font-bold text-blue-400 uppercase tracking-tight">
                                     #{{ substr($order->uuid, 0, 8) }}
                                 </span>
                             </td>
                             <!-- Client -->
-                            <td class="px-4 py-3">
+                            <td class="px-3 py-3">
                                 <div class="flex flex-col">
-                                    <span class="font-semibold text-white">{{ $order->client->full_name }}</span>
+                                    <span class="font-semibold text-white text-xs">{{ $order->client->full_name }}</span>
                                     <span class="text-[10px] text-gray-500">{{ $order->client->phone }}</span>
                                 </div>
                             </td>
                             <!-- Device -->
-                            <td class="px-4 py-3">
+                            <td class="px-3 py-3">
                                 <div class="flex flex-col">
-                                    <span class="text-white font-medium">{{ $order->brand_model }}</span>
-                                    <span class="text-[10px] text-gray-500 font-mono">{{ $order->device_type }} @if($order->imei_serial) • IMEI: {{ $order->imei_serial }} @endif</span>
+                                    <span class="text-white font-medium text-xs">{{ $order->brand_model }}</span>
+                                    <span class="text-[10px] text-gray-500 font-mono">{{ $order->device_type }} @if($order->imei_serial) • {{ $order->imei_serial }} @endif</span>
                                 </div>
                             </td>
                             <!-- Status -->
-                            <td class="px-4 py-3">
+                            <td class="px-3 py-3">
                                 @php
                                     $statusClasses = [
                                         'Ingresado' => 'bg-gray-900/50 text-gray-400 border-gray-700/60',
@@ -149,64 +147,46 @@
                                     ];
                                     $class = $statusClasses[$order->status] ?? 'bg-gray-900 text-gray-300 border-gray-700';
                                 @endphp
-                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border {{ $class }}">
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold border {{ $class }}">
                                     {{ $order->status }}
                                 </span>
                             </td>
-                            <!-- Cost -->
-                            <td class="px-4 py-3 font-semibold text-white">
-                                ${{ number_format($order->labor_cost, 0, ',', '.') }}
-                            </td>
-                            <!-- Downpayment -->
-                            <td class="px-4 py-3 font-semibold text-emerald-400">
-                                @if($order->down_payment > 0)
-                                    ${{ number_format($order->down_payment, 0, ',', '.') }}
-                                @else
-                                    <span class="text-gray-500 text-xs font-normal">Sin abono</span>
-                                @endif
-                            </td>
-                            <!-- Date & SLA -->
-                            <td class="px-4 py-3 text-xs text-gray-400">
-                                <div class="flex flex-col gap-1 items-start">
-                                    <span>{{ $order->created_at->format('d/m/Y') }}</span>
-                                    @php
-                                        $daysInWorkshop = $order->created_at->startOfDay()->diffInDays(now()->startOfDay());
-                                        $isDelayed = $daysInWorkshop >= 3 && !in_array($order->status, ['Entregado', 'Rechazado', 'Listo para Entrega']);
-                                    @endphp
-                                    @if($isDelayed)
-                                        <span class="inline-flex items-center gap-1 text-[10px] text-red-400 font-bold bg-red-500/10 border border-red-500/20 px-1.5 py-0.5 rounded animate-pulse w-max shadow-sm shadow-red-500/10" title="Excede el tiempo estimado de taller">
-                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                            Retraso ({{ $daysInWorkshop }} días)
-                                        </span>
-                                    @elseif(!in_array($order->status, ['Entregado', 'Rechazado']))
-                                        <span class="text-[9px] text-gray-500 font-medium">Taller: {{ $daysInWorkshop }} día(s)</span>
+                            <!-- Finanzas -->
+                            <td class="px-3 py-3">
+                                <div class="flex flex-col">
+                                    <span class="font-semibold text-white text-xs" title="Mano de Obra">MO: ${{ number_format($order->labor_cost, 0, ',', '.') }}</span>
+                                    @if($order->down_payment > 0)
+                                        <span class="text-[10px] font-semibold text-emerald-400" title="Abono">Ab: ${{ number_format($order->down_payment, 0, ',', '.') }}</span>
+                                    @else
+                                        <span class="text-[10px] text-gray-500 font-normal">Sin abono</span>
                                     @endif
                                 </div>
                             </td>
-                            <!-- Warranty Badge -->
-                            <td class="px-4 py-3">
-                                @php
-                                    $warranty = $order->warrantyStatus;
-                                @endphp
-                                @if($warranty['status'] === 'active')
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black border bg-emerald-950/40 text-emerald-400 border-emerald-500/30 whitespace-nowrap">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                                        Vigente {{ $warranty['days_remaining'] }}d
-                                    </span>
-                                @elseif($warranty['status'] === 'expired')
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black border bg-red-950/40 text-red-400 border-red-500/30 whitespace-nowrap">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>
-                                        Vencida
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold border bg-gray-900/40 text-gray-500 border-gray-700/60 whitespace-nowrap">
-                                        &mdash;
-                                    </span>
-                                @endif
+                            <!-- Fechas / Gar. -->
+                            <td class="px-3 py-3">
+                                <div class="flex flex-col gap-0.5 items-start">
+                                    <span class="text-[11px] text-gray-400">{{ $order->created_at->format('d/m/y') }}</span>
+                                    @php
+                                        $daysInWorkshop = $order->created_at->startOfDay()->diffInDays(now()->startOfDay());
+                                        $isDelayed = $daysInWorkshop >= 3 && !in_array($order->status, ['Entregado', 'Rechazado', 'Listo para Entrega']);
+                                        $warranty = $order->warrantyStatus;
+                                    @endphp
+                                    @if($isDelayed)
+                                        <span class="inline-flex items-center gap-0.5 text-[9px] text-red-400 font-bold bg-red-500/10 border border-red-500/20 px-1 rounded animate-pulse" title="Retraso ({{ $daysInWorkshop }} días)">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                            +{{ $daysInWorkshop }}d
+                                        </span>
+                                    @endif
+                                    @if($warranty['status'] === 'active')
+                                        <span class="text-[9px] font-bold text-emerald-400 mt-0.5">Gar: {{ $warranty['days_remaining'] }}d</span>
+                                    @elseif($warranty['status'] === 'expired')
+                                        <span class="text-[9px] font-bold text-red-400 mt-0.5">Gar: Vencida</span>
+                                    @endif
+                                </div>
                             </td>
                             <!-- Actions -->
                             @if(auth()->user()->hasRole(['admin', 'tecnico', 'recepcionista']))
-                                <td class="px-4 py-3">
+                                <td class="px-3 py-3">
                                     <div class="flex items-center justify-center gap-2">
                                         <button 
                                             wire:click="openWorkOrderDetails({{ $order->id }})" 
@@ -239,7 +219,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-6 py-12 text-center text-gray-500">
+                            <td colspan="7" class="px-6 py-12 text-center text-gray-500">
                                 <svg class="w-12 h-12 text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 No se encontraron órdenes de trabajo registradas con ese criterio.
                             </td>
@@ -798,16 +778,14 @@
                                             <div class="space-y-1.5 bg-gray-900/50 p-4 rounded-xl border border-gray-800">
                                                 <div class="flex justify-between items-center mb-2">
                                                     <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Técnico Responsable</label>
-                                                    @if(!$isLocked)
-                                                    <button type="button" wire:click="assignTechnician" class="text-[10px] bg-blue-600 hover:bg-blue-500 text-white px-2 py-1 rounded transition">Asignar</button>
-                                                    @endif
                                                 </div>
-                                                <select wire:model="managingTechnicianId" {{ $isLocked ? 'disabled' : '' }} class="w-full bg-gray-900 border border-gray-700 rounded-xl py-2 px-3 text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition {{ $isLocked ? 'opacity-70 cursor-not-allowed' : '' }}">
+                                                <select wire:model.live="managingTechnicianId" wire:change="assignTechnician" {{ $isLocked ? 'disabled' : '' }} class="w-full bg-gray-900 border border-gray-700 rounded-xl py-2 px-3 text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition cursor-pointer {{ $isLocked ? 'opacity-70 cursor-not-allowed' : '' }}">
                                                     <option value="">-- Sin Asignar --</option>
                                                     @foreach($technicians as $tech)
                                                         <option value="{{ $tech->id }}">{{ $tech->name }}</option>
                                                     @endforeach
                                                 </select>
+                                                <p class="text-[10px] text-gray-500 mt-1">Se guarda automáticamente al seleccionar.</p>
                                             </div>
                                             @endif
 

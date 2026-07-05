@@ -56,32 +56,32 @@ html:not(.dark) body {
 
 /* --- Sidebar (Desktop & Mobile Drawer) --- */
 html:not(.dark) aside {
-    background-color: #f8fafc !important; /* Un blanco muy suave (slate-50) */
-    border-color: #cbd5e1 !important;
-    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.05) !important;
+    background-color: #0f172a !important; /* Fondo oscuro (slate-900) para crear contraste radical */
+    border-color: #1e293b !important;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1) !important;
 }
 
 html:not(.dark) aside .border-b {
-    border-color: #cbd5e1 !important;
+    border-color: #1e293b !important;
 }
 
 html:not(.dark) aside .border-t {
-    border-color: #cbd5e1 !important;
+    border-color: #1e293b !important;
 }
 
 /* Sidebar section titles */
 html:not(.dark) aside .text-gray-500 {
-    color: #94a3b8 !important;
+    color: #64748b !important;
 }
 
 /* Sidebar nav links (inactive) */
 html:not(.dark) aside nav a:not(.bg-gradient-to-r) {
-    color: #475569 !important;
+    color: #94a3b8 !important;
 }
 
 html:not(.dark) aside nav a:not(.bg-gradient-to-r):hover {
-    color: #0f172a !important;
-    background-color: #f1f5f9 !important;
+    color: #ffffff !important;
+    background-color: #1e293b !important;
 }
 
 /* Sidebar nav links (active - keep gradients visible, ensure white text) */
@@ -94,12 +94,12 @@ html:not(.dark) aside nav a.bg-gradient-to-r svg {
 
 /* Sidebar user footer card */
 html:not(.dark) aside .bg-gray-900\/60 {
-    background-color: #f8fafc !important;
-    border-color: #e2e8f0 !important;
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
 }
 
 html:not(.dark) aside .text-white {
-    color: #0f172a !important;
+    color: #f8fafc !important;
 }
 
 /* Keep gradient text on sidebar header */
@@ -113,13 +113,13 @@ html:not(.dark) aside div[class*="bg-gradient-to-tr"] {
     color: #ffffff !important;
 }
 
-/* Theme toggle button in light mode */
+/* Theme toggle button in light mode (since sidebar is dark, icon should be light) */
 html:not(.dark) aside button[title="Cambiar Tema"] {
-    color: #64748b !important;
+    color: #94a3b8 !important;
 }
 html:not(.dark) aside button[title="Cambiar Tema"]:hover {
-    background-color: #f1f5f9 !important;
-    color: #334155 !important;
+    background-color: #1e293b !important;
+    color: #ffffff !important;
 }
 
 /* --- Mobile Header --- */
