@@ -104,10 +104,20 @@
                     <div>
                         <div class="px-4 pb-2 text-[10px] font-black text-gray-500 uppercase tracking-widest mt-2">Ventas / POS</div>
                         <div class="space-y-1">
-                            <!-- POS Unificado Link -->
-                            <a href="{{ route('pos.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ Route::is('pos.index') || Route::is('cash-registers.index') || Route::is('sales.history') ? 'bg-gradient-to-r from-orange-600 to-orange-500 text-white shadow-md shadow-orange-500/20' : 'text-gray-400 hover:text-white hover:bg-gray-900' }}">
+                            <!-- Caja Link -->
+                            <a href="{{ route('cash-registers.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ Route::is('cash-registers.index') ? 'bg-gradient-to-r from-orange-600 to-orange-500 text-white shadow-md shadow-orange-500/20' : 'text-gray-400 hover:text-white hover:bg-gray-900' }}">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                                Caja Diaria
+                            </a>
+                            <!-- POS Link -->
+                            <a href="{{ route('pos.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ Route::is('pos.index') ? 'bg-gradient-to-r from-orange-600 to-orange-500 text-white shadow-md shadow-orange-500/20' : 'text-gray-400 hover:text-white hover:bg-gray-900' }}">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                                 Punto de Venta
+                            </a>
+                            <!-- Historial Ventas Link -->
+                            <a href="{{ route('sales.history') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ Route::is('sales.history') ? 'bg-gradient-to-r from-orange-600 to-orange-500 text-white shadow-md shadow-orange-500/20' : 'text-gray-400 hover:text-white hover:bg-gray-900' }}">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                Historial de Ventas
                             </a>
                         </div>
                     </div>

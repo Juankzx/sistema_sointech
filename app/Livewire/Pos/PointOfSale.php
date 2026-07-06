@@ -4,11 +4,13 @@ namespace App\Livewire\Pos;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\Url;
 use App\Models\Inventory;
 use App\Models\Sale;
 use App\Models\SaleItem;
 use App\Models\CashRegister;
 use App\Models\Setting;
+use App\Models\WorkOrder;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -18,24 +20,12 @@ class PointOfSale extends Component
 
     protected $paginationTheme = 'tailwind';
 
-    // ─── Active Tab ───
-    public $posTab = 'sell'; // sell, movements, history
+    // ─── URL Params ───
+    #[Url]
+    public $ot_id = null;
 
     // ─── Cash Register ───
     public $activeRegister;
-    public $opening_balance = 0;
-    public $expected_closing_balance = 0;
-    public $closing_balance = 0;
-    public $expected_cash = 0;
-    public $expected_transfer = 0;
-    public $expected_card = 0;
-    public $closing_cash = 0;
-    public $closing_transfer = 0;
-    public $closing_card = 0;
-    public $closing_notes = '';
-    public $showOpenModal = false;
-    public $showCloseModal = false;
-    public $searchRegister = '';
 
     // ─── POS / Cart ───
     public $search = '';
@@ -64,10 +54,7 @@ class PointOfSale extends Component
     public $showReceiptModal = false;
     public $completedSaleUuid = null;
 
-    // ─── Sales History ───
-    public $searchSales = '';
-    public $dateFrom = '';
-    public $dateTo = '';
+
 
     public function mount()
     {
@@ -76,6 +63,38 @@ class PointOfSale extends Component
         $setting = Setting::first();
         if ($setting && $setting->tax_rate) {
             $this->taxRate = $setting->tax_rate;
+        }
+
+        // Si se recibe una OT por URL, cargarla en el carrito
+        if ($this->ot_id) {
+            $ot = WorkOrder::with('client')->find($this->ot_id);
+            if ($ot) {
+                // Calcular saldo pendiente
+                $partsCost = $ot->parts()->get()->sum(function($p) {
+                    return $p->pivot->price_at_time * $p->pivot->quantity;
+                });
+                $totalCost = (float)$ot->labor_cost + $partsCost;
+                $balanceDue = $totalCost - (float)$ot->down_payment;
+
+                if ($balanceDue > 0) {
+                    $this->cart[] = [
+                        'id' => 'OT-' . $ot->id, // ID especial
+                        'name' => 'Pago/Abono OT #' . substr($ot->uuid, 0, 8),
+                        'price' => $balanceDue,
+                        'cost_price' => 0,
+                        'quantity' => 1,
+                        'stock' => 1,
+                        'is_ot' => true,
+                        'ot_id' => $ot->id
+                    ];
+
+                    // Pre-seleccionar al cliente si existe
+                    if ($ot->client) {
+                        $this->selectClient($ot->client->id);
+                        $this->clientMode = 'registered'; // Cambiar a modo cliente registrado
+                    }
+                }
+            }
         }
     }
 
@@ -86,102 +105,9 @@ class PointOfSale extends Component
     public function loadActiveRegister()
     {
         $this->activeRegister = CashRegister::where('status', 'open')->first();
-
-        if ($this->activeRegister) {
-            $this->calculateExpectedBalance();
-        }
     }
 
-    public function calculateExpectedBalance()
-    {
-        if (!$this->activeRegister) return;
 
-        $payments = $this->activeRegister->payments;
-
-        $incomeCash = $payments->where('type', 'income')->where('payment_method', 'Efectivo')->sum('amount');
-        $expenseCash = $payments->where('type', 'expense')->where('payment_method', 'Efectivo')->sum('amount');
-        $this->expected_cash = $this->activeRegister->opening_balance + $incomeCash - $expenseCash;
-
-        $incomeTransfer = $payments->where('type', 'income')->where('payment_method', 'Transferencia')->sum('amount');
-        $expenseTransfer = $payments->where('type', 'expense')->where('payment_method', 'Transferencia')->sum('amount');
-        $this->expected_transfer = $incomeTransfer - $expenseTransfer;
-
-        $cardMethods = ['Débito/Crédito', 'Débito', 'Crédito', 'Tarjeta'];
-        $incomeCard = $payments->where('type', 'income')->whereIn('payment_method', $cardMethods)->sum('amount');
-        $expenseCard = $payments->where('type', 'expense')->whereIn('payment_method', $cardMethods)->sum('amount');
-        $this->expected_card = $incomeCard - $expenseCard;
-
-        $this->expected_closing_balance = $this->expected_cash + $this->expected_transfer + $this->expected_card;
-
-        $this->closing_cash = $this->expected_cash;
-        $this->closing_transfer = $this->expected_transfer;
-        $this->closing_card = $this->expected_card;
-        $this->closing_balance = $this->expected_closing_balance;
-    }
-
-    public function openRegister()
-    {
-        $this->validate([
-            'opening_balance' => 'required|numeric|min:0',
-        ]);
-
-        CashRegister::create([
-            'user_id' => auth()->id(),
-            'opening_balance' => $this->opening_balance,
-            'status' => 'open',
-            'opened_at' => now(),
-        ]);
-
-        $this->showOpenModal = false;
-        $this->opening_balance = 0;
-        $this->loadActiveRegister();
-        session()->flash('message', '✅ Caja abierta exitosamente. ¡Ya puedes vender!');
-    }
-
-    public function closeRegister()
-    {
-        $this->validate([
-            'closing_cash' => 'required|numeric|min:0',
-            'closing_transfer' => 'required|numeric|min:0',
-            'closing_card' => 'required|numeric|min:0',
-        ]);
-
-        $this->closing_balance = $this->closing_cash + $this->closing_transfer + $this->closing_card;
-
-        $this->activeRegister->update([
-            'expected_cash' => $this->expected_cash,
-            'expected_transfer' => $this->expected_transfer,
-            'expected_card' => $this->expected_card,
-            'closing_cash' => $this->closing_cash,
-            'closing_transfer' => $this->closing_transfer,
-            'closing_card' => $this->closing_card,
-            'closing_balance' => $this->closing_balance,
-            'expected_closing_balance' => $this->expected_closing_balance,
-            'notes' => $this->closing_notes,
-            'status' => 'closed',
-            'closed_at' => now(),
-        ]);
-
-        $this->showCloseModal = false;
-        $this->closing_notes = '';
-        $this->cart = [];
-        $this->loadActiveRegister();
-        session()->flash('message', '🔒 Caja cerrada exitosamente.');
-    }
-
-    public function updatedSearchRegister()
-    {
-        $this->resetPage('registersPage');
-    }
-
-    // ════════════════════════════════════
-    //  POS / CART METHODS
-    // ════════════════════════════════════
-
-    public function switchPosTab($tab)
-    {
-        $this->posTab = $tab;
-    }
 
     public function updatedSearch()
     {
@@ -388,21 +314,44 @@ class PointOfSale extends Component
                 'sii_status' => $this->documentType !== 'ticket' ? 'pending' : null,
             ]);
 
-            foreach ($this->cart as $item) {
-                SaleItem::create([
-                    'sale_id' => $sale->id,
-                    'inventory_id' => $item['id'],
-                    'name' => $item['name'],
-                    'quantity' => $item['quantity'],
-                    'cost_price' => $item['cost_price'],
-                    'unit_price' => $item['price'],
-                    'subtotal' => $item['price'] * $item['quantity'],
-                ]);
+            $workOrderId = null;
 
-                $product = Inventory::find($item['id']);
-                if ($product) {
-                    $product->stock -= $item['quantity'];
-                    $product->save();
+            foreach ($this->cart as $item) {
+                if (isset($item['is_ot']) && $item['is_ot']) {
+                    // Es un pago de OT
+                    $ot = WorkOrder::find($item['ot_id']);
+                    if ($ot) {
+                        $workOrderId = $ot->id;
+                        
+                        // Añadir un log a la OT de que fue pagada/facturada por POS
+                        $ot->logs()->create([
+                            'title' => 'Pago por POS',
+                            'notes' => "Pago de $" . number_format($item['price'], 0, ',', '.') . " registrado desde el Punto de Venta (Venta UUID: {$sale->uuid}).",
+                            'status' => $ot->status, // mantiene el estado, luego lo cambiamos abajo si corresponde
+                            'user_id' => auth()->id(),
+                        ]);
+
+                        // Verificar si el pago cubre el total o si es parcial (Asumiremos que este pago del POS cubre lo que se puso en el carrito)
+                        // Para simplificar, si está en estado 'Listo para Entrega' o se está pagando algo, lo pasaremos a 'Entregado' si el saldo queda en 0
+                        // En la lógica real, el payment que se creará abajo afectará el balance
+                    }
+                } else {
+                    // Es un producto normal, actualizar stock
+                    SaleItem::create([
+                        'sale_id' => $sale->id,
+                        'inventory_id' => $item['id'],
+                        'name' => $item['name'],
+                        'quantity' => $item['quantity'],
+                        'cost_price' => $item['cost_price'],
+                        'unit_price' => $item['price'],
+                        'subtotal' => $item['price'] * $item['quantity'],
+                    ]);
+
+                    $product = Inventory::find($item['id']);
+                    if ($product) {
+                        $product->stock -= $item['quantity'];
+                        $product->save();
+                    }
                 }
             }
 
@@ -427,9 +376,40 @@ class PointOfSale extends Component
                 'type' => 'income',
                 'amount' => $this->total,
                 'payment_method' => $this->paymentMethod,
+                'document_type' => $this->documentType,
                 'description' => 'Venta POS: ' . collect($this->cart)->pluck('name')->implode(', '),
                 'user_id' => auth()->id(),
+                'work_order_id' => $workOrderId, // Vinculamos el pago a la OT si existe
             ]);
+
+            // Si hay OT vinculada, verificamos si su saldo quedó en 0 para entregarla
+            if ($workOrderId) {
+                $ot = WorkOrder::find($workOrderId);
+                if ($ot) {
+                    $partsCost = $ot->parts()->get()->sum(function($p) {
+                        return $p->pivot->price_at_time * $p->pivot->quantity;
+                    });
+                    $totalCost = (float)$ot->labor_cost + $partsCost;
+                    
+                    // Sumar todos los pagos incluyendo el recién creado
+                    $totalPaid = $ot->payments()->where('type', 'income')->sum('amount') + (float)$ot->down_payment;
+                    $balanceDue = $totalCost - $totalPaid;
+
+                    if ($balanceDue <= 0 && !in_array($ot->status, ['Entregado', 'Rechazado'])) {
+                        $ot->update([
+                            'status' => 'Entregado',
+                            'delivered_at' => Carbon::now()
+                        ]);
+                        
+                        $ot->logs()->create([
+                            'title' => 'Equipo Entregado',
+                            'notes' => 'El saldo de la orden fue cubierto y el equipo ha sido entregado.',
+                            'status' => 'Entregado',
+                            'user_id' => auth()->id(),
+                        ]);
+                    }
+                }
+            }
 
             DB::commit();
 
@@ -458,28 +438,7 @@ class PointOfSale extends Component
         }
     }
 
-    // ════════════════════════════════════
-    //  SALES HISTORY
-    // ════════════════════════════════════
 
-    public function updatedSearchSales()
-    {
-        $this->resetPage('salesPage');
-    }
-
-    public function updatedDateFrom()
-    {
-        $this->resetPage('salesPage');
-    }
-
-    public function updatedDateTo()
-    {
-        $this->resetPage('salesPage');
-    }
-
-    // ════════════════════════════════════
-    //  RENDER
-    // ════════════════════════════════════
 
     public function render()
     {
@@ -490,52 +449,9 @@ class PointOfSale extends Component
 
         $companySettings = Setting::first();
 
-        // Payments for movements tab
-        $payments = [];
-        if ($this->activeRegister) {
-            $payments = $this->activeRegister->payments()->with(['workOrder', 'user'])->latest()->get();
-        }
-
-        // Closed registers (when no active register)
-        $recentRegisters = null;
-        if (!$this->activeRegister) {
-            $regQuery = CashRegister::with('user')->where('status', 'closed');
-            if (!empty($this->searchRegister)) {
-                $regQuery->where(function($q) {
-                    $q->where('id', 'like', '%' . $this->searchRegister . '%')
-                      ->orWhereHas('user', function($qu) {
-                          $qu->where('name', 'like', '%' . $this->searchRegister . '%');
-                      });
-                });
-            }
-            $recentRegisters = $regQuery->latest()->paginate(10, ['*'], 'registersPage');
-        }
-
-        // Sales history
-        $salesQuery = Sale::with(['user', 'items']);
-        if (!empty($this->searchSales)) {
-            $salesQuery->where(function($q) {
-                $q->where('client_name', 'like', '%' . $this->searchSales . '%')
-                  ->orWhere('uuid', 'like', '%' . $this->searchSales . '%')
-                  ->orWhereHas('user', function($q2) {
-                      $q2->where('name', 'like', '%' . $this->searchSales . '%');
-                  });
-            });
-        }
-        if (!empty($this->dateFrom)) {
-            $salesQuery->whereDate('created_at', '>=', $this->dateFrom);
-        }
-        if (!empty($this->dateTo)) {
-            $salesQuery->whereDate('created_at', '<=', $this->dateTo);
-        }
-        $sales = $salesQuery->latest()->paginate(15, ['*'], 'salesPage');
-
         return view('livewire.pos.point-of-sale', [
             'completedSale' => $completedSale,
             'companySettings' => $companySettings,
-            'payments' => $payments,
-            'recentRegisters' => $recentRegisters,
-            'sales' => $sales,
         ])->layout('layouts.app');
     }
 }

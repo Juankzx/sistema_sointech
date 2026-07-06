@@ -1243,73 +1243,14 @@
 
                                     <!-- Agregar Nuevo Pago -->
                                     @if($balanceDue > 0)
-                                    <div class="bg-gray-850 p-5 rounded-2xl border border-gray-700 space-y-4">
-                                        <h5 class="text-xs font-black text-emerald-400 uppercase tracking-wider">Registrar Nuevo Abono / Pago</h5>
-                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                            <div>
-                                                <label class="block text-[10px] text-gray-500 uppercase tracking-wider mb-1 font-bold">Monto ($)</label>
-                                                <div class="relative">
-                                                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500 font-bold">$</span>
-                                                    <input wire:model="newPaymentAmount" type="number" step="0.01" max="{{ $balanceDue }}" class="w-full bg-gray-900 border border-gray-700 rounded-xl py-2.5 pl-8 pr-3 text-white text-sm font-bold focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/50 transition">
-                                                </div>
-                                                @error('newPaymentAmount') <span class="text-red-400 text-[10px] mt-1 block">{{ $message }}</span> @enderror
-                                            </div>
-                                            <div>
-                                                <label class="block text-[10px] text-gray-500 uppercase tracking-wider mb-1 font-bold">Método de Pago</label>
-                                                <select wire:model="newPaymentMethod" class="w-full bg-gray-900 border border-gray-700 rounded-xl py-2.5 px-3 text-white text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/50 transition">
-                                                    <option>Efectivo</option>
-                                                    <option>Transferencia</option>
-                                                    <option>Tarjeta de Crédito</option>
-                                                    <option>Tarjeta de Débito</option>
-                                                    <option>Otro</option>
-                                                </select>
-                                                @error('newPaymentMethod') <span class="text-red-400 text-[10px] mt-1 block">{{ $message }}</span> @enderror
-                                            </div>
-                                            <div>
-                                                <label class="block text-[10px] text-gray-500 uppercase tracking-wider mb-1 font-bold">Comprobante</label>
-                                                <select wire:model.live="documentType" class="w-full bg-gray-900 border border-gray-700 rounded-xl py-2.5 px-3 text-white text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/50 transition">
-                                                    <option>Ticket Interno</option>
-                                                    <option>Boleta</option>
-                                                    <option>Factura</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        @if($documentType === 'Factura')
-                                            <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700 space-y-3">
-                                                <h4 class="text-xs font-bold text-blue-400 uppercase tracking-widest mb-2">Datos de Facturación</h4>
-                                                
-                                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                                    <div>
-                                                        <label class="block text-[10px] text-gray-500 uppercase tracking-wider mb-1 font-bold">Razón Social *</label>
-                                                        <input type="text" wire:model="clientCompanyName" class="w-full bg-gray-900 border border-gray-700 rounded-xl py-2 px-3 text-white text-sm focus:outline-none focus:border-emerald-500" placeholder="Ej: Mi Empresa SpA">
-                                                        @error('clientCompanyName') <span class="text-red-400 text-[10px] mt-1 block">{{ $message }}</span> @enderror
-                                                    </div>
-                                                    <div>
-                                                        <label class="block text-[10px] text-gray-500 uppercase tracking-wider mb-1 font-bold">Giro Comercial *</label>
-                                                        <input type="text" wire:model="clientBusinessActivity" class="w-full bg-gray-900 border border-gray-700 rounded-xl py-2 px-3 text-white text-sm focus:outline-none focus:border-emerald-500" placeholder="Ej: Servicios Informáticos">
-                                                        @error('clientBusinessActivity') <span class="text-red-400 text-[10px] mt-1 block">{{ $message }}</span> @enderror
-                                                    </div>
-                                                    <div>
-                                                        <label class="block text-[10px] text-gray-500 uppercase tracking-wider mb-1 font-bold">Dirección *</label>
-                                                        <input type="text" wire:model="clientAddress" class="w-full bg-gray-900 border border-gray-700 rounded-xl py-2 px-3 text-white text-sm focus:outline-none focus:border-emerald-500" placeholder="Ej: Av. Principal 123">
-                                                        @error('clientAddress') <span class="text-red-400 text-[10px] mt-1 block">{{ $message }}</span> @enderror
-                                                    </div>
-                                                    <div>
-                                                        <label class="block text-[10px] text-gray-500 uppercase tracking-wider mb-1 font-bold">Comuna *</label>
-                                                        <input type="text" wire:model="clientCommune" class="w-full bg-gray-900 border border-gray-700 rounded-xl py-2 px-3 text-white text-sm focus:outline-none focus:border-emerald-500" placeholder="Ej: Santiago">
-                                                        @error('clientCommune') <span class="text-red-400 text-[10px] mt-1 block">{{ $message }}</span> @enderror
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endif
-                                        <div>
-                                            <label class="block text-[10px] text-gray-500 uppercase tracking-wider mb-1 font-bold">Descripción / Referencia</label>
-                                            <input wire:model="newPaymentDescription" type="text" class="w-full bg-gray-900 border border-gray-700 rounded-xl py-2.5 px-3 text-white text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/50 transition">
-                                        </div>
-                                        <button wire:click="addPayment" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition duration-200 cursor-pointer shadow-lg shadow-emerald-500/20">
-                                            REGISTRAR PAGO
-                                        </button>
+                                    <div class="bg-gray-850 p-5 rounded-2xl border border-gray-700 space-y-4 text-center">
+                                        <h5 class="text-xs font-black text-emerald-400 uppercase tracking-wider mb-2">Registrar Pago / Emitir Comprobante</h5>
+                                        <p class="text-[11px] text-gray-400 mb-4">Para emitir boletas, facturas o registrar abonos completos utilizando múltiples métodos de pago, dirígete al módulo de Punto de Venta (POS).</p>
+                                        
+                                        <a href="/pos?ot_id={{ $managingOrder->id }}" class="inline-flex items-center justify-center gap-2 w-full md:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-8 rounded-xl text-sm transition duration-200 cursor-pointer shadow-lg shadow-emerald-500/20">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                            PAGAR / FACTURAR EN POS
+                                        </a>
                                     </div>
                                     @endif
                                 </div>

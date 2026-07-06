@@ -37,9 +37,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/', Dashboard::class)->name('dashboard');
 
     Route::middleware('role:admin,tecnico,recepcionista')->group(function () {
-        Route::get('/caja', function() { return redirect()->route('pos.index'); })->name('cash-registers.index');
+        Route::get('/caja', \App\Livewire\CashRegisters\ManageCashRegister::class)->name('cash-registers.index');
         Route::get('/pos', PointOfSale::class)->name('pos.index');
-        Route::get('/pos/historial', function() { return redirect()->route('pos.index'); })->name('sales.history');
+        Route::get('/pos/historial', \App\Livewire\Pos\SalesHistory::class)->name('sales.history');
         Route::get('/nueva-ot', CreateWorkOrder::class)->name('work-orders.create');
         Route::get('/ordenes-trabajo', ListWorkOrders::class)->name('work-orders.index');
 
