@@ -6,6 +6,7 @@ use App\Models\WorkOrder;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\WorkOrderImage;
+use App\Services\ImageOptimizer;
 
 class ListWorkOrders extends Component
 {
@@ -17,6 +18,8 @@ class ListWorkOrders extends Component
     public string $dateTo = '';
     public string $technicianFilter = '';
     public bool $hasWarrantyFilter = false;
+    public bool $hasPendingBalanceFilter = false;
+
 
     // Bitacora & Photo Modal Properties
     public $isLogging = false;
@@ -75,7 +78,15 @@ class ListWorkOrders extends Component
         $this->editingOrderId = $order->id;
         $this->editingOrderCode = substr($order->uuid, 0, 8);
         $this->editingLaborCost = round($order->labor_cost);
-        $this->editingEstimatedDelivery = $order->estimated_delivery ?? '';
+        if ($order->estimated_delivery) {
+            try {
+                $this->editingEstimatedDelivery = \Carbon\Carbon::parse($order->estimated_delivery)->format('Y-m-d');
+            } catch (\Exception $e) {
+                $this->editingEstimatedDelivery = \Carbon\Carbon::now()->addDays(2)->format('Y-m-d');
+            }
+        } else {
+            $this->editingEstimatedDelivery = \Carbon\Carbon::now()->addDays(2)->format('Y-m-d');
+        }
         $this->forceEditBudget = false;
         
         // Try to fetch diagnostic notes from recent budget log
@@ -161,15 +172,7 @@ class ListWorkOrders extends Component
         
         $fileName = null;
         if ($this->newLogPhoto) {
-            $extension = $this->newLogPhoto->getClientOriginalExtension();
-            $fileName = 'work-orders/' . uniqid() . '.' . $extension;
-            
-            $publicPath = storage_path('app/public/work-orders');
-            if (!file_exists($publicPath)) {
-                mkdir($publicPath, 0755, true);
-            }
-            
-            file_put_contents(storage_path('app/public/' . $fileName), file_get_contents($this->newLogPhoto->getRealPath()));
+            $fileName = ImageOptimizer::optimizeAndStore($this->newLogPhoto, 'work-orders');
             
             // Auto add to WorkOrderImage (so it also appears in the gallery!)
             $order->images()->create([
@@ -222,15 +225,7 @@ class ListWorkOrders extends Component
 
         $order = WorkOrder::findOrFail($this->loggingOrderId);
         
-        $extension = $this->uploadPhoto->getClientOriginalExtension();
-        $fileName = 'work-orders/' . uniqid() . '.' . $extension;
-        
-        $publicPath = storage_path('app/public/work-orders');
-        if (!file_exists($publicPath)) {
-            mkdir($publicPath, 0755, true);
-        }
-        
-        file_put_contents(storage_path('app/public/' . $fileName), file_get_contents($this->uploadPhoto->getRealPath()));
+        $fileName = ImageOptimizer::optimizeAndStore($this->uploadPhoto, 'work-orders');
 
         $order->images()->create([
             'type' => $this->uploadPhotoType,
@@ -321,14 +316,15 @@ class ListWorkOrders extends Component
 
     public function updatedEditingSearchPart()
     {
-        if(strlen($this->editingSearchPart) > 2) {
+        if (strlen($this->editingSearchPart) >= 1) {
             $this->editingFoundParts = \App\Models\Inventory::where('name', 'like', '%' . $this->editingSearchPart . '%')
                 ->orWhere('category', 'like', '%' . $this->editingSearchPart . '%')
-                ->take(5)->get();
+                ->take(6)->get();
         } else {
             $this->editingFoundParts = [];
         }
     }
+
 
     public function startBudgeting($id)
     {
@@ -376,8 +372,7 @@ class ListWorkOrders extends Component
         foreach ($order->parts as $oldPart) {
             $inv = \App\Models\Inventory::find($oldPart->id);
             if ($inv) {
-                $inv->stock += $oldPart->pivot->quantity;
-                $inv->save();
+                $inv->increment('stock', (int)$oldPart->pivot->quantity);
             }
         }
 
@@ -391,8 +386,7 @@ class ListWorkOrders extends Component
 
             $inv = \App\Models\Inventory::find($part['id']);
             if ($inv) {
-                $inv->stock -= $part['quantity'];
-                $inv->save();
+                $inv->decrement('stock', (int)$part['quantity']);
             }
         }
         $order->parts()->sync($syncParts);
@@ -403,20 +397,28 @@ class ListWorkOrders extends Component
         });
         $totalBudget = (float)$this->editingLaborCost + $partsCost;
 
-        // 3. Actualizar la orden de trabajo a Presupuestado
+        // 3. Actualizar la orden de trabajo (preservando Aprobado, En Reparación, etc.)
+        $newStatus = in_array($order->status, ['Aprobado', 'En Reparación', 'Listo para Entrega', 'Entregado']) 
+            ? $order->status 
+            : 'Presupuestado';
+
         $order->update([
             'labor_cost' => $this->editingLaborCost,
-            'status' => 'Presupuestado',
+            'status' => $newStatus,
             'estimated_delivery' => $this->editingEstimatedDelivery ?: $order->estimated_delivery
         ]);
 
         // 4. Registrar en la bitácora
+        $logTitle = ($newStatus === 'Presupuestado') ? 'Diagnóstico y Presupuesto Listo' : 'Presupuesto Actualizado';
+        $logNotes = "Diagnóstico Técnico: " . $this->editingDiagnosticNotes . "\nPresupuesto establecido: Mano de obra $" . number_format($this->editingLaborCost, 0, ',', '.') . " + Repuestos $" . number_format($partsCost, 0, ',', '.') . " (Total del Presupuesto: $" . number_format($totalBudget, 0, ',', '.') . ").\n" . ($this->editingEstimatedDelivery ? "Tiempo Estimado de Entrega: " . $this->editingEstimatedDelivery . ".\n" : "") . ($newStatus === 'Presupuestado' ? "Esperando aprobación del cliente." : "Orden con estado activo (" . $newStatus . ").");
+
         $order->logs()->create([
-            'status' => 'Presupuestado',
-            'title' => 'Diagnóstico y Presupuesto Listo',
-            'notes' => "Diagnóstico Técnico: " . $this->editingDiagnosticNotes . "\nPresupuesto establecido: Mano de obra $" . number_format($this->editingLaborCost, 0, ',', '.') . " + Repuestos $" . number_format($partsCost, 0, ',', '.') . " (Total del Presupuesto: $" . number_format($totalBudget, 0, ',', '.') . ").\n" . ($this->editingEstimatedDelivery ? "Tiempo Estimado de Entrega: " . $this->editingEstimatedDelivery . ".\n" : "") . "Esperando aprobación del cliente.",
+            'status' => $newStatus,
+            'title' => $logTitle,
+            'notes' => $logNotes,
             'user_id' => auth()->id(),
         ]);
+
 
         $this->isBudgeting = false;
         $this->isManaging = false;
@@ -462,7 +464,28 @@ class ListWorkOrders extends Component
             'user_id' => auth()->id(),
         ]);
 
+        $this->sendOtStatusEmail($wo, $newStatus);
+
         session()->flash('message', "El estado ha sido actualizado a: {$newStatus}");
+    }
+
+    protected function sendOtStatusEmail(WorkOrder $wo, string $newStatus)
+    {
+        $settings = \App\Models\Setting::find(1);
+        if ($settings && isset($settings->notify_on_ot_status) && !$settings->notify_on_ot_status) {
+            return;
+        }
+
+        $clientEmail = $wo->client?->email;
+        if ($clientEmail) {
+            try {
+                \App\Services\MailService::configureSmtp();
+                \Illuminate\Support\Facades\Mail::to($clientEmail)
+                    ->send(new \App\Mail\WorkOrderStatusChanged($wo, $newStatus));
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::warning("No se pudo enviar correo de cambio de estado de OT #{$wo->id}: " . $e->getMessage());
+            }
+        }
     }
 
     public function initiateDelivery($workOrderId)
@@ -472,8 +495,17 @@ class ListWorkOrders extends Component
         $this->deliveringOrderCode = substr($wo->uuid, 0, 8);
         
         $settings = \App\Models\Setting::find(1);
-        $this->deliveryWarrantyMonths = $wo->warranty_months ?? ($settings?->warranty_months ?? 3);
-        $this->deliveryNotes = '';
+
+        // Detectar si fue recepcionado con humedad / contacto de líquido
+        $hasLiquidContact = isset($wo->checklist['liquid_contact']) && in_array(strtolower($wo->checklist['liquid_contact']), ['sí', 'si', 'yes']);
+
+        if ($hasLiquidContact) {
+            $this->deliveryWarrantyMonths = 0;
+            $this->deliveryNotes = 'Equipo ingresado con antecedente de humedad / contacto con líquido. Se entrega SIN GARANTÍA por riesgo de sulfatación o corrosión posterior.';
+        } else {
+            $this->deliveryWarrantyMonths = $wo->warranty_months ?? ($settings?->warranty_months ?? 3);
+            $this->deliveryNotes = '';
+        }
         
         $totalCost = $wo->labor_cost + $wo->parts->sum(function($p) { return $p->pivot->price_at_time * $p->pivot->quantity; });
         $this->deliveryBalanceDue = max(0, $totalCost - $wo->down_payment);
@@ -494,7 +526,41 @@ class ListWorkOrders extends Component
     public function processDelivery()
     {
         $wo = WorkOrder::findOrFail($this->deliveringOrderId);
-        
+
+        $totalCost = $wo->labor_cost + $wo->parts->sum(function($p) { return $p->pivot->price_at_time * $p->pivot->quantity; });
+        $balanceDue = max(0, $totalCost - $wo->down_payment);
+
+        // 1. Validación por Rol: Si hay saldo pendiente y NO se marca para pagar en caja
+        if ($balanceDue > 0 && !$this->deliveryPayBalance) {
+            if (!auth()->user()->hasRole('admin')) {
+                session()->flash('error', '⚠️ No tienes autorización para entregar un equipo con saldo pendiente sin registrar su pago. Esta acción requiere permisos de Administrador.');
+                return;
+            }
+        }
+
+        // 2. Validación de Caja Abierta y Factura antes de realizar cambios en BD si va a cobrar
+        $activeRegister = null;
+        if ($this->deliveryPayBalance && $balanceDue > 0) {
+            $activeRegister = \App\Models\CashRegister::where('status', 'open')
+                ->whereDate('opened_at', \Carbon\Carbon::today())
+                ->first();
+
+            if (!$activeRegister) {
+                session()->flash('error', '⚠️ No se puede entregar ni cobrar la Orden porque la Caja Diaria está cerrada. Abre la caja del día primero.');
+                return;
+            }
+
+            if ($this->documentType === 'Factura') {
+                $this->validate([
+                    'clientCompanyName' => 'required|string',
+                    'clientBusinessActivity' => 'required|string',
+                    'clientAddress' => 'required|string',
+                    'clientCommune' => 'required|string',
+                ]);
+            }
+        }
+
+        // 3. Actualizar estado de la OT a Entregado
         $wo->status = 'Entregado';
         $wo->delivered_at = \Carbon\Carbon::now();
         $wo->warranty_months = (int)$this->deliveryWarrantyMonths;
@@ -507,65 +573,59 @@ class ListWorkOrders extends Component
 
         if ($wo->warranty_months > 0) {
             $expiryDate = \Carbon\Carbon::now()->addMonths($wo->warranty_months);
-            $notes .= "\n\nGarantía de {$wo->warranty_months} mes(es) vigente hasta el {$expiryDate->format('d/m/Y')}. Aplica exclusivamente por fallas de funcionamiento de las piezas reemplazadas.";
+            $notes .= "\n\nGarantía de {$wo->warranty_months} mes(es) vigente hasta el {$expiryDate->format('d/m/Y')}. Aplica exclusivamente por fallas de funcionamiento de las piezas reemplazadas (No cubre humedad, sulfatación ni golpes).";
         } else {
-            $notes .= "\n\nSe entregó sin garantía de reparación.";
+            $notes .= "\n\n⚠️ SE ENTREGA SIN GARANTÍA DE REPARACIÓN (Exclusión por humedad, riesgo de placa o condiciones del servicio).";
+        }
+
+        // Si fue entregado con saldo pendiente autorizado por Admin
+        if ($balanceDue > 0 && !$this->deliveryPayBalance && auth()->user()->hasRole('admin')) {
+            $notes .= "\n\n⚠️ ENTREGA CON SALDO PENDIENTE AUTORIZADA POR ADMINISTRADOR (" . auth()->user()->name . "). Saldo por cobrar: $" . number_format($balanceDue, 0, ',', '.');
         }
 
         $wo->logs()->create([
             'status' => 'Entregado',
-            'title' => 'Equipo Entregado',
+            'title' => ($balanceDue > 0 && !$this->deliveryPayBalance) ? 'Equipo Entregado (Autorizado sin Pago)' : 'Equipo Entregado',
             'notes' => $notes,
             'user_id' => auth()->id(),
         ]);
 
-        if ($this->deliveryPayBalance && $this->deliveryBalanceDue > 0) {
-            $activeRegister = \App\Models\CashRegister::where('status', 'open')
-                ->whereDate('opened_at', \Carbon\Carbon::today())
-                ->first();
-
-            if ($activeRegister) {
-                if ($this->documentType === 'Factura') {
-                    $this->validate([
-                        'clientCompanyName' => 'required|string',
-                        'clientBusinessActivity' => 'required|string',
-                        'clientAddress' => 'required|string',
-                        'clientCommune' => 'required|string',
-                    ]);
-                    $wo->client->update([
-                        'company_name' => $this->clientCompanyName,
-                        'business_activity' => $this->clientBusinessActivity,
-                        'address' => $this->clientAddress,
-                        'commune' => $this->clientCommune,
-                    ]);
-                }
-
-                $payment = \App\Models\Payment::create([
-                    'cash_register_id' => $activeRegister->id,
-                    'work_order_id' => $wo->id,
-                    'type' => 'income',
-                    'amount' => $this->deliveryBalanceDue,
-                    'payment_method' => $this->deliveryPaymentMethod,
-                    'document_type' => $this->documentType,
-                    'description' => 'Pago final de saldo OT #' . substr($wo->uuid, 0, 8),
-                    'user_id' => auth()->id(),
+        // 4. Registrar pago si corresponde
+        if ($this->deliveryPayBalance && $balanceDue > 0 && $activeRegister) {
+            if ($this->documentType === 'Factura' && $wo->client) {
+                $wo->client->update([
+                    'company_name' => $this->clientCompanyName,
+                    'business_activity' => $this->clientBusinessActivity,
+                    'address' => $this->clientAddress,
+                    'commune' => $this->clientCommune,
                 ]);
-                
-                $this->dispatch('payment-registered', paymentId: $payment->id);
-
-                $wo->down_payment += $this->deliveryBalanceDue;
-                $wo->save();
-
-                $wo->logs()->create([
-                    'status' => 'Entregado',
-                    'title' => 'Pago Final Registrado',
-                    'notes' => 'Se registró el pago del saldo pendiente por $' . number_format($this->deliveryBalanceDue, 0, ',', '.') . ' mediante ' . $this->deliveryPaymentMethod,
-                    'user_id' => auth()->id(),
-                ]);
-            } else {
-                session()->flash('error', "El equipo se entregó pero NO se pudo registrar el pago porque no hay una caja diaria abierta hoy.");
             }
+
+            $payment = \App\Models\Payment::create([
+                'cash_register_id' => $activeRegister->id,
+                'work_order_id' => $wo->id,
+                'type' => 'income',
+                'amount' => $balanceDue,
+                'payment_method' => $this->deliveryPaymentMethod,
+                'document_type' => $this->documentType,
+                'description' => 'Pago final de saldo OT #' . substr($wo->uuid, 0, 8),
+                'user_id' => auth()->id(),
+            ]);
+
+            $this->dispatch('payment-registered', paymentId: $payment->id);
+
+            $wo->down_payment += $balanceDue;
+            $wo->save();
+
+            $wo->logs()->create([
+                'status' => 'Entregado',
+                'title' => 'Pago Final Registrado',
+                'notes' => 'Se registró el pago del saldo pendiente por $' . number_format($balanceDue, 0, ',', '.') . ' mediante ' . $this->deliveryPaymentMethod,
+                'user_id' => auth()->id(),
+            ]);
         }
+
+        $this->sendOtStatusEmail($wo, 'Entregado');
 
         $this->isDelivering = false;
         session()->flash('message', "El equipo de la orden #{$this->deliveringOrderCode} ha sido entregado exitosamente.");
@@ -600,7 +660,16 @@ class ListWorkOrders extends Component
         }
 
         $order = WorkOrder::findOrFail($this->editingOrderId);
+
+        if ($order->status === 'Entregado') {
+            session()->flash('message', 'No se puede cambiar el técnico asignado a una orden entregada al cliente.');
+            $this->managingTechnicianId = $order->technician_id;
+            return;
+        }
+
+
         $order->technician_id = $this->managingTechnicianId ?: null;
+
         
         $techName = 'Nadie';
         if ($this->managingTechnicianId) {
@@ -765,6 +834,34 @@ class ListWorkOrders extends Component
         }, 'reporte_ordenes_' . date('Y-m-d') . '.csv');
     }
 
+    public function cancelWorkOrder($id, $reason = '')
+    {
+        if (!auth()->user()->isAdmin()) {
+            session()->flash('error', 'Solo los Administradores tienen autorización para anular o desactivar órdenes de trabajo.');
+            return;
+        }
+
+        $order = WorkOrder::findOrFail($id);
+
+        if ($order->status === 'Entregado') {
+            session()->flash('error', 'No se puede anular una orden que ya fue entregada formalmente al cliente.');
+            return;
+        }
+
+        $oldStatus = $order->status;
+        $order->update(['status' => 'Anulada']);
+
+        $order->logs()->create([
+            'status'  => 'Anulada',
+            'title'   => 'Orden Anulada / Desactivada',
+            'notes'   => 'La orden fue cambiada a estado "Anulada" (estado previo: ' . $oldStatus . '). Motivo: ' . ($reason ?: 'Solicitud de Administración'),
+            'user_id' => auth()->id(),
+        ]);
+
+        session()->flash('message', 'La orden de trabajo #' . substr($order->uuid, 0, 8) . ' ha sido desactivada y cambiada a estado "Anulada".');
+        $this->closeManagingModal();
+    }
+
     public function render()
     {
         $query = WorkOrder::with(['client', 'technician'])
@@ -802,24 +899,49 @@ class ListWorkOrders extends Component
             }
         }
 
-        if ($this->hasWarrantyFilter) {
-            $query->where('status', 'Entregado')
-                  ->whereNotNull('delivered_at');
+        $allOrdersForStats = WorkOrder::with(['parts'])->where('status', '!=', 'Rechazado')->get();
+        $totalPendingReceivables = 0;
+        $pendingCount = 0;
+        $totalCollected = 0;
+
+        foreach ($allOrdersForStats as $woStat) {
+            $partsCost = $woStat->parts->sum(function($p) { return $p->pivot->price_at_time * $p->pivot->quantity; });
+            $totalCost = $woStat->labor_cost + $partsCost;
+            $balance = max(0, $totalCost - $woStat->down_payment);
+            $totalCollected += $woStat->down_payment;
+            
+            if ($balance > 0) {
+                $totalPendingReceivables += $balance;
+                $pendingCount++;
+            }
         }
 
         $workOrders = $query->get();
         $technicians = \App\Models\User::whereIn('role', ['admin', 'tecnico'])->get();
 
-        // Si se aplica el filtro de garantía, filtrar la colección resultante por status active
+        // Filtro de garantía activa
         if ($this->hasWarrantyFilter) {
             $workOrders = $workOrders->filter(function($wo) {
                 return $wo->warrantyStatus['status'] === 'active';
             });
         }
 
+        // Filtro de saldos pendientes por cobrar
+        if ($this->hasPendingBalanceFilter) {
+            $workOrders = $workOrders->filter(function($wo) {
+                $partsCost = $wo->parts->sum(function($p) { return $p->pivot->price_at_time * $p->pivot->quantity; });
+                $totalCost = $wo->labor_cost + $partsCost;
+                return ($totalCost - $wo->down_payment) > 0;
+            });
+        }
+
         return view('livewire.work-orders.list-work-orders', [
             'workOrders' => $workOrders,
             'technicians' => $technicians,
+            'totalPendingReceivables' => $totalPendingReceivables,
+            'pendingCount' => $pendingCount,
+            'totalCollected' => $totalCollected,
         ])->layout('layouts.app');
     }
 }
+

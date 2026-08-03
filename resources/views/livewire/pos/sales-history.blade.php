@@ -43,6 +43,7 @@
                         <th class="px-6 py-4">Método Pago</th>
                         <th class="px-6 py-4">Usuario</th>
                         <th class="px-6 py-4 text-right">Total</th>
+                        <th class="px-6 py-4 text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-800/60">
@@ -76,10 +77,16 @@
                             <td class="px-6 py-4 text-right font-black text-white">
                                 ${{ number_format($sale->total, 0, ',', '.') }}
                             </td>
+                            <td class="px-6 py-4 text-center">
+                                <a href="{{ route('sales.print', $sale->id) }}" target="_blank" class="px-3 py-1.5 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 border border-orange-500/20 rounded-xl text-xs font-bold transition inline-flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                                    <span>Imprimir Comprobante</span>
+                                </a>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-12 text-center text-gray-500">
+                            <td colspan="8" class="px-6 py-12 text-center text-gray-500">
                                 No se encontraron ventas registradas con los filtros actuales.
                             </td>
                         </tr>

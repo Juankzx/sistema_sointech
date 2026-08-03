@@ -1,31 +1,104 @@
 <div id="{{ $templateId }}" class="hidden">
     @php
         $settings = \App\Models\Setting::first() ?? new \App\Models\Setting();
+        $thermalLogoData = '';
+        $thermalLogoPath = public_path('images/logo-dark.png');
+        if (file_exists($thermalLogoPath)) {
+            $thermalLogoData = 'data:image/png;base64,' . base64_encode(file_get_contents($thermalLogoPath));
+        }
+
+        $partsCostTotal = $order->parts ? $order->parts->sum(function($p) { return $p->pivot->price_at_time * $p->pivot->quantity; }) : 0;
+        $orderTotal = (float)$order->labor_cost + $partsCostTotal;
+        $balanceDue = max(0, $orderTotal - (float)$order->down_payment);
     @endphp
-    <div style="font-family: 'Courier New', Courier, monospace; color: #000; width: 300px; padding: 10px; margin: 0 auto; background: #fff;">
-        <div style="text-align: center; border-bottom: 2px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
-            <h2 style="margin: 0; font-size: 20px; font-weight: bold;">{{ strtoupper($settings->company_name ?: 'SOIN TECHNOLOGY') }}</h2>
-            <p style="margin: 2px 0 0; font-size: 12px;">Servicio Técnico</p>
-            <h3 style="margin: 5px 0 0; font-size: 18px; font-weight: bold;">OT #{{ substr($order->uuid, 0, 8) }}</h3>
-            <p style="margin: 2px 0 0; font-size: 12px;">{{ $order->created_at->format('d/m/Y H:i') }}</p>
+
+    <div class="thermal-ticket-container" style="font-family: 'Inter', Arial, sans-serif; width: 100%; max-width: 76mm; padding: 2px; margin: 0 auto; background: #fff; color: #000;">
+        <!-- Header -->
+        <div style="text-align: center; border-bottom: 2px dashed #000; padding-bottom: 6px; margin-bottom: 6px;">
+            @if($thermalLogoData)
+                <div style="background: #0f172a; padding: 6px 12px; border-radius: 8px; display: inline-block; margin-bottom: 4px;">
+                    <img src="{{ $thermalLogoData }}" alt="Logo" style="max-height: 28px; width: auto; display: block; margin: 0 auto;">
+                </div>
+            @endif
+            <div style="font-size: 14px; font-weight: 900; letter-spacing: 0.5px; text-transform: uppercase;">
+                {{ strtoupper($settings->company_name ?: 'SOIN TECHNOLOGY') }}
+            </div>
+            <div style="font-size: 9px; color: #333; margin-top: 1px;">Servicio Técnico Especializado</div>
+            <div style="font-size: 14px; font-weight: 900; margin-top: 4px; border: 1.5px solid #000; padding: 2px 0; border-radius: 4px;">
+                OT #{{ substr($order->uuid, 0, 8) }}
+            </div>
+            <div style="font-size: 9px; margin-top: 3px; font-weight: bold;">
+                Fecha: {{ $order->created_at->format('d/m/Y H:i') }}
+            </div>
         </div>
 
-        <div style="font-size: 13px; line-height: 1.4; border-bottom: 2px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
-            <p style="margin: 2px 0;"><strong>Cliente:</strong><br>{{ Str::limit($order->client->full_name, 25) }}</p>
-            <p style="margin: 2px 0;"><strong>Tel:</strong> {{ $order->client->phone }}</p>
-            
-            <p style="margin: 8px 0 2px;"><strong>Equipo:</strong><br>{{ Str::limit($order->brand_model, 25) }}</p>
-            <p style="margin: 2px 0;"><strong>Falla:</strong><br>{{ Str::limit($order->reported_issue, 50) }}</p>
-            
-            @if($order->unlock_password)
-            <p style="margin: 2px 0;"><strong>Clave:</strong> {{ $order->unlock_password }}</p>
+        <!-- Detail Section -->
+        <div style="font-size: 10px; line-height: 1.35; border-bottom: 1px dashed #000; padding-bottom: 6px; margin-bottom: 6px;">
+            <div style="margin-bottom: 4px;">
+                <strong>CLIENTE:</strong> {{ Str::limit($order->client->full_name, 26) }}<br>
+                <strong>RUT/RUN:</strong> {{ $order->client->rut_dni ?? 'N/A' }} | <strong>TEL:</strong> {{ $order->client->phone }}
+            </div>
+
+            <div style="margin-bottom: 4px; border-top: 1px dotted #ccc; padding-top: 3px;">
+                <strong>DISPOSITIVO:</strong> {{ Str::limit($order->brand_model, 26) }}<br>
+                <strong>TIPO:</strong> {{ $order->device_type }}
+                @if($order->unlock_password)
+                    | <strong>CLAVE:</strong> {{ $order->unlock_password }}
+                @endif
+            </div>
+
+            @php
+                $quotation = \App\Models\Quotation::where('work_order_id', $order->id)->with('items')->first();
+            @endphp
+
+            @if($quotation && $quotation->items && $quotation->items->count() > 0)
+            <div style="border-top: 1px dotted #ccc; padding-top: 3px; margin-bottom: 4px;">
+                <strong>DETALLE DE SERVICIOS / REPUESTOS:</strong><br>
+                @foreach($quotation->items as $item)
+                    <div style="display: flex; justify-content: space-between; font-size: 9px; margin-top: 1px;">
+                        <span style="max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">• {{ $item->description }} (x{{ $item->quantity }})</span>
+                        <span>${{ number_format($item->subtotal, 0, ',', '.') }}</span>
+                    </div>
+                @endforeach
+            </div>
+            @else
+            <div style="border-top: 1px dotted #ccc; padding-top: 3px;">
+                <strong>FALLA REPORTADA:</strong><br>
+                <span style="font-size: 9.5px;">{{ Str::limit($order->reported_issue, 80) }}</span>
+            </div>
             @endif
         </div>
 
-        <div style="text-align: center; padding-top: 10px;">
-            <p style="margin: 0 0 5px; font-size: 11px;">Escanear para seguimiento:</p>
-            <canvas id="{{ $qrCanvasId }}" width="120" height="120" data-url="{{ url('/seguimiento/'.$order->uuid) }}"></canvas>
-            <p style="margin: 5px 0 0; font-size: 10px;">{{ substr($order->uuid, 0, 8) }}</p>
+        <!-- Costs & Balances Summary -->
+        <div style="font-size: 10px; border-bottom: 1.5px solid #000; padding-bottom: 4px; margin-bottom: 6px; line-height: 1.4;">
+            <div style="display: flex; justify-content: space-between;">
+                <span>Presupuesto Estimado:</span>
+                <span>${{ number_format($orderTotal, 0, ',', '.') }}</span>
+            </div>
+            @if($order->down_payment > 0)
+                <div style="display: flex; justify-content: space-between; font-weight: bold; color: #000;">
+                    <span>Abonado:</span>
+                    <span>${{ number_format($order->down_payment, 0, ',', '.') }}</span>
+                </div>
+            @endif
+            <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 900; margin-top: 2px; border-top: 1px solid #000; padding-top: 2px;">
+                <span>SALDO PENDIENTE:</span>
+                <span>${{ number_format($balanceDue, 0, ',', '.') }}</span>
+            </div>
+        </div>
+
+        <!-- Tracking & Signature -->
+        <div style="text-align: center;">
+            <div style="margin: 0 auto 2px; display: inline-block;">
+                <canvas id="{{ $qrCanvasId }}" data-url="{{ url('/seguimiento/'.$order->uuid) }}"></canvas>
+            </div>
+            <div style="font-size: 8px; font-weight: bold;">
+                Escanee el código QR para consultar el estado en vivo
+            </div>
+            <div style="font-size: 7.5px; color: #444; margin-top: 2px;">
+                ¡Gracias por su confianza en SOIN TECHNOLOGY!
+            </div>
         </div>
     </div>
 </div>
+

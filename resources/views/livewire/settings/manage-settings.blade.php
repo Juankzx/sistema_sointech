@@ -20,6 +20,12 @@
             <button @click="activeTab = 'catalog'" :class="activeTab === 'catalog' ? 'bg-blue-600 text-white shadow' : 'text-gray-400 hover:text-white'" class="px-4 py-2 rounded-xl text-xs font-bold transition duration-200">
                 📱 Catálogo
             </button>
+            <button @click="activeTab = 'smtp'" :class="activeTab === 'smtp' ? 'bg-blue-600 text-white shadow' : 'text-gray-400 hover:text-white'" class="px-4 py-2 rounded-xl text-xs font-bold transition duration-200">
+                ⚙️ Servidor SMTP
+            </button>
+            <button @click="activeTab = 'templates'" :class="activeTab === 'templates' ? 'bg-blue-600 text-white shadow' : 'text-gray-400 hover:text-white'" class="px-4 py-2 rounded-xl text-xs font-bold transition duration-200">
+                📝 Plantillas de Correo
+            </button>
         </div>
     </div>
 
@@ -470,4 +476,228 @@
             </div>
         </div>
     </div>
+
+    <!-- TAB 5: SERVIDOR DE CORREO SMTP Y NOTIFICACIONES -->
+    <div x-show="activeTab === 'smtp'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" class="space-y-6" x-cloak>
+        <div class="bg-gray-800 rounded-3xl shadow-xl overflow-hidden border border-gray-700">
+            <div class="bg-gray-900/60 px-6 py-4 border-b border-gray-700 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    <h3 class="text-base font-bold text-white">Configuración del Servidor de Correo (SMTP)</h3>
+                </div>
+            </div>
+
+            <div class="p-6 space-y-8">
+                <!-- FORMULARIO SMTP -->
+                <form wire:submit.prevent="saveSmtpSettings" class="space-y-6">
+                    <div class="bg-blue-950/30 border border-blue-800/40 rounded-2xl p-4 text-xs text-blue-200 flex items-start gap-3">
+                        <svg class="w-5 h-5 text-blue-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <div>
+                            <strong class="text-white block font-bold mb-0.5">Información sobre envíos de correo real:</strong>
+                            Ingresa las credenciales de tu proveedor SMTP (Gmail, cPanel, Mailtrap, Zoho, SendGrid, etc.). Al guardar y probar, el sistema enviará correos reales a tus clientes sobre el estado de sus órdenes de trabajo y notificaciones de stock al administrador.
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Servidor SMTP (Host) *</label>
+                            <input type="text" wire:model="smtp_host" class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Ej: smtp.gmail.com o mail.tuempresa.cl">
+                            @error('smtp_host') <span class="text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Puerto SMTP *</label>
+                            <input type="number" wire:model="smtp_port" class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Ej: 587 o 465">
+                            @error('smtp_port') <span class="text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Encriptación</label>
+                            <select wire:model="smtp_encryption" class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="tls">TLS (Recomendado - Puerto 587)</option>
+                                <option value="ssl">SSL (Puerto 465)</option>
+                                <option value="null">Ninguna / Sin Encriptación</option>
+                            </select>
+                            @error('smtp_encryption') <span class="text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Usuario SMTP (Correo Electrónico)</label>
+                            <input type="text" wire:model="smtp_username" class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Ej: contacto@tuempresa.cl">
+                            @error('smtp_username') <span class="text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Contraseña SMTP / Clave de Aplicación</label>
+                            <input type="password" wire:model="smtp_password" class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="••••••••••••••••">
+                            @error('smtp_password') <span class="text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Correo del Remitente (From Address)</label>
+                            <input type="email" wire:model="smtp_from_address" class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Ej: no-reply@tuempresa.cl">
+                            @error('smtp_from_address') <span class="text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Nombre del Remitente (From Name)</label>
+                            <input type="text" wire:model="smtp_from_name" class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Ej: Soin Technology Soporte">
+                            @error('smtp_from_name') <span class="text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+
+                    <!-- PREFERENCIAS DE NOTIFICACIONES -->
+                    <div class="pt-4 border-t border-gray-700/60 space-y-4">
+                        <h4 class="text-xs font-bold text-gray-300 uppercase tracking-widest">Preferencia de Notificaciones Automáticas</h4>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <label class="flex items-center gap-3 bg-gray-900/60 p-4 rounded-2xl border border-gray-700 cursor-pointer hover:bg-gray-900 transition">
+                                <input type="checkbox" wire:model="notify_on_ot_status" class="w-5 h-5 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500">
+                                <div>
+                                    <strong class="text-sm font-bold text-white block">Notificar Cambios de Estado en OT</strong>
+                                    <span class="text-xs text-gray-400">Enviar correo automático al cliente cuando su equipo cambie de estado.</span>
+                                </div>
+                            </label>
+
+                            <label class="flex items-center gap-3 bg-gray-900/60 p-4 rounded-2xl border border-gray-700 cursor-pointer hover:bg-gray-900 transition">
+                                <input type="checkbox" wire:model="notify_on_low_stock" class="w-5 h-5 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500">
+                                <div>
+                                    <strong class="text-sm font-bold text-white block">Alerta de Stock Bajo en Inventario</strong>
+                                    <span class="text-xs text-gray-400">Enviar correo al Administrador cuando un producto llegue a su stock mínimo.</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-700 flex justify-end">
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-6 py-3 rounded-2xl shadow-lg shadow-blue-500/20 transition duration-150 flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            Guardar Configuración SMTP
+                        </button>
+                    </div>
+                </form>
+
+                <!-- PROBAR ENVÍO DE CORREO -->
+                <div class="pt-8 border-t border-gray-700 space-y-4">
+                    <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                        Probar Envío de Correo
+                    </h4>
+                    <p class="text-xs text-gray-400">Envía un correo de prueba en tiempo real a una casilla especificada para validar que las credenciales funcionen correctamente.</p>
+
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                        <input type="email" wire:model="test_email_recipient" class="flex-1 bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" placeholder="correo@ejemplo.com">
+                        <button type="button" wire:click="sendTestEmail" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-6 py-3 rounded-2xl shadow-lg shadow-emerald-500/20 transition duration-150 flex items-center justify-center gap-2 whitespace-nowrap">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            Enviar Correo de Prueba
+                        </button>
+                    </div>
+                    @error('test_email_recipient') <span class="text-red-400 text-xs block">{{ $message }}</span> @enderror
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 7: PLANTILLAS DE CORREO -->
+    <div x-show="activeTab === 'templates'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" class="space-y-6" x-cloak>
+        <div class="bg-gray-800 rounded-3xl shadow-xl overflow-hidden border border-gray-700">
+            <div class="bg-gray-900/60 px-6 py-4 border-b border-gray-700 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    <h3 class="text-base font-bold text-white">Personalización de Plantillas de Correo Electrónico</h3>
+                </div>
+            </div>
+
+            <form wire:submit.prevent="saveEmailTemplates" class="p-6 space-y-8">
+                <!-- PLANTILLA 1: ORDEN DE TRABAJO -->
+                <div class="bg-gray-900/40 p-6 rounded-2xl border border-gray-700 space-y-4">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-gray-700/60 pb-3">
+                        <div>
+                            <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                                📌 Notificación de Cambio de Estado en Orden de Trabajo
+                            </h4>
+                            <p class="text-xs text-gray-400 mt-0.5">Correo enviado al cliente cuando la orden pasa a Revisión, Presupuestado, Listo, Entregado, etc.</p>
+                        </div>
+                        <button type="button" wire:click="resetEmailTemplate('ot')" class="text-xs text-amber-400 hover:text-amber-300 font-semibold underline flex items-center gap-1">
+                            ↺ Restablecer por Defecto
+                        </button>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Asunto del Correo</label>
+                        <input type="text" wire:model="email_ot_subject" class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        @error('email_ot_subject') <span class="text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Mensaje / Cuerpo del Correo</label>
+                        <textarea wire:model="email_ot_body" rows="5" class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono"></textarea>
+                        @error('email_ot_body') <span class="text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="bg-gray-950 p-4 rounded-xl border border-gray-800 space-y-2">
+                        <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Variables Dinámicas Disponibles (se reemplazarán automáticamente):</span>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2.5 py-1 rounded-lg bg-blue-950/80 text-blue-300 text-xs font-mono border border-blue-800/60 font-semibold">{nombre_cliente}</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-blue-950/80 text-blue-300 text-xs font-mono border border-blue-800/60 font-semibold">{codigo_ot}</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-blue-950/80 text-blue-300 text-xs font-mono border border-blue-800/60 font-semibold">{nuevo_estado}</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-blue-950/80 text-blue-300 text-xs font-mono border border-blue-800/60 font-semibold">{equipo}</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-blue-950/80 text-blue-300 text-xs font-mono border border-blue-800/60 font-semibold">{falla}</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-blue-950/80 text-blue-300 text-xs font-mono border border-blue-800/60 font-semibold">{link_seguimiento}</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-blue-950/80 text-blue-300 text-xs font-mono border border-blue-800/60 font-semibold">{nombre_empresa}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PLANTILLA 2: STOCK BAJO -->
+                <div class="bg-gray-900/40 p-6 rounded-2xl border border-gray-700 space-y-4">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-gray-700/60 pb-3">
+                        <div>
+                            <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                                ⚠️ Alerta de Stock Bajo en Inventario
+                            </h4>
+                            <p class="text-xs text-gray-400 mt-0.5">Correo interno enviado al Administrador cuando un repuesto o producto alcanza su nivel crítico de stock.</p>
+                        </div>
+                        <button type="button" wire:click="resetEmailTemplate('low_stock')" class="text-xs text-amber-400 hover:text-amber-300 font-semibold underline flex items-center gap-1">
+                            ↺ Restablecer por Defecto
+                        </button>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Asunto del Correo</label>
+                        <input type="text" wire:model="email_low_stock_subject" class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        @error('email_low_stock_subject') <span class="text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Mensaje / Cuerpo del Correo</label>
+                        <textarea wire:model="email_low_stock_body" rows="5" class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono"></textarea>
+                        @error('email_low_stock_body') <span class="text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="bg-gray-950 p-4 rounded-xl border border-gray-800 space-y-2">
+                        <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Variables Dinámicas Disponibles:</span>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2.5 py-1 rounded-lg bg-emerald-950/80 text-emerald-300 text-xs font-mono border border-emerald-800/60 font-semibold">{producto}</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-emerald-950/80 text-emerald-300 text-xs font-mono border border-emerald-800/60 font-semibold">{stock_actual}</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-emerald-950/80 text-emerald-300 text-xs font-mono border border-emerald-800/60 font-semibold">{stock_minimo}</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-emerald-950/80 text-emerald-300 text-xs font-mono border border-emerald-800/60 font-semibold">{nombre_empresa}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-gray-700 flex justify-end">
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-6 py-3 rounded-2xl shadow-lg shadow-blue-500/20 transition duration-150 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        Guardar Plantillas de Correo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
+

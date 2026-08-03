@@ -8,15 +8,14 @@ use Carbon\Carbon;
 
 class WorkOrder extends Model
 {
-    /** @use HasFactory<\Database\Factories\WorkOrderFactory> */
     use HasFactory;
 
     protected $guarded = [];
 
     protected $casts = [
-        'checklist'    => 'array',
+        'checklist'      => 'array',
         'terms_accepted' => 'boolean',
-        'delivered_at' => 'datetime',
+        'delivered_at'   => 'datetime',
     ];
 
     public function client()
@@ -62,14 +61,82 @@ class WorkOrder extends Model
     }
 
     /**
+     * Etiqueta formateada con ícono para el Tipo de Equipo.
+     */
+    public function getDeviceTypeLabelAttribute(): string
+    {
+        return match (strtolower($this->device_type ?? '')) {
+            'smartphone', 'celular' => '📱 Smartphone',
+            'notebook', 'laptop'   => '💻 Notebook / PC',
+            'desktop', 'pc'        => '🖥️ PC de Escritorio',
+            'imac', 'mac'          => '🍎 iMac / Mac',
+            'tablet', 'ipad'       => '📟 Tablet / iPad',
+            'console', 'consola'   => '🎮 Consola de Videojuegos',
+            default                => '⚙️ ' . ucfirst($this->device_type ?? 'Equipo'),
+        };
+    }
+
+    /**
+     * Calcula el valor total de la orden considerando estimated_cost, mano de obra y repuestos.
+     */
+    public function getCalculatedTotalAttribute(): float
+    {
+        $partsCost = (float)$this->parts->sum(fn($p) => $p->pivot->price_at_time * $p->pivot->quantity);
+        $sumDetail = (float)$this->labor_cost + $partsCost;
+        return max((float)$this->estimated_cost, $sumDetail);
+    }
+
+    /**
+     * Retorna el saldo pendiente real considerando el abono y pagos registrados.
+     */
+    public function getPendingBalanceAttribute(): float
+    {
+        $totalPaid = (float)$this->payments->sum('amount');
+        $downPayment = (float)$this->down_payment;
+        $paid = max($totalPaid, $downPayment);
+        return max(0, $this->calculated_total - $paid);
+    }
+
+    /**
+     * Retorna la insignia y color de estado financiero de la OT.
+     */
+    public function getFinancialStatusBadgeAttribute(): array
+    {
+        if ($this->status === 'Rechazado') {
+            return [
+                'label' => 'Sin Cobro',
+                'class' => 'text-gray-400 bg-gray-900 border-gray-700'
+            ];
+        }
+
+        $total = $this->calculated_total;
+        $balance = $this->pending_balance;
+
+        if ($total <= 0) {
+            return [
+                'label' => 'Por Evaluar',
+                'class' => 'text-amber-400 bg-amber-950/40 border-amber-500/30'
+            ];
+        }
+
+        if ($balance > 0) {
+            return [
+                'label' => 'Pendiente: $' . number_format($balance, 0, ',', '.'),
+                'class' => 'text-red-400 bg-red-950/50 border-red-500/30'
+            ];
+        }
+
+        return [
+            'label' => '✓ Pagado',
+            'class' => 'text-emerald-400 bg-emerald-950/40 border-emerald-500/30'
+        ];
+    }
+
+    /**
      * Retorna el estado de garantía de la OT.
-     *
-     * @return array{status: string, days_remaining: int|null, expiry_date: Carbon|null, months: int}
-     *   status: 'active' | 'expired' | 'none'
      */
     public function getWarrantyStatusAttribute(): array
     {
-        // Resolver meses de garantía (OT específica > configuración global)
         $months = $this->warranty_months;
 
         if ($months === null) {
@@ -77,23 +144,21 @@ class WorkOrder extends Model
             $months = $settings?->warranty_months ?? 3;
         }
 
-        // Sin garantía configurada
         if ($months <= 0) {
             return [
-                'status'        => 'none',
+                'status'         => 'none',
                 'days_remaining' => null,
-                'expiry_date'   => null,
-                'months'        => 0,
+                'expiry_date'    => null,
+                'months'         => 0,
             ];
         }
 
-        // Solo aplica garantía si el equipo fue entregado
         if (!$this->delivered_at) {
             return [
-                'status'        => 'none',
+                'status'         => 'none',
                 'days_remaining' => null,
-                'expiry_date'   => null,
-                'months'        => $months,
+                'expiry_date'    => null,
+                'months'         => $months,
             ];
         }
 

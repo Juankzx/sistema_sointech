@@ -24,6 +24,16 @@ class ForgotPassword extends Component
     {
         $this->validate();
 
+        $throttleKey = 'forgot-password|' . request()->ip();
+
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 3)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            $this->addError('email', "⚠️ Has realizado demasiadas solicitudes de recuperación. Por seguridad, intentalo de nuevo en {$seconds} segundos.");
+            return;
+        }
+
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 300);
+
         try {
             $status = Password::broker()->sendResetLink(
                 ['email' => $this->email]

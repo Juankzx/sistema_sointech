@@ -83,9 +83,19 @@
                             </td>
                             <!-- Actions -->
                             <td class="px-6 py-4 text-right">
-                                <button wire:click="editUser({{ $user->id }})" class="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-blue-400 hover:text-blue-300 transition duration-150 inline-flex items-center justify-center" title="Editar Usuario">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                                </button>
+                                <div class="flex items-center justify-end gap-1.5">
+                                    <button wire:click="openResetPasswordModal({{ $user->id }})" class="p-2 bg-amber-950/40 hover:bg-amber-900/60 border border-amber-800/50 rounded-xl text-amber-400 hover:text-amber-300 transition duration-150 inline-flex items-center gap-1 text-xs font-semibold" title="Restablecer Contraseña Directamente">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+                                        <span class="hidden lg:inline">Clave</span>
+                                    </button>
+                                    <button wire:click="sendPasswordResetLink({{ $user->id }})" class="p-2 bg-blue-950/40 hover:bg-blue-900/60 border border-blue-800/50 rounded-xl text-blue-400 hover:text-blue-300 transition duration-150 inline-flex items-center gap-1 text-xs font-semibold" title="Enviar enlace de restablecimiento al correo">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                        <span class="hidden lg:inline">Enviar Enlace</span>
+                                    </button>
+                                    <button wire:click="editUser({{ $user->id }})" class="p-2 bg-gray-800 hover:bg-gray-700 rounded-xl text-gray-300 hover:text-white transition duration-150 inline-flex items-center justify-center" title="Editar Usuario">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     @empty
@@ -232,6 +242,54 @@
                                 <span wire:loading wire:target="saveUser" class="flex items-center gap-1.5">
                                     Guardando...
                                 </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- RESET PASSWORD MODAL -->
+    @if($showResetModal)
+        <div class="fixed inset-0 z-50 overflow-y-auto bg-gray-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-gray-850 rounded-3xl border border-gray-800 shadow-2xl max-w-md w-full overflow-hidden animate-fade-in">
+                <div class="p-6 border-b border-gray-800 flex justify-between items-center bg-gray-900/50">
+                    <div class="flex items-center gap-2 text-amber-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+                        <h3 class="text-base font-bold text-white">Restablecer Contraseña</h3>
+                    </div>
+                    <button wire:click="$set('showResetModal', false)" class="text-gray-400 hover:text-white transition">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+
+                <div class="p-6 space-y-4">
+                    <div class="bg-gray-900/60 p-3.5 rounded-2xl border border-gray-700/60 text-xs">
+                        <span class="text-gray-400 block mb-0.5">Usuario a modificar:</span>
+                        <strong class="text-white font-bold block text-sm">{{ $resetUserName }}</strong>
+                        <span class="text-blue-400 font-mono">{{ $resetUserEmail }}</span>
+                    </div>
+
+                    <form wire:submit.prevent="saveNewPassword" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Nueva Contraseña *</label>
+                            <div class="flex items-center gap-2">
+                                <input wire:model="newPassword" type="text" placeholder="Ingresa o genera nueva clave" 
+                                    class="w-full bg-gray-900 border border-gray-700 rounded-xl py-2.5 px-4 text-sm text-white font-mono placeholder-gray-500 focus:outline-none focus:border-amber-500 transition">
+                                <button type="button" wire:click="generateRandomPassword" class="px-3 py-2.5 bg-gray-800 hover:bg-gray-700 text-amber-400 border border-amber-800/40 rounded-xl text-xs font-bold whitespace-nowrap transition" title="Generar clave aleatoria">
+                                    🎲 Generar
+                                </button>
+                            </div>
+                            @error('newPassword') <p class="mt-1.5 text-xs text-red-400 font-medium">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-800">
+                            <button type="button" wire:click="$set('showResetModal', false)" class="px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm font-semibold rounded-xl transition">
+                                Cancelar
+                            </button>
+                            <button type="submit" class="px-5 py-2.5 bg-amber-600 hover:bg-amber-500 text-white text-sm font-bold rounded-xl shadow-lg shadow-amber-500/20 transition flex items-center gap-2 cursor-pointer">
+                                🔑 Guardar Nueva Contraseña
                             </button>
                         </div>
                     </form>

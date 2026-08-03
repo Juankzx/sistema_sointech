@@ -73,13 +73,20 @@ class ManageCashRegister extends Component
         $incomeCard = $payments->where('type', 'income')->whereIn('payment_method', $cardMethods)->sum('amount');
         $expenseCard = $payments->where('type', 'expense')->whereIn('payment_method', $cardMethods)->sum('amount');
         $this->expected_card = $incomeCard - $expenseCard;
-
         $this->expected_closing_balance = $this->expected_cash + $this->expected_transfer + $this->expected_card;
+    }
+
+    public function openCloseModal()
+    {
+        $this->calculateExpectedBalance();
         
-        $this->closing_cash = $this->expected_cash;
-        $this->closing_transfer = $this->expected_transfer;
-        $this->closing_card = $this->expected_card;
-        $this->closing_balance = $this->expected_closing_balance;
+        // Reset para arqueo asistido/ciego
+        $this->closing_cash = '';
+        $this->closing_transfer = '';
+        $this->closing_card = '';
+        $this->closing_notes = '';
+        
+        $this->showCloseModal = true;
     }
 
     public function openRegister()
@@ -108,15 +115,30 @@ class ManageCashRegister extends Component
             'closing_card' => 'required|numeric|min:0',
         ]);
 
-        $this->closing_balance = $this->closing_cash + $this->closing_transfer + $this->closing_card;
+        $this->closing_balance = (float)$this->closing_cash + (float)$this->closing_transfer + (float)$this->closing_card;
+        $diferencia = $this->closing_balance - $this->expected_closing_balance;
+
+        // 1. Bloqueo si hay ventas esperadas y el usuario intenta cerrar en $0
+        if ($this->expected_closing_balance > 0 && $this->closing_balance == 0) {
+            $this->addError('closing_cash', '⚠️ No se puede cerrar la caja con $0 porque existen ventas registradas en el sistema ($' . number_format($this->expected_closing_balance, 0, ',', '.') . '). Ingresa el conteo físico real.');
+            return;
+        }
+
+        // 2. Justificación obligatoria si existe descuadre / diferencia
+        if (round($diferencia) != 0 && empty(trim($this->closing_notes))) {
+            $tipoDiff = $diferencia < 0 ? 'Faltante' : 'Sobrante';
+            $montoDiff = number_format(abs($diferencia), 0, ',', '.');
+            $this->addError('closing_notes', "⚠️ Se detectó un {$tipoDiff} de \${$montoDiff} respecto al sistema. Debes ingresar la justificación en las Observaciones.");
+            return;
+        }
 
         $this->activeRegister->update([
             'expected_cash' => $this->expected_cash,
             'expected_transfer' => $this->expected_transfer,
             'expected_card' => $this->expected_card,
-            'closing_cash' => $this->closing_cash,
-            'closing_transfer' => $this->closing_transfer,
-            'closing_card' => $this->closing_card,
+            'closing_cash' => (float)$this->closing_cash,
+            'closing_transfer' => (float)$this->closing_transfer,
+            'closing_card' => (float)$this->closing_card,
             'closing_balance' => $this->closing_balance,
             'expected_closing_balance' => $this->expected_closing_balance,
             'notes' => $this->closing_notes,
@@ -126,7 +148,7 @@ class ManageCashRegister extends Component
 
         $this->showCloseModal = false;
         $this->loadActiveRegister();
-        session()->flash('message', 'Caja cerrada exitosamente.');
+        session()->flash('message', 'Caja cerrada exitosamente con arqueo validado.');
     }
 
     public function render()

@@ -108,8 +108,18 @@ class ManageInventory extends Component
 
         $parts = $query->get();
 
+        $totalParts = Inventory::count();
+        $lowStockCount = Inventory::where('stock', '>', 0)->where('stock', '<', 5)->count();
+        $outOfStockCount = Inventory::where('stock', '<=', 0)->count();
+        $totalValuation = Inventory::all()->sum(fn($p) => $p->stock * $p->sale_price);
+
         return view('livewire.inventory.manage-inventory', [
             'parts' => $parts,
+            'totalParts' => $totalParts,
+            'lowStockCount' => $lowStockCount,
+            'outOfStockCount' => $outOfStockCount,
+            'totalValuation' => $totalValuation,
         ])->layout('layouts.app');
     }
+
 }

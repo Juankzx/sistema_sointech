@@ -8,6 +8,7 @@ use App\Models\Client;
 use App\Models\Inventory;
 use App\Models\WorkOrder;
 use App\Models\WorkOrderImage;
+use App\Services\ImageOptimizer;
 use App\Models\Setting;
 use App\Models\DeviceCatalog;
 use Illuminate\Support\Str;
@@ -47,7 +48,7 @@ class CreateWorkOrder extends Component
     public $down_payment = 0;
     public $payment_method = 'Efectivo';
     public $selected_parts = []; // array of ['id', 'name', 'sale_price', 'quantity']
-    
+
     // Legal & Images
     public $terms_accepted = false;
     public $signature_base64; // from canvas
@@ -66,7 +67,7 @@ class CreateWorkOrder extends Component
         'components.*.serial_number' => 'nullable|string',
         'components.*.remarks' => 'nullable|string',
     ];
-    
+
     public $initial_status = 'Ingresado';
 
     // Search Suggestions arrays
@@ -107,13 +108,61 @@ class CreateWorkOrder extends Component
         $this->foundDevices = [];
     }
 
+    public function addQuickTag($tag)
+    {
+        if (empty(trim($this->reported_issue))) {
+            $this->reported_issue = $tag;
+        } else {
+            if (!str_contains($this->reported_issue, $tag)) {
+                $this->reported_issue = rtrim($this->reported_issue, ' .,') . ', ' . $tag;
+            }
+        }
+    }
+
+    public function getQuickTagsProperty()
+    {
+        return match ($this->device_type) {
+            'smartphone', 'tablet' => [
+                '📱 Pantalla Rota / Táctil',
+                '🔋 Batería no rinde / Hinchada',
+                '⚡ No enciende / Apagado',
+                '🔌 Conector de Carga suelto',
+                '📷 Cámara / Cristal dañado',
+                '💧 Mojado / Contacto Líquido',
+                '🔊 Sin Sonido / Parlante',
+            ],
+            'notebook', 'desktop' => [
+                '💻 Formateo + Sistema Operativo',
+                '🧹 Mantenimiento + Pasta Térmica',
+                '💾 Cambio SSD / Sin Disco',
+                '🧠 Ampliación Memoria RAM',
+                '⚡ No enciende / Sin Video',
+                '🔋 Batería / Cargador dañado',
+                '🖥️ Pantalla / Bisagra rota',
+            ],
+            'console' => [
+                '🎮 Mantenimiento + Limpieza',
+                '🔌 Puerto HDMI / Sin Video',
+                '🔥 Sobrecalentamiento / Apagón',
+                '🕹️ Drift en Mandos / Joysticks',
+                '💿 Lector de Discos / No lee',
+            ],
+            default => [
+                '⚙️ Mantenimiento General',
+                '⚡ No enciende',
+                '🔌 Falla de Alimentación',
+                '🔍 Diagnóstico / Revisión',
+            ],
+        };
+    }
+
     public function updatedBrandModel()
     {
         if (strlen($this->brand_model) > 1) {
             $this->foundDevices = DeviceCatalog::where('device_type', $this->device_type)
-                ->where(function($q) {
+                ->where(function ($q) {
                     $q->where('brand', 'like', '%' . $this->brand_model . '%')
-                      ->orWhere('model', 'like', '%' . $this->brand_model . '%');
+                        ->orWhere('model', 'like', '%' . $this->brand_model . '%');
                 })
                 ->take(5)
                 ->get();
@@ -130,15 +179,16 @@ class CreateWorkOrder extends Component
 
     public function updatedSearchClient()
     {
-        if (strlen($this->searchClient) > 2) {
+        if (strlen($this->searchClient) >= 1) {
             $this->foundClients = Client::where('full_name', 'like', '%' . $this->searchClient . '%')
                 ->orWhere('rut_dni', 'like', '%' . $this->searchClient . '%')
                 ->orWhere('phone', 'like', '%' . $this->searchClient . '%')
-                ->take(5)->get();
+                ->take(6)->get();
         } else {
             $this->foundClients = [];
         }
     }
+
 
     public function selectClient($id)
     {
@@ -174,25 +224,52 @@ class CreateWorkOrder extends Component
         $this->foundClients = [];
     }
 
-    public function updatedBudgetType()
+    public function updatedInitialStatus($value)
     {
-        if ($this->budget_type === 'pending') {
+        if ($value === 'Aprobado') {
+            $this->budget_type = 'fixed';
+        } elseif (in_array($value, ['Ingresado', 'En Revisión'])) {
+            $this->budget_type = 'pending';
+            $this->labor_cost = 0;
+            $this->down_payment = 0;
+            $this->selected_parts = [];
+        } elseif ($value === 'Garantía') {
+            $this->budget_type = 'fixed';
             $this->labor_cost = 0;
             $this->down_payment = 0;
             $this->selected_parts = [];
         }
     }
 
+    public function updatedBudgetType($value)
+    {
+        if ($value === 'pending') {
+            $this->labor_cost = 0;
+            $this->down_payment = 0;
+            $this->selected_parts = [];
+            if ($this->initial_status === 'Aprobado') {
+                $this->initial_status = 'Ingresado';
+            }
+        } elseif ($value === 'fixed') {
+            if (in_array($this->initial_status, ['Ingresado', 'En Revisión'])) {
+                $this->initial_status = 'Aprobado';
+            }
+        }
+    }
+
+
+
     public function updatedSearchPart()
     {
-        if (strlen($this->searchPart) > 2) {
+        if (strlen($this->searchPart) >= 1) {
             $this->foundParts = Inventory::where('name', 'like', '%' . $this->searchPart . '%')
                 ->orWhere('category', 'like', '%' . $this->searchPart . '%')
-                ->take(5)->get();
+                ->take(6)->get();
         } else {
             $this->foundParts = [];
         }
     }
+
 
     public function addPart($id)
     {
@@ -236,10 +313,10 @@ class CreateWorkOrder extends Component
         if ($this->budget_type === 'pending') {
             return 0;
         }
-        $totalParts = collect($this->selected_parts)->sum(function($part) {
+        $totalParts = collect($this->selected_parts)->sum(function ($part) {
             return $part['sale_price'] * $part['quantity'];
         });
-        return $totalParts + (float)$this->labor_cost;
+        return $totalParts + (float) $this->labor_cost;
     }
 
     public function getBalanceProperty()
@@ -247,7 +324,7 @@ class CreateWorkOrder extends Component
         if ($this->budget_type === 'pending') {
             return 0;
         }
-        return $this->getTotalProperty() - (float)$this->down_payment;
+        return $this->getTotalProperty() - (float) $this->down_payment;
     }
 
     public function save()
@@ -259,7 +336,7 @@ class CreateWorkOrder extends Component
             'brand_model' => 'required|string',
             'reported_issue' => 'required|string',
             'terms_accepted' => 'accepted',
-            'signature_base64' => 'required|string',
+            'signature_base64' => 'nullable|string',
             'components.*.type' => 'required|in:cpu,gpu,ram,storage,psu,case,motherboard,cooler,mouse,keyboard,other',
         ]);
 
@@ -293,7 +370,7 @@ class CreateWorkOrder extends Component
             $image_type = $image_type_aux[1];
             $image_base64 = base64_decode($image_parts[1]);
             $signatureName = 'signatures/' . uniqid() . '.' . $image_type;
-            
+
             $publicPath = storage_path('app/public/signatures');
             if (!file_exists($publicPath)) {
                 mkdir($publicPath, 0755, true);
@@ -359,7 +436,7 @@ class CreateWorkOrder extends Component
         // Guardar fotos del estado inicial
         if (!empty($this->initialPhotos)) {
             foreach ($this->initialPhotos as $photo) {
-                $path = $photo->store('work_order_images', 'public');
+                $path = ImageOptimizer::optimizeAndStore($photo, 'work_order_images');
                 WorkOrderImage::create([
                     'work_order_id' => $workOrder->id,
                     'image_path' => $path,
@@ -388,7 +465,7 @@ class CreateWorkOrder extends Component
         if ($this->budget_type === 'pending') {
             $statusNotes .= ' Equipo ingresado con Presupuesto por Evaluar (Revisión de placa o limpieza requerida).';
         }
-        
+
         if ($this->initial_status === 'En Revisión') {
             $statusTitle = 'Ingreso Directo a Revisión';
             $statusNotes = 'El dispositivo ha sido recibido en recepción e ingresado directamente a revisión para su diagnóstico técnico inmediato.';
@@ -418,8 +495,36 @@ class CreateWorkOrder extends Component
                 // Descontar del stock de inventario
                 $inv = Inventory::find($part['id']);
                 if ($inv) {
-                    $inv->stock = $inv->stock - $part['quantity'];
-                    $inv->save();
+                    $inv->decrement('stock', (int)$part['quantity']);
+
+                    // Alerta de stock bajo al Administrador
+                    if ($inv->stock <= $inv->min_stock) {
+                        $settings = \App\Models\Setting::find(1);
+                        $adminEmail = $settings?->support_email ?: auth()->user()->email;
+                        if ((!$settings || $settings->notify_on_low_stock) && $adminEmail) {
+                            try {
+                                \App\Services\MailService::configureSmtp();
+                                \Illuminate\Support\Facades\Mail::to($adminEmail)
+                                    ->send(new \App\Mail\LowStockAlert($inv));
+                            } catch (\Exception $e) {
+                                \Illuminate\Support\Facades\Log::warning("No se pudo enviar alerta de stock bajo para {$inv->name}: " . $e->getMessage());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Enviar notificación por correo al cliente al crear la OT
+        if ($client->email) {
+            $settings = \App\Models\Setting::find(1);
+            if (!$settings || $settings->notify_on_ot_status) {
+                try {
+                    \App\Services\MailService::configureSmtp();
+                    \Illuminate\Support\Facades\Mail::to($client->email)
+                        ->send(new \App\Mail\WorkOrderStatusChanged($workOrder, $this->initial_status));
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::warning("No se pudo enviar correo de ingreso de OT #{$workOrder->id}: " . $e->getMessage());
                 }
             }
         }
@@ -482,11 +587,11 @@ class CreateWorkOrder extends Component
             if ($data && $data['status'] === 'signed' && !empty($data['signature_base64'])) {
                 $this->signature_base64 = $data['signature_base64'];
                 $this->terms_accepted = true;
-                
+
                 // Clean up token to stop polling and clear cache
                 $this->signature_token = null;
                 session()->flash('signature_success', '¡Firma recibida correctamente desde el celular del cliente!');
-                
+
                 // Dispatch browser event to draw signature preview on canvas
                 $this->dispatch('signature-loaded-from-mobile', signature: $this->signature_base64);
             }

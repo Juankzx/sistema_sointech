@@ -50,6 +50,24 @@ class ManageSettings extends Component
     public $favicon_path;
     public $new_favicon;
 
+    // SMTP & Email Notification Settings
+    public $smtp_host;
+    public $smtp_port = 587;
+    public $smtp_username;
+    public $smtp_password;
+    public $smtp_encryption = 'tls';
+    public $smtp_from_address;
+    public $smtp_from_name;
+    public $notify_on_ot_status = true;
+    public $notify_on_low_stock = true;
+    public $test_email_recipient = '';
+
+    // Email Templates Settings
+    public $email_ot_subject;
+    public $email_ot_body;
+    public $email_low_stock_subject;
+    public $email_low_stock_body;
+
     public $activeTab = 'general';
 
     protected $paginationTheme = 'tailwind';
@@ -81,6 +99,24 @@ class ManageSettings extends Component
             
             $this->logo_path = $settings->logo_path;
             $this->favicon_path = $settings->favicon_path;
+
+            // SMTP Settings
+            $this->smtp_host = $settings->smtp_host;
+            $this->smtp_port = $settings->smtp_port ?? 587;
+            $this->smtp_username = $settings->smtp_username;
+            $this->smtp_password = $settings->smtp_password;
+            $this->smtp_encryption = $settings->smtp_encryption ?? 'tls';
+            $this->smtp_from_address = $settings->smtp_from_address ?: $settings->support_email;
+            $this->smtp_from_name = $settings->smtp_from_name ?: $settings->trade_name;
+            $this->notify_on_ot_status = (bool)($settings->notify_on_ot_status ?? true);
+            $this->notify_on_low_stock = (bool)($settings->notify_on_low_stock ?? true);
+            $this->test_email_recipient = $settings->support_email ?: auth()->user()->email;
+
+            // Email Templates
+            $this->email_ot_subject = $settings->email_ot_subject ?: '📌 Actualización de tu Orden de Trabajo #{codigo_ot} [{nuevo_estado}]';
+            $this->email_ot_body = $settings->email_ot_body ?: "Hola {nombre_cliente},\n\nTe informamos que tu orden de trabajo #{codigo_ot} para el equipo {equipo} ha cambiado al estado: {nuevo_estado}.\n\nPuedes consultar el avance detallado en tiempo real ingresando al enlace de seguimiento en vivo.";
+            $this->email_low_stock_subject = $settings->email_low_stock_subject ?: '⚠️ Alerta de Inventario: Stock Bajo en [{producto}]';
+            $this->email_low_stock_body = $settings->email_low_stock_body ?: "Estimado equipo,\n\nSe ha detectado que el producto/repuesto {producto} ha alcanzado su nivel crítico de inventario.\n\nStock actual: {stock_actual} unidades (Mínimo requerido: {stock_minimo} unidades).\n\nRecomendamos gestionar el reabastecimiento con los proveedores a la brevedad.";
         }
     }
 
@@ -180,6 +216,105 @@ class ManageSettings extends Component
             
             session()->flash('message', 'Configuración de Empresa actualizada correctamente.');
             $this->redirect(route('settings.index'));
+        }
+    }
+
+    public function saveSmtpSettings()
+    {
+        $this->validate([
+            'smtp_host' => 'nullable|string|max:255',
+            'smtp_port' => 'nullable|numeric|min:1|max:65535',
+            'smtp_username' => 'nullable|string|max:255',
+            'smtp_password' => 'nullable|string|max:255',
+            'smtp_encryption' => 'nullable|in:tls,ssl,null',
+            'smtp_from_address' => 'nullable|email|max:255',
+            'smtp_from_name' => 'nullable|string|max:255',
+            'notify_on_ot_status' => 'boolean',
+            'notify_on_low_stock' => 'boolean',
+        ]);
+
+        $settings = Setting::find(1);
+        if ($settings) {
+            $settings->update([
+                'smtp_host' => $this->smtp_host,
+                'smtp_port' => $this->smtp_port ?: 587,
+                'smtp_username' => $this->smtp_username,
+                'smtp_password' => $this->smtp_password,
+                'smtp_encryption' => $this->smtp_encryption ?: 'tls',
+                'smtp_from_address' => $this->smtp_from_address,
+                'smtp_from_name' => $this->smtp_from_name,
+                'notify_on_ot_status' => $this->notify_on_ot_status,
+                'notify_on_low_stock' => $this->notify_on_low_stock,
+            ]);
+
+            session()->flash('message', 'Configuración del Servidor SMTP y Notificaciones actualizada correctamente.');
+        }
+    }
+
+    public function saveEmailTemplates()
+    {
+        $this->validate([
+            'email_ot_subject' => 'required|string|max:255',
+            'email_ot_body' => 'required|string|max:2000',
+            'email_low_stock_subject' => 'required|string|max:255',
+            'email_low_stock_body' => 'required|string|max:2000',
+        ]);
+
+        $settings = Setting::find(1);
+        if ($settings) {
+            $settings->update([
+                'email_ot_subject' => $this->email_ot_subject,
+                'email_ot_body' => $this->email_ot_body,
+                'email_low_stock_subject' => $this->email_low_stock_subject,
+                'email_low_stock_body' => $this->email_low_stock_body,
+            ]);
+
+            session()->flash('message', 'Plantillas de correo electrónico actualizadas correctamente.');
+        }
+    }
+
+    public function resetEmailTemplate($type)
+    {
+        if ($type === 'ot') {
+            $this->email_ot_subject = '📌 Actualización de tu Orden de Trabajo #{codigo_ot} [{nuevo_estado}]';
+            $this->email_ot_body = "Hola {nombre_cliente},\n\nTe informamos que tu orden de trabajo #{codigo_ot} para el equipo {equipo} ha cambiado al estado: {nuevo_estado}.\n\nPuedes consultar el avance detallado en tiempo real ingresando al enlace de seguimiento en vivo.";
+        } elseif ($type === 'low_stock') {
+            $this->email_low_stock_subject = '⚠️ Alerta de Inventario: Stock Bajo en [{producto}]';
+            $this->email_low_stock_body = "Estimado equipo,\n\nSe ha detectado que el producto/repuesto {producto} ha alcanzado su nivel crítico de inventario.\n\nStock actual: {stock_actual} unidades (Mínimo requerido: {stock_minimo} unidades).\n\nRecomendamos gestionar el reabastecimiento con los proveedores a la brevedad.";
+        }
+
+        $this->saveEmailTemplates();
+        session()->flash('message', 'Plantilla restablecida a sus valores por defecto.');
+    }
+
+    public function sendTestEmail()
+    {
+        $this->validate([
+            'test_email_recipient' => 'required|email',
+        ], [
+            'test_email_recipient.required' => 'Ingresa un correo electrónico para realizar la prueba.',
+            'test_email_recipient.email' => 'El formato del correo de prueba no es válido.',
+        ]);
+
+        // Guardar configuración actual primero
+        $this->saveSmtpSettings();
+
+        // Configurar SMTP dinámico
+        $configured = \App\Services\MailService::configureSmtp();
+
+        if (!$configured) {
+            session()->flash('error', '⚠️ No se puede realizar la prueba. Por favor completa los campos de Servidor SMTP (Host, Puerto, Usuario y Clave).');
+            return;
+        }
+
+        try {
+            \Illuminate\Support\Facades\Mail::to($this->test_email_recipient)
+                ->send(new \App\Mail\TestMail($this->test_email_recipient));
+
+            session()->flash('message', "✅ ¡Correo de prueba enviado exitosamente a {$this->test_email_recipient}! Revisa tu bandeja de entrada o spam.");
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Error al enviar correo de prueba SMTP: " . $e->getMessage());
+            session()->flash('error', "❌ Falló el envío del correo de prueba: " . $e->getMessage());
         }
     }
 

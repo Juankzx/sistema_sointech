@@ -16,14 +16,25 @@ use App\Livewire\Users\ManageUsers;
 use App\Livewire\CashRegisters\ManageCashRegister;
 use App\Livewire\Pos\PointOfSale;
 use App\Livewire\Pos\SalesHistory;
+use App\Livewire\Quotations\ListQuotations;
+use App\Livewire\Quotations\CreateQuotation;
+use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\PrintController;
+use App\Http\Controllers\ReportController;
 
-// Public Client Tracking Route
-Route::get('/seguimiento/{uuid}', TrackWorkOrder::class)->name('work-orders.track');
-Route::get('/firmar/{token}', \App\Livewire\Public\ClientSignature::class)->name('client.signature');
+// Public Client Tracking Routes (Protected against automated scanning)
+Route::middleware('throttle:public-tracking')->group(function () {
+    Route::get('/seguimiento/{uuid}', TrackWorkOrder::class)->name('work-orders.track');
+    Route::get('/ot/track/{uuid}', function ($uuid) {
+        return redirect()->route('work-orders.track', ['uuid' => $uuid]);
+    });
+});
+Route::middleware('throttle:client-signature')->group(function () {
+    Route::get('/firmar/{token}', \App\Livewire\Public\ClientSignature::class)->name('client.signature');
+});
 
-// Guest Routes
-Route::middleware('guest')->group(function () {
+// Guest Routes (Protected with Anti-Brute-Force Rate Limiting)
+Route::middleware(['guest', 'throttle:login'])->group(function () {
     Route::get('/login', Login::class)->name('login');
     Route::get('/register', Register::class)->name('register');
     
@@ -43,6 +54,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/nueva-ot', CreateWorkOrder::class)->name('work-orders.create');
         Route::get('/ordenes-trabajo', ListWorkOrders::class)->name('work-orders.index');
 
+        // Cotizaciones Rápidas
+        Route::get('/cotizaciones', ListQuotations::class)->name('quotations.index');
+        Route::get('/cotizaciones/nueva', CreateQuotation::class)->name('quotations.create');
+        Route::get('/cotizaciones/{id}/editar', CreateQuotation::class)->name('quotations.edit');
+
         // Finanzas
         Route::get('/finanzas/dashboard', \App\Livewire\Finance\Dashboard::class)->name('finance.dashboard');
         Route::get('/finanzas/libro-ventas', \App\Livewire\Finance\SalesBook::class)->name('finance.sales-book');
@@ -53,12 +69,18 @@ Route::middleware('auth')->group(function () {
         Route::get('/inventario', ManageInventory::class)->name('inventory.index');
         Route::get('/configuracion', ManageSettings::class)->name('settings.index');
         Route::get('/reportes', \App\Livewire\Reports\Dashboard::class)->name('reports.index');
+        Route::get('/reportes/pdf', [ReportController::class, 'downloadPdf'])->name('reports.pdf');
     });
     Route::get('/usuarios', ManageUsers::class)->name('users.index')->middleware('role:admin');
 
     Route::get('/caja/{id}/print', [PrintController::class, 'cashRegister'])->name('caja.print');
     Route::get('/ot/{id}/print', [PrintController::class, 'workOrder'])->name('ot.print');
     Route::get('/ot/{id}/print-payment/{payment_id}', [PrintController::class, 'payment'])->name('ot.print-payment');
+    Route::get('/pos/sale/{id}/print', [PrintController::class, 'sale'])->name('sales.print');
+    
+    // Cotizaciones PDF & Impresión
+    Route::get('/cotizaciones/{id}/print', [QuotationController::class, 'print'])->name('quotations.print');
+    Route::get('/cotizaciones/{id}/download', [QuotationController::class, 'downloadPdf'])->name('quotations.download');
 
     Route::get('/logout', function () {
         Auth::logout();

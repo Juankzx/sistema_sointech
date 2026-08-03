@@ -64,26 +64,37 @@
     </div>
 
     @php
-        $partsCost = $order->parts->sum(function($p) {
+        $quotation = \App\Models\Quotation::where('work_order_id', $order->id)->with('items')->first();
+        $partsCost = $order->parts ? $order->parts->sum(function($p) {
             return $p->pivot->price_at_time * $p->pivot->quantity;
-        });
+        }) : 0;
         $totalCost = (float)$order->labor_cost + $partsCost;
         $balanceDue = $totalCost - (float)$order->down_payment;
     @endphp
 
-    <div class="font-bold border-b uppercase mb-2 mt-4">DETALLE DEL SERVICIO</div>
-    @if($order->labor_cost > 0)
-    <div class="flex">
-        <span>Servicio Técnico:</span>
-        <span>${{ number_format($order->labor_cost, 0, ',', '.') }}</span>
-    </div>
+    <div class="font-bold border-b uppercase mb-2 mt-4">DETALLE DEL SERVICIO Y REPUESTOS</div>
+    
+    @if($quotation && $quotation->items && $quotation->items->count() > 0)
+        @foreach($quotation->items as $item)
+        <div class="flex" style="margin-bottom: 3px;">
+            <span style="max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">• {{ $item->description }} (x{{ $item->quantity }})</span>
+            <span>${{ number_format($item->subtotal, 0, ',', '.') }}</span>
+        </div>
+        @endforeach
+    @else
+        @if($order->labor_cost > 0)
+        <div class="flex">
+            <span>Servicio Técnico:</span>
+            <span>${{ number_format($order->labor_cost, 0, ',', '.') }}</span>
+        </div>
+        @endif
+        @foreach($order->parts as $part)
+        <div class="flex">
+            <span style="max-width: 65%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ $part->name }} (x{{ $part->pivot->quantity }})</span>
+            <span>${{ number_format($part->pivot->price_at_time * $part->pivot->quantity, 0, ',', '.') }}</span>
+        </div>
+        @endforeach
     @endif
-    @foreach($order->parts as $part)
-    <div class="flex">
-        <span style="max-width: 65%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ $part->name }} (x{{ $part->pivot->quantity }})</span>
-        <span>${{ number_format($part->pivot->price_at_time * $part->pivot->quantity, 0, ',', '.') }}</span>
-    </div>
-    @endforeach
     
     <div class="border-b mt-2 mb-2"></div>
     

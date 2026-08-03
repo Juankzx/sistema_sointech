@@ -65,6 +65,9 @@ class PointOfSale extends Component
             $this->taxRate = $setting->tax_rate;
         }
 
+        // Cargar productos por defecto (últimos ingresados con stock)
+        $this->foundProducts = Inventory::where('stock', '>', 0)->latest()->limit(12)->get()->toArray();
+
         // Si se recibe una OT por URL, cargarla en el carrito
         if ($this->ot_id) {
             $ot = WorkOrder::with('client')->find($this->ot_id);
@@ -104,23 +107,40 @@ class PointOfSale extends Component
 
     public function loadActiveRegister()
     {
-        $this->activeRegister = CashRegister::where('status', 'open')->first();
+        // Cierre automático de cajas no cerradas de días anteriores
+        CashRegister::where('status', 'open')
+            ->whereDate('opened_at', '<', \Carbon\Carbon::today())
+            ->update([
+                'status' => 'closed',
+                'closed_at' => \Carbon\Carbon::now(),
+                'notes' => 'Cierre automático por cambio de fecha'
+            ]);
+
+        $this->activeRegister = CashRegister::where('status', 'open')
+            ->whereDate('opened_at', \Carbon\Carbon::today())
+            ->first();
     }
 
-
-
-    public function updatedSearch()
+    public function loadProducts()
     {
-        if (strlen($this->search) > 2) {
-            $this->foundProducts = Inventory::where('name', 'like', '%' . $this->search . '%')
-                ->orWhere('category', 'like', '%' . $this->search . '%')
+        if (strlen($this->search) >= 1) {
+            $this->foundProducts = Inventory::where(function($q) {
+                    $q->where('name', 'like', '%' . $this->search . '%')
+                      ->orWhere('category', 'like', '%' . $this->search . '%')
+                      ->orWhere('sku', 'like', '%' . $this->search . '%');
+                })
                 ->where('stock', '>', 0)
-                ->limit(10)
+                ->limit(12)
                 ->get()
                 ->toArray();
         } else {
-            $this->foundProducts = [];
+            $this->foundProducts = Inventory::where('stock', '>', 0)->latest()->limit(12)->get()->toArray();
         }
+    }
+
+    public function updatedSearch()
+    {
+        $this->loadProducts();
     }
 
     public function updatedClientMode()
@@ -144,10 +164,11 @@ class PointOfSale extends Component
 
     public function updatedSearchClient()
     {
-        if (strlen($this->searchClient) > 2) {
+        if (strlen($this->searchClient) >= 1) {
             $this->foundClients = \App\Models\Client::where('full_name', 'like', '%' . $this->searchClient . '%')
                 ->orWhere('rut_dni', 'like', '%' . $this->searchClient . '%')
                 ->orWhere('phone', 'like', '%' . $this->searchClient . '%')
+
                 ->limit(5)
                 ->get()
                 ->toArray();
@@ -202,7 +223,7 @@ class PointOfSale extends Component
         }
 
         $this->search = '';
-        $this->foundProducts = [];
+        $this->loadProducts();
     }
 
     public function removeFromCart($index)
@@ -287,7 +308,9 @@ class PointOfSale extends Component
         }
 
         // Re-check cash register
-        $activeRegister = CashRegister::where('status', 'open')->first();
+        $activeRegister = CashRegister::where('status', 'open')
+            ->whereDate('opened_at', \Carbon\Carbon::today())
+            ->first();
         if (!$activeRegister) {
             session()->flash('error', '⚠️ La caja diaria está cerrada. Debes abrir la caja antes de procesar una venta.');
             $this->loadActiveRegister();
@@ -318,22 +341,23 @@ class PointOfSale extends Component
 
             foreach ($this->cart as $item) {
                 if (isset($item['is_ot']) && $item['is_ot']) {
-                    // Es un pago de OT
+                    // Es un pago / abono de OT
                     $ot = WorkOrder::find($item['ot_id']);
                     if ($ot) {
                         $workOrderId = $ot->id;
-                        
-                        // Añadir un log a la OT de que fue pagada/facturada por POS
+                        $itemPaidAmount = (float)($item['price'] * ($item['quantity'] ?? 1));
+
+                        // Actualizar abono acumulado en la Orden de Trabajo
+                        $ot->down_payment += $itemPaidAmount;
+                        $ot->save();
+
+                        // Registrar log en la OT
                         $ot->logs()->create([
-                            'title' => 'Pago por POS',
-                            'notes' => "Pago de $" . number_format($item['price'], 0, ',', '.') . " registrado desde el Punto de Venta (Venta UUID: {$sale->uuid}).",
-                            'status' => $ot->status, // mantiene el estado, luego lo cambiamos abajo si corresponde
+                            'title' => 'Abono / Pago por POS',
+                            'notes' => "Abono / Pago de $" . number_format($itemPaidAmount, 0, ',', '.') . " registrado exitosamente desde el Punto de Venta.",
+                            'status' => $ot->status,
                             'user_id' => auth()->id(),
                         ]);
-
-                        // Verificar si el pago cubre el total o si es parcial (Asumiremos que este pago del POS cubre lo que se puso en el carrito)
-                        // Para simplificar, si está en estado 'Listo para Entrega' o se está pagando algo, lo pasaremos a 'Entregado' si el saldo queda en 0
-                        // En la lógica real, el payment que se creará abajo afectará el balance
                     }
                 } else {
                     // Es un producto normal, actualizar stock
@@ -349,8 +373,7 @@ class PointOfSale extends Component
 
                     $product = Inventory::find($item['id']);
                     if ($product) {
-                        $product->stock -= $item['quantity'];
-                        $product->save();
+                        $product->decrement('stock', (int)($item['quantity'] ?? 1));
                     }
                 }
             }

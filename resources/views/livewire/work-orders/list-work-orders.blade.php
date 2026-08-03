@@ -14,6 +14,70 @@
         @endif
     </div>
 
+    <!-- TOP FINANCIAL METRICS CARDS -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {{-- Tarjeta 1: Saldos por Cobrar --}}
+        <div wire:click="$toggle('hasPendingBalanceFilter')" 
+            class="p-4 rounded-2xl border transition duration-200 cursor-pointer flex items-center justify-between group
+                {{ $hasPendingBalanceFilter ? 'bg-red-950/40 border-red-500/60 shadow-lg shadow-red-500/10' : 'bg-gray-850 border-gray-800 hover:border-gray-700' }}">
+            <div class="space-y-1">
+                <span class="text-[10px] font-black uppercase tracking-widest text-red-400 block">
+                    🔴 Por Cobrar (Cuentas Pendientes)
+                </span>
+                <div class="text-xl font-black text-white">
+                    ${{ number_format($totalPendingReceivables, 0, ',', '.') }}
+                </div>
+                <span class="text-[11px] text-gray-400 block">
+                    {{ $pendingCount }} {{ $pendingCount === 1 ? 'orden' : 'órdenes' }} con saldo por cobrar
+                </span>
+            </div>
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                style="background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.2);">
+                <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+        </div>
+
+        {{-- Tarjeta 2: Recaudación por Abonos --}}
+        <div class="p-4 rounded-2xl bg-gray-850 border border-gray-800 flex items-center justify-between">
+            <div class="space-y-1">
+                <span class="text-[10px] font-black uppercase tracking-widest text-emerald-400 block">
+                    🟢 Total Recaudado (Abonos)
+                </span>
+                <div class="text-xl font-black text-white">
+                    ${{ number_format($totalCollected, 0, ',', '.') }}
+                </div>
+                <span class="text-[11px] text-gray-400 block">Ingresos ingresados a caja</span>
+            </div>
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                style="background:rgba(16,185,129,.1); border:1px solid rgba(16,185,129,.2);">
+                <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+        </div>
+
+        {{-- Tarjeta 3: Total Registros --}}
+        <div class="p-4 rounded-2xl bg-gray-850 border border-gray-800 flex items-center justify-between">
+            <div class="space-y-1">
+                <span class="text-[10px] font-black uppercase tracking-widest text-blue-400 block">
+                    📋 Órdenes en Sistema
+                </span>
+                <div class="text-xl font-black text-white">
+                    {{ count($workOrders) }}
+                </div>
+                <span class="text-[11px] text-gray-400 block">Mostrando según filtros aplicados</span>
+            </div>
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                style="background:rgba(59,130,246,.1); border:1px solid rgba(59,130,246,.2);">
+                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
     <!-- FILTER BAR (SEARCH & STATUS PILLS) -->
     <div class="bg-gray-850 p-5 rounded-3xl border border-gray-800 shadow-md space-y-4">
         <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
@@ -61,8 +125,11 @@
         <!-- Status Filter Pills -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2 border-t border-gray-800/60">
             <div class="flex flex-wrap gap-2">
-                <button wire:click="$set('statusFilter', '')" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition border {{ $statusFilter === '' ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-500/10' : 'bg-gray-900 text-gray-400 border-gray-700/60 hover:text-white' }}">
+                <button wire:click="$set('statusFilter', '')" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition border {{ $statusFilter === '' && !$hasPendingBalanceFilter ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-500/10' : 'bg-gray-900 text-gray-400 border-gray-700/60 hover:text-white' }}">
                     Todos
+                </button>
+                <button wire:click="$toggle('hasPendingBalanceFilter')" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition border cursor-pointer {{ $hasPendingBalanceFilter ? 'bg-red-600 text-white border-red-500 shadow-md shadow-red-500/20' : 'bg-gray-900 text-red-400 border-red-900/60 hover:bg-red-950/40' }}">
+                    🔴 Con Saldo Pendiente ({{ $pendingCount }})
                 </button>
                 <button wire:click="$set('statusFilter', 'Ingresado')" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition border {{ $statusFilter === 'Ingresado' ? 'bg-gray-700 text-white border-gray-600 shadow-md' : 'bg-gray-900 text-gray-400 border-gray-700/60 hover:text-white' }}">
                     Ingresados
@@ -80,6 +147,7 @@
                     Entregados
                 </button>
             </div>
+
             
             <div class="flex items-center gap-2 pr-2">
                 <label class="flex items-center cursor-pointer">
@@ -128,7 +196,7 @@
                             <td class="px-3 py-3">
                                 <div class="flex flex-col">
                                     <span class="text-white font-medium text-xs">{{ $order->brand_model }}</span>
-                                    <span class="text-[10px] text-gray-500 font-mono">{{ $order->device_type }} @if($order->imei_serial) • {{ $order->imei_serial }} @endif</span>
+                                    <span class="text-[10px] text-gray-400 font-medium">{{ $order->device_type_label }} @if($order->imei_serial) • {{ $order->imei_serial }} @endif</span>
                                 </div>
                             </td>
                             <!-- Status -->
@@ -152,16 +220,35 @@
                                 </span>
                             </td>
                             <!-- Finanzas -->
-                            <td class="px-3 py-3">
-                                <div class="flex flex-col">
-                                    <span class="font-semibold text-white text-xs" title="Mano de Obra">MO: ${{ number_format($order->labor_cost, 0, ',', '.') }}</span>
-                                    @if($order->down_payment > 0)
-                                        <span class="text-[10px] font-semibold text-emerald-400" title="Abono">Ab: ${{ number_format($order->down_payment, 0, ',', '.') }}</span>
-                                    @else
-                                        <span class="text-[10px] text-gray-500 font-normal">Sin abono</span>
-                                    @endif
-                                </div>
-                            </td>
+                             <td class="px-3 py-3">
+                                 @php
+                                     $totalCostTable = $order->calculated_total;
+                                     $balanceTable   = $order->pending_balance;
+                                 @endphp
+                                 <div class="flex flex-col gap-0.5">
+                                     @if($totalCostTable > 0)
+                                         <span class="font-bold text-white text-xs" title="Presupuesto Total">
+                                             Total: ${{ number_format($totalCostTable, 0, ',', '.') }}
+                                         </span>
+                                     @endif
+                                     @if($order->down_payment > 0)
+                                         <span class="text-[10px] text-emerald-400 font-semibold">
+                                             Abonado: ${{ number_format($order->down_payment, 0, ',', '.') }}
+                                         </span>
+                                     @else
+                                         <span class="text-[10px] text-gray-500 font-normal">
+                                             Sin Abono
+                                         </span>
+                                     @endif
+
+                                     @php
+                                          $finBadge = $order->financial_status_badge;
+                                      @endphp
+                                      <span class="inline-flex items-center text-[10px] font-black border px-2 py-0.5 rounded-lg w-fit mt-0.5 {{ $finBadge['class'] }}">
+                                          {{ $finBadge['label'] }}
+                                      </span>
+                                 </div>
+                             </td>
                             <!-- Fechas / Gar. -->
                             <td class="px-3 py-3">
                                 <div class="flex flex-col gap-0.5 items-start">
@@ -555,17 +642,27 @@
                                         <span class="text-gray-500">Repuestos</span>
                                         <span class="text-white font-semibold">${{ number_format($partsCost, 0, ',', '.') }}</span>
                                     </div>
-                                    <div class="flex justify-between border-t border-gray-800/50 pt-2 font-bold">
-                                        <span class="text-gray-300">Costo Total</span>
-                                        <span class="text-white">${{ number_format($totalCost, 0, ',', '.') }}</span>
-                                    </div>
+                                    @if($totalCost > 0)
+                                        <div class="flex justify-between border-t border-gray-800/50 pt-2 font-bold">
+                                            <span class="text-gray-300">Costo Total</span>
+                                            <span class="text-white">${{ number_format($totalCost, 0, ',', '.') }}</span>
+                                        </div>
+                                    @endif
                                     <div class="flex justify-between text-emerald-400 font-semibold border-b border-gray-800/50 pb-2">
                                         <span>Abonado</span>
-                                        <span>-${{ number_format($managingOrder->down_payment, 0, ',', '.') }}</span>
+                                        @if($managingOrder->down_payment > 0)
+                                            <span>${{ number_format($managingOrder->down_payment, 0, ',', '.') }}</span>
+                                        @else
+                                            <span class="text-gray-500 font-normal">Sin Abono</span>
+                                        @endif
                                     </div>
                                     <div class="flex justify-between items-center pt-1">
                                         <span class="text-gray-400 font-semibold">Pendiente</span>
-                                        @if($balanceDue > 0)
+                                        @if($totalCost <= 0)
+                                            <span class="px-2.5 py-1 bg-amber-950/40 border border-amber-500/20 text-amber-400 rounded-lg font-black text-sm">
+                                                Por Evaluar
+                                            </span>
+                                        @elseif($balanceDue > 0)
                                             <span class="px-2.5 py-1 bg-red-950/40 border border-red-500/20 text-red-400 rounded-lg font-black text-sm">
                                                 ${{ number_format($balanceDue, 0, ',', '.') }}
                                             </span>
@@ -586,7 +683,7 @@
                                     <div>
                                         <span class="text-[10px] text-gray-500 uppercase tracking-wider block">Equipo</span>
                                         <span class="text-white font-bold text-sm">{{ $managingOrder->brand_model }}</span>
-                                        <span class="text-gray-400 block text-[10px] font-mono mt-0.5">{{ $managingOrder->device_type }}</span>
+                                        <span class="text-gray-400 block text-[10px] font-medium mt-0.5">{{ $managingOrder->device_type_label }}</span>
                                     </div>
                                     
                                     @if($managingOrder->imei_serial)
@@ -773,28 +870,54 @@
                                                 $isLocked = in_array($managingOrder->status, ['Presupuestado', 'Aprobado', 'En Reparación', 'Listo para Entrega', 'Entregado', 'Rechazado']) && !$forceEditBudget;
                                             @endphp
                                             
-                                            <!-- Asignar Técnico -->
+                                            <!-- PASO 1: Asignar Técnico -->
                                             @if(auth()->user()->isAdmin())
-                                            <div class="space-y-1.5 bg-gray-900/50 p-4 rounded-xl border border-gray-800">
-                                                <div class="flex justify-between items-center mb-2">
-                                                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Técnico Responsable</label>
+                                            @php
+                                                $isDelivered = $managingOrder->status === 'Entregado';
+                                            @endphp
+                                            <div class="space-y-1.5 p-4 rounded-2xl" style="background:#111827; border:1.5px solid #1f2937;">
+                                                <div class="flex justify-between items-center mb-1">
+                                                    <label class="block text-xs font-black text-teal-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                        <span class="w-5 h-5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 flex items-center justify-center text-[10px]">1</span>
+                                                        Técnico Responsable
+                                                    </label>
+                                                    @if($isDelivered)
+                                                        <span class="text-[10px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-lg flex items-center gap-1">
+                                                            🔒 Métrica Congelada al Entregar
+                                                        </span>
+                                                    @endif
                                                 </div>
-                                                <select wire:model.live="managingTechnicianId" wire:change="assignTechnician" {{ $isLocked ? 'disabled' : '' }} class="w-full bg-gray-900 border border-gray-700 rounded-xl py-2 px-3 text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition cursor-pointer {{ $isLocked ? 'opacity-70 cursor-not-allowed' : '' }}">
+                                                <select wire:model.live="managingTechnicianId" wire:change="assignTechnician"
+                                                    {{ $isDelivered ? 'disabled' : '' }}
+                                                    class="w-full rounded-xl py-2.5 px-3 text-white text-xs font-medium focus:outline-none transition {{ $isDelivered ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer' }}"
+                                                    style="background:#0d1117; border:1px solid #1f2937;">
                                                     <option value="">-- Sin Asignar --</option>
                                                     @foreach($technicians as $tech)
                                                         <option value="{{ $tech->id }}">{{ $tech->name }}</option>
                                                     @endforeach
                                                 </select>
-                                                <p class="text-[10px] text-gray-500 mt-1">Se guarda automáticamente al seleccionar.</p>
+
+                                                @if($isDelivered)
+                                                    <p class="text-[10px] text-amber-400/80 mt-1">
+                                                        No se puede cambiar el técnico asignado a una orden en estado Entregado (métrica fija para reportes y comisiones).
+                                                    </p>
+                                                @else
+                                                    <p class="text-[10px] text-gray-500 mt-1">Se guarda automáticamente al seleccionar.</p>
+                                                @endif
                                             </div>
                                             @endif
 
-                                            <!-- Diagnostic Notes -->
-                                            <div class="space-y-1.5">
-                                                <div class="flex justify-between items-center">
-                                                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Diagnóstico Técnico del Dispositivo *</label>
+
+
+                                            <!-- PASO 2: Diagnostic Notes -->
+                                            <div class="space-y-1.5 p-4 rounded-2xl" style="background:#111827; border:1.5px solid #1f2937;">
+                                                <div class="flex justify-between items-center mb-1">
+                                                    <label class="block text-xs font-black text-teal-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                        <span class="w-5 h-5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 flex items-center justify-center text-[10px]">2</span>
+                                                        Diagnóstico Técnico del Dispositivo *
+                                                    </label>
                                                     @if($isLocked && $managingOrder->status === 'Presupuestado')
-                                                        <button type="button" wire:click="unlockBudgetEditing" class="text-[10px] text-orange-400 hover:text-orange-300 font-bold px-2 py-1 border border-orange-500/30 rounded bg-orange-950/30 transition">
+                                                        <button type="button" wire:click="unlockBudgetEditing" class="text-[10px] text-amber-400 hover:text-amber-300 font-bold px-2 py-1 border border-amber-500/30 rounded-lg bg-amber-950/30 transition">
                                                             ✏️ Desbloquear Edición
                                                         </button>
                                                     @endif
@@ -803,39 +926,87 @@
                                                     wire:model="editingDiagnosticNotes" 
                                                     rows="3" 
                                                     {{ $isLocked ? 'disabled' : '' }}
-                                                    class="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition text-xs leading-relaxed {{ $isLocked ? 'opacity-70 cursor-not-allowed' : '' }}" 
-                                                    placeholder="Describe la falla, componentes a cambiar y la solución técnica requerida..."
+                                                    class="w-full rounded-xl p-3 text-white placeholder-gray-600 focus:outline-none transition text-xs leading-relaxed {{ $isLocked ? 'opacity-70 cursor-not-allowed' : '' }}"
+                                                    style="background:#0d1117; border:1px solid #1f2937;"
+                                                    placeholder="Describe en detalle la falla encontrada, repuestos requeridos y la solución técnica..."
                                                     required
                                                 ></textarea>
                                                 @error('editingDiagnosticNotes') <span class="text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
                                             </div>
 
-                                            <!-- Parts Search and Catalog -->
+                                            <!-- PASO 3: Parts Search and Catalog -->
                                             @if(!$isLocked)
-                                            <div class="space-y-1.5 relative">
-                                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Añadir Repuestos del Inventario</label>
+                                            <div class="space-y-1.5 p-4 rounded-2xl relative" style="background:#111827; border:1.5px solid #1f2937;">
+                                                <label class="block text-xs font-black text-teal-400 uppercase tracking-widest flex items-center gap-1.5 mb-1">
+                                                    <span class="w-5 h-5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 flex items-center justify-center text-[10px]">3</span>
+                                                    Añadir Repuestos del Inventario
+                                                </label>
                                                 <div class="relative">
-                                                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
-                                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                                                    </span>
                                                     <input 
                                                         type="text" 
-                                                        wire:model.live.debounce.300ms="editingSearchPart" 
-                                                        class="w-full bg-gray-900 border border-gray-700 rounded-xl py-2.5 pl-9 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition text-xs" 
+                                                        wire:model.live.debounce.150ms="editingSearchPart" 
+                                                        class="w-full rounded-xl py-2.5 px-3.5 text-white placeholder-gray-600 focus:outline-none transition text-xs font-medium"
+                                                        style="background:#0d1117; border:1px solid #1f2937;"
                                                         placeholder="Buscar repuesto por nombre o categoría..."
+                                                        autocomplete="off"
+                                                        onfocus="this.style.borderColor='#00C6B6';"
+                                                        onblur="this.style.borderColor='#1f2937';"
                                                     >
+
+                                                    @if(strlen($editingSearchPart) > 0 && count($editingFoundParts) === 0)
+                                                        <div class="absolute right-3 top-1/2 -translate-y-1/2">
+                                                            <svg class="w-3.5 h-3.5 animate-spin text-gray-500" fill="none" viewBox="0 0 24 24">
+                                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                                            </svg>
+                                                        </div>
+                                                    @endif
                                                 </div>
                                                 
                                                 @if(count($editingFoundParts) > 0)
-                                                    <div class="absolute z-25 w-full mt-1 bg-gray-900 border border-gray-800 rounded-xl shadow-2xl overflow-hidden max-h-48 overflow-y-auto">
-                                                        <ul>
+                                                    <div class="absolute z-30 w-full left-0 right-0 mt-1 overflow-hidden rounded-xl shadow-2xl"
+                                                        style="background:#0d1117; border:1.5px solid #1f2937;">
+                                                        <div class="px-3 py-1.5 flex items-center justify-between border-b border-gray-800">
+                                                            <span class="text-[10px] font-bold text-gray-500 uppercase">
+                                                                {{ count($editingFoundParts) }} repuesto(s) encontrado(s)
+                                                            </span>
+                                                            <span class="text-[9.5px] text-gray-600">Clic para añadir</span>
+                                                        </div>
+                                                        <ul class="max-h-48 overflow-y-auto custom-scrollbar">
                                                             @foreach($editingFoundParts as $part)
-                                                                <li wire:click="addEditingPart({{ $part->id }})" class="p-3 hover:bg-gray-800 cursor-pointer border-b border-gray-855 last:border-0 flex justify-between items-center text-xs">
-                                                                    <div>
-                                                                        <div class="font-bold text-white">{{ $part->name }}</div>
-                                                                        <div class="text-[10px] text-gray-500">Categoría: {{ $part->category }} • Stock: {{ $part->stock }}</div>
+                                                                <li wire:click="addEditingPart({{ $part->id }})"
+                                                                    class="flex items-center justify-between gap-3 p-3 cursor-pointer border-b border-gray-800/80 last:border-0 hover:bg-gray-800/60 transition group text-xs">
+                                                                    <div class="flex items-center gap-2.5 min-w-0">
+                                                                        <div class="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
+                                                                            style="background:rgba(0,198,182,.08); border:1px solid rgba(0,198,182,.15);">
+                                                                            <svg class="w-3.5 h-3.5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/>
+                                                                            </svg>
+                                                                        </div>
+                                                                        <div class="min-w-0">
+                                                                            <div class="font-bold text-white leading-tight truncate">{{ $part->name }}</div>
+                                                                            <div class="text-[10px] text-gray-500 mt-0.5">
+                                                                                <span>{{ $part->category }}</span>
+                                                                                <span>•</span>
+                                                                                @if($part->stock <= 0)
+                                                                                    <span class="text-red-400 font-bold">Sin Stock</span>
+                                                                                @elseif($part->stock < 5)
+                                                                                    <span class="text-amber-400 font-bold">Stock Bajo: {{ $part->stock }}</span>
+                                                                                @else
+                                                                                    <span>Stock: {{ $part->stock }}</span>
+                                                                                @endif
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
-                                                                    <div class="text-emerald-400 font-bold">${{ number_format($part->sale_price, 0, ',', '.') }}</div>
+                                                                    <div class="flex items-center gap-2 shrink-0">
+                                                                        <span class="font-mono font-bold text-emerald-400 text-xs">
+                                                                            ${{ number_format($part->sale_price, 0, ',', '.') }}
+                                                                        </span>
+                                                                        <span class="text-[9.5px] font-bold px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                                                                            style="background:rgba(0,198,182,.1); color:#2dd4bf; border:1px solid rgba(0,198,182,.2);">
+                                                                            + Añadir
+                                                                        </span>
+                                                                    </div>
                                                                 </li>
                                                             @endforeach
                                                         </ul>
@@ -848,9 +1019,9 @@
                                             @if(count($editingSelectedParts) > 0)
                                                 <div class="bg-gray-900/50 p-4 rounded-2xl border border-gray-800 space-y-2.5">
                                                     <h5 class="text-xs font-black text-white uppercase tracking-widest mb-2 border-b border-gray-800 pb-1.5">Repuestos Cargados al Servicio</h5>
-                                                    <div class="space-y-2 max-h-40 overflow-y-auto pr-1">
+                                                    <div class="space-y-2 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
                                                         @foreach($editingSelectedParts as $index => $part)
-                                                            <div class="flex justify-between items-center text-xs py-1.5 border-b border-gray-850/60 last:border-0">
+                                                            <div class="flex justify-between items-center text-xs py-1.5 border-b border-gray-800/60 last:border-0">
                                                                 <div class="flex flex-col">
                                                                     <span class="text-white font-semibold">{{ $part['name'] }}</span>
                                                                     <span class="text-[10px] text-gray-500">Cantidad: {{ $part['quantity'] }}</span>
@@ -869,48 +1040,59 @@
                                                 </div>
                                             @endif
 
-                                            <!-- Costs Editor Grid -->
-                                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end pt-2">
-                                                <div class="space-y-1.5">
-                                                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Costo Mano de Obra ($) *</label>
-                                                    <input 
-                                                        type="number" 
-                                                        wire:model="editingLaborCost" 
-                                                        {{ $isLocked ? 'disabled' : '' }}
-                                                        class="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition text-xs font-bold {{ $isLocked ? 'opacity-70 cursor-not-allowed' : '' }}"
-                                                        required
-                                                    >
-                                                    @error('editingLaborCost') <span class="text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
-                                                </div>
+                                            <!-- PASO 4: Costs Editor Grid -->
+                                            <div class="p-4 rounded-2xl space-y-3" style="background:#111827; border:1.5px solid #1f2937;">
+                                                <label class="block text-xs font-black text-teal-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                    <span class="w-5 h-5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 flex items-center justify-center text-[10px]">4</span>
+                                                    Mano de Obra y Presupuesto Final
+                                                </label>
 
-                                                <div class="space-y-1.5">
-                                                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider" title="Ej: Mañana en la tarde, En 2 días, etc.">Tiempo Estimado de Entrega</label>
-                                                    <input 
-                                                        type="text" 
-                                                        wire:model="editingEstimatedDelivery" 
-                                                        {{ $isLocked ? 'disabled' : '' }}
-                                                        placeholder="Ej: Mañana, 2 días hábiles..."
-                                                        class="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition text-xs {{ $isLocked ? 'opacity-70 cursor-not-allowed' : '' }}"
-                                                    >
-                                                    @error('editingEstimatedDelivery') <span class="text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
-                                                </div>
+                                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
+                                                    <div class="space-y-1.5">
+                                                        <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider">Costo Mano de Obra ($) *</label>
+                                                        <input 
+                                                            type="number" 
+                                                            wire:model.live="editingLaborCost" 
+                                                            {{ $isLocked ? 'disabled' : '' }}
+                                                            class="w-full rounded-xl p-3 text-white focus:outline-none transition text-xs font-bold {{ $isLocked ? 'opacity-70 cursor-not-allowed' : '' }}"
+                                                            style="background:#0d1117; border:1px solid #1f2937;"
+                                                            required
+                                                        >
+                                                        @error('editingLaborCost') <span class="text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
+                                                    </div>
 
-                                                <!-- Instant Estimated Total display -->
-                                                @php
-                                                    $tempPartsCost = collect($editingSelectedParts)->sum(function($p) {
-                                                        return $p['sale_price'] * $p['quantity'];
-                                                    });
-                                                    $tempTotal = (float)$editingLaborCost + $tempPartsCost;
-                                                @endphp
-                                                <div class="bg-blue-950/20 border border-blue-500/25 p-3 rounded-xl flex flex-col justify-between h-[68px]">
-                                                    <span class="text-[9px] font-black text-blue-400 uppercase tracking-widest">Nuevo Costo Estimado</span>
-                                                    <span class="text-lg font-black text-white mt-1">${{ number_format($tempTotal, 0, ',', '.') }}</span>
+                                                    <div class="space-y-1.5">
+                                                        <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider">Fecha Est. Entrega (Calendario)</label>
+                                                        <input 
+                                                            type="date" 
+                                                            wire:model="editingEstimatedDelivery" 
+                                                            {{ $isLocked ? 'disabled' : '' }}
+                                                            class="w-full rounded-xl p-3 text-white focus:outline-none transition text-xs font-bold {{ $isLocked ? 'opacity-70 cursor-not-allowed' : '' }}"
+                                                            style="background:#0d1117; border:1px solid #1f2937; color-scheme: dark;"
+                                                        >
+                                                        @error('editingEstimatedDelivery') <span class="text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
+                                                    </div>
+
+                                                    <!-- Instant Estimated Total display -->
+                                                    @php
+                                                        $tempPartsCost = collect($editingSelectedParts)->sum(function($p) {
+                                                            return $p['sale_price'] * $p['quantity'];
+                                                        });
+                                                        $tempTotal = (float)$editingLaborCost + $tempPartsCost;
+                                                    @endphp
+                                                    <div class="rounded-xl p-3 flex flex-col justify-between h-[64px]"
+                                                        style="background:rgba(0,198,182,.08); border:1px solid rgba(0,198,182,.2);">
+                                                        <span class="text-[9px] font-black uppercase tracking-widest text-teal-400">Total Presupuestado</span>
+                                                        <span class="text-lg font-black text-emerald-400 mt-1">${{ number_format($tempTotal, 0, ',', '.') }}</span>
+                                                    </div>
                                                 </div>
                                             </div>
 
                                             @if(!$isLocked)
                                             <div class="flex justify-end pt-4 border-t border-gray-800">
-                                                <button type="submit" class="py-3 px-6 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition cursor-pointer flex items-center gap-1.5">
+                                                <button type="submit" 
+                                                    class="py-3.5 px-7 rounded-2xl text-white font-bold text-xs shadow-xl transition cursor-pointer flex items-center gap-2 hover:opacity-90 active:scale-95"
+                                                    style="background: linear-gradient(135deg, #00C6B6 0%, #2563eb 100%);">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
                                                     Guardar Diagnóstico y Presupuesto
                                                 </button>
@@ -1059,7 +1241,7 @@
                                                                         @click="previewImage = '{{ asset('storage/' . $log->image_path) }}'" 
                                                                         class="w-full h-full p-0 border-0 focus:outline-none cursor-pointer block animate-scale-in"
                                                                     >
-                                                                        <img src="{{ asset('storage/' . $log->image_path) }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                                                        <img src="{{ asset('storage/' . $log->image_path) }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                                                                     </button>
                                                                     <span class="absolute bottom-1 right-1 px-1 py-0.5 rounded text-[7.5px] font-black uppercase bg-gray-900/80 text-gray-300 pointer-events-none">Ver foto</span>
                                                                 </div>
@@ -1446,6 +1628,20 @@
                                         <input type="checkbox" wire:model.live="deliveryPayBalance" class="w-4 h-4 text-purple-600 bg-gray-800 border-gray-600 rounded focus:ring-purple-500">
                                         <span class="text-sm font-semibold text-white">Registrar pago del saldo ahora</span>
                                     </label>
+
+                                    @if(!$deliveryPayBalance)
+                                        @if(auth()->user()->hasRole('admin'))
+                                            <div class="mt-2 text-xs font-semibold text-purple-300 bg-purple-950/60 p-2.5 rounded-xl border border-purple-800/50 flex items-center gap-2">
+                                                <svg class="w-4 h-4 shrink-0 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                                <span>ℹ️ Modo Administrador: Si entregas sin marcar el pago, la orden quedará entregada con una nota de autorización en la bitácora.</span>
+                                            </div>
+                                        @else
+                                            <div class="mt-2 text-xs font-semibold text-amber-300 bg-amber-950/60 p-2.5 rounded-xl border border-amber-800/50 flex items-center gap-2">
+                                                <svg class="w-4 h-4 shrink-0 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                                                <span>⚠️ Debes registrar el pago del saldo para poder confirmar la entrega (Requerido para rol Técnico).</span>
+                                            </div>
+                                        @endif
+                                    @endif
                                 </div>
                             </div>
 
@@ -1514,21 +1710,22 @@
                     @endif
 
                     <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Meses de Garantía</label>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Garantía Otorgada al Entregar *</label>
                         <select wire:model="deliveryWarrantyMonths" class="w-full bg-gray-800 border border-gray-700 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-purple-500 outline-none">
-                            <option value="0">Sin garantía adicional</option>
-                            <option value="1">1 Mes</option>
-                            <option value="2">2 Meses</option>
-                            <option value="3">3 Meses (Estándar)</option>
-                            <option value="6">6 Meses</option>
-                            <option value="12">12 Meses (1 Año)</option>
+                            <option value="0">0 Meses (Sin Garantía - Equipo Mojado / Humedad / Alto Riesgo)</option>
+                            <option value="1">1 Mes de Garantía</option>
+                            <option value="2">2 Meses de Garantía</option>
+                            <option value="3">3 Meses de Garantía (Estándar)</option>
+                            <option value="6">6 Meses de Garantía</option>
+                            <option value="12">12 Meses de Garantía (1 Año)</option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Notas de Entrega (Opcional)</label>
-                        <textarea wire:model="deliveryNotes" rows="2" class="w-full bg-gray-800 border border-gray-700 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-purple-500 outline-none" placeholder="Ej. Equipo probado frente al cliente..."></textarea>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Notas de Entrega y Exclusiones (Opcional)</label>
+                        <textarea wire:model="deliveryNotes" rows="2" class="w-full bg-gray-800 border border-gray-700 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-purple-500 outline-none" placeholder="Ej. Probado en mostrador frente al cliente. Sin garantía por humedad previa..."></textarea>
                     </div>
+
                 </div>
 
                 <div class="mt-6 flex justify-end gap-3">
@@ -1546,58 +1743,7 @@
 </div>
 
 <script>
-    if (typeof window.printContent === 'undefined' || window.location.pathname.includes('work-orders')) {
-        window.printContent = function(elementId, qrCanvasId = 'qr-canvas') {
-            const el = document.getElementById(elementId);
-            if (!el) { console.error('Elemento no encontrado:', elementId); return; }
-            const printContent = el.innerHTML;
-            
-            // Create a hidden iframe instead of a popup window to bypass adblockers
-            const iframe = document.createElement('iframe');
-            iframe.style.position = 'fixed';
-            iframe.style.right = '0';
-            iframe.style.bottom = '0';
-            iframe.style.width = '0';
-            iframe.style.height = '0';
-            iframe.style.border = '0';
-            document.body.appendChild(iframe);
 
-            const doc = iframe.contentWindow.document;
-            doc.open();
-            doc.write('<html><head><title>Imprimir Comprobante Sointech</title>');
-            doc.write('<script src="https://cdn.tailwindcss.com"><\/script>');
-            doc.write('<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">');
-            doc.write('<style>');
-            doc.write('  body { font-family: "Inter", sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }');
-            doc.write('  @page { margin: 10mm; }');
-            doc.write('</style>');
-            doc.write('</head><body class="bg-white text-black p-2 flex justify-center items-start">');
-            doc.write('<div class="w-full">' + printContent + '</div>');
-            doc.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"><\/script>');
-            doc.write('<script>');
-            doc.write('  window.onload = function() {');
-            doc.write('    const qrCanvas = document.getElementById("' + qrCanvasId + '");');
-            doc.write('    if (qrCanvas && qrCanvas.dataset.url) {');
-            doc.write('      new QRious({');
-            doc.write('        element: qrCanvas,');
-            doc.write('        value: qrCanvas.dataset.url,');
-            doc.write('        size: 150');
-            doc.write('      });');
-            doc.write('    }');
-            doc.write('    setTimeout(function() { window.focus(); window.print(); }, 600);');
-            doc.write('  };');
-            doc.write('<\/script>');
-            doc.write('</body></html>');
-            doc.close();
-
-            // Clean up iframe after printing
-            setTimeout(() => {
-                if (document.body.contains(iframe)) {
-                    document.body.removeChild(iframe);
-                }
-            }, 10000);
-        };
-    }
 
     document.addEventListener('livewire:initialized', () => {
         Livewire.on('payment-registered', (event) => {

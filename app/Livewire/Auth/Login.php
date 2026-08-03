@@ -29,24 +29,37 @@ class Login extends Component
     {
         $this->validate();
 
-        $throttleKey = strtolower($this->email).'|'.request()->ip();
+        $ipThrottleKey = 'login-ip|' . request()->ip();
+        $emailThrottleKey = 'login-email|' . strtolower($this->email) . '|' . request()->ip();
 
-        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
-            $seconds = RateLimiter::availableIn($throttleKey);
+        // 1. Bloqueo global por IP (máximo 15 intentos fallidos por minuto desde la misma IP)
+        if (RateLimiter::tooManyAttempts($ipThrottleKey, 15)) {
+            $seconds = RateLimiter::availableIn($ipThrottleKey);
+            \Illuminate\Support\Facades\Log::warning("⚠️ Posible ataque de fuerza bruta bloqueado desde la IP " . request()->ip());
             throw ValidationException::withMessages([
-                'email' => "Demasiados intentos. Por favor intente de nuevo en {$seconds} segundos.",
+                'email' => "⚠️ Por motivos de seguridad, los accesos desde tu dirección IP se han pausado temporalmente. Reintenta en {$seconds} segundos.",
+            ]);
+        }
+
+        // 2. Bloqueo específico por correo/cuenta (máximo 5 intentos por cuenta/IP)
+        if (RateLimiter::tooManyAttempts($emailThrottleKey, 5)) {
+            $seconds = RateLimiter::availableIn($emailThrottleKey);
+            throw ValidationException::withMessages([
+                'email' => "⚠️ Demasiados intentos fallidos. Por seguridad, la cuenta ha sido protegida. Intenta nuevamente en {$seconds} segundos.",
             ]);
         }
 
         if (!Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
-            RateLimiter::hit($throttleKey, 60);
+            RateLimiter::hit($emailThrottleKey, 60);
+            RateLimiter::hit($ipThrottleKey, 60);
 
             throw ValidationException::withMessages([
                 'email' => 'Las credenciales proporcionadas no coinciden con nuestros registros.',
             ]);
         }
 
-        RateLimiter::clear($throttleKey);
+        RateLimiter::clear($emailThrottleKey);
+        RateLimiter::clear($ipThrottleKey);
         session()->regenerate();
 
         return redirect()->intended('/');

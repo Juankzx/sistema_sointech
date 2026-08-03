@@ -12,7 +12,10 @@ class Setting extends Model
         'company_phone', 'currency', 'tax_rate', 'timezone',
         'support_email', 'support_whatsapp', 'social_instagram', 'social_facebook',
         'logo_path', 'favicon_path',
-        'sii_api_key', 'sii_environment', 'company_giro', 'company_activity_code'
+        'sii_api_key', 'sii_environment', 'company_giro', 'company_activity_code',
+        'smtp_host', 'smtp_port', 'smtp_username', 'smtp_password', 'smtp_encryption',
+        'smtp_from_address', 'smtp_from_name', 'notify_on_ot_status', 'notify_on_low_stock',
+        'email_ot_subject', 'email_ot_body', 'email_low_stock_subject', 'email_low_stock_body'
     ];
 
     protected $casts = [

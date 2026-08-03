@@ -209,11 +209,10 @@
                         </div>
                     @endif
 
-                    <!-- Downpayment -->
                     @if($workOrder->down_payment > 0)
                         <div class="flex justify-between text-gray-400">
                             <span>Abonado Previamente</span>
-                            <span class="font-bold text-emerald-400">-${{ number_format($workOrder->down_payment, 0, ',', '.') }}</span>
+                            <span class="font-bold text-emerald-400">${{ number_format($workOrder->down_payment, 0, ',', '.') }}</span>
                         </div>
                     @endif
 
@@ -335,6 +334,7 @@
                             <div class="mt-2.5 relative inline-block group aspect-video max-w-[240px] rounded-2xl overflow-hidden border border-gray-800 shadow-lg hover:border-gray-700 transition duration-300">
                                 <img 
                                     src="{{ asset('storage/' . $log->image_path) }}" 
+                                    loading="lazy"
                                     class="w-full h-full object-cover group-hover:scale-105 transition duration-300 cursor-pointer"
                                     onclick="openImageModal('{{ asset('storage/' . $log->image_path) }}')"
                                     alt="Evidencia del hito"
@@ -349,6 +349,30 @@
             @empty
                 <p class="text-xs text-gray-500 py-2">No se han registrado avances técnicos adicionales para esta orden.</p>
             @endforelse
+        </div>
+    </div>
+
+    <!-- TERMS AND CONDITIONS / LEGAL POLICIES CARD -->
+    <div x-data="{ openTerms: false }" class="bg-gray-900/80 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-gray-800 shadow-2xl space-y-4">
+        <div @click="openTerms = !openTerms" class="flex items-center justify-between cursor-pointer select-none">
+            <h2 class="text-sm font-bold text-gray-300 uppercase tracking-wider flex items-center gap-2">
+                <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Términos, Condiciones Legales y Garantía del Servicio
+            </h2>
+            <span class="text-xs text-blue-400 font-bold flex items-center gap-1">
+                <span x-text="openTerms ? 'Ocultar' : 'Ver Cláusulas'">Ver Cláusulas</span>
+                <svg class="w-4 h-4 transition-transform duration-200" :class="{ 'rotate-180': openTerms }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </span>
+        </div>
+        
+        <div x-show="openTerms" x-transition class="pt-4 border-t border-gray-800 text-xs text-gray-300 space-y-3 font-medium leading-relaxed">
+            <ol class="list-decimal pl-4 space-y-2.5 marker:text-gray-500 marker:font-bold">
+                <li><strong>Respaldos de Datos:</strong> El cliente asume la responsabilidad de respaldar su información antes de la entrega. El taller no se responsabiliza por pérdidas de datos durante el proceso técnico.</li>
+                <li><strong>Accesorios:</strong> El taller no se hace responsable por accesorios adicionales (fundas, memorias MicroSD o Tarjetas SIM) no declaradas en la recepción.</li>
+                <li><strong>Riesgo por Humedad o Apagado:</strong> Dispositivos que ingresen apagados o con antecedente de sulfatación por líquidos conllevan riesgo de fallo progresivo de placa.</li>
+                <li><strong>Abandono de Equipos:</strong> Equipos no retirados dentro de 30 días posteriores al aviso de finalización podrán ser trasladados a custodia o reciclaje según normativa.</li>
+                <li><strong>Garantía Limitada:</strong> Cobertura exclusiva en la pieza o reparación realizada por fallas de fabricación. Excluye caídas, sulfatación, manipulación por terceros o sellos rotos.</li>
+            </ol>
         </div>
     </div>
     

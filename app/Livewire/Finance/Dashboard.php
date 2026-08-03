@@ -5,6 +5,8 @@ namespace App\Livewire\Finance;
 use Livewire\Component;
 use App\Models\Sale;
 use App\Models\Expense;
+use App\Models\WorkOrder;
+use App\Models\QuotationItem;
 use Carbon\Carbon;
 
 class Dashboard extends Component
@@ -35,6 +37,20 @@ class Dashboard extends Component
         $totalExpensesTax = $expenses->sum('tax_amount');
         $totalExpenses = $expenses->sum('total_amount');
 
+        // Desglose de Servicios (Utilidad Mano de Obra) vs Repuestos (Componentes Hardware)
+        $quotationItems = QuotationItem::whereHas('quotation', function($q) use ($startDate, $endDate) {
+            $q->whereBetween('created_at', [$startDate, $endDate]);
+        })->get();
+
+        $servicesIncome = $quotationItems->where('type', 'servicio')->sum('subtotal');
+        $productsIncome = $quotationItems->where('type', 'producto')->sum('subtotal');
+
+        if ($servicesIncome == 0 && $productsIncome == 0) {
+            $workOrders = WorkOrder::whereBetween('created_at', [$startDate, $endDate])->get();
+            $servicesIncome = $workOrders->sum('labor_cost');
+            $productsIncome = max(0, $totalSales - $servicesIncome);
+        }
+
         // Utilidad Neta (Net Sales - Net Expenses)
         $netProfit = $totalSalesNet - $totalExpensesNet;
 
@@ -42,14 +58,16 @@ class Dashboard extends Component
         $taxBalance = $totalSalesTax - $totalExpensesTax;
 
         return view('livewire.finance.dashboard', [
-            'totalSalesNet' => $totalSalesNet,
-            'totalSalesTax' => $totalSalesTax,
-            'totalSales' => $totalSales,
+            'totalSalesNet'    => $totalSalesNet,
+            'totalSalesTax'    => $totalSalesTax,
+            'totalSales'       => $totalSales,
             'totalExpensesNet' => $totalExpensesNet,
             'totalExpensesTax' => $totalExpensesTax,
-            'totalExpenses' => $totalExpenses,
-            'netProfit' => $netProfit,
-            'taxBalance' => $taxBalance,
+            'totalExpenses'    => $totalExpenses,
+            'netProfit'        => $netProfit,
+            'taxBalance'       => $taxBalance,
+            'servicesIncome'   => $servicesIncome,
+            'productsIncome'   => $productsIncome,
         ])->layout('layouts.app');
     }
 }

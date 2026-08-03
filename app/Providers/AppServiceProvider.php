@@ -23,6 +23,19 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // RateLimiters de Seguridad Anti Fuerza Bruta y Escaneo
+        \Illuminate\Support\Facades\RateLimiter::for('login', function (\Illuminate\Http\Request $request) {
+            return \Illuminate\Cache\RateLimiting\Limit::perMinute(5)->by($request->ip());
+        });
+
+        \Illuminate\Support\Facades\RateLimiter::for('public-tracking', function (\Illuminate\Http\Request $request) {
+            return \Illuminate\Cache\RateLimiting\Limit::perMinute(30)->by($request->ip());
+        });
+
+        \Illuminate\Support\Facades\RateLimiter::for('client-signature', function (\Illuminate\Http\Request $request) {
+            return \Illuminate\Cache\RateLimiting\Limit::perMinute(15)->by($request->ip());
+        });
+
         try {
             if (Schema::hasTable('settings')) {
                 $appSettings = Setting::first();

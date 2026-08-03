@@ -17,7 +17,7 @@
                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
                     <span class="text-sm font-bold">Caja Abierta</span>
                 </div>
-                <button wire:click="$set('showCloseModal', true)" class="inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-500 text-white text-sm font-bold px-4 py-2.5 rounded-2xl shadow-lg shadow-red-500/20 hover:shadow-red-500/40 transition duration-200 cursor-pointer">
+                <button wire:click="openCloseModal" class="inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-500 text-white text-sm font-bold px-4 py-2.5 rounded-2xl shadow-lg shadow-red-500/20 hover:shadow-red-500/40 transition duration-200 cursor-pointer">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                     Cerrar Caja
                 </button>
@@ -269,52 +269,68 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
                 
-                <h3 class="text-xl font-black text-white mb-2">Cierre de Caja</h3>
-                <p class="text-xs text-gray-400 mb-6">Realiza el cuadre final ingresando el monto real contabilizado.</p>
+                <h3 class="text-xl font-black text-white mb-1">Cierre de Caja</h3>
+                <p class="text-xs text-gray-400 mb-4">Ingresa el conteo físico real de dinero en gaveta, transferencias y vouchers.</p>
 
-                <div class="bg-blue-950/30 border border-blue-500/20 p-4 rounded-xl mb-6 flex justify-between items-center">
-                    <span class="text-sm font-semibold text-blue-300">Esperado en sistema:</span>
-                    <span class="text-lg font-black text-white">${{ number_format($expected_closing_balance, 0, ',', '.') }}</span>
-                </div>
+                @if(auth()->user()->isAdmin())
+                    <div class="bg-blue-950/30 border border-blue-500/20 p-3.5 rounded-2xl mb-4 flex justify-between items-center">
+                        <span class="text-xs font-semibold text-blue-300">Esperado en Sistema (Admin):</span>
+                        <span class="text-base font-black text-white">${{ number_format($expected_closing_balance, 0, ',', '.') }}</span>
+                    </div>
+                @else
+                    <div class="bg-amber-950/30 border border-amber-500/30 p-3.5 rounded-2xl mb-4 flex items-center gap-3">
+                        <svg class="w-5 h-5 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        <span class="text-xs font-semibold text-amber-300">Arqueo Ciego Asistido: Cuenta físicamente el dinero de la caja y digita los montos contados.</span>
+                    </div>
+                @endif
 
                 <form wire:submit="closeRegister" class="space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Efectivo Físico</label>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Efectivo Físico en Gaveta</label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-500 font-bold">$</span>
-                            <input wire:model="closing_cash" type="number" step="0.01" class="w-full bg-gray-900 border border-gray-700 rounded-xl py-3 pl-8 pr-4 text-white font-bold focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/50 transition">
+                            <input wire:model.live="closing_cash" type="number" step="0.01" placeholder="Ej: 50000" class="w-full bg-gray-900 border border-gray-700 rounded-xl py-3 pl-8 pr-4 text-white font-bold focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/50 transition">
                         </div>
-                        <p class="text-[10px] text-gray-500 mt-1">Esperado: ${{ number_format($expected_cash, 0, ',', '.') }}</p>
-                        @error('closing_cash') <span class="text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        @if(auth()->user()->isAdmin())
+                            <p class="text-[10px] text-gray-500 mt-1">Esperado: ${{ number_format($expected_cash, 0, ',', '.') }}</p>
+                        @endif
+                        @error('closing_cash') <span class="text-red-400 text-xs mt-1 block font-bold">{{ $message }}</span> @enderror
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Total Transferencias</label>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Transferencias Contadas</label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-500 font-bold">$</span>
-                            <input wire:model="closing_transfer" type="number" step="0.01" class="w-full bg-gray-900 border border-gray-700 rounded-xl py-3 pl-8 pr-4 text-white font-bold focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/50 transition">
+                            <input wire:model.live="closing_transfer" type="number" step="0.01" placeholder="Ej: 120000" class="w-full bg-gray-900 border border-gray-700 rounded-xl py-3 pl-8 pr-4 text-white font-bold focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/50 transition">
                         </div>
-                        <p class="text-[10px] text-gray-500 mt-1">Esperado: ${{ number_format($expected_transfer, 0, ',', '.') }}</p>
-                        @error('closing_transfer') <span class="text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        @if(auth()->user()->isAdmin())
+                            <p class="text-[10px] text-gray-500 mt-1">Esperado: ${{ number_format($expected_transfer, 0, ',', '.') }}</p>
+                        @endif
+                        @error('closing_transfer') <span class="text-red-400 text-xs mt-1 block font-bold">{{ $message }}</span> @enderror
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Total Tarjetas (Transbank)</label>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Tarjetas / Vouchers (Transbank)</label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-500 font-bold">$</span>
-                            <input wire:model="closing_card" type="number" step="0.01" class="w-full bg-gray-900 border border-gray-700 rounded-xl py-3 pl-8 pr-4 text-white font-bold focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/50 transition">
+                            <input wire:model.live="closing_card" type="number" step="0.01" placeholder="Ej: 75000" class="w-full bg-gray-900 border border-gray-700 rounded-xl py-3 pl-8 pr-4 text-white font-bold focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/50 transition">
                         </div>
-                        <p class="text-[10px] text-gray-500 mt-1">Esperado: ${{ number_format($expected_card, 0, ',', '.') }}</p>
-                        @error('closing_card') <span class="text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        @if(auth()->user()->isAdmin())
+                            <p class="text-[10px] text-gray-500 mt-1">Esperado: ${{ number_format($expected_card, 0, ',', '.') }}</p>
+                        @endif
+                        @error('closing_card') <span class="text-red-400 text-xs mt-1 block font-bold">{{ $message }}</span> @enderror
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Notas / Diferencias</label>
-                        <textarea wire:model="closing_notes" rows="2" class="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500 transition" placeholder="Explica si hay descuadres..."></textarea>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+                            Observaciones / Justificación de Descuadre
+                        </label>
+                        <textarea wire:model="closing_notes" rows="2" class="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500 transition" placeholder="Si el conteo difiere del sistema, explica aquí la causa..."></textarea>
+                        @error('closing_notes') <span class="text-red-400 text-xs mt-1 block font-bold">{{ $message }}</span> @enderror
                     </div>
 
-                    <button type="submit" class="w-full bg-red-600 hover:bg-red-500 text-white font-black py-4 px-6 rounded-2xl text-sm shadow-lg shadow-red-500/20 transition duration-200 cursor-pointer mt-2">
-                        CONFIRMAR CIERRE DE CAJA
+                    <button type="submit" class="w-full bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white font-black py-4 px-6 rounded-2xl text-sm shadow-lg shadow-red-500/20 transition duration-200 cursor-pointer mt-2">
+                        CONFIRMAR Y FINALIZAR CIERRE
                     </button>
                 </form>
             </div>

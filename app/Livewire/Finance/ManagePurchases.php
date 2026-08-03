@@ -316,11 +316,11 @@ class ManagePurchases extends Component
                 // Update inventory
                 $inv = Inventory::find($item['inventory_id']);
                 if ($inv) {
-                    $inv->stock += $item['quantity'];
+                    $inv->increment('stock', (int)$item['quantity']);
                     if ($this->updateCostPrice) {
                         $inv->cost_price = $item['unit_cost'];
+                        $inv->save();
                     }
-                    $inv->save();
                 }
             }
 
