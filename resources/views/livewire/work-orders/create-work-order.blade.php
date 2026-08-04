@@ -1181,11 +1181,12 @@
 
                 <!-- Condiciones Legales -->
                 <div class="bg-gray-900 border border-gray-700 rounded-2xl p-4 shadow-inner">
-                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Condiciones Legales
-                        de Recepción (Editable en configuración)</p>
-                    <p class="text-xs font-medium text-gray-300 italic leading-relaxed font-sans">
-                        "{{ \App\Models\Setting::find(1)->warranty_text ?? 'Garantía exclusiva por fallas de funcionamiento de la pieza reemplazada. No cubre daños por golpes, presión, humedad o equipos previamente mojados. Equipos no retirados en 30 días se considerarán abandonados.' }}"
+                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center justify-between">
+                        <span>Condiciones Legales de Recepción (Editable en configuración)</span>
                     </p>
+                    <div class="text-xs font-medium text-gray-300 italic leading-relaxed font-sans whitespace-pre-line overflow-y-auto max-h-60 p-3.5 bg-gray-950/70 rounded-xl border border-gray-800 scrollbar-thin scrollbar-thumb-gray-700">
+{{ \App\Models\Setting::find(1)->warranty_text ?? "• GARANTÍA LIMITADA (90 DÍAS): Cobertura de 90 días aplicable únicamente a la falla reparada y repuestos instalados.\n• EXCLUSIONES: Se anula por humedad, golpes, sellos rotos o manipulación de terceros.\n• DATOS: El cliente es responsable de su respaldo de datos.\n• NOTIFICACIONES Y ABANDONO (LEY 19.496): Notificación formal por WhatsApp/Email. Bodegaje a los 30 días y abandono legal a los 90 días." }}
+                    </div>
                 </div>
 
                 <!-- ══════════════════════════════════════════════ -->
@@ -1491,8 +1492,8 @@
                     <span class="text-[10px] font-black text-gray-500 uppercase tracking-wider">Condiciones Legales de
                         Recepción</span>
                     <div
-                        class="bg-gray-950 rounded-2xl p-3.5 border border-gray-800 max-h-32 overflow-y-auto text-xs text-gray-400 italic font-sans leading-relaxed scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent">
-                        "{{ \App\Models\Setting::find(1)->warranty_text ?? 'Garantía exclusiva por fallas de funcionamiento de la pieza reemplazada. No cubre daños por golpes, presión o humedad.' }}"
+                        class="bg-gray-950 rounded-2xl p-3.5 border border-gray-800 max-h-48 overflow-y-auto text-xs text-gray-300 italic font-sans leading-relaxed whitespace-pre-line scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent">
+{{ \App\Models\Setting::find(1)->warranty_text ?? "• GARANTÍA LIMITADA (90 DÍAS): Cobertura de 90 días aplicable únicamente a la falla reparada y repuestos instalados.\n• EXCLUSIONES: Se anula por humedad, golpes, sellos rotos o manipulación de terceros.\n• DATOS: El cliente es responsable de su respaldo de datos.\n• NOTIFICACIONES Y ABANDONO (LEY 19.496): Notificación formal por WhatsApp/Email. Bodegaje a los 30 días y abandono legal a los 90 días." }}
                     </div>
                 </div>
 

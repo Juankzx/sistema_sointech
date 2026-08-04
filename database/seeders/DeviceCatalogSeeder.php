@@ -17,7 +17,7 @@ class DeviceCatalogSeeder extends Seeder
         Setting::updateOrCreate(
             ['id' => 1],
             [
-                'warranty_text' => "Garantía exclusiva por fallas de funcionamiento de la pieza reemplazada. No cubre daños por golpes, presión, humedad o equipos previamente mojados. Equipos no retirados en 30 días se considerarán abandonados.",
+                'warranty_text' => "Garantía de 90 días aplicable únicamente a la falla reparada y repuestos instalados. No cubre daños por golpes, líquidos/humedad, sellos rotos ni intervención de terceros. El cliente es responsable de su respaldo de datos. Las notificaciones vía WhatsApp/Email constituyen aviso formal. Tras 30 días del aviso se cobrará bodegaje; transcurridos 90 días corridos sin retiro ni respuesta, el equipo se declarará legalmente abandonado (Ley 19.496).",
                 'checklist_templates' => [
                     'smartphone' => [
                         '¿Enciende?',

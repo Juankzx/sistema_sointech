@@ -331,15 +331,16 @@
                         <p class="text-xs text-gray-400 leading-relaxed">{{ $log->notes }}</p>
                         
                         @if($log->image_path)
-                            <div class="mt-2.5 relative inline-block group aspect-video max-w-[240px] rounded-2xl overflow-hidden border border-gray-800 shadow-lg hover:border-gray-700 transition duration-300">
+                            <div class="mt-2.5 relative inline-block group max-w-[260px] rounded-2xl overflow-hidden border border-gray-700/60 shadow-lg bg-gray-950">
                                 <img 
                                     src="{{ asset('storage/' . $log->image_path) }}" 
                                     loading="lazy"
-                                    class="w-full h-full object-cover group-hover:scale-105 transition duration-300 cursor-pointer"
+                                    class="w-full max-h-52 object-cover group-hover:scale-105 transition duration-300 cursor-pointer rounded-2xl"
                                     onclick="openImageModal('{{ asset('storage/' . $log->image_path) }}')"
+                                    onerror="this.onerror=null; this.src='/images/logo-dark.png';"
                                     alt="Evidencia del hito"
                                 >
-                                <span class="absolute bottom-1.5 right-1.5 px-2 py-0.5 rounded-lg text-[8px] font-black uppercase bg-gray-950/80 text-gray-300 border border-gray-800/40">
+                                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-lg text-[8px] font-black uppercase bg-gray-950/90 text-gray-200 border border-gray-700/60 pointer-events-none shadow-md">
                                     🔍 Ampliar Imagen
                                 </span>
                             </div>

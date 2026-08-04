@@ -280,46 +280,54 @@
             </div>
 
             {{-- ══ CONDICIONES LEGALES Y FIRMA COMPROBADA ══ --}}
-            <table style="width: 100%; margin-top: 16px; border-collapse: collapse;">
+            <table style="width: 100%; margin-top: 14px; border-collapse: collapse;">
                 <tr>
                     {{-- Términos Legales --}}
-                    <td style="width: 60%; vertical-align: top; padding-right: 16px;">
+                    <td style="width: 60%; vertical-align: top; padding-right: 14px;">
                         <div
-                            style="font-size: 8.5px; color: #64748b; line-height: 1.35; text-align: justify; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 10px;">
+                            style="font-size: 8px; color: #475569; line-height: 1.3; text-align: justify; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 10px;">
                             <strong
-                                style="color: #0f172a; text-transform: uppercase; font-size: 9px; display: block; margin-bottom: 3px;">
-                                ⚖️ Condiciones Legales de Recepción:
+                                style="color: #0f172a; text-transform: uppercase; font-size: 8.5px; display: block; margin-bottom: 4px; border-bottom: 1px solid #cbd5e1; padding-bottom: 2px;">
+                                ⚖️ Condiciones del Servicio, Notificación y Abandono:
                             </strong>
-                            {{ \App\Models\Setting::find(1)->warranty_text ?? 'El cliente declara que la información proporcionada es verídica. El taller no se responsabiliza por pérdida de datos; se recomienda respaldar previamente. Pasados 90 días desde el aviso de retiro, los equipos no reclamados se considerarán abandonados según la ley.' }}
+                            • <strong>RESPALDO DE DATOS:</strong> El cliente es responsable exclusivo de hacer copia de sus datos. La empresa NO responde por pérdida de archivos o información.<br>
+                            • <strong>EQUIPOS APAGADOS:</strong> No se asume responsabilidad por fallas ocultas no verificables si el equipo ingresa sin encender.<br>
+                            • <strong>NOTIFICACIÓN FORMAL:</strong> El envío de avisos vía WhatsApp, llamada o e-mail al contacto registrado se considerará notificación válida y formal de retiro.<br>
+                            • <strong>BODEGAJE Y ABANDONO (Ley 19.496):</strong> Pasados 30 días del aviso de retiro se aplicará recargo por bodegaje. Transcurridos <strong>90 días corridos</strong> sin retirar el equipo ni responder avisos, el bien se considerará <strong>DECLARADO ABANDONADO</strong> y SOIN TECHNOLOGY dispondrá del bien para cubrir repuestos, servicios y bodegaje adeudados.<br>
+                            • <strong>GARANTÍA 90 DÍAS:</strong> Cubre solo la falla reparada y repuestos instalados. Queda nula si se rompen los sellos, por líquidos, golpes o intervención de terceros.
                         </div>
                     </td>
 
                     {{-- Recuadro de Firma del Cliente --}}
                     <td style="width: 40%; vertical-align: top; text-align: center;">
                         <div
-                            style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 8px 12px; min-height: 90px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; box-sizing: border-box;">
+                            style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 8px 12px; min-height: 110px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; box-sizing: border-box;">
 
                             {{-- Imagen de la Firma en Base64 Data URI --}}
                             @if($sigSrc)
                                 <div
-                                    style="height: 65px; width: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                    style="height: 60px; width: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden;">
                                     <img src="{{ $sigSrc }}" alt="Firma Conforme"
-                                        style="max-height: 60px; max-width: 180px; object-fit: contain; display: block;">
+                                        style="max-height: 55px; max-width: 180px; object-fit: contain; display: block;">
                                 </div>
                             @else
                                 <div
-                                    style="height: 65px; width: 100%; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 10px; font-style: italic;">
-                                    Sin Firma Digital
+                                    style="height: 60px; width: 100%; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 10px; font-style: italic;">
+                                    ____________________________________<br>
+                                    Firma Física del Cliente
                                 </div>
                             @endif
 
                             <div
                                 style="width: 100%; border-top: 1.5px solid #0f172a; padding-top: 3px; margin-top: 4px;">
-                                <p style="margin: 0; font-size: 10.5px; font-weight: 900; color: #0f172a;">
-                                    Firma Conforme del Cliente
+                                <p style="margin: 0; font-size: 10px; font-weight: 900; color: #0f172a;">
+                                    Aceptación Conforme del Cliente
                                 </p>
-                                <p style="margin: 1px 0 0; font-size: 9.5px; color: #64748b;">
-                                    {{ $order->client->full_name }}
+                                <p style="margin: 1px 0 0; font-size: 9px; color: #475569; font-weight: 700;">
+                                    {{ $order->client->full_name }} @if($order->client->rut_dni)| RUT: {{ $order->client->rut_dni }}@endif
+                                </p>
+                                <p style="margin: 2px 0 0; font-size: 7.5px; color: #64748b; font-style: italic; line-height: 1.1;">
+                                    "Al firmar, el cliente declara haber leído, comprendido y aceptado las condiciones de servicio, garantía y la cláusula de abandono."
                                 </p>
                             </div>
                         </div>

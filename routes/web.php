@@ -33,6 +33,15 @@ Route::middleware('throttle:client-signature')->group(function () {
     Route::get('/firmar/{token}', \App\Livewire\Public\ClientSignature::class)->name('client.signature');
 });
 
+// Fallback Route for Storage Files (Garantiza previsualización de imágenes en Windows/XAMPP)
+Route::get('/storage/{path}', function ($path) {
+    $fullPath = storage_path('app/public/' . $path);
+    if (!file_exists($fullPath)) {
+        abort(404);
+    }
+    return response()->file($fullPath);
+})->where('path', '.*');
+
 // Guest Routes (Protected with Anti-Brute-Force Rate Limiting)
 Route::middleware(['guest', 'throttle:login'])->group(function () {
     Route::get('/login', Login::class)->name('login');

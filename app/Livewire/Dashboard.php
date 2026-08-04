@@ -144,7 +144,28 @@ class Dashboard extends Component
             'user_id' => auth()->id(),
         ]);
 
+        $this->sendOtStatusEmail($wo, $newStatus);
+
         session()->flash('message', "Estado de la orden #{$wo->id} actualizado a '{$newStatus}'.");
+    }
+
+    protected function sendOtStatusEmail(WorkOrder $wo, string $newStatus)
+    {
+        $settings = \App\Models\Setting::find(1);
+        if ($settings && isset($settings->notify_on_ot_status) && !$settings->notify_on_ot_status) {
+            return;
+        }
+
+        $clientEmail = $wo->client?->email;
+        if ($clientEmail) {
+            try {
+                \App\Services\MailService::configureSmtp();
+                \Illuminate\Support\Facades\Mail::to($clientEmail)
+                    ->send(new \App\Mail\WorkOrderStatusChanged($wo, $newStatus));
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::warning("No se pudo enviar correo de cambio de estado de OT #{$wo->id}: " . $e->getMessage());
+            }
+        }
     }
 
     public function render()
@@ -153,7 +174,7 @@ class Dashboard extends Component
 
         if ($user->isCliente()) {
             $clientId = $user->client_id;
-            $recentOrders = WorkOrder::with('client')
+            $recentOrders = WorkOrder::with(['client', 'parts'])
                 ->where('client_id', $clientId)
                 ->orderBy('created_at', 'desc')
                 ->get();

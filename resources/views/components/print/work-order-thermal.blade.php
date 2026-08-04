@@ -7,6 +7,17 @@
             $thermalLogoData = 'data:image/png;base64,' . base64_encode(file_get_contents($thermalLogoPath));
         }
 
+        $sigSrc = null;
+        if (!empty($order->signature_path)) {
+            $sigFullPath = storage_path('app/public/' . $order->signature_path);
+            if (file_exists($sigFullPath)) {
+                $sigData = base64_encode(file_get_contents($sigFullPath));
+                $sigSrc = 'data:image/png;base64,' . $sigData;
+            } else {
+                $sigSrc = asset('storage/' . $order->signature_path);
+            }
+        }
+
         $partsCostTotal = $order->parts ? $order->parts->sum(function($p) { return $p->pivot->price_at_time * $p->pivot->quantity; }) : 0;
         $orderTotal = (float)$order->labor_cost + $partsCostTotal;
         $balanceDue = max(0, $orderTotal - (float)$order->down_payment);
@@ -87,7 +98,42 @@
             </div>
         </div>
 
-        <!-- Tracking & Signature -->
+        <!-- Terms of Service & Abandonment Policy -->
+        <div style="font-size: 8px; line-height: 1.25; border-bottom: 1px dashed #000; padding-bottom: 6px; margin-bottom: 6px; text-align: justify;">
+            <div style="font-weight: 900; text-align: center; text-transform: uppercase; font-size: 8.5px; margin-bottom: 3px;">
+                CONDICIONES DE SERVICIO Y ABANDONO
+            </div>
+            • <strong>RESPALDO DE DATOS:</strong> El cliente debe respaldar sus datos. La empresa NO responde por pérdida de información o archivos.<br>
+            • <strong>EQUIPOS APAGADOS:</strong> No se responde por fallas ocultas o no verificables al momento del ingreso.<br>
+            • <strong>NOTIFICACIONES:</strong> El envío de mensajes vía WhatsApp, llamadas o email al contacto registrado constituye <strong>notificación formal de retiro</strong>.<br>
+            • <strong>BODEGAJE Y ABANDONO (Ley 19.496):</strong> Pasados 30 días del aviso sin retiro se aplica recargo de bodegaje. Cumplidos <strong>90 días corridos</strong> sin retirar el equipo ni responder avisos, el dispositivo se declarará <strong>LEGALMENTE ABANDONADO</strong> y la empresa dispondrá del bien para cubrir repuestos y bodegaje adeudados.<br>
+            • <strong>GARANTÍA 90 DÍAS:</strong> Cubre solo la falla reparada. Se anula por humedad, golpes, sellos rotos u otros talleres.
+        </div>
+
+        <!-- Signature Block -->
+        <div style="margin-bottom: 8px; text-align: center;">
+            @if($sigSrc)
+                <div style="margin: 4px auto; max-height: 45px; overflow: hidden;">
+                    <img src="{{ $sigSrc }}" alt="Firma Cliente" style="max-height: 40px; max-width: 160px; object-fit: contain;">
+                </div>
+                <div style="border-top: 1px solid #000; font-size: 8px; font-weight: bold; margin-top: 2px; padding-top: 2px;">
+                    FIRMA CLIENTE CONFORME
+                </div>
+            @else
+                <div style="border-bottom: 1px solid #000; height: 35px; margin: 5px 15px 3px;"></div>
+                <div style="font-size: 8px; font-weight: bold;">
+                    FIRMA CLIENTE: {{ Str::limit($order->client->full_name, 24) }}
+                </div>
+            @endif
+            <div style="font-size: 7px; color: #333; margin-top: 2px;">
+                RUT: {{ $order->client->rut_dni ?? '__________________' }}
+            </div>
+            <div style="font-size: 7px; color: #555; margin-top: 2px; font-style: italic;">
+                "Declaro haber leído, aceptado y recibido copia de estas condiciones"
+            </div>
+        </div>
+
+        <!-- Tracking & Footer -->
         <div style="text-align: center;">
             <div style="margin: 0 auto 2px; display: inline-block;">
                 <canvas id="{{ $qrCanvasId }}" data-url="{{ url('/seguimiento/'.$order->uuid) }}"></canvas>
@@ -96,7 +142,7 @@
                 Escanee el código QR para consultar el estado en vivo
             </div>
             <div style="font-size: 7.5px; color: #444; margin-top: 2px;">
-                ¡Gracias por su confianza en SOIN TECHNOLOGY!
+                ¡Gracias por su confianza en {{ $settings->company_name ?: 'SOIN TECHNOLOGY' }}!
             </div>
         </div>
     </div>

@@ -1,17 +1,11 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
         <meta charset="utf-8">
-        <!-- Prevent Flash of Theme -->
+        <!-- Always Enforce Dark Theme -->
         <script>
-            if (!localStorage.getItem('theme')) {
-                localStorage.setItem('theme', 'light');
-            }
-            if (localStorage.getItem('theme') === 'dark') {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
+            localStorage.setItem('theme', 'dark');
+            document.documentElement.classList.add('dark');
         </script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
         <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -40,7 +34,7 @@
             }
         </style>
     </head>
-    <body class="bg-[#f8fafc] dark:bg-slate-950 text-slate-800 dark:text-slate-100 antialiased selection:bg-orange-500 selection:text-white" x-data="{ mobileMenuOpen: false, isDark: localStorage.getItem('theme') === 'dark' }">
+    <body class="bg-slate-950 text-slate-100 antialiased selection:bg-orange-500 selection:text-white" x-data="{ mobileMenuOpen: false }">
         
         <div class="min-h-screen flex flex-col md:flex-row">
 
@@ -234,7 +228,7 @@
             @endauth
 
             <!-- MOBILE NAV & HEADER -->
-            <div class="flex-1 flex flex-col min-w-0 overflow-x-hidden pb-16 md:pb-0">
+            <div class="flex-1 flex flex-col min-w-0 overflow-x-hidden pb-16 md:pb-0 bg-slate-950 text-slate-100">
                 
                 <!-- Mobile Navbar Top -->
                 <header class="bg-gray-850 border-b border-gray-800 shadow-sm sticky top-0 z-40 md:hidden">

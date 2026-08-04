@@ -1235,15 +1235,23 @@
                                                             <p class="text-xs text-gray-400 leading-relaxed whitespace-pre-wrap">{{ $log->notes }}</p>
                                                             
                                                             @if($log->image_path)
-                                                                <div class="mt-2 relative inline-block group aspect-video max-w-[200px] rounded-xl overflow-hidden border border-gray-800 shadow-md">
+                                                                <div class="mt-2.5 relative inline-block group max-w-[240px] rounded-2xl overflow-hidden border border-gray-700/60 shadow-lg bg-gray-950">
                                                                     <button 
                                                                         type="button" 
                                                                         @click="previewImage = '{{ asset('storage/' . $log->image_path) }}'" 
-                                                                        class="w-full h-full p-0 border-0 focus:outline-none cursor-pointer block animate-scale-in"
+                                                                        class="w-full h-auto p-0 border-0 focus:outline-none cursor-pointer block group"
                                                                     >
-                                                                        <img src="{{ asset('storage/' . $log->image_path) }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                                                        <img 
+                                                                            src="{{ asset('storage/' . $log->image_path) }}" 
+                                                                            loading="lazy" 
+                                                                            class="w-full max-h-48 object-cover group-hover:scale-105 transition duration-300 rounded-2xl"
+                                                                            onerror="this.onerror=null; this.src='/images/logo-dark.png';"
+                                                                            alt="Evidencia técnica"
+                                                                        >
                                                                     </button>
-                                                                    <span class="absolute bottom-1 right-1 px-1 py-0.5 rounded text-[7.5px] font-black uppercase bg-gray-900/80 text-gray-300 pointer-events-none">Ver foto</span>
+                                                                    <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-lg text-[8.5px] font-black uppercase bg-gray-900/90 text-gray-200 border border-gray-700/60 pointer-events-none flex items-center gap-1 shadow-md">
+                                                                        🔍 Ampliar
+                                                                    </span>
                                                                 </div>
                                                             @endif
                                                             
