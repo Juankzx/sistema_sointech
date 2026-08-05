@@ -18,13 +18,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Seeding standard users for testing roles
-        $admin = User::create([
-            'name' => 'Administrador',
-            'email' => 'juancarloszg915@gmail.com',
-            'password' => bcrypt('Youngrich0403$$'),
-            'role' => 'admin',
-        ]);
+        // 1. Crear o actualizar usuario administrador
+        User::firstOrCreate(
+            ['email' => 'juancarloszg915@gmail.com'],
+            [
+                'name' => 'Administrador',
+                'password' => bcrypt('Youngrich0403$$'),
+                'role' => 'admin',
+            ]
+        );
+
+        // 2. Ejecutar catálogo de dispositivos y configuraciones de garantía
         $this->call(DeviceCatalogSeeder::class);
+
+        // 3. Ejecutar plantillas de checklists por tipo de dispositivo
+        $this->call(ChecklistSeeder::class);
     }
 }
