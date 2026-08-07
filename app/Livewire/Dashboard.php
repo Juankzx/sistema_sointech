@@ -61,7 +61,7 @@ class Dashboard extends Component
         $this->validate([
             'newLogNotes' => 'required|string|min:5',
             'newLogTitle' => 'required|string|max:100',
-            'newLogPhoto' => 'nullable|image|max:10240',
+            'newLogPhoto' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,heic,heif|max:30720',
         ]);
 
         $order = WorkOrder::findOrFail($this->loggingOrderId);
@@ -96,7 +96,7 @@ class Dashboard extends Component
     public function uploadProgressPhoto()
     {
         $this->validate([
-            'uploadPhoto' => 'required|image|max:10240',
+            'uploadPhoto' => 'required|file|mimes:jpeg,png,jpg,gif,webp,heic,heif|max:30720',
             'uploadPhotoType' => 'required|in:before,progress,after',
         ]);
 

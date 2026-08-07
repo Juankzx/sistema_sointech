@@ -338,6 +338,7 @@ class CreateWorkOrder extends Component
             'terms_accepted' => 'accepted',
             'signature_base64' => 'nullable|string',
             'components.*.type' => 'required|in:cpu,gpu,ram,storage,psu,case,motherboard,cooler,mouse,keyboard,other',
+            'initialPhotos.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,heic,heif|max:30720',
         ]);
 
         // Guardar o Actualizar Cliente

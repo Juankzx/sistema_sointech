@@ -8,14 +8,15 @@ class ImageOptimizer
 {
     /**
      * Compress and optimize an uploaded image file, saving it to storage/app/public.
+     * WhatsApp-style compression: max 1280px dimension, 72% JPEG quality.
      *
      * @param UploadedFile|string $file Source uploaded file or absolute file path
      * @param string $directory Subfolder inside storage/app/public (e.g. 'work-orders')
-     * @param int $maxDimension Maximum width or height in pixels
-     * @param int $quality JPEG quality (1-100)
+     * @param int $maxDimension Maximum width or height in pixels (default 1280px - WhatsApp standard)
+     * @param int $quality JPEG quality 1-100 (default 72% - lightweight & crisp)
      * @return string Relative path stored under storage/app/public (e.g. 'work-orders/6652a1b9.jpg')
      */
-    public static function optimizeAndStore($file, string $directory = 'work-orders', int $maxDimension = 1920, int $quality = 82): string
+    public static function optimizeAndStore($file, string $directory = 'work-orders', int $maxDimension = 1280, int $quality = 72): string
     {
         $sourcePath = $file instanceof UploadedFile ? $file->getRealPath() : $file;
         $extension = strtolower($file instanceof UploadedFile ? $file->getClientOriginalExtension() : pathinfo($sourcePath, PATHINFO_EXTENSION));
