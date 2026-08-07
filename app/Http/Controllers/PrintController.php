@@ -23,9 +23,10 @@ class PrintController extends Controller
 
     public function payment($id, $payment_id)
     {
-        $order = WorkOrder::with(['client'])->findOrFail($id);
+        $order = WorkOrder::with(['client', 'parts'])->findOrFail($id);
         $payment = Payment::with(['user'])->findOrFail($payment_id);
-        return view('print.payment', compact('order', 'payment'));
+        $appSettings = \App\Models\Setting::first();
+        return view('print.payment', compact('order', 'payment', 'appSettings'));
     }
 
     public function sale($id)

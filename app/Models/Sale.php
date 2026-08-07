@@ -10,7 +10,7 @@ class Sale extends Model
         'uuid', 'document_type', 'client_name', 'client_rut', 'client_phone',
         'client_business_activity', 'client_address', 'client_city',
         'subtotal', 'tax_rate', 'tax_amount', 'total',
-        'payment_method', 'user_id', 'cash_register_id',
+        'payment_method', 'user_id', 'cash_register_id', 'work_order_id',
         'sii_document_number', 'sii_status', 'sii_xml_url'
     ];
 
@@ -37,5 +37,10 @@ class Sale extends Model
     public function cashRegister()
     {
         return $this->belongsTo(CashRegister::class);
+    }
+
+    public function workOrder()
+    {
+        return $this->belongsTo(WorkOrder::class);
     }
 }

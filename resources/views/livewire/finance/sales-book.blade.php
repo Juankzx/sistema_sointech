@@ -39,6 +39,7 @@
                     <tr>
                         <th class="px-6 py-4 font-black">Fecha</th>
                         <th class="px-6 py-4 font-black">Documento</th>
+                        <th class="px-6 py-4 font-black">OT / Referencia</th>
                         <th class="px-6 py-4 font-black">Folio (SII)</th>
                         <th class="px-6 py-4 font-black">Cliente / RUT</th>
                         <th class="px-6 py-4 font-black text-right">Neto</th>
@@ -56,6 +57,17 @@
                                       ($sale->document_type === 'boleta' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-gray-700 text-gray-300 border-gray-600') }}">
                                     {{ ucfirst($sale->document_type) }}
                                 </span>
+                            </td>
+                            {{-- Columna OT / Referencia --}}
+                            <td class="px-6 py-4">
+                                @if($sale->work_order_id)
+                                    <a href="/ordenes-trabajo" class="inline-flex items-center gap-1 text-xs font-bold text-blue-400 hover:text-blue-300 transition">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                        OT #{{ substr($sale->workOrder->uuid ?? '', 0, 8) }}
+                                    </a>
+                                @else
+                                    <span class="text-xs text-gray-500">Venta POS</span>
+                                @endif
                             </td>
                             <td class="px-6 py-4 font-medium text-gray-400">
                                 @if($sale->document_type !== 'ticket')
@@ -96,7 +108,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-12 text-center text-gray-500">
+                            <td colspan="8" class="px-6 py-12 text-center text-gray-500">
                                 <div class="flex flex-col items-center justify-center">
                                     <svg class="w-12 h-12 text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                                     <p class="font-semibold text-gray-400">No hay ventas registradas en este mes.</p>

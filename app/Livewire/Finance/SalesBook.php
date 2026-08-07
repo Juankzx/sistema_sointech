@@ -70,7 +70,7 @@ class SalesBook extends Component
         $startDate = Carbon::create($this->currentYear, $this->currentMonth, 1)->startOfDay();
         $endDate = $startDate->copy()->endOfMonth()->endOfDay();
 
-        $sales = Sale::whereBetween('created_at', [$startDate, $endDate])->orderBy('created_at', 'desc')->get();
+        $sales = Sale::with('workOrder')->whereBetween('created_at', [$startDate, $endDate])->orderBy('created_at', 'desc')->get();
 
         return view('livewire.finance.sales-book', [
             'sales' => $sales

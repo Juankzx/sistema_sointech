@@ -3,6 +3,8 @@
 namespace App\Livewire\WorkOrders;
 
 use App\Models\WorkOrder;
+use App\Models\Sale;
+use App\Models\CashRegister;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\WorkOrderImage;
@@ -618,6 +620,16 @@ class ListWorkOrders extends Component
             $wo->down_payment += $balanceDue;
             $wo->save();
 
+            // Crear registro en ventas para que aparezca en historial
+            $this->createSaleFromOTPayment(
+                $wo,
+                $balanceDue,
+                $this->deliveryPaymentMethod,
+                $this->documentType,
+                'Pago final saldo OT #' . substr($wo->uuid, 0, 8),
+                $activeRegister
+            );
+
             $wo->logs()->create([
                 'status' => 'Entregado',
                 'title' => 'Pago Final Registrado',
@@ -750,6 +762,16 @@ class ListWorkOrders extends Component
 
         $order->down_payment += $this->newPaymentAmount;
         $order->save();
+
+        // Crear registro en ventas para que aparezca en historial de ventas
+        $this->createSaleFromOTPayment(
+            $order,
+            $this->newPaymentAmount,
+            $this->newPaymentMethod,
+            $this->documentType,
+            $this->newPaymentDescription ?: 'Abono OT #' . substr($order->uuid, 0, 8),
+            $activeRegister
+        );
 
         // Solo registrar en bitácora si el usuario NO marcó "omitir bitácora"
         if (!$this->skipLogOnPayment) {
@@ -910,6 +932,56 @@ class ListWorkOrders extends Component
 
         $this->closeManagingModal();
         session()->flash('message', 'La orden #' . $orderCode . ' ha sido eliminada permanentemente del sistema.');
+    }
+
+    /**
+     * Crea un registro en la tabla 'sales' a partir de un pago de Orden de Trabajo.
+     * Esto vincula el pago a la OT y lo hace visible en el Historial de Ventas.
+     */
+    private function createSaleFromOTPayment(
+        WorkOrder $order,
+        float $amount,
+        string $paymentMethod,
+        string $documentType,
+        string $description,
+        $activeRegister
+    ): void {
+        // Mapear tipo de documento al formato de sales
+        $docTypeMap = [
+            'Ticket Interno' => 'ticket',
+            'Boleta' => 'boleta',
+            'Factura' => 'factura',
+        ];
+        $saleDocType = $docTypeMap[$documentType] ?? 'ticket';
+
+        // Para boleta/factura calcular neto e IVA (19% en Chile)
+        $taxRate = in_array($saleDocType, ['boleta', 'factura']) ? 19 : 0;
+        $subtotal = $taxRate > 0 ? round($amount / (1 + $taxRate / 100), 2) : $amount;
+        $taxAmount = round($amount - $subtotal, 2);
+
+        $saleData = [
+            'document_type'          => $saleDocType,
+            'work_order_id'          => $order->id,
+            'client_name'            => $order->client->full_name ?? 'Cliente Genérico',
+            'client_rut'             => $order->client->rut_dni ?? null,
+            'client_phone'           => $order->client->phone ?? null,
+            'subtotal'               => $subtotal,
+            'tax_rate'               => $taxRate,
+            'tax_amount'             => $taxAmount,
+            'total'                  => $amount,
+            'payment_method'         => $paymentMethod,
+            'user_id'                => auth()->id(),
+            'cash_register_id'       => $activeRegister->id ?? null,
+            'sii_status'             => in_array($saleDocType, ['boleta', 'factura']) ? 'pending' : null,
+        ];
+
+        if ($documentType === 'Factura' && $order->client) {
+            $saleData['client_business_activity'] = $order->client->business_activity ?? $this->clientBusinessActivity;
+            $saleData['client_address']           = $order->client->address ?? $this->clientAddress;
+            $saleData['client_city']              = $order->client->commune ?? $this->clientCommune;
+        }
+
+        Sale::create($saleData);
     }
 
     public function render()
