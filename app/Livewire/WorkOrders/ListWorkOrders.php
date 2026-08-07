@@ -4,6 +4,7 @@ namespace App\Livewire\WorkOrders;
 
 use App\Models\WorkOrder;
 use App\Models\Sale;
+use App\Models\SaleItem;
 use App\Models\CashRegister;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -113,7 +114,7 @@ class ListWorkOrders extends Component
         // Reset Payment properties
         $this->newPaymentAmount = 0;
         $this->newPaymentMethod = 'Efectivo';
-        $this->newPaymentDescription = 'Abono Parcial';
+        $this->newPaymentDescription = 'Abono - ' . ($order->reported_issue ?: 'Servicio Técnico') . ' (' . $order->brand_model . ')';
         
         $this->documentType = 'Ticket Interno';
         if ($order->client) {
@@ -784,7 +785,7 @@ class ListWorkOrders extends Component
         }
 
         $this->newPaymentAmount = 0;
-        $this->newPaymentDescription = 'Abono Parcial';
+        $this->newPaymentDescription = 'Abono - ' . ($order->reported_issue ?: 'Servicio Técnico') . ' (' . $order->brand_model . ')';
         $this->skipLogOnPayment = false;
 
         session()->flash('message', 'Pago registrado exitosamente.');
@@ -981,7 +982,18 @@ class ListWorkOrders extends Component
             $saleData['client_city']              = $order->client->commune ?? $this->clientCommune;
         }
 
-        Sale::create($saleData);
+        $sale = Sale::create($saleData);
+
+        // Crear detalle del item en la venta (Servicio/Reparación + Modelo)
+        $serviceTitle = ($order->reported_issue ?: 'Servicio Técnico') . ' - ' . $order->brand_model;
+        SaleItem::create([
+            'sale_id'    => $sale->id,
+            'name'       => $serviceTitle,
+            'quantity'   => 1,
+            'cost_price' => 0,
+            'unit_price' => $amount,
+            'subtotal'   => $amount,
+        ]);
     }
 
     public function render()
