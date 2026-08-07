@@ -629,6 +629,42 @@
                                 @endif
                             </div>
 
+                            @if(auth()->user()->isAdmin() && $managingOrder->status !== 'Entregado')
+                            <!-- Danger Zone: Anular / Eliminar -->
+                            <div class="bg-red-950/10 p-4 rounded-2xl border border-red-900/40 space-y-2.5">
+                                <span class="text-[10px] font-black text-red-400/70 uppercase tracking-widest block border-b border-red-900/30 pb-2">⚠️ Zona de Peligro</span>
+
+                                {{-- Botón Anular --}}
+                                @if($managingOrder->status !== 'Anulada')
+                                <button
+                                    type="button"
+                                    wire:click="cancelWorkOrder({{ $managingOrder->id }})"
+                                    wire:confirm="¿Anular esta orden de trabajo? Se cambiará su estado a 'Anulada'. Esta acción es reversible cambiando el estado nuevamente."
+                                    class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-amber-950/40 hover:bg-amber-900/60 border border-amber-600/30 text-amber-400 font-bold text-xs transition duration-200 cursor-pointer"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+                                    Anular Orden
+                                </button>
+                                @else
+                                <div class="flex items-center gap-2 py-2 px-3 rounded-xl bg-amber-950/20 border border-amber-700/20">
+                                    <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                                    <span class="text-xs text-amber-400 font-bold">Orden Anulada</span>
+                                </div>
+                                @endif
+
+                                {{-- Botón Eliminar Permanentemente --}}
+                                <button
+                                    type="button"
+                                    wire:click="deleteWorkOrder({{ $managingOrder->id }})"
+                                    wire:confirm="⚠️ ELIMINAR PERMANENTEMENTE\n\nEsta acción es IRREVERSIBLE. Se eliminará la orden, sus fotos, logs y se devolverá el stock de repuestos. ¿Estás absolutamente seguro?"
+                                    class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-red-950/40 hover:bg-red-900/60 border border-red-600/30 text-red-400 font-bold text-xs transition duration-200 cursor-pointer"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    Eliminar Permanentemente
+                                </button>
+                            </div>
+                            @endif
+
                             <!-- Financial Summary Card -->
                             <div class="bg-gray-900/40 p-5 rounded-2xl border border-gray-800 space-y-4">
                                 <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest block border-b border-gray-800 pb-2">Resumen de Caja</span>
@@ -1178,25 +1214,26 @@
 
                                         <!-- Photo Attachment - Mobile Optimized -->
                                         <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between pt-1">
-                                            <!-- Camera capture button (mobile) + file input -->
+                                            <!-- Camera capture button / file input -->
                                             <div class="w-full sm:w-auto">
                                                 <label class="md:hidden flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-xl cursor-pointer transition active:scale-95 border border-gray-700">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                                    📸 Tomar Foto
-                                                    <input type="file" wire:model="newLogPhoto" accept="image/*" capture="environment" class="hidden">
+                                                    📸 Adjuntar / Tomar Foto
+                                                    <input type="file" wire:model="newLogPhoto" accept="image/*" class="hidden">
                                                 </label>
                                                 <div class="hidden md:flex items-center gap-3">
                                                     <label class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider shrink-0">Adjuntar Foto:</label>
                                                     <input 
                                                         type="file" 
                                                         wire:model="newLogPhoto" 
+                                                        accept="image/*"
                                                         class="text-xs text-gray-400 focus:outline-none file:mr-2 file:py-1.5 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-semibold file:bg-gray-800 file:text-white file:cursor-pointer"
                                                     >
                                                 </div>
                                                 @error('newLogPhoto') <span class="text-red-400 text-xs block mt-1">{{ $message }}</span> @enderror
                                             </div>
 
-                                            <button type="submit" class="w-full sm:w-auto py-3 sm:py-2.5 px-6 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm sm:text-xs shadow-md shadow-indigo-500/25 transition cursor-pointer flex justify-center items-center shrink-0 active:scale-95">
+                                            <button type="submit" wire:loading.attr="disabled" wire:target="newLogPhoto, saveManualLog" class="w-full sm:w-auto py-3 sm:py-2.5 px-6 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm sm:text-xs shadow-md shadow-indigo-500/25 transition cursor-pointer flex justify-center items-center shrink-0 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
                                                 ✅ Registrar Avance
                                             </button>
                                         </div>
@@ -1431,14 +1468,73 @@
                                         <span class="text-lg font-black text-white">${{ number_format($balanceDue, 0, ',', '.') }}</span>
                                     </div>
 
-                                    <!-- Agregar Nuevo Pago -->
-                                    @if($balanceDue > 0)
-                                    <div class="bg-gray-850 p-5 rounded-2xl border border-gray-700 space-y-4 text-center">
-                                        <h5 class="text-xs font-black text-emerald-400 uppercase tracking-wider mb-2">Registrar Pago / Emitir Comprobante</h5>
-                                        <p class="text-[11px] text-gray-400 mb-4">Para emitir boletas, facturas o registrar abonos completos utilizando múltiples métodos de pago, dirígete al módulo de Punto de Venta (POS).</p>
-                                        
-                                        <a href="/pos?ot_id={{ $managingOrder->id }}" class="inline-flex items-center justify-center gap-2 w-full md:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-8 rounded-xl text-sm transition duration-200 cursor-pointer shadow-lg shadow-emerald-500/20">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                    <!-- Pago Rápido (antes de POS) -->
+                                    <div class="bg-gray-900/60 border border-gray-700/50 p-4 rounded-2xl space-y-3">
+                                        <h5 class="text-xs font-black text-white uppercase tracking-wider">💳 Registrar Pago Rápido</h5>
+                                        <p class="text-[10px] text-gray-500">Registra un abono o pago anticipado directamente desde aquí sin ir al POS.</p>
+
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="block text-[10px] text-gray-400 font-bold mb-1 uppercase tracking-wider">Monto</label>
+                                                <input
+                                                    type="number"
+                                                    wire:model="newPaymentAmount"
+                                                    placeholder="0"
+                                                    min="1"
+                                                    class="w-full bg-gray-800 border border-gray-700 rounded-xl py-2.5 px-3 text-white text-sm font-bold focus:outline-none focus:border-emerald-500 transition"
+                                                >
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] text-gray-400 font-bold mb-1 uppercase tracking-wider">Método</label>
+                                                <select wire:model="newPaymentMethod" class="w-full bg-gray-800 border border-gray-700 rounded-xl py-2.5 px-3 text-white text-sm focus:outline-none focus:border-emerald-500 transition">
+                                                    <option>Efectivo</option>
+                                                    <option>Transferencia</option>
+                                                    <option>Débito</option>
+                                                    <option>Crédito</option>
+                                                    <option>Otro</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-[10px] text-gray-400 font-bold mb-1 uppercase tracking-wider">Descripción</label>
+                                            <input
+                                                type="text"
+                                                wire:model="newPaymentDescription"
+                                                placeholder="Abono Parcial"
+                                                class="w-full bg-gray-800 border border-gray-700 rounded-xl py-2 px-3 text-white text-xs focus:outline-none focus:border-emerald-500 transition"
+                                            >
+                                        </div>
+
+                                        {{-- Checkbox: Pago anticipado sin bitácora --}}
+                                        <label class="flex items-center gap-3 bg-amber-950/20 border border-amber-700/30 rounded-xl p-3 cursor-pointer hover:bg-amber-950/30 transition">
+                                            <input
+                                                type="checkbox"
+                                                wire:model="skipLogOnPayment"
+                                                class="w-4 h-4 rounded border-gray-600 bg-gray-800 text-amber-500 focus:ring-amber-500 focus:ring-1 cursor-pointer"
+                                            >
+                                            <div>
+                                                <span class="text-xs font-bold text-amber-400 block">Pago anticipado (no registrar en bitácora)</span>
+                                                <span class="text-[10px] text-gray-500">El cliente paga antes de iniciar la reparación. No se generará entrada en la bitácora.</span>
+                                            </div>
+                                        </label>
+
+                                        <button
+                                            type="button"
+                                            wire:click="addPayment"
+                                            class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition duration-200 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/10"
+                                        >
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                                            Registrar Pago
+                                        </button>
+                                    </div>
+
+                                    <!-- Ir al POS para factura completa -->
+                                    <div class="bg-gray-850 p-4 rounded-2xl border border-gray-700 space-y-3 text-center">
+                                        <h5 class="text-xs font-black text-blue-400 uppercase tracking-wider">🖨️ Facturación y POS</h5>
+                                        <p class="text-[11px] text-gray-400">Para emitir boletas, facturas o registrar pagos con múltiples métodos, dirígete al módulo de Punto de Venta (POS).</p>
+                                        <a href="/pos?ot_id={{ $managingOrder->id }}" class="inline-flex items-center justify-center gap-2 w-full bg-blue-700 hover:bg-blue-600 text-white font-bold py-2.5 px-6 rounded-xl text-xs transition duration-200 cursor-pointer shadow">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                                             PAGAR / FACTURAR EN POS
                                         </a>
                                     </div>

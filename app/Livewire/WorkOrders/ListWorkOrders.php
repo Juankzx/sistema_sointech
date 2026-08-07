@@ -43,6 +43,7 @@ class ListWorkOrders extends Component
     public $newPaymentAmount = 0;
     public $newPaymentMethod = 'Efectivo';
     public $newPaymentDescription = 'Abono Parcial';
+    public bool $skipLogOnPayment = false; // Si true, no registra entrada en bitácora al pagar
 
     // Billing/Factura Properties
     public $documentType = 'Ticket Interno'; // Ticket Interno, Boleta, Factura
@@ -165,7 +166,7 @@ class ListWorkOrders extends Component
         $this->validate([
             'newLogNotes' => 'required|string|min:5',
             'newLogTitle' => 'required|string|max:100',
-            'newLogPhoto' => 'nullable|image|max:10240', // 10MB max
+            'newLogPhoto' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,heic,heif|max:30720', // 30MB max for high-res mobile photos
         ]);
 
         $order = WorkOrder::findOrFail($this->loggingOrderId);
@@ -219,7 +220,7 @@ class ListWorkOrders extends Component
     public function uploadProgressPhoto()
     {
         $this->validate([
-            'uploadPhoto' => 'required|image|max:10240', // 10MB max
+            'uploadPhoto' => 'required|file|mimes:jpeg,png,jpg,gif,webp,heic,heif|max:30720', // 30MB max for high-res mobile photos
             'uploadPhotoType' => 'required|in:before,progress,after',
         ]);
 
@@ -750,15 +751,19 @@ class ListWorkOrders extends Component
         $order->down_payment += $this->newPaymentAmount;
         $order->save();
 
-        $order->logs()->create([
-            'status' => $order->status,
-            'title' => 'Pago Registrado',
-            'notes' => 'Se ha registrado un pago por $' . number_format($this->newPaymentAmount, 0, ',', '.') . ' mediante ' . $this->newPaymentMethod . '.',
-            'user_id' => auth()->id(),
-        ]);
+        // Solo registrar en bitácora si el usuario NO marcó "omitir bitácora"
+        if (!$this->skipLogOnPayment) {
+            $order->logs()->create([
+                'status' => $order->status,
+                'title' => 'Pago Registrado',
+                'notes' => 'Se ha registrado un pago por $' . number_format($this->newPaymentAmount, 0, ',', '.') . ' mediante ' . $this->newPaymentMethod . '.',
+                'user_id' => auth()->id(),
+            ]);
+        }
 
         $this->newPaymentAmount = 0;
         $this->newPaymentDescription = 'Abono Parcial';
+        $this->skipLogOnPayment = false;
 
         session()->flash('message', 'Pago registrado exitosamente.');
         $this->openWorkOrderDetails($this->editingOrderId);
@@ -860,6 +865,51 @@ class ListWorkOrders extends Component
 
         session()->flash('message', 'La orden de trabajo #' . substr($order->uuid, 0, 8) . ' ha sido desactivada y cambiada a estado "Anulada".');
         $this->closeManagingModal();
+    }
+
+    public function deleteWorkOrder($id)
+    {
+        if (!auth()->user()->isAdmin()) {
+            session()->flash('error', 'Solo los Administradores tienen autorización para eliminar órdenes de trabajo.');
+            return;
+        }
+
+        $order = WorkOrder::with(['parts', 'images', 'logs', 'payments'])->findOrFail($id);
+
+        if ($order->status === 'Entregado') {
+            session()->flash('error', 'No se puede eliminar una orden que ya fue entregada formalmente al cliente.');
+            return;
+        }
+
+        $orderCode = substr($order->uuid, 0, 8);
+
+        // 1. Devolver stock de repuestos al inventario
+        foreach ($order->parts as $part) {
+            $inv = \App\Models\Inventory::find($part->id);
+            if ($inv) {
+                $inv->increment('stock', (int)$part->pivot->quantity);
+            }
+        }
+
+        // 2. Eliminar imágenes del disco
+        foreach ($order->images as $image) {
+            $filePath = storage_path('app/public/' . $image->image_path);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+        }
+
+        // 3. Eliminar registros relacionados (logs, imágenes, pagos, repuestos pivot)
+        $order->logs()->delete();
+        $order->images()->delete();
+        $order->parts()->detach();
+        // No eliminamos payments para mantener la integridad de caja (se dejan huérfanos o se puede omitir)
+
+        // 4. Eliminar la orden
+        $order->delete();
+
+        $this->closeManagingModal();
+        session()->flash('message', 'La orden #' . $orderCode . ' ha sido eliminada permanentemente del sistema.');
     }
 
     public function render()
