@@ -266,35 +266,49 @@
                                 @endif
                             </td>
 
-                            {{-- Acciones --}}
-                            <td class="px-5 py-4 text-right">
-                                <div class="flex items-center justify-end gap-1.5">
-                                    {{-- Editar --}}
-                                    <button type="button" wire:click="editClient({{ $client->id }})"
-                                        title="Editar perfil"
-                                        class="w-8 h-8 rounded-xl flex items-center justify-center transition cursor-pointer"
-                                        style="background:#1f2937; border:1px solid #374151; color:#9ca3af;"
-                                        onmouseover="this.style.background='#374151'; this.style.color='#ffffff';"
-                                        onmouseout="this.style.background='#1f2937'; this.style.color='#9ca3af';">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/>
-                                        </svg>
-                                    </button>
+                             {{-- Acciones --}}
+                             <td class="px-5 py-4 text-right">
+                                 <div class="flex items-center justify-end gap-1.5">
+                                     @if($client->phone)
+                                         <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $client->phone) }}?text={{ urlencode('Hola ' . explode(' ', $client->full_name)[0] . ', te contactamos de Sointech.') }}"
+                                            target="_blank" 
+                                            title="Escribir por WhatsApp"
+                                            class="w-8 h-8 rounded-xl flex items-center justify-center transition cursor-pointer"
+                                            style="background:rgba(16,185,129,.1); border:1px solid rgba(16,185,129,.2); color:#34d399;"
+                                            onmouseover="this.style.background='rgba(16,185,129,.2)';"
+                                            onmouseout="this.style.background='rgba(16,185,129,.1)';">
+                                             <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                                 <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.42 9.864-9.864.002-2.637-1.023-5.115-2.887-6.978C16.578 1.899 14.1 1.849 11.47 1.849c-5.437 0-9.861 4.417-9.865 9.864-.001 1.802.49 3.559 1.42 5.111L1.938 22l5.37-1.41a9.813 9.813 0 004.721 1.218z"/>
+                                             </svg>
+                                         </a>
+                                     @endif
 
-                                    {{-- Eliminar --}}
-                                    <button type="button" wire:click="deleteClient({{ $client->id }})"
-                                        wire:confirm="¿Estás seguro de que deseas eliminar este cliente?"
-                                        title="Eliminar cliente"
-                                        class="w-8 h-8 rounded-xl flex items-center justify-center transition cursor-pointer"
-                                        style="background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.2); color:#f87171;"
-                                        onmouseover="this.style.background='rgba(239,68,68,.2)';"
-                                        onmouseout="this.style.background='rgba(239,68,68,.08)';">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </td>
+                                     {{-- Editar --}}
+                                     <button type="button" wire:click="editClient({{ $client->id }})"
+                                         title="Editar perfil"
+                                         class="w-8 h-8 rounded-xl flex items-center justify-center transition cursor-pointer"
+                                         style="background:#1f2937; border:1px solid #374151; color:#9ca3af;"
+                                         onmouseover="this.style.background='#374151'; this.style.color='#ffffff';"
+                                         onmouseout="this.style.background='#1f2937'; this.style.color='#9ca3af';">
+                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/>
+                                         </svg>
+                                     </button>
+
+                                     {{-- Eliminar --}}
+                                     <button type="button" wire:click="deleteClient({{ $client->id }})"
+                                         wire:confirm="¿Estás seguro de que deseas eliminar este cliente?"
+                                         title="Eliminar cliente"
+                                         class="w-8 h-8 rounded-xl flex items-center justify-center transition cursor-pointer"
+                                         style="background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.2); color:#f87171;"
+                                         onmouseover="this.style.background='rgba(239,68,68,.2)';"
+                                         onmouseout="this.style.background='rgba(239,68,68,.08)';">
+                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
+                                         </svg>
+                                     </button>
+                                 </div>
+                             </td>
                         </tr>
                     @empty
                         <tr>
