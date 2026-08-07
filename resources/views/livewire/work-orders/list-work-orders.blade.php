@@ -1468,6 +1468,7 @@
                                         <span class="text-lg font-black text-white">${{ number_format($balanceDue, 0, ',', '.') }}</span>
                                     </div>
 
+                                    @if($balanceDue > 0)
                                     <!-- Pago Rápido (antes de POS) -->
                                     <div class="bg-gray-900/60 border border-gray-700/50 p-4 rounded-2xl space-y-3">
                                         <h5 class="text-xs font-black text-white uppercase tracking-wider">💳 Registrar Pago Rápido</h5>
