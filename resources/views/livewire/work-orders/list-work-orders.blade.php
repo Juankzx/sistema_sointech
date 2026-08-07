@@ -1245,9 +1245,23 @@
                                         </div>
 
                                         @if($newLogPhoto)
-                                            <div class="flex items-center gap-3 bg-gray-950 p-2.5 rounded-xl border border-gray-850">
-                                                <img src="{{ $newLogPhoto->temporaryUrl() }}" class="w-14 h-14 object-cover rounded-lg border border-gray-800">
-                                                <div class="text-[10px] text-gray-400">Foto lista para adjuntar al avance.</div>
+                                            <div class="flex items-center justify-between bg-gray-950 p-2.5 rounded-xl border border-gray-850">
+                                                <div class="flex items-center gap-3">
+                                                    <img src="{{ $newLogPhoto->temporaryUrl() }}" class="w-14 h-14 object-cover rounded-lg border border-gray-800">
+                                                    <div>
+                                                        <div class="text-xs font-bold text-white">Foto adjunta lista</div>
+                                                        <div class="text-[10px] text-gray-400">Se incluirá en este registro de bitácora.</div>
+                                                    </div>
+                                                </div>
+                                                <button type="button" 
+                                                        wire:click="$set('newLogPhoto', null)" 
+                                                        class="px-3 py-1.5 bg-red-950/60 hover:bg-red-900 border border-red-700/60 text-red-300 hover:text-white rounded-lg text-xs font-bold transition duration-150 cursor-pointer flex items-center gap-1.5 shrink-0"
+                                                        title="Quitar esta foto">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                    </svg>
+                                                    Quitar foto
+                                                </button>
                                             </div>
                                         @endif
                                     </form>

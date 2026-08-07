@@ -342,6 +342,17 @@
                 <div>
                     <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Foto Adjunta (Opcional)</label>
                     <input wire:model="newLogPhoto" type="file" class="text-xs text-slate-400">
+                    @if($newLogPhoto)
+                        <div class="mt-2 flex items-center justify-between bg-slate-900 p-2 rounded-xl border border-slate-800">
+                            <div class="flex items-center gap-2">
+                                <img src="{{ $newLogPhoto->temporaryUrl() }}" class="w-10 h-10 object-cover rounded-lg">
+                                <span class="text-[10px] text-slate-400">Foto lista</span>
+                            </div>
+                            <button type="button" wire:click="$set('newLogPhoto', null)" class="px-2 py-1 bg-red-950/50 hover:bg-red-900 border border-red-800 text-red-300 rounded-lg text-[10px] font-bold transition">
+                                ❌ Quitar
+                            </button>
+                        </div>
+                    @endif
                 </div>
                 <button wire:click="saveManualLog" class="px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white font-semibold text-xs rounded-xl shadow-sm">
                     Guardar Avance

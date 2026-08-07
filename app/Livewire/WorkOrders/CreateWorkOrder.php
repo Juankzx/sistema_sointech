@@ -42,6 +42,14 @@ class CreateWorkOrder extends Component
     public $aesthetic_notes;
     public $initialPhotos = []; // for multiple file uploads
 
+    public function removeInitialPhoto($index)
+    {
+        if (isset($this->initialPhotos[$index])) {
+            unset($this->initialPhotos[$index]);
+            $this->initialPhotos = array_values($this->initialPhotos);
+        }
+    }
+
     // Finances
     public $budget_type = 'fixed'; // 'fixed' or 'pending' (Solo Diagnóstico)
     public $labor_cost = 0;

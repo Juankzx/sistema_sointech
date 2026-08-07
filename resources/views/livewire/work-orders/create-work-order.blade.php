@@ -823,9 +823,17 @@
                         <!-- Previews -->
                         <div class="flex flex-wrap gap-3 flex-1">
                             @if($initialPhotos)
-                                @foreach($initialPhotos as $photo)
-                                    <div class="w-24 h-24 rounded-2xl border border-gray-700 overflow-hidden relative">
+                                @foreach($initialPhotos as $index => $photo)
+                                    <div class="w-24 h-24 rounded-2xl border border-gray-700 overflow-hidden relative group">
                                         <img src="{{ $photo->temporaryUrl() }}" class="w-full h-full object-cover">
+                                        <button type="button" 
+                                                wire:click="removeInitialPhoto({{ $index }})" 
+                                                class="absolute top-1.5 right-1.5 bg-red-600/90 hover:bg-red-600 text-white rounded-full p-1 shadow-lg transition duration-150 cursor-pointer flex items-center justify-center"
+                                                title="Quitar foto">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
+                                        </button>
                                     </div>
                                 @endforeach
                             @endif
