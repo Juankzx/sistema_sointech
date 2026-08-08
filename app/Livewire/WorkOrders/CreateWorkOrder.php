@@ -42,6 +42,23 @@ class CreateWorkOrder extends Component
     public $aesthetic_notes;
     public $initialPhotos = []; // for multiple file uploads
 
+    public function updatedInitialPhotos()
+    {
+        if (is_array($this->initialPhotos)) {
+            $this->initialPhotos = array_values(array_filter($this->initialPhotos, function ($file) {
+                return $file && (is_string($file) || method_exists($file, 'getRealPath') || method_exists($file, 'temporaryUrl'));
+            }));
+        }
+
+        $this->validate([
+            'initialPhotos.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,heic,heif|max:30720',
+        ], [
+            'initialPhotos.*.file' => 'Uno de los archivos seleccionados no es válido.',
+            'initialPhotos.*.mimes' => 'Formato de foto no soportado. Usa JPG, PNG, WEBP o HEIC.',
+            'initialPhotos.*.max' => 'Una de las imágenes supera los 30 MB máximos.',
+        ]);
+    }
+
     public function removeInitialPhoto($index)
     {
         if (isset($this->initialPhotos[$index])) {
@@ -347,6 +364,11 @@ class CreateWorkOrder extends Component
             'signature_base64' => 'nullable|string',
             'components.*.type' => 'required|in:cpu,gpu,ram,storage,psu,case,motherboard,cooler,mouse,keyboard,other',
             'initialPhotos.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,heic,heif|max:30720',
+        ], [
+            'initialPhotos.*.file' => 'Una de las fotos adjuntas no es válida o falló al subirse.',
+            'initialPhotos.*.mimes' => 'Formato no soportado. Usa imágenes JPG, PNG, WEBP o HEIC.',
+            'initialPhotos.*.max' => 'Una de las fotos supera el tamaño máximo permitido (30 MB).',
+            'initialPhotos.*.uploaded' => 'No se pudo subir una de las fotos. Verifica su formato y tamaño.',
         ]);
 
         // Guardar o Actualizar Cliente
