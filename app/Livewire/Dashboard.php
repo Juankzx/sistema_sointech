@@ -56,12 +56,41 @@ class Dashboard extends Component
             ->get();
     }
 
+    public function updatedNewLogPhoto()
+    {
+        $this->validateOnly('newLogPhoto', [
+            'newLogPhoto' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,heic,heif|max:30720',
+        ], [
+            'newLogPhoto.file' => 'La foto adjunta no es válida o falló al subirse.',
+            'newLogPhoto.mimes' => 'Formato no soportado. Usa imágenes JPG, PNG, WEBP o HEIC.',
+            'newLogPhoto.max' => 'La foto supera el tamaño máximo permitido (30 MB).',
+            'newLogPhoto.uploaded' => 'No se pudo subir la foto. Verifica que el tamaño no supere los 30 MB.',
+        ]);
+    }
+
+    public function updatedUploadPhoto()
+    {
+        $this->validateOnly('uploadPhoto', [
+            'uploadPhoto' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,heic,heif|max:30720',
+        ], [
+            'uploadPhoto.file' => 'La foto seleccionada no es válida o falló al subirse.',
+            'uploadPhoto.mimes' => 'Formato no soportado. Usa imágenes JPG, PNG, WEBP o HEIC.',
+            'uploadPhoto.max' => 'La foto supera el tamaño máximo permitido (30 MB).',
+            'uploadPhoto.uploaded' => 'No se pudo subir la foto. Verifica que el tamaño no supere los 30 MB.',
+        ]);
+    }
+
     public function saveManualLog()
     {
         $this->validate([
             'newLogNotes' => 'required|string|min:5',
             'newLogTitle' => 'required|string|max:100',
             'newLogPhoto' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,heic,heif|max:30720',
+        ], [
+            'newLogPhoto.file' => 'La foto adjunta no es válida o falló al subirse.',
+            'newLogPhoto.mimes' => 'Formato no soportado. Usa imágenes JPG, PNG, WEBP o HEIC.',
+            'newLogPhoto.max' => 'La foto supera el tamaño máximo permitido (30 MB).',
+            'newLogPhoto.uploaded' => 'No se pudo subir la foto. Verifica que el tamaño no supere los 30 MB.',
         ]);
 
         $order = WorkOrder::findOrFail($this->loggingOrderId);
@@ -98,6 +127,12 @@ class Dashboard extends Component
         $this->validate([
             'uploadPhoto' => 'required|file|mimes:jpeg,png,jpg,gif,webp,heic,heif|max:30720',
             'uploadPhotoType' => 'required|in:before,progress,after',
+        ], [
+            'uploadPhoto.required' => 'Debes seleccionar una foto para subir.',
+            'uploadPhoto.file' => 'La foto seleccionada no es válida o falló al subirse.',
+            'uploadPhoto.mimes' => 'Formato no soportado. Usa imágenes JPG, PNG, WEBP o HEIC.',
+            'uploadPhoto.max' => 'La foto supera el tamaño máximo permitido (30 MB).',
+            'uploadPhoto.uploaded' => 'No se pudo subir la foto. Verifica que el tamaño no supere los 30 MB.',
         ]);
 
         $order = WorkOrder::findOrFail($this->loggingOrderId);
