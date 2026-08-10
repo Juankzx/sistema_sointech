@@ -1645,7 +1645,6 @@
                                             PAGAR / FACTURAR EN POS
                                         </a>
                                     </div>
-                                    @endif
                                 </div>
 
                             </div>
