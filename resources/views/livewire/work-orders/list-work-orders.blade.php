@@ -1094,8 +1094,43 @@
                                                     </div>
                                                 </div>
                                             @endif
+                                            <!-- 📸 FOTOS DE INGRESO DEL EQUIPO -->
+                                            @if($managingOrder->images && $managingOrder->images->count() > 0)
+                                            <div class="bg-gray-900/50 p-4 rounded-2xl border border-blue-900/40 space-y-3">
+                                                <div class="flex items-center gap-2 border-b border-gray-800 pb-2">
+                                                    <span class="text-xs font-black text-blue-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                        📸 Fotos de Ingreso del Equipo
+                                                    </span>
+                                                    <span class="ml-auto px-2 py-0.5 bg-blue-950/60 text-blue-400 text-[9px] font-black uppercase rounded-full border border-blue-800/40">{{ $managingOrder->images->count() }} foto(s)</span>
+                                                </div>
+                                                <div class="flex flex-wrap gap-3">
+                                                    @foreach($managingOrder->images as $img)
+                                                        <div 
+                                                            onclick="openGlobalLightbox('{{ asset('storage/' . $img->image_path) }}')"
+                                                            class="relative w-28 h-28 rounded-2xl overflow-hidden border border-blue-800/40 bg-gray-950 cursor-pointer group shadow-lg hover:scale-105 transition active:scale-95"
+                                                        >
+                                                            <img 
+                                                                src="{{ asset('storage/' . $img->image_path) }}" 
+                                                                loading="lazy"
+                                                                class="w-full h-full object-cover group-hover:opacity-80 transition"
+                                                                onerror="this.onerror=null; this.src='/images/logo-dark.png';"
+                                                                alt="Foto de ingreso"
+                                                            >
+                                                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/40">
+                                                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                                                            </div>
+                                                            @if($img->type)
+                                                            <span class="absolute bottom-1 left-1 right-1 text-center text-[8px] font-bold bg-black/70 text-white rounded-lg px-1 py-0.5 truncate">{{ $img->type }}</span>
+                                                            @endif
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                                <p class="text-[10px] text-gray-500 italic">Toca cualquier foto para verla en pantalla completa con zoom.</p>
+                                            </div>
+                                            @endif
 
                                             <!-- PASO 4: Costs Editor Grid -->
+
                                             <div class="p-4 rounded-2xl space-y-3" style="background:#111827; border:1.5px solid #1f2937;">
                                                 <label class="block text-xs font-black text-teal-400 uppercase tracking-widest flex items-center gap-1.5">
                                                     <span class="w-5 h-5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 flex items-center justify-center text-[10px]">4</span>
@@ -1347,8 +1382,8 @@
                                                             
                                                             @if($log->image_path)
                                                                 <div 
-                                                                    @click.stop="previewImage = '{{ asset('storage/' . $log->image_path) }}'; zoomLevel = 1;"
-                                                                    class="mt-2.5 relative inline-block group max-w-[240px] rounded-2xl overflow-hidden border border-gray-700/60 shadow-lg bg-gray-950 cursor-pointer active:scale-95 transition"
+                                                                    onclick="openGlobalLightbox('{{ asset('storage/' . $log->image_path) }}')"
+                                                                    class="mt-2.5 relative inline-block group max-w-[240px] rounded-2xl overflow-hidden border border-indigo-700/60 shadow-lg bg-gray-950 cursor-pointer active:scale-95 transition"
                                                                 >
                                                                     <img 
                                                                         src="{{ asset('storage/' . $log->image_path) }}" 
@@ -1732,86 +1767,7 @@
                     </div>
                 </div>
                 
-                <!-- Inline Lightbox / Fullscreen Image Viewer with Interactive Zoom & Touch Panning -->
-                <div 
-                    x-show="previewImage" 
-                    x-transition:enter="transition ease-out duration-200"
-                    x-transition:enter-start="opacity-0"
-                    x-transition:enter-end="opacity-100"
-                    x-transition:leave="transition ease-in duration-150"
-                    x-transition:leave-start="opacity-100"
-                    x-transition:leave-end="opacity-0"
-                    class="fixed inset-0 bg-black/95 backdrop-blur-2xl z-[99999] flex flex-col items-center justify-between p-3 sm:p-6"
-                    style="display: none;"
-                    @click.self="previewImage = null; zoomLevel = 1;"
-                    @keydown.escape.window="if(previewImage) { previewImage = null; zoomLevel = 1; }"
-                >
-                    <!-- Header Control Bar -->
-                    <div class="w-full flex items-center justify-between z-[100000] px-2 py-1 shrink-0">
-                        <!-- Zoom Info & Action Buttons -->
-                        <div class="flex items-center gap-2 bg-gray-900/90 border border-gray-700/80 rounded-2xl px-3 py-1.5 shadow-2xl backdrop-blur-md">
-                            <span class="text-xs font-mono font-bold text-teal-400 mr-1" x-text="Math.round(zoomLevel * 100) + '%'">100%</span>
-                            
-                            <button 
-                                type="button" 
-                                @click.stop="zoomLevel = Math.max(1, zoomLevel - 0.5)" 
-                                class="w-8 h-8 rounded-xl bg-gray-800 hover:bg-gray-700 active:scale-90 text-white font-black text-base flex items-center justify-center border border-gray-700 transition cursor-pointer"
-                                title="Alejar (-)"
-                            >-</button>
-
-                            <button 
-                                type="button" 
-                                @click.stop="zoomLevel = Math.min(4, zoomLevel + 0.5)" 
-                                class="w-8 h-8 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:scale-90 text-white font-black text-base flex items-center justify-center border border-indigo-400 transition cursor-pointer shadow-lg shadow-indigo-500/30"
-                                title="Acercar (+)"
-                            >+</button>
-
-                            <button 
-                                type="button" 
-                                @click.stop="zoomLevel = (zoomLevel > 1 ? 1 : 2.5)" 
-                                class="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 active:scale-90 text-xs font-bold text-white border border-gray-700 transition cursor-pointer"
-                            >
-                                <span x-text="zoomLevel > 1 ? '🔍 Restablecer' : '🔍 Zoom 2.5x'"></span>
-                            </button>
-                        </div>
-
-                        <!-- Close Button (X) -->
-                        <button 
-                            type="button" 
-                            @click.stop="previewImage = null; zoomLevel = 1;" 
-                            class="text-gray-300 hover:text-white transition duration-200 cursor-pointer p-2.5 bg-gray-900/90 hover:bg-gray-800 rounded-full border border-gray-700 shadow-2xl active:scale-90 flex items-center justify-center"
-                            title="Cerrar imagen"
-                        >
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                    </div>
-
-                    <!-- Scrollable & Zoomable Viewport -->
-                    <div 
-                        class="relative w-full flex-1 flex items-center justify-center overflow-auto p-2 my-auto custom-scrollbar select-none" 
-                        @click.self="previewImage = null; zoomLevel = 1;"
-                    >
-                        <div 
-                            class="inline-block transition-transform duration-200 ease-out origin-center" 
-                            :style="'transform: scale(' + zoomLevel + '); max-width: 100%; max-height: 100%;'"
-                        >
-                            <img 
-                                :src="previewImage" 
-                                @dblclick.stop="zoomLevel = (zoomLevel > 1 ? 1 : 2.5)"
-                                @click.stop="zoomLevel = (zoomLevel === 1 ? 2 : (zoomLevel === 2 ? 3.5 : 1))"
-                                class="max-w-full max-h-[78vh] object-contain rounded-2xl border border-gray-800 shadow-2xl cursor-zoom-in"
-                                alt="Evidencia ampliada"
-                            >
-                        </div>
-                    </div>
-
-                    <!-- Helpful mobile tooltip -->
-                    <div class="text-[10.5px] font-medium text-gray-400 text-center pb-1 shrink-0 flex items-center gap-1.5 bg-gray-900/80 px-4 py-1 rounded-full border border-gray-800/80">
-                        <span>📸 Toca la foto para alternar Zoom (100% / 200% / 350%). Usa los botones para ajustar y arrastra para examinar detalles.</span>
-                    </div>
-                </div>
+                {{-- Lightbox removed from here - now handled globally via openGlobalLightbox() in app.blade.php --}}
             </div>
             </div>
         
