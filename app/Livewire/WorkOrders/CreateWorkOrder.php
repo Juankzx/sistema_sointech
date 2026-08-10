@@ -51,11 +51,11 @@ class CreateWorkOrder extends Component
         }
 
         $this->validate([
-            'initialPhotos.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,heic,heif|max:30720',
+            'initialPhotos.*' => 'nullable|file|max:30720',
         ], [
             'initialPhotos.*.file' => 'Uno de los archivos seleccionados no es válido.',
-            'initialPhotos.*.mimes' => 'Formato de foto no soportado. Usa JPG, PNG, WEBP o HEIC.',
             'initialPhotos.*.max' => 'Una de las imágenes supera los 30 MB máximos.',
+            'initialPhotos.*.uploaded' => 'No se pudo subir una de las fotos. Verifica que no supere los 30 MB.',
         ]);
     }
 
@@ -363,10 +363,9 @@ class CreateWorkOrder extends Component
             'terms_accepted' => 'accepted',
             'signature_base64' => 'nullable|string',
             'components.*.type' => 'required|in:cpu,gpu,ram,storage,psu,case,motherboard,cooler,mouse,keyboard,other',
-            'initialPhotos.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,heic,heif|max:30720',
+            'initialPhotos.*' => 'nullable|file|max:30720',
         ], [
             'initialPhotos.*.file' => 'Una de las fotos adjuntas no es válida o falló al subirse.',
-            'initialPhotos.*.mimes' => 'Formato no soportado. Usa imágenes JPG, PNG, WEBP o HEIC.',
             'initialPhotos.*.max' => 'Una de las fotos supera el tamaño máximo permitido (30 MB).',
             'initialPhotos.*.uploaded' => 'No se pudo subir una de las fotos. Verifica su formato y tamaño.',
         ]);

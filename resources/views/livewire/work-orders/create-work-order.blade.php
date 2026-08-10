@@ -817,7 +817,7 @@
                                     d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             </svg>
                             <span class="text-xs font-bold">Subir Fotos</span>
-                            <input type="file" wire:model="initialPhotos" multiple accept="image/*" class="hidden">
+                            <input type="file" @change="compressAndUploadMultiplePhotos($event, 'initialPhotos', $wire)" multiple accept="image/*" class="hidden">
                         </label>
 
                         <!-- Previews -->

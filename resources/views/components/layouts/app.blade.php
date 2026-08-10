@@ -300,6 +300,70 @@
                 uploadFile(file);
             }
         };
+
+        window.compressAndUploadMultiplePhotos = function(event, wireProperty, wireComponent) {
+            const input = event.target;
+            if (!input.files || input.files.length === 0) return;
+
+            const files = Array.from(input.files);
+            const compressedFiles = [];
+            let processed = 0;
+
+            const uploadAll = () => {
+                if (!wireComponent) return;
+                wireComponent.uploadMultiple(wireProperty, compressedFiles,
+                    () => { input.value = ''; },
+                    (error) => { console.error('Multiple upload error:', error); }
+                );
+            };
+
+            files.forEach((file, index) => {
+                if (file.type.startsWith('image/') || file.name.match(/\.(heic|heif|jpg|jpeg|png|webp)$/i)) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = new Image();
+                        img.onload = function() {
+                            const maxDim = 1600;
+                            let w = img.width, h = img.height;
+                            if (w > maxDim || h > maxDim) {
+                                if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+                                else { w = Math.round((w * maxDim) / h); h = maxDim; }
+                            }
+                            const canvas = document.createElement('canvas');
+                            canvas.width = w; canvas.height = h;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, w, h);
+                            canvas.toBlob(function(blob) {
+                                if (!blob) {
+                                    compressedFiles.push(file);
+                                } else {
+                                    const newName = (file.name || `foto_${index}`).replace(/\.[^/.]+$/, '') + '.jpg';
+                                    compressedFiles.push(new File([blob], newName, { type: 'image/jpeg' }));
+                                }
+                                processed++;
+                                if (processed === files.length) uploadAll();
+                            }, 'image/jpeg', 0.82);
+                        };
+                        img.onerror = function() {
+                            compressedFiles.push(file);
+                            processed++;
+                            if (processed === files.length) uploadAll();
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.onerror = function() {
+                        compressedFiles.push(file);
+                        processed++;
+                        if (processed === files.length) uploadAll();
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    compressedFiles.push(file);
+                    processed++;
+                    if (processed === files.length) uploadAll();
+                }
+            });
+        };
     </script>
     @livewireScripts
 </body>
