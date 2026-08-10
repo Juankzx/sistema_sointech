@@ -1153,7 +1153,45 @@
                                                 </button>
                                             </div>
                                             @endif
-                                        @if(in_array($managingOrder->status, ['Listo para Entrega', 'Entregado', 'Anulada']))
+                                            
+                                        </div>
+                                    @else
+                                        <!-- Readonly technical view for receptionist -->
+                                        <div class="space-y-4 text-xs">
+                                            <div>
+                                                <span class="text-gray-500 font-bold uppercase tracking-wider block">Diagnóstico Técnico</span>
+                                                <p class="text-gray-200 mt-1 leading-relaxed whitespace-pre-line bg-gray-900/60 p-3.5 rounded-xl border border-gray-800">
+                                                    {{ $editingDiagnosticNotes ?: 'No se ha registrado diagnóstico técnico aún.' }}
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <span class="text-gray-500 font-bold uppercase tracking-wider block mb-2">Repuestos Asignados</span>
+                                                @if(count($managingOrder->parts) > 0)
+                                                    <div class="bg-gray-900/40 rounded-xl border border-gray-800 divide-y divide-gray-850 p-2.5">
+                                                        @foreach($managingOrder->parts as $part)
+                                                            <div class="flex justify-between py-1.5 text-xs px-2">
+                                                                <span class="text-gray-300 font-medium">{{ $part->name }} (x{{ $part->pivot->quantity }})</span>
+                                                                <span class="text-white font-semibold">${{ number_format($part->pivot->price_at_time, 0, ',', '.') }}</span>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                @else
+                                                    <p class="text-gray-500 italic">No hay repuestos cargados a esta orden.</p>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                <!-- 2. TAB: LOGS / BITACORA -->
+                                <div x-show="$wire.activeTab === 'logs'" class="space-y-6">
+                                    <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+                                        <h4 class="text-sm font-black text-white uppercase tracking-wider">💬 Bitácora y Registro de Avances</h4>
+                                        <span class="text-xs text-gray-500">Hitos del estado del servicio</span>
+                                    </div>
+
+                                    @if(in_array($managingOrder->status, ['Listo para Entrega', 'Entregado', 'Anulada']))
                                          <!-- Bitácora congelada para órdenes finalizadas -->
                                          <div class="bg-gray-900/60 border border-gray-800 p-5 rounded-2xl text-center space-y-2">
                                              <div class="flex items-center justify-center gap-2 text-amber-400 font-bold text-xs uppercase tracking-wider">
@@ -1286,43 +1324,6 @@
                                              @endif
                                          </form>
                                      @endif
-                                    @else
-                                        <!-- Readonly technical view for receptionist -->
-                                        <div class="space-y-4 text-xs">
-                                            <div>
-                                                <span class="text-gray-500 font-bold uppercase tracking-wider block">Diagnóstico Técnico</span>
-                                                <p class="text-gray-200 mt-1 leading-relaxed whitespace-pre-line bg-gray-900/60 p-3.5 rounded-xl border border-gray-800">
-                                                    {{ $editingDiagnosticNotes ?: 'No se ha registrado diagnóstico técnico aún.' }}
-                                                </p>
-                                            </div>
-
-                                            <div>
-                                                <span class="text-gray-500 font-bold uppercase tracking-wider block mb-2">Repuestos Asignados</span>
-                                                @if(count($managingOrder->parts) > 0)
-                                                    <div class="bg-gray-900/40 rounded-xl border border-gray-800 divide-y divide-gray-850 p-2.5">
-                                                        @foreach($managingOrder->parts as $part)
-                                                            <div class="flex justify-between py-1.5 text-xs px-2">
-                                                                <span class="text-gray-300 font-medium">{{ $part->name }} (x{{ $part->pivot->quantity }})</span>
-                                                                <span class="text-white font-semibold">${{ number_format($part->pivot->price_at_time, 0, ',', '.') }}</span>
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-                                                @else
-                                                    <p class="text-gray-500 italic">No hay repuestos cargados a esta orden.</p>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    @endif
-                                </div>
-
-                                <!-- 2. TAB: LOGS / BITACORA -->
-                                <div x-show="$wire.activeTab === 'logs'" class="space-y-6">
-                                    <div class="flex items-center justify-between border-b border-gray-800 pb-3">
-                                        <h4 class="text-sm font-black text-white uppercase tracking-wider">💬 Bitácora y Registro de Avances</h4>
-                                        <span class="text-xs text-gray-500">Hitos del estado del servicio</span>
-                                    </div>
-
-                                    </form>
  
                                     <!-- Vertical Timeline -->
                                     <div class="space-y-4">
