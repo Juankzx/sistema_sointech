@@ -890,7 +890,7 @@
                             </div>
 
                             <!-- Tab Contents -->
-                            <div class="flex-1 bg-gray-900/10 rounded-2xl border border-gray-800/60 p-5 sm:p-6 shadow-inner min-h-[350px]">
+                            <div class="flex-1 lg:bg-gray-900/10 rounded-2xl lg:border lg:border-gray-800/60 p-0 sm:p-6 lg:shadow-inner lg:min-h-[350px]">
                                 
                                 <!-- 1. TAB: DETAILS & DIAGNOSTIC & BUDGETING -->
                                 <div x-show="$wire.activeTab === 'details'" class="space-y-6">
