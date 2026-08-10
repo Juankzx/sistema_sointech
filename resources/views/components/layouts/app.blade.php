@@ -255,8 +255,52 @@
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
             Clientes
         </a>
-    </nav>
+    <script>
+        window.compressAndUploadPhoto = function(event, wireProperty, wireComponent) {
+            const input = event.target;
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
 
+            const uploadFile = (fileToUpload) => {
+                if (!wireComponent) return;
+                wireComponent.upload(wireProperty, fileToUpload,
+                    () => { input.value = ''; },
+                    (error) => { console.error('Upload error:', error); }
+                );
+            };
+
+            if (file.type.startsWith('image/') || file.name.match(/\.(heic|heif|jpg|jpeg|png|webp)$/i)) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const maxDim = 1600;
+                        let w = img.width, h = img.height;
+                        if (w > maxDim || h > maxDim) {
+                            if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+                            else { w = Math.round((w * maxDim) / h); h = maxDim; }
+                        }
+                        const canvas = document.createElement('canvas');
+                        canvas.width = w; canvas.height = h;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, w, h);
+                        canvas.toBlob(function(blob) {
+                            if (!blob) { uploadFile(file); return; }
+                            const newName = (file.name || 'foto').replace(/\.[^/.]+$/, '') + '.jpg';
+                            const compressedFile = new File([blob], newName, { type: 'image/jpeg' });
+                            uploadFile(compressedFile);
+                        }, 'image/jpeg', 0.82);
+                    };
+                    img.onerror = function() { uploadFile(file); };
+                    img.src = e.target.result;
+                };
+                reader.onerror = function() { uploadFile(file); };
+                reader.readAsDataURL(file);
+            } else {
+                uploadFile(file);
+            }
+        };
+    </script>
     @livewireScripts
 </body>
 </html>

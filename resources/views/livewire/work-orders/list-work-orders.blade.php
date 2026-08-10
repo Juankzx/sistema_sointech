@@ -1219,13 +1219,13 @@
                                                 <label class="md:hidden flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-xl cursor-pointer transition active:scale-95 border border-gray-700">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                                                     📸 Adjuntar / Tomar Foto
-                                                    <input type="file" wire:model="newLogPhoto" accept="image/*" class="hidden">
+                                                    <input type="file" @change="compressAndUploadPhoto($event, 'newLogPhoto', $wire)" accept="image/*" class="hidden">
                                                 </label>
                                                 <div class="hidden md:flex items-center gap-3">
                                                     <label class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider shrink-0">Adjuntar Foto:</label>
                                                     <input 
                                                         type="file" 
-                                                        wire:model="newLogPhoto" 
+                                                        @change="compressAndUploadPhoto($event, 'newLogPhoto', $wire)" 
                                                         accept="image/*"
                                                         class="text-xs text-gray-400 focus:outline-none file:mr-2 file:py-1.5 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-semibold file:bg-gray-800 file:text-white file:cursor-pointer"
                                                     >

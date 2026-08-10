@@ -598,6 +598,51 @@
                 let expectedStr = expected === 11 ? '0' : (expected === 10 ? 'K' : expected.toString());
                 return dv === expectedStr;
             };
+
+            window.compressAndUploadPhoto = function(event, wireProperty, wireComponent) {
+                const input = event.target;
+                if (!input.files || !input.files[0]) return;
+                const file = input.files[0];
+
+                const uploadFile = (fileToUpload) => {
+                    if (!wireComponent) return;
+                    wireComponent.upload(wireProperty, fileToUpload,
+                        () => { input.value = ''; },
+                        (error) => { console.error('Upload error:', error); }
+                    );
+                };
+
+                if (file.type.startsWith('image/') || file.name.match(/\.(heic|heif|jpg|jpeg|png|webp)$/i)) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = new Image();
+                        img.onload = function() {
+                            const maxDim = 1600;
+                            let w = img.width, h = img.height;
+                            if (w > maxDim || h > maxDim) {
+                                if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+                                else { w = Math.round((w * maxDim) / h); h = maxDim; }
+                            }
+                            const canvas = document.createElement('canvas');
+                            canvas.width = w; canvas.height = h;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, w, h);
+                            canvas.toBlob(function(blob) {
+                                if (!blob) { uploadFile(file); return; }
+                                const newName = (file.name || 'foto').replace(/\.[^/.]+$/, '') + '.jpg';
+                                const compressedFile = new File([blob], newName, { type: 'image/jpeg' });
+                                uploadFile(compressedFile);
+                            }, 'image/jpeg', 0.82);
+                        };
+                        img.onerror = function() { uploadFile(file); };
+                        img.src = e.target.result;
+                    };
+                    reader.onerror = function() { uploadFile(file); };
+                    reader.readAsDataURL(file);
+                } else {
+                    uploadFile(file);
+                }
+            };
         </script>
 
         @livewireScripts

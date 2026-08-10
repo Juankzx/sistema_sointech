@@ -338,7 +338,7 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Foto Adjunta (Opcional)</label>
-                    <input wire:model="newLogPhoto" type="file" class="text-xs text-slate-400">
+                    <input @change="compressAndUploadPhoto($event, 'newLogPhoto', $wire)" type="file" accept="image/*" class="text-xs text-slate-400">
                     @if($newLogPhoto)
                         <div class="mt-2 flex items-center justify-between bg-slate-900 p-2 rounded-xl border border-slate-800">
                             <div class="flex items-center gap-2">
