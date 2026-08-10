@@ -32,12 +32,13 @@ class Client extends Model
                         'password' => \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(16)),
                     ]);
 
-                    // Try to send password setup/reset email securely
+                    // Try to send password setup/reset email securely via ClientWelcomeMail
                     try {
+                        \App\Services\MailService::configureSmtp();
                         $token = \Illuminate\Support\Facades\Password::broker()->createToken($user);
-                        $user->sendPasswordResetNotification($token);
+                        \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\ClientWelcomeMail($user, $token, $client));
                     } catch (\Exception $e) {
-                        \Illuminate\Support\Facades\Log::warning("No se pudo enviar correo de bienvenida al cliente: " . $e->getMessage());
+                        \Illuminate\Support\Facades\Log::warning("No se pudo enviar correo de bienvenida al cliente #{$client->id}: " . $e->getMessage());
                     }
                 } else {
                     // Update client_id on the existing user if it's not set

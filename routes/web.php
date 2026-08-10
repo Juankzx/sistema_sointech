@@ -55,6 +55,7 @@ Route::middleware(['guest', 'throttle:login'])->group(function () {
 // Protected Routes
 Route::middleware('auth')->group(function () {
     Route::get('/', Dashboard::class)->name('dashboard');
+    Route::get('/mi-cuenta', Dashboard::class)->name('client.orders');
 
     Route::middleware('role:admin,tecnico,recepcionista')->group(function () {
         Route::get('/caja', \App\Livewire\CashRegisters\ManageCashRegister::class)->name('cash-registers.index');
