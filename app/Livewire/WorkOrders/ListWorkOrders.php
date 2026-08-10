@@ -31,6 +31,7 @@ class ListWorkOrders extends Component
     public $newLogTitle = 'Avance Técnico';
     public $newLogNotes = '';
     public $newLogPhoto;
+    public $newLogPhotos = [];
     public $uploadPhoto;
     public $uploadPhotoType = 'progress'; // 'before', 'progress', 'after'
     public $currentOrderImages = []; // to display in the modal gallery
@@ -176,6 +177,25 @@ class ListWorkOrders extends Component
         ]);
     }
 
+    public function updatedNewLogPhotos()
+    {
+        $this->validateOnly('newLogPhotos.*', [
+            'newLogPhotos.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,heic,heif|max:30720',
+        ], [
+            'newLogPhotos.*.file' => 'Una de las fotos adjuntas no es válida o falló al subirse.',
+            'newLogPhotos.*.mimes' => 'Formato no soportado. Usa imágenes JPG, PNG, WEBP o HEIC.',
+            'newLogPhotos.*.max' => 'Una de las fotos supera el tamaño máximo permitido (30 MB).',
+        ]);
+    }
+
+    public function removeNewLogPhoto($index)
+    {
+        if (isset($this->newLogPhotos[$index])) {
+            unset($this->newLogPhotos[$index]);
+            $this->newLogPhotos = array_values($this->newLogPhotos);
+        }
+    }
+
     public function updatedUploadPhoto()
     {
         $this->validateOnly('uploadPhoto', [
@@ -190,24 +210,32 @@ class ListWorkOrders extends Component
 
     public function saveManualLog()
     {
+        $order = WorkOrder::findOrFail($this->loggingOrderId);
+
+        // Bloquear nuevos registros si la orden está finalizada o lista para entrega
+        if (in_array($order->status, ['Listo para Entrega', 'Entregado', 'Anulada'])) {
+            $this->addError('newLogNotes', 'No se pueden registrar avances en una orden en estado "' . $order->status . '".');
+            return;
+        }
+
         $this->validate([
             'newLogNotes' => 'required|string|min:5',
             'newLogTitle' => 'required|string|max:100',
-            'newLogPhoto' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,heic,heif|max:30720', // 30MB max for high-res mobile photos
-        ], [
-            'newLogPhoto.file' => 'La foto adjunta no es válida o falló al subirse.',
-            'newLogPhoto.mimes' => 'Formato no soportado. Usa imágenes JPG, PNG, WEBP o HEIC.',
-            'newLogPhoto.max' => 'La foto supera el tamaño máximo permitido (30 MB).',
-            'newLogPhoto.uploaded' => 'No se pudo subir la foto. Verifica que el tamaño no supere los 30 MB.',
+            'newLogPhotos.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,heic,heif|max:30720',
         ]);
 
-        $order = WorkOrder::findOrFail($this->loggingOrderId);
+        $firstFileName = null;
         
-        $fileName = null;
-        if ($this->newLogPhoto) {
-            $fileName = ImageOptimizer::optimizeAndStore($this->newLogPhoto, 'work-orders');
+        // Procesar array de fotos múltiples
+        $photosToProcess = !empty($this->newLogPhotos) ? $this->newLogPhotos : ($this->newLogPhoto ? [$this->newLogPhoto] : []);
+
+        foreach ($photosToProcess as $idx => $photo) {
+            $fileName = ImageOptimizer::optimizeAndStore($photo, 'work-orders');
+            if ($idx === 0) {
+                $firstFileName = $fileName;
+            }
             
-            // Auto add to WorkOrderImage (so it also appears in the gallery!)
+            // Auto agregar a la galería de la orden (WorkOrderImage)
             $order->images()->create([
                 'type' => 'progress',
                 'image_path' => $fileName,
@@ -227,7 +255,7 @@ class ListWorkOrders extends Component
             'status' => $order->status,
             'title' => $this->newLogTitle,
             'notes' => $this->newLogNotes,
-            'image_path' => $fileName,
+            'image_path' => $firstFileName,
             'user_id' => auth()->id(),
         ]);
 
@@ -243,6 +271,7 @@ class ListWorkOrders extends Component
         $this->newLogNotes = '';
         $this->newLogTitle = 'Avance Técnico';
         $this->newLogPhoto = null;
+        $this->newLogPhotos = [];
         
         $this->loadCurrentImages();
         
