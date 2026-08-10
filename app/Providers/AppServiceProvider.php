@@ -23,6 +23,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Configurar idioma español para fechas Carbon
+        \Carbon\Carbon::setLocale('es');
+        setlocale(LC_TIME, 'es_CL.utf8', 'es_CL', 'spanish');
+
         // RateLimiters de Seguridad Anti Fuerza Bruta y Escaneo
         \Illuminate\Support\Facades\RateLimiter::for('login', function (\Illuminate\Http\Request $request) {
             return \Illuminate\Cache\RateLimiting\Limit::perMinute(5)->by($request->ip());

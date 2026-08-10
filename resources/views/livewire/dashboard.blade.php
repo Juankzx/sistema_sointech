@@ -87,7 +87,7 @@
                 <span class="px-2.5 py-0.5 bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20 text-[10px] font-black uppercase tracking-wider rounded-full">
                     {{ ucfirst(auth()->user()->role) }}
                 </span>
-                <span class="text-xs text-slate-400 font-medium">{{ \Carbon\Carbon::now()->translatedFormat('l, d \d\e F \d\e Y') }}</span>
+                <span class="text-xs text-slate-400 font-medium">{{ ucfirst(\Carbon\Carbon::now()->locale('es')->isoFormat('dddd, D [de] MMMM [de] YYYY')) }}</span>
             </div>
             <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight mt-1">
                 ¡Hola, {{ auth()->user()->name }}! 👋
