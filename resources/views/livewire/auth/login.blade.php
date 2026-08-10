@@ -13,7 +13,7 @@
         <div class="relative z-10 flex flex-col justify-between p-12 w-full h-full">
             <!-- Branding Header -->
             <div class="flex items-center gap-3">
-                <img src="/images/logo-dark.png" class="h-10 w-auto object-contain" alt="Sointech Logo">
+                <img src="{{ asset('images/logo-dark.png') }}" class="h-10 w-auto object-contain" alt="Sointech Logo">
             </div>
             
             <!-- Mid Quote / Feature Showcase -->
@@ -52,7 +52,7 @@
             <div class="flex flex-col items-center mb-8 relative">
                 <!-- Logo shown on mobile layout -->
                 <div class="md:hidden mb-4">
-                    <img src="/images/logo-dark.png" class="h-12 w-auto object-contain" alt="Sointech Logo">
+                    <img src="{{ asset('images/logo-dark.png') }}" class="h-12 w-auto object-contain" alt="Sointech Logo">
                 </div>
                 <h2 class="text-3xl font-extrabold text-white tracking-tight">Iniciar Sesión</h2>
                 <p class="text-sm text-gray-400 mt-2">Ingresa a tu cuenta para administrar la plataforma</p>

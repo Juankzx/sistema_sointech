@@ -34,7 +34,7 @@
             }
         </style>
     </head>
-    <body class="bg-slate-950 text-slate-100 antialiased selection:bg-orange-500 selection:text-white" x-data="{ mobileMenuOpen: false }">
+    <body class="bg-slate-950 text-slate-100 antialiased selection:bg-orange-500 selection:text-white" x-data="{ mobileMenuOpen: false, isDark: true }">
         
         <div class="min-h-screen flex flex-col md:flex-row">
 
@@ -49,7 +49,7 @@
                                 @if(isset($appSettings) && $appSettings->logo_path)
                                     <img src="{{ Storage::url($appSettings->logo_path) }}" class="w-full h-full object-contain rounded-2xl" alt="Logo">
                                 @else
-                                    <img src="/images/logo-dark.png" class="w-full h-full object-contain rounded-2xl" alt="Sointech Logo">
+                                    <img src="{{ asset('images/logo-dark.png') }}" class="w-full h-full object-contain rounded-2xl" alt="Sointech Logo">
                                 @endif
                             </div>
                         </div>
@@ -238,7 +238,7 @@
                                 @if(isset($appSettings) && $appSettings->logo_path)
                                     <img src="{{ Storage::url($appSettings->logo_path) }}" class="w-full h-full object-contain rounded-xl" alt="Logo">
                                 @else
-                                    <img src="/images/logo-dark.png" class="w-full h-full object-contain rounded-xl" alt="Sointech Logo">
+                                    <img src="{{ asset('images/logo-dark.png') }}" class="w-full h-full object-contain rounded-xl" alt="Sointech Logo">
                                 @endif
                             </div>
                             <div>
@@ -330,7 +330,7 @@
                                 @if(isset($appSettings) && $appSettings->logo_path)
                                     <img src="{{ Storage::url($appSettings->logo_path) }}" class="w-20 h-20 object-cover rounded-full shadow-xl border-2 border-gray-700/50 transition-all hover:scale-105" alt="Logo">
                                 @else
-                                    <img :src="isDark ? '/images/logo-dark.png' : '/images/logo-light.png'" class="h-10 w-auto object-contain" alt="Sointech Logo">
+                                    <img src="{{ asset('images/logo-dark.png') }}" class="h-12 w-auto object-contain rounded-xl shadow-lg" alt="Sointech Logo">
                                 @endif
                                 
                                 @if(isset($appSettings) && $appSettings->trade_name)
