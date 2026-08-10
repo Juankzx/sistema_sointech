@@ -434,7 +434,7 @@
                 @forelse($topProducts as $prod)
                 <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200/60 dark:border-slate-800">
                     <div class="truncate max-w-[160px]">
-                        <p class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">{{ $prod->product_name }}</p>
+                        <p class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">{{ $prod->name }}</p>
                         <span class="text-[10px] text-slate-400">{{ $prod->total_qty }} uds vendidas</span>
                     </div>
                     <span class="text-xs font-black text-orange-500">

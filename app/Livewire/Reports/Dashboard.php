@@ -119,9 +119,9 @@ class Dashboard extends Component
         }
 
         // Top 5 Productos/Repuestos más vendidos
-        $topProducts = SaleItem::select('product_name', DB::raw('SUM(quantity) as total_qty'), DB::raw('SUM(subtotal) as total_amount'))
+        $topProducts = SaleItem::select('name', DB::raw('SUM(quantity) as total_qty'), DB::raw('SUM(subtotal) as total_amount'))
             ->whereBetween('created_at', [$start, $end])
-            ->groupBy('product_name')
+            ->groupBy('name')
             ->orderByDesc('total_qty')
             ->take(5)
             ->get();
