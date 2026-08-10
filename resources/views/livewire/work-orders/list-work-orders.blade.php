@@ -439,8 +439,8 @@
                 $totalCost = (float)$managingOrder->labor_cost + $partsCost;
                 $balanceDue = $totalCost - (float)$managingOrder->down_payment;
             @endphp
-            <div x-data="{ previewImage: null, mobileMenuOpen: false }" class="fixed inset-0 bg-gray-950/80 backdrop-blur-md z-50 flex items-center justify-center p-0 md:p-6 overflow-hidden">
-                <div class="bg-gray-850 border-0 md:border border-gray-800 rounded-none md:rounded-3xl w-full max-w-6xl h-full md:h-auto md:max-h-[85vh] overflow-hidden shadow-2xl animate-fade-in flex flex-col" @keydown.escape.window="previewImage = null" @click.outside="previewImage = null">
+            <div x-data="{ previewImage: null, zoomLevel: 1, mobileMenuOpen: false }" class="fixed inset-0 bg-gray-950/80 backdrop-blur-md z-50 flex items-center justify-center p-0 md:p-6 overflow-hidden">
+                <div class="bg-gray-850 border-0 md:border border-gray-800 rounded-none md:rounded-3xl w-full max-w-6xl h-full md:h-auto md:max-h-[85vh] overflow-hidden shadow-2xl animate-fade-in flex flex-col" @keydown.escape.window="if(!previewImage) closeManagingModal()" @click.outside="if(!previewImage) closeManagingModal()">
                     
                     <!-- Modal Header -->
                     <div class="flex justify-between items-center border-b border-gray-800 p-3 md:p-6 shrink-0">
@@ -1346,21 +1346,18 @@
                                                             <p class="text-xs text-gray-400 leading-relaxed whitespace-pre-wrap">{{ $log->notes }}</p>
                                                             
                                                             @if($log->image_path)
-                                                                <div class="mt-2.5 relative inline-block group max-w-[240px] rounded-2xl overflow-hidden border border-gray-700/60 shadow-lg bg-gray-950">
-                                                                    <button 
-                                                                        type="button" 
-                                                                        @click="previewImage = '{{ asset('storage/' . $log->image_path) }}'" 
-                                                                        class="w-full h-auto p-0 border-0 focus:outline-none cursor-pointer block group"
+                                                                <div 
+                                                                    @click.stop="previewImage = '{{ asset('storage/' . $log->image_path) }}'; zoomLevel = 1;"
+                                                                    class="mt-2.5 relative inline-block group max-w-[240px] rounded-2xl overflow-hidden border border-gray-700/60 shadow-lg bg-gray-950 cursor-pointer active:scale-95 transition"
+                                                                >
+                                                                    <img 
+                                                                        src="{{ asset('storage/' . $log->image_path) }}" 
+                                                                        loading="lazy" 
+                                                                        class="w-full max-h-48 object-cover group-hover:scale-105 transition duration-300 rounded-2xl"
+                                                                        onerror="this.onerror=null; this.src='/images/logo-dark.png';"
+                                                                        alt="Evidencia técnica"
                                                                     >
-                                                                        <img 
-                                                                            src="{{ asset('storage/' . $log->image_path) }}" 
-                                                                            loading="lazy" 
-                                                                            class="w-full max-h-48 object-cover group-hover:scale-105 transition duration-300 rounded-2xl"
-                                                                            onerror="this.onerror=null; this.src='/images/logo-dark.png';"
-                                                                            alt="Evidencia técnica"
-                                                                        >
-                                                                    </button>
-                                                                    <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-lg text-[8.5px] font-black uppercase bg-gray-900/90 text-gray-200 border border-gray-700/60 pointer-events-none flex items-center gap-1 shadow-md">
+                                                                    <span class="absolute bottom-2 right-2 px-2 py-1 rounded-lg text-[9px] font-black uppercase bg-gray-900/90 text-gray-100 border border-gray-700/80 pointer-events-none flex items-center gap-1 shadow-md">
                                                                         🔍 Ampliar
                                                                     </span>
                                                                 </div>
@@ -1735,7 +1732,7 @@
                     </div>
                 </div>
                 
-                <!-- Inline Lightbox / Fullscreen Image Viewer -->
+                <!-- Inline Lightbox / Fullscreen Image Viewer with Interactive Zoom & Touch Panning -->
                 <div 
                     x-show="previewImage" 
                     x-transition:enter="transition ease-out duration-200"
@@ -1744,27 +1741,75 @@
                     x-transition:leave="transition ease-in duration-150"
                     x-transition:leave-start="opacity-100"
                     x-transition:leave-end="opacity-0"
-                    class="fixed inset-0 bg-black/95 backdrop-blur-xl z-55 flex items-center justify-center p-4"
+                    class="fixed inset-0 bg-black/95 backdrop-blur-2xl z-[99999] flex flex-col items-center justify-between p-3 sm:p-6"
                     style="display: none;"
-                    @click="previewImage = null"
+                    @click.self="previewImage = null; zoomLevel = 1;"
+                    @keydown.escape.window="if(previewImage) { previewImage = null; zoomLevel = 1; }"
                 >
-                    <!-- Close button (X) -->
-                    <button 
-                        type="button" 
-                        @click="previewImage = null" 
-                        class="absolute top-6 right-6 text-gray-400 hover:text-white transition duration-200 cursor-pointer p-2.5 bg-gray-900/80 hover:bg-gray-800 rounded-full border border-gray-800 shadow-lg hover:scale-105"
-                    >
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                    
-                    <!-- Image content -->
-                    <div class="relative max-w-full max-h-[90vh] flex items-center justify-center select-none" @click.stop>
-                        <img 
-                            :src="previewImage" 
-                            class="max-w-full max-h-[85vh] object-contain rounded-2xl border border-gray-800 shadow-2xl animate-scale-in"
+                    <!-- Header Control Bar -->
+                    <div class="w-full flex items-center justify-between z-[100000] px-2 py-1 shrink-0">
+                        <!-- Zoom Info & Action Buttons -->
+                        <div class="flex items-center gap-2 bg-gray-900/90 border border-gray-700/80 rounded-2xl px-3 py-1.5 shadow-2xl backdrop-blur-md">
+                            <span class="text-xs font-mono font-bold text-teal-400 mr-1" x-text="Math.round(zoomLevel * 100) + '%'">100%</span>
+                            
+                            <button 
+                                type="button" 
+                                @click.stop="zoomLevel = Math.max(1, zoomLevel - 0.5)" 
+                                class="w-8 h-8 rounded-xl bg-gray-800 hover:bg-gray-700 active:scale-90 text-white font-black text-base flex items-center justify-center border border-gray-700 transition cursor-pointer"
+                                title="Alejar (-)"
+                            >-</button>
+
+                            <button 
+                                type="button" 
+                                @click.stop="zoomLevel = Math.min(4, zoomLevel + 0.5)" 
+                                class="w-8 h-8 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:scale-90 text-white font-black text-base flex items-center justify-center border border-indigo-400 transition cursor-pointer shadow-lg shadow-indigo-500/30"
+                                title="Acercar (+)"
+                            >+</button>
+
+                            <button 
+                                type="button" 
+                                @click.stop="zoomLevel = (zoomLevel > 1 ? 1 : 2.5)" 
+                                class="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 active:scale-90 text-xs font-bold text-white border border-gray-700 transition cursor-pointer"
+                            >
+                                <span x-text="zoomLevel > 1 ? '🔍 Restablecer' : '🔍 Zoom 2.5x'"></span>
+                            </button>
+                        </div>
+
+                        <!-- Close Button (X) -->
+                        <button 
+                            type="button" 
+                            @click.stop="previewImage = null; zoomLevel = 1;" 
+                            class="text-gray-300 hover:text-white transition duration-200 cursor-pointer p-2.5 bg-gray-900/90 hover:bg-gray-800 rounded-full border border-gray-700 shadow-2xl active:scale-90 flex items-center justify-center"
+                            title="Cerrar imagen"
                         >
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Scrollable & Zoomable Viewport -->
+                    <div 
+                        class="relative w-full flex-1 flex items-center justify-center overflow-auto p-2 my-auto custom-scrollbar select-none" 
+                        @click.self="previewImage = null; zoomLevel = 1;"
+                    >
+                        <div 
+                            class="inline-block transition-transform duration-200 ease-out origin-center" 
+                            :style="'transform: scale(' + zoomLevel + '); max-width: 100%; max-height: 100%;'"
+                        >
+                            <img 
+                                :src="previewImage" 
+                                @dblclick.stop="zoomLevel = (zoomLevel > 1 ? 1 : 2.5)"
+                                @click.stop="zoomLevel = (zoomLevel === 1 ? 2 : (zoomLevel === 2 ? 3.5 : 1))"
+                                class="max-w-full max-h-[78vh] object-contain rounded-2xl border border-gray-800 shadow-2xl cursor-zoom-in"
+                                alt="Evidencia ampliada"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Helpful mobile tooltip -->
+                    <div class="text-[10.5px] font-medium text-gray-400 text-center pb-1 shrink-0 flex items-center gap-1.5 bg-gray-900/80 px-4 py-1 rounded-full border border-gray-800/80">
+                        <span>📸 Toca la foto para alternar Zoom (100% / 200% / 350%). Usa los botones para ajustar y arrastra para examinar detalles.</span>
                     </div>
                 </div>
             </div>
