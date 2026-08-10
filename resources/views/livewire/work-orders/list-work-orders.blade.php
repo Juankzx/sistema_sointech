@@ -1486,66 +1486,139 @@
                                     </div>
 
                                     @if($balanceDue > 0)
-                                    <!-- Pago Rápido (antes de POS) -->
-                                    <div class="bg-gray-900/60 border border-gray-700/50 p-4 rounded-2xl space-y-3">
-                                        <h5 class="text-xs font-black text-white uppercase tracking-wider">💳 Registrar Pago Rápido</h5>
-                                        <p class="text-[10px] text-gray-500">Registra un abono o pago anticipado directamente desde aquí sin ir al POS.</p>
+                                     <!-- Pago Rápido (antes de POS) -->
+                                     <div x-data="{
+                                         rawAmount: @entangle('newPaymentAmount').live,
+                                         formatted: '',
+                                         maxBalance: {{ $balanceDue }},
+                                         updateDisplay() {
+                                             let clean = String(this.rawAmount || 0).replace(/\D/g, '');
+                                             if (!clean || clean === '0') {
+                                                 this.formatted = '$ 0';
+                                             } else {
+                                                 this.formatted = '$ ' + new Intl.NumberFormat('es-CL').format(parseInt(clean, 10));
+                                             }
+                                         },
+                                         onInput(e) {
+                                             let val = e.target.value.replace(/\D/g, '');
+                                             let num = val ? parseInt(val, 10) : 0;
+                                             this.rawAmount = num;
+                                             this.updateDisplay();
+                                         },
+                                         setAmount(val) {
+                                             this.rawAmount = val;
+                                             this.updateDisplay();
+                                         },
+                                         init() {
+                                             this.updateDisplay();
+                                             this.$watch('rawAmount', () => this.updateDisplay());
+                                         }
+                                     }" class="bg-gray-900/60 border border-gray-700/50 p-4 rounded-2xl space-y-3">
+                                         <div class="flex items-center justify-between">
+                                             <h5 class="text-xs font-black text-white uppercase tracking-wider">💳 Registrar Pago Rápido</h5>
+                                             <span class="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-500/30">Auto-Validado</span>
+                                         </div>
+                                         <p class="text-[10px] text-gray-500">Registra un abono o pago anticipado directamente desde aquí sin ir al POS.</p>
 
-                                        <div class="grid grid-cols-2 gap-3">
-                                            <div>
-                                                <label class="block text-[10px] text-gray-400 font-bold mb-1 uppercase tracking-wider">Monto</label>
-                                                <input
-                                                    type="number"
-                                                    wire:model="newPaymentAmount"
-                                                    placeholder="0"
-                                                    min="1"
-                                                    class="w-full bg-gray-800 border border-gray-700 rounded-xl py-2.5 px-3 text-white text-sm font-bold focus:outline-none focus:border-emerald-500 transition"
-                                                >
-                                            </div>
-                                            <div>
-                                                <label class="block text-[10px] text-gray-400 font-bold mb-1 uppercase tracking-wider">Método</label>
-                                                <select wire:model="newPaymentMethod" class="w-full bg-gray-800 border border-gray-700 rounded-xl py-2.5 px-3 text-white text-sm focus:outline-none focus:border-emerald-500 transition">
-                                                    <option>Efectivo</option>
-                                                    <option>Transferencia</option>
-                                                    <option>Débito</option>
-                                                    <option>Crédito</option>
-                                                    <option>Otro</option>
-                                                </select>
-                                            </div>
-                                        </div>
+                                         <!-- Botones de Selección Rápida de Monto -->
+                                         <div class="flex flex-wrap items-center gap-1.5 pt-1">
+                                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mr-1">Sugeridos:</span>
+                                             <button type="button" @click="setAmount(maxBalance)" class="px-2.5 py-1 bg-emerald-950/60 hover:bg-emerald-900/80 border border-emerald-500/40 text-emerald-300 rounded-lg text-[10px] font-bold transition flex items-center gap-1 cursor-pointer active:scale-95">
+                                                 💰 Todo (${{ number_format($balanceDue, 0, ',', '.') }})
+                                             </button>
+                                             @if($balanceDue > 1000)
+                                                 <button type="button" @click="setAmount(Math.round(maxBalance / 2))" class="px-2.5 py-1 bg-blue-950/60 hover:bg-blue-900/80 border border-blue-500/40 text-blue-300 rounded-lg text-[10px] font-bold transition flex items-center gap-1 cursor-pointer active:scale-95">
+                                                     🌓 50% (${{ number_format(round($balanceDue / 2), 0, ',', '.') }})
+                                                 </button>
+                                             @endif
+                                         </div>
 
-                                        <div>
-                                            <label class="block text-[10px] text-gray-400 font-bold mb-1 uppercase tracking-wider">Descripción</label>
-                                            <input
-                                                type="text"
-                                                wire:model="newPaymentDescription"
-                                                placeholder="Abono Parcial"
-                                                class="w-full bg-gray-800 border border-gray-700 rounded-xl py-2 px-3 text-white text-xs focus:outline-none focus:border-emerald-500 transition"
-                                            >
-                                        </div>
+                                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                             <div>
+                                                 <label class="block text-[10px] text-gray-400 font-bold mb-1 uppercase tracking-wider">Monto a Cobrar</label>
+                                                 <input
+                                                     type="text"
+                                                     x-model="formatted"
+                                                     @input="onInput($event)"
+                                                     placeholder="$ 0"
+                                                     :class="{
+                                                         'border-red-500 text-red-300 bg-red-950/30 focus:border-red-500': rawAmount > maxBalance,
+                                                         'border-emerald-500 text-emerald-300 bg-emerald-950/20 focus:border-emerald-500': rawAmount > 0 && rawAmount <= maxBalance,
+                                                         'border-gray-700 text-white bg-gray-800 focus:border-emerald-500': !rawAmount || rawAmount <= 0
+                                                     }"
+                                                     class="w-full rounded-xl py-2.5 px-3 font-mono text-sm font-black focus:outline-none transition"
+                                                 >
+                                             </div>
+                                             <div>
+                                                 <label class="block text-[10px] text-gray-400 font-bold mb-1 uppercase tracking-wider">Método de Pago</label>
+                                                 <select wire:model="newPaymentMethod" class="w-full bg-gray-800 border border-gray-700 rounded-xl py-2.5 px-3 text-white text-xs focus:outline-none focus:border-emerald-500 transition">
+                                                     <option>Efectivo</option>
+                                                     <option>Transferencia</option>
+                                                     <option>Débito</option>
+                                                     <option>Crédito</option>
+                                                     <option>Otro</option>
+                                                 </select>
+                                             </div>
+                                         </div>
 
-                                        {{-- Checkbox: Pago anticipado sin bitácora --}}
-                                        <label class="flex items-center gap-3 bg-amber-950/20 border border-amber-700/30 rounded-xl p-3 cursor-pointer hover:bg-amber-950/30 transition">
-                                            <input
-                                                type="checkbox"
-                                                wire:model="skipLogOnPayment"
-                                                class="w-4 h-4 rounded border-gray-600 bg-gray-800 text-amber-500 focus:ring-amber-500 focus:ring-1 cursor-pointer"
-                                            >
-                                            <div>
-                                                <span class="text-xs font-bold text-amber-400 block">Pago anticipado (no registrar en bitácora)</span>
-                                                <span class="text-[10px] text-gray-500">El cliente paga antes de iniciar la reparación. No se generará entrada en la bitácora.</span>
-                                            </div>
-                                        </label>
+                                         <!-- Advertencia en tiempo real si el monto supera el saldo pendiente -->
+                                         <template x-if="rawAmount > maxBalance">
+                                             <div class="bg-red-950/80 border border-red-500/80 text-red-200 p-3 rounded-xl text-xs space-y-1 animate-pulse">
+                                                 <div class="font-bold flex items-center gap-1.5 text-red-300">
+                                                     <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                                                     <span>⚠️ ¡ALERTA DE DIGITACIÓN!</span>
+                                                 </div>
+                                                 <p class="text-[11px] leading-tight text-red-200">
+                                                     El monto digitado <strong x-text="formatted" class="underline text-white"></strong> es <strong class="text-white">SUPERIOR</strong> al saldo pendiente (<strong class="text-white">${{ number_format($balanceDue, 0, ',', '.') }}</strong>).
+                                                     Verifica si agregaste ceros demás por error.
+                                                 </p>
+                                             </div>
+                                         </template>
 
-                                        <button
-                                            type="button"
-                                            wire:click="addPayment"
-                                            class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition duration-200 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/10"
-                                        >
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                                            Registrar Pago
-                                        </button>
-                                    </div>
+                                         @error('newPaymentAmount') 
+                                             <span class="text-red-400 text-xs font-bold block bg-red-950/40 p-2.5 rounded-xl border border-red-500/30">
+                                                 {{ $message }}
+                                             </span> 
+                                         @enderror
+
+                                         <div>
+                                             <label class="block text-[10px] text-gray-400 font-bold mb-1 uppercase tracking-wider">Descripción / Glosa</label>
+                                             <input
+                                                 type="text"
+                                                 wire:model="newPaymentDescription"
+                                                 placeholder="Abono Parcial"
+                                                 class="w-full bg-gray-800 border border-gray-700 rounded-xl py-2 px-3 text-white text-xs focus:outline-none focus:border-emerald-500 transition"
+                                             />
+                                         </div>
+
+                                         {{-- Checkbox: Pago anticipado sin bitácora --}}
+                                         <label class="flex items-center gap-3 bg-amber-950/20 border border-amber-700/30 rounded-xl p-3 cursor-pointer hover:bg-amber-950/30 transition">
+                                             <input
+                                                 type="checkbox"
+                                                 wire:model="skipLogOnPayment"
+                                                 class="w-4 h-4 rounded border-gray-600 bg-gray-800 text-amber-500 focus:ring-amber-500 focus:ring-1 cursor-pointer"
+                                             />
+                                             <div>
+                                                 <span class="text-xs font-bold text-amber-400 block">Pago anticipado (no registrar en bitácora)</span>
+                                                 <span class="text-[10px] text-gray-500">El cliente paga antes de iniciar la reparación. No se generará entrada en la bitácora.</span>
+                                             </div>
+                                         </label>
+
+                                         <button
+                                             type="button"
+                                             wire:click="addPayment"
+                                             :disabled="rawAmount > maxBalance"
+                                             :class="{
+                                                 'opacity-50 cursor-not-allowed bg-gray-700': rawAmount > maxBalance,
+                                                 'bg-emerald-600 hover:bg-emerald-500 cursor-pointer shadow-lg shadow-emerald-500/10 active:scale-95': rawAmount <= maxBalance
+                                             }"
+                                             class="w-full text-white font-bold py-3 px-4 rounded-xl text-xs transition duration-200 flex items-center justify-center gap-2"
+                                         >
+                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                                             <span>Registrar Pago (<span x-text="formatted"></span>)</span>
+                                         </button>
+                                     </div>
+                                    @endif
 
                                     <!-- Ir al POS para factura completa -->
                                     <div class="bg-gray-850 p-4 rounded-2xl border border-gray-700 space-y-3 text-center">

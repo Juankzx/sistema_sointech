@@ -754,9 +754,25 @@ class ListWorkOrders extends Component
         $this->validate([
             'newPaymentAmount' => 'required|numeric|min:1',
             'newPaymentMethod' => 'required|string',
+        ], [
+            'newPaymentAmount.required' => 'Debes ingresar un monto válido.',
+            'newPaymentAmount.numeric' => 'El monto debe ser numérico.',
+            'newPaymentAmount.min' => 'El monto debe ser de al menos $1.',
         ]);
 
         $order = WorkOrder::findOrFail($this->editingOrderId);
+
+        // Validar que el monto no exceda el saldo pendiente para evitar errores humanos de digitación
+        $partsCost = $order->parts->sum(function($p) {
+            return $p->pivot->price_at_time * $p->pivot->quantity;
+        });
+        $totalCost = (float)$order->labor_cost + $partsCost;
+        $balanceDue = max(0, $totalCost - (float)$order->down_payment);
+
+        if ($balanceDue > 0 && $this->newPaymentAmount > $balanceDue) {
+            $this->addError('newPaymentAmount', 'El monto ingresado ($' . number_format($this->newPaymentAmount, 0, ',', '.') . ') excede el saldo pendiente ($' . number_format($balanceDue, 0, ',', '.') . '). Verifica si agregaste ceros demás por error.');
+            return;
+        }
 
         // Verify open cash register
         $activeRegister = \App\Models\CashRegister::where('status', 'open')
