@@ -67,11 +67,13 @@ class WorkOrder extends Model
     {
         return match (strtolower($this->device_type ?? '')) {
             'smartphone', 'celular' => '📱 Smartphone',
-            'notebook', 'laptop'   => '💻 Notebook / PC',
-            'desktop', 'pc'        => '🖥️ PC de Escritorio',
-            'imac', 'mac'          => '🍎 iMac / Mac',
-            'tablet', 'ipad'       => '📟 Tablet / iPad',
-            'console', 'consola'   => '🎮 Consola de Videojuegos',
+            'notebook', 'laptop'   => '💻 Notebook',
+            'desktop', 'pc'        => '🖥️ PC Escritorio',
+            'imac', 'mac'          => '🍎 Mac / iMac',
+            'tablet', 'ipad'       => '📟 Tablet',
+            'console', 'consola'   => '🎮 Consola',
+            'smartwatch'           => '⌚ Smartwatch',
+            'all_in_one', 'aio'    => '🖥️ All-in-One',
             default                => '⚙️ ' . ucfirst($this->device_type ?? 'Equipo'),
         };
     }

@@ -73,8 +73,12 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
             <div>
                 <span class="text-xs text-gray-500 font-semibold uppercase block">Equipo / Dispositivo</span>
-                <span class="font-bold text-white mt-1 block">{{ $workOrder->brand_model }}</span>
-                <span class="text-xs text-gray-400 mt-0.5 block capitalize">{{ $workOrder->device_type }}</span>
+                <div class="flex items-center gap-2 flex-wrap mt-1">
+                    <span class="font-bold text-white text-base leading-tight">{{ $workOrder->brand_model }}</span>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-bold bg-blue-950/80 text-blue-300 border border-blue-500/30">
+                        {{ $workOrder->device_type_label }}
+                    </span>
+                </div>
             </div>
             <div>
                 <span class="text-xs text-gray-500 font-semibold uppercase block">Problema Reportado</span>

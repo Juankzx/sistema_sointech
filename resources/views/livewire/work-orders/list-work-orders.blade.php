@@ -194,9 +194,16 @@
                             </td>
                             <!-- Device -->
                             <td class="px-3 py-3">
-                                <div class="flex flex-col">
-                                    <span class="text-white font-medium text-xs">{{ $order->brand_model }}</span>
-                                    <span class="text-[10px] text-gray-400 font-medium">{{ $order->device_type_label }} @if($order->imei_serial) • {{ $order->imei_serial }} @endif</span>
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-white font-bold text-xs">{{ $order->brand_model }}</span>
+                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-800 text-blue-300 border border-blue-500/30">
+                                            {{ $order->device_type_label }}
+                                        </span>
+                                        @if($order->imei_serial)
+                                            <span class="text-[10px] text-gray-400 font-mono">SN: {{ $order->imei_serial }}</span>
+                                        @endif
+                                    </div>
                                 </div>
                             </td>
                             <!-- Status -->
@@ -353,8 +360,13 @@
                         <span class="text-[10px] text-gray-400 ml-1">{{ $order->client->phone }}</span>
                     </div>
                     <div>
-                        <span class="text-[10px] text-gray-500 uppercase tracking-wider block">Equipo</span>
-                        <span class="text-gray-300 text-sm font-medium">{{ $order->brand_model }} <span class="text-[10px] font-mono text-gray-500 ml-1">{{ $order->device_type }}</span></span>
+                        <span class="text-[10px] text-gray-500 uppercase tracking-wider block mb-0.5">Equipo</span>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="text-white font-bold text-sm leading-snug">{{ $order->brand_model }}</span>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] font-black bg-blue-950/80 text-blue-300 border border-blue-500/30 shadow-sm">
+                                {{ $order->device_type_label }}
+                            </span>
+                        </div>
                     </div>
                 </div>
                 
@@ -721,8 +733,12 @@
                                 <div class="space-y-3 text-xs">
                                     <div>
                                         <span class="text-[10px] text-gray-500 uppercase tracking-wider block">Equipo</span>
-                                        <span class="text-white font-bold text-sm">{{ $managingOrder->brand_model }}</span>
-                                        <span class="text-gray-400 block text-[10px] font-medium mt-0.5">{{ $managingOrder->device_type_label }}</span>
+                                        <div class="flex items-center gap-2 flex-wrap mt-0.5">
+                                            <span class="text-white font-black text-sm">{{ $managingOrder->brand_model }}</span>
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] font-bold bg-blue-950/80 text-blue-300 border border-blue-500/30 shadow-sm">
+                                                {{ $managingOrder->device_type_label }}
+                                            </span>
+                                        </div>
                                     </div>
                                     
                                     @if($managingOrder->imei_serial)

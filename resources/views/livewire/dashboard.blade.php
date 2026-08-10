@@ -242,8 +242,12 @@
                             <div class="text-[10px] text-slate-400">{{ $order->client->phone }}</div>
                         </td>
                         <td class="py-3.5 px-3">
-                            <div class="font-semibold text-slate-800 dark:text-slate-200">{{ $order->brand_model }}</div>
-                            <div class="text-[10px] text-slate-400">{{ $order->device_type }}</div>
+                            <div class="flex flex-col gap-1">
+                                <span class="font-bold text-slate-900 dark:text-white text-xs">{{ $order->brand_model }}</span>
+                                <span class="inline-flex items-center w-max px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-950/80 text-blue-300 border border-blue-500/30">
+                                    {{ $order->device_type_label }}
+                                </span>
+                            </div>
                         </td>
                         <td class="py-3.5 px-3">
                             @php
