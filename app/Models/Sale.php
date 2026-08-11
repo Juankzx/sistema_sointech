@@ -11,7 +11,12 @@ class Sale extends Model
         'client_business_activity', 'client_address', 'client_city',
         'subtotal', 'tax_rate', 'tax_amount', 'total',
         'payment_method', 'user_id', 'cash_register_id', 'work_order_id',
-        'sii_document_number', 'sii_status', 'sii_xml_url'
+        'sii_document_number', 'sii_status', 'sii_xml_url',
+        'status', 'voided_at', 'voided_by', 'void_reason',
+    ];
+
+    protected $casts = [
+        'voided_at' => 'datetime',
     ];
 
     protected static function boot()
@@ -24,6 +29,24 @@ class Sale extends Model
         });
     }
 
+    // ── Scopes ──────────────────────────────────────────────
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'completed');
+    }
+
+    public function scopeVoided($query)
+    {
+        return $query->where('status', 'voided');
+    }
+
+    // ── Helpers ─────────────────────────────────────────────
+    public function isVoided(): bool
+    {
+        return $this->status === 'voided';
+    }
+
+    // ── Relationships ───────────────────────────────────────
     public function items()
     {
         return $this->hasMany(SaleItem::class);
@@ -32,6 +55,11 @@ class Sale extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function voidedByUser()
+    {
+        return $this->belongsTo(User::class, 'voided_by');
     }
 
     public function cashRegister()

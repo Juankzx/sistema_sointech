@@ -170,6 +170,48 @@
             margin-top: 2px;
         }
 
+        /* Voided stamp */
+        .voided-stamp {
+            position: relative;
+        }
+        .voided-stamp::after {
+            content: 'ANULADA';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-25deg);
+            font-size: 42px;
+            font-weight: 900;
+            color: rgba(220, 38, 38, 0.25);
+            border: 5px solid rgba(220, 38, 38, 0.25);
+            padding: 8px 20px;
+            border-radius: 12px;
+            pointer-events: none;
+            z-index: 100;
+            white-space: nowrap;
+            letter-spacing: 6px;
+        }
+        .void-info {
+            background: #fef2f2;
+            border: 2px solid #dc2626;
+            border-radius: 8px;
+            padding: 8px 10px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        .void-info-title {
+            font-size: 11px;
+            font-weight: 800;
+            color: #dc2626;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .void-info-detail {
+            font-size: 9px;
+            color: #991b1b;
+            margin-top: 3px;
+        }
+
         @media print {
             body { margin: 0 auto; padding: 0; }
             @page { margin: 0; size: 80mm auto; }
@@ -201,6 +243,9 @@
     </div>
 
     <div class="line-dashed"></div>
+
+    <!-- Voided Stamp Container -->
+    <div style="position: relative;" class="{{ ($sale->status ?? 'completed') === 'voided' ? 'voided-stamp' : '' }}">
 
     <!-- Document Header -->
     <div class="doc-title uppercase text-center">{{ $sale->document_type ?? 'BOLETA' }}</div>
@@ -294,6 +339,19 @@
     </div>
 
     <div class="line-dashed"></div>
+
+    </div><!-- End Voided Stamp Container -->
+
+    <!-- Void Info (if voided) -->
+    @if(($sale->status ?? 'completed') === 'voided')
+        <div class="void-info">
+            <div class="void-info-title">⛔ DOCUMENTO ANULADO</div>
+            <div class="void-info-detail">
+                Motivo: {{ $sale->void_reason }}<br>
+                Anulado: {{ $sale->voided_at?->format('d/m/Y H:i') }} por {{ $sale->voidedByUser->name ?? 'N/A' }}
+            </div>
+        </div>
+    @endif
 
     <!-- QR Code -->
     <div class="qr-container">
