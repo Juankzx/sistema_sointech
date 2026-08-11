@@ -348,11 +348,14 @@
     @if(!isset($isPdfDownload))
     <div class="container web-bar">
         <div style="display: flex; align-items: center; gap: 10px;">
+            <button onclick="if(window.history.length > 1){ window.history.back(); } else { window.location.href='{{ route('quotations.index') }}'; }" class="action-btn" style="background-color: #334155; margin-right: 4px;">
+                ← Volver
+            </button>
             <span style="font-weight: bold; font-size: 13px;">Cotización {{ $quotation->quote_number }}</span>
-            <span style="font-size: 12px; color: #94a3b8;">| {{ $quotation->client_name ?? 'Cliente' }}</span>
+            <span style="font-size: 12px; color: #94a3b8; display: inline-block;" class="hide-mobile">| {{ $quotation->client_name ?? 'Cliente' }}</span>
         </div>
-        <div>
-            <a href="{{ route('quotations.download', $quotation->id) }}" class="action-btn action-dl" style="margin-right: 6px;">
+        <div style="display: flex; align-items: center; gap: 6px;">
+            <a href="{{ route('quotations.download', $quotation->id) }}" class="action-btn action-dl">
                 Descargar PDF
             </a>
             <button onclick="window.print()" class="action-btn">

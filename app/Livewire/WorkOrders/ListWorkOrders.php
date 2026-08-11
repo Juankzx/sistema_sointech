@@ -1064,20 +1064,61 @@ class ListWorkOrders extends Component
 
         $sale = Sale::create($saleData);
 
-        // Crear detalle del item en la venta (Servicio/Reparación + Modelo)
-        $cleanIssue = $order->reported_issue ?: 'Servicio Técnico';
-        if (mb_strlen($cleanIssue) > 70) {
-            $cleanIssue = mb_substr($cleanIssue, 0, 67) . '...';
+        // Crear detalle de items en la venta:
+        // 1. Si la OT proviene de una cotización con ítems detallados, registrar cada uno individualmente
+        $quotation = \App\Models\Quotation::with('items')->where('work_order_id', $order->id)->first();
+        if ($quotation && $quotation->items->count() > 0) {
+            foreach ($quotation->items as $qItem) {
+                SaleItem::create([
+                    'sale_id'    => $sale->id,
+                    'name'       => $qItem->description,
+                    'quantity'   => $qItem->quantity,
+                    'cost_price' => 0,
+                    'unit_price' => $qItem->unit_price,
+                    'subtotal'   => $qItem->subtotal,
+                ]);
+            }
+        } elseif ($order->parts && $order->parts->count() > 0) {
+            // 2. Si la OT tiene repuestos asignados en inventario
+            foreach ($order->parts as $part) {
+                $qty = $part->pivot->quantity ?? 1;
+                $price = $part->pivot->price_at_time ?? $part->sale_price;
+                SaleItem::create([
+                    'sale_id'      => $sale->id,
+                    'inventory_id' => $part->id,
+                    'name'         => $part->name,
+                    'quantity'     => $qty,
+                    'cost_price'   => $part->cost_price ?? 0,
+                    'unit_price'   => $price,
+                    'subtotal'     => $price * $qty,
+                ]);
+            }
+            if ($order->labor_cost > 0) {
+                SaleItem::create([
+                    'sale_id'    => $sale->id,
+                    'name'       => 'Mano de Obra / Servicio - ' . $order->brand_model,
+                    'quantity'   => 1,
+                    'cost_price' => 0,
+                    'unit_price' => $order->labor_cost,
+                    'subtotal'   => $order->labor_cost,
+                ]);
+            }
+        } else {
+            // 3. Fallback genérico
+            $cleanIssue = $order->reported_issue ?: 'Servicio Técnico';
+            if (mb_strlen($cleanIssue) > 70) {
+                $cleanIssue = mb_substr($cleanIssue, 0, 67) . '...';
+            }
+            $serviceTitle = $cleanIssue . ' - ' . $order->brand_model;
+            SaleItem::create([
+                'sale_id'    => $sale->id,
+                'name'       => $serviceTitle,
+                'quantity'   => 1,
+                'cost_price' => 0,
+                'unit_price' => $amount,
+                'subtotal'   => $amount,
+            ]);
         }
-        $serviceTitle = $cleanIssue . ' - ' . $order->brand_model;
-        SaleItem::create([
-            'sale_id'    => $sale->id,
-            'name'       => $serviceTitle,
-            'quantity'   => 1,
-            'cost_price' => 0,
-            'unit_price' => $amount,
-            'subtotal'   => $amount,
-        ]);
     }
 
     public function render()
