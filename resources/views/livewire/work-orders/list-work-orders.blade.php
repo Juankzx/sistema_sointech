@@ -222,9 +222,48 @@
                                     ];
                                     $class = $statusClasses[$order->status] ?? 'bg-gray-900 text-gray-300 border-gray-700';
                                 @endphp
-                                <span class="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold border {{ $class }}">
-                                    {{ $order->status }}
-                                </span>
+                                @if(auth()->user()->hasRole(['admin', 'tecnico']))
+                                    <div class="relative inline-block" x-data="{ openTableStatus: false }">
+                                        <button 
+                                            type="button" 
+                                            @click="openTableStatus = !openTableStatus" 
+                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border transition cursor-pointer hover:scale-105 {{ $class }}"
+                                            title="Clic para cambiar estado"
+                                        >
+                                            <span>{{ $order->status }}</span>
+                                            <svg class="w-3 h-3 text-current opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                        </button>
+                                        <div 
+                                            x-show="openTableStatus" 
+                                            @click.outside="openTableStatus = false" 
+                                            x-transition 
+                                            class="absolute left-0 mt-1 z-50 w-48 bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-1.5 space-y-1 max-h-56 overflow-y-auto"
+                                            style="display: none;"
+                                        >
+                                            @foreach([
+                                                'Ingresado', 'En Revisión', 'Presupuestado', 'Aprobado',
+                                                'Esperando Repuestos', 'En Reparación', 'Listo para Entrega',
+                                                'Entregado', 'Rechazado'
+                                            ] as $st)
+                                                <button 
+                                                    type="button" 
+                                                    wire:click="updateStatus({{ $order->id }}, '{{ $st }}')"
+                                                    @click="openTableStatus = false"
+                                                    class="w-full text-left px-2.5 py-1.5 text-[11px] font-bold text-gray-300 hover:text-white hover:bg-gray-800 rounded-xl flex items-center justify-between transition"
+                                                >
+                                                    <span>{{ $st }}</span>
+                                                    @if($order->status === $st)
+                                                        <span class="text-orange-400 font-bold">✓</span>
+                                                    @endif
+                                                </button>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @else
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold border {{ $class }}">
+                                        {{ $order->status }}
+                                    </span>
+                                @endif
                             </td>
                             <!-- Finanzas -->
                              <td class="px-3 py-3">
@@ -347,9 +386,48 @@
                         ];
                         $class = $statusClasses[$order->status] ?? 'bg-gray-900 text-gray-300 border-gray-700';
                     @endphp
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border {{ $class }}">
-                        {{ $order->status }}
-                    </span>
+                    @if(auth()->user()->hasRole(['admin', 'tecnico']))
+                        <div class="relative inline-block" x-data="{ openMobileStatus: false }">
+                            <button 
+                                type="button" 
+                                @click="openMobileStatus = !openMobileStatus" 
+                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border transition cursor-pointer hover:scale-105 {{ $class }}"
+                                title="Toca para cambiar estado"
+                            >
+                                <span>{{ $order->status }}</span>
+                                <svg class="w-3 h-3 text-current opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </button>
+                            <div 
+                                x-show="openMobileStatus" 
+                                @click.outside="openMobileStatus = false" 
+                                x-transition 
+                                class="absolute right-0 mt-1 z-50 w-52 bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-2 space-y-1 max-h-60 overflow-y-auto"
+                                style="display: none;"
+                            >
+                                @foreach([
+                                    'Ingresado', 'En Revisión', 'Presupuestado', 'Aprobado',
+                                    'Esperando Repuestos', 'En Reparación', 'Listo para Entrega',
+                                    'Entregado', 'Rechazado'
+                                ] as $st)
+                                    <button 
+                                        type="button" 
+                                        wire:click="updateStatus({{ $order->id }}, '{{ $st }}')"
+                                        @click="openMobileStatus = false"
+                                        class="w-full text-left px-3 py-2 text-xs font-bold text-gray-300 hover:text-white hover:bg-gray-800 rounded-xl flex items-center justify-between transition"
+                                    >
+                                        <span>{{ $st }}</span>
+                                        @if($order->status === $st)
+                                            <span class="text-orange-400 font-bold">✓</span>
+                                        @endif
+                                    </button>
+                                @endforeach
+                            </div>
+                        </div>
+                    @else
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border {{ $class }}">
+                            {{ $order->status }}
+                        </span>
+                    @endif
                 </div>
                 
                 <!-- Client & Device -->
@@ -557,8 +635,8 @@
                     <!-- Main Grid -->
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 p-3 sm:p-4 lg:p-8 overflow-y-auto flex-1 theme-scrollbar pb-20 lg:pb-8">
                         
-                        <!-- LEFT COLUMN: Summary & Financials (4 cols) - Hidden on mobile -->
-                        <div class="hidden lg:block lg:col-span-4 space-y-5">
+                        <!-- LEFT COLUMN: Summary & Financials (4 cols) -->
+                        <div class="col-span-12 lg:col-span-4 space-y-5">
                             
                             <!-- Status Selector Card -->
                             <div class="bg-gray-900/40 p-4 rounded-2xl border border-gray-800 space-y-3">
