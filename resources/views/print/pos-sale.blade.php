@@ -96,6 +96,7 @@
             font-weight: 800;
             color: #374151;
             padding: 2px 0;
+            gap: 6px;
         }
 
         .item-row {
@@ -106,8 +107,9 @@
         }
         .item-qty {
             font-weight: 800;
-            width: 22px;
+            width: 28px;
             flex-shrink: 0;
+            margin-right: 6px;
         }
         .item-desc {
             flex-grow: 1;
@@ -237,8 +239,8 @@
 
     <!-- Table Header -->
     <div class="table-head">
-        <span style="width: 22px;">CANT</span>
-        <span style="flex-grow: 1;">DESCRIPCIÓN</span>
+        <span style="width: 28px;">CANT</span>
+        <span style="flex-grow: 1; padding-left: 6px;">DESCRIPCIÓN</span>
         <span style="text-align: right;">TOTAL</span>
     </div>
 
@@ -262,19 +264,16 @@
     <div class="line-solid"></div>
 
     @php
-        $docTypeLower = strtolower($sale->document_type ?? 'ticket');
-        $taxRate = (float)($sale->tax_rate ?? 0);
+        // Obtener tasa de IVA flexible: primero de la venta, luego de configuración global
+        $saleTaxRate = (float)($sale->tax_rate ?? 0);
+        $settingsTaxRate = (float)($companySettings->tax_rate ?? 19);
 
-        // Si es boleta o factura, o si taxRate > 0 o tax_amount == 0 en documentos oficiales, calcular IVA 19%
-        if ($docTypeLower === 'boleta' || $docTypeLower === 'factura' || $taxRate > 0 || ($sale->tax_amount <= 0 && $docTypeLower !== 'ticket')) {
-            $effectiveTaxRate = 19.00;
-            $subtotalNeto = round($sale->total / 1.19);
-            $ivaMonto = $sale->total - $subtotalNeto;
-        } else {
-            $effectiveTaxRate = 0;
-            $subtotalNeto = $sale->subtotal > 0 ? $sale->subtotal : $sale->total;
-            $ivaMonto = 0;
-        }
+        // Usar la tasa de la venta si es > 0, sino usar la de configuración global
+        $effectiveTaxRate = $saleTaxRate > 0 ? $saleTaxRate : $settingsTaxRate;
+
+        // Calcular neto e IVA desde el total
+        $subtotalNeto = round($sale->total / (1 + $effectiveTaxRate / 100));
+        $ivaMonto = $sale->total - $subtotalNeto;
     @endphp
 
     <!-- Totals -->
