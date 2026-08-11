@@ -21,7 +21,7 @@ class Login extends Component
     public function mount()
     {
         if (Auth::check()) {
-            return redirect()->intended('/');
+            return redirect()->intended(route('dashboard'));
         }
     }
 
@@ -62,7 +62,7 @@ class Login extends Component
         RateLimiter::clear($ipThrottleKey);
         session()->regenerate();
 
-        return redirect()->intended('/');
+        return redirect()->intended(route('dashboard'));
     }
 
     public function render()

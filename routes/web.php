@@ -11,6 +11,7 @@ use App\Livewire\Dashboard;
 use App\Livewire\Clients\ListClients;
 use App\Livewire\Inventory\ManageInventory;
 use App\Livewire\Public\TrackWorkOrder;
+use App\Livewire\Public\LandingPage;
 use App\Livewire\Settings\ManageSettings;
 use App\Livewire\Users\ManageUsers;
 use App\Livewire\CashRegisters\ManageCashRegister;
@@ -21,6 +22,15 @@ use App\Livewire\Quotations\CreateQuotation;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\PrintController;
 use App\Http\Controllers\ReportController;
+
+// Public Landing Page vs Subdomain Routing (taller.sointech.cl)
+if (request()->getHost() && str_starts_with(request()->getHost(), 'taller.')) {
+    Route::get('/', function () {
+        return Auth::check() ? redirect()->route('dashboard') : redirect()->route('login');
+    });
+} else {
+    Route::get('/', LandingPage::class)->name('home');
+}
 
 // Public Client Tracking Routes (Protected against automated scanning)
 Route::middleware('throttle:public-tracking')->group(function () {
@@ -52,9 +62,9 @@ Route::middleware(['guest', 'throttle:login'])->group(function () {
     Route::get('/reset-password/{token}', \App\Livewire\Auth\ResetPassword::class)->name('password.reset');
 });
 
-// Protected Routes
+// Protected Routes (Workshop Staff & Admin System)
 Route::middleware('auth')->group(function () {
-    Route::get('/', Dashboard::class)->name('dashboard');
+    Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/mi-cuenta', Dashboard::class)->name('client.orders');
 
     Route::middleware('role:admin,tecnico,recepcionista')->group(function () {
