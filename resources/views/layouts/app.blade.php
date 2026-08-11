@@ -18,6 +18,8 @@
         <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
         <!-- Favicon & PWA Icons (iPhone / Mobile) -->
+        <link rel="manifest" href="{{ asset('manifest.json') }}">
+        <meta name="theme-color" content="#020617">
         <link rel="icon" type="image/png" href="{{ isset($appSettings) && $appSettings->favicon_path ? Storage::url($appSettings->favicon_path) : asset('images/logo-dark.png') }}">
         <link rel="apple-touch-icon" sizes="180x180" href="{{ isset($appSettings) && $appSettings->favicon_path ? Storage::url($appSettings->favicon_path) : asset('images/logo-dark.png') }}">
         <meta name="apple-mobile-web-app-capable" content="yes">
@@ -35,6 +37,16 @@
         <style>
             body {
                 font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                padding-top: env(safe-area-inset-top, 0px);
+                padding-bottom: env(safe-area-inset-bottom, 0px);
+            }
+            @media all and (display-mode: standalone), (display-mode: fullscreen) {
+                .pwa-bottom-nav {
+                    display: none !important;
+                }
+            }
+            body.is-standalone .pwa-bottom-nav {
+                display: none !important;
             }
         </style>
     </head>
@@ -436,7 +448,7 @@
                 <!-- MOBILE BOTTOM NAVIGATION -->
                 @auth
                 @if(!auth()->user()->isCliente())
-                <nav class="fixed bottom-0 w-full bg-gray-950 border-t border-gray-800 z-40 md:hidden">
+                <nav class="fixed bottom-0 w-full bg-gray-950 border-t border-gray-800 z-40 md:hidden pwa-bottom-nav">
                     <div class="flex justify-around items-center h-16">
                         <!-- Dashboard -->
                         <a href="{{ route('dashboard') }}" class="flex flex-col items-center justify-center w-full {{ Route::is('dashboard') ? 'text-orange-500' : 'text-gray-400 hover:text-gray-300' }}">
@@ -730,10 +742,20 @@
             function glZoomReset() { _glZoom = 1; _applyGlZoom(); }
             function glCycleZoom() { _glZoom = (_glZoom === 1 ? 2 : (_glZoom === 2 ? 3.5 : 1)); _applyGlZoom(); }
 
-            // Close on Escape key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') closeGlobalLightbox();
-            });
+            // ===== PWA SERVICE WORKER & STANDALONE DETECTOR =====
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('/sw.js').then(function(reg) {
+                        console.log('PWA ServiceWorker registrado con éxito:', reg.scope);
+                    }).catch(function(err) {
+                        console.log('PWA ServiceWorker error:', err);
+                    });
+                });
+            }
+
+            if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+                document.body.classList.add('is-standalone');
+            }
         </script>
 
         @livewireScripts
