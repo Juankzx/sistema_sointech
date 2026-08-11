@@ -171,10 +171,18 @@
         @media print {
             body { margin: 0 auto; padding: 0; }
             @page { margin: 0; size: 80mm auto; }
+            .no-print { display: none !important; }
         }
     </style>
 </head>
 <body onload="window.print();">
+
+    <!-- PWA / Mobile Back Button -->
+    <div class="no-print" style="margin-bottom: 14px; text-align: center;">
+        <button onclick="if(window.history.length > 1){ window.history.back(); } else { window.location.href='{{ route('sales.history') }}'; }" style="background: #0f172a; color: #ffffff; border: 1px solid #334155; padding: 10px 20px; border-radius: 12px; font-weight: 800; font-size: 13px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+            ← Volver al Historial
+        </button>
+    </div>
 
     <!-- Header Logo & Info -->
     <div class="text-center">
@@ -253,14 +261,30 @@
 
     <div class="line-solid"></div>
 
+    @php
+        $docTypeLower = strtolower($sale->document_type ?? 'ticket');
+        $taxRate = (float)($sale->tax_rate ?? 0);
+
+        // Si es boleta o factura, o si taxRate > 0 o tax_amount == 0 en documentos oficiales, calcular IVA 19%
+        if ($docTypeLower === 'boleta' || $docTypeLower === 'factura' || $taxRate > 0 || ($sale->tax_amount <= 0 && $docTypeLower !== 'ticket')) {
+            $effectiveTaxRate = 19.00;
+            $subtotalNeto = round($sale->total / 1.19);
+            $ivaMonto = $sale->total - $subtotalNeto;
+        } else {
+            $effectiveTaxRate = 0;
+            $subtotalNeto = $sale->subtotal > 0 ? $sale->subtotal : $sale->total;
+            $ivaMonto = 0;
+        }
+    @endphp
+
     <!-- Totals -->
     <div class="total-row">
         <span>Subtotal Neto:</span>
-        <span>${{ number_format($sale->subtotal, 0, ',', '.') }}</span>
+        <span>${{ number_format($subtotalNeto, 0, ',', '.') }}</span>
     </div>
     <div class="total-row">
-        <span>IVA ({{ $sale->tax_rate }}%):</span>
-        <span>${{ number_format($sale->tax_amount, 0, ',', '.') }}</span>
+        <span>IVA ({{ number_format($effectiveTaxRate, 0) }}%):</span>
+        <span>${{ number_format($ivaMonto, 0, ',', '.') }}</span>
     </div>
 
     <div class="line-solid"></div>

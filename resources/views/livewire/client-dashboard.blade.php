@@ -22,11 +22,10 @@
             </a>
         </div>
     </div>
-
     <!-- Summary Metrics -->
     @php
         $total = $clientOrders->count();
-        $enProceso = $clientOrders->whereIn('status', ['Ingresado', 'En Revisión', 'Presupuestado', 'Aprobado', 'En Reparación'])->count();
+        $enProceso = $clientOrders->whereIn('status', ['Ingresado', 'En Revisión', 'Presupuestado', 'Aprobado', 'Esperando Repuestos', 'En Reparación'])->count();
         $listos = $clientOrders->where('status', 'Listo para Entrega')->count();
         $entregados = $clientOrders->where('status', 'Entregado')->count();
     @endphp
@@ -114,6 +113,7 @@
                     'En Revisión' => ['step' => 2, 'percent' => 40, 'badge' => 'bg-amber-950/60 text-amber-300 border-amber-500/40', 'icon' => '🔍'],
                     'Presupuestado' => ['step' => 2, 'percent' => 50, 'badge' => 'bg-indigo-950/60 text-indigo-300 border-indigo-500/40', 'icon' => '📋'],
                     'Aprobado' => ['step' => 3, 'percent' => 65, 'badge' => 'bg-blue-950/60 text-blue-300 border-blue-500/40', 'icon' => '✅'],
+                    'Esperando Repuestos' => ['step' => 3, 'percent' => 70, 'badge' => 'bg-amber-950/60 text-amber-300 border-amber-500/40', 'icon' => '📦'],
                     'En Reparación' => ['step' => 3, 'percent' => 75, 'badge' => 'bg-orange-950/60 text-orange-300 border-orange-500/40', 'icon' => '🛠️'],
                     'Listo para Entrega' => ['step' => 4, 'percent' => 90, 'badge' => 'bg-emerald-950/60 text-emerald-300 border-emerald-500/40 animate-pulse', 'icon' => '🎉'],
                     'Entregado' => ['step' => 4, 'percent' => 100, 'badge' => 'bg-slate-900 text-slate-400 border-slate-800', 'icon' => '📦'],

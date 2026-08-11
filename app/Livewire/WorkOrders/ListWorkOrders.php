@@ -1065,7 +1065,11 @@ class ListWorkOrders extends Component
         $sale = Sale::create($saleData);
 
         // Crear detalle del item en la venta (Servicio/Reparación + Modelo)
-        $serviceTitle = ($order->reported_issue ?: 'Servicio Técnico') . ' - ' . $order->brand_model;
+        $cleanIssue = $order->reported_issue ?: 'Servicio Técnico';
+        if (mb_strlen($cleanIssue) > 70) {
+            $cleanIssue = mb_substr($cleanIssue, 0, 67) . '...';
+        }
+        $serviceTitle = $cleanIssue . ' - ' . $order->brand_model;
         SaleItem::create([
             'sale_id'    => $sale->id,
             'name'       => $serviceTitle,

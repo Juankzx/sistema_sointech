@@ -56,6 +56,7 @@
                         'En Revisión' => 'bg-indigo-950/40 text-indigo-400 border-indigo-500/20',
                         'Presupuestado' => 'bg-amber-950/40 text-amber-400 border-amber-500/20',
                         'Aprobado' => 'bg-orange-950/40 text-orange-400 border-orange-500/20',
+                        'Esperando Repuestos' => 'bg-amber-950/40 text-amber-400 border-amber-500/20',
                         'Rechazado' => 'bg-red-950/40 text-red-400 border-red-500/20 animate-pulse',
                         'En Reparación' => 'bg-indigo-950/40 text-indigo-400 border-indigo-500/20',
                         'Listo para Entrega' => 'bg-emerald-950/40 text-emerald-400 border-emerald-500/20',
@@ -270,6 +271,9 @@
             if ($currentStatus === 'Aprobado') {
                 $currentStatus = 'Presupuestado';
             }
+            if ($currentStatus === 'Esperando Repuestos') {
+                $currentStatus = 'En Reparación';
+            }
             // Special rules if status is Entregado (it means Listo is completed)
             if ($currentStatus === 'Entregado') {
                 $currentStatus = 'Listo para Entrega';
@@ -307,6 +311,13 @@
                 @endforeach
             </div>
         </div>
+
+        @if($workOrder->status === 'Esperando Repuestos')
+            <div class="p-4 bg-amber-950/30 border border-amber-500/30 text-amber-300 rounded-2xl text-xs font-semibold text-center flex items-center justify-center gap-2">
+                <span>📦</span>
+                <span>Tu equipo se encuentra a la espera de repuestos para proceder con la reparación.</span>
+            </div>
+        @endif
 
         @if($isRechazado)
             <div class="p-4 bg-red-950/20 border border-red-500/20 text-red-400 rounded-2xl text-xs font-semibold text-center animate-pulse">

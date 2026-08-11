@@ -164,6 +164,7 @@ class Dashboard extends Component
             'Aprobado' => ['title' => 'Presupuesto Aprobado', 'notes' => 'El cliente ha autorizado la reparación del equipo.'],
             'Rechazado' => ['title' => 'Presupuesto Rechazado', 'notes' => 'El presupuesto fue rechazado por el cliente.'],
             'En Reparación' => ['title' => 'Reparación en Proceso', 'notes' => 'El técnico se encuentra trabajando en la reparación.'],
+            'Esperando Repuestos' => ['title' => 'Esperando Repuestos', 'notes' => 'El equipo se encuentra en espera de piezas para continuar.'],
             'Listo para Entrega' => ['title' => 'Reparación Finalizada', 'notes' => 'El equipo completó las pruebas de calidad y está listo para ser retirado.'],
             'Entregado' => ['title' => 'Equipo Entregado', 'notes' => 'El equipo ha sido devuelto satisfactoriamente al cliente.'],
         ];
@@ -223,6 +224,7 @@ class Dashboard extends Component
         $totalOrders = WorkOrder::count();
         $ingresadas = WorkOrder::where('status', 'Ingresado')->count();
         $enReparacion = WorkOrder::where('status', 'En Reparación')->count();
+        $esperandoRepuestos = WorkOrder::where('status', 'Esperando Repuestos')->count();
         $listas = WorkOrder::where('status', 'Listo para Entrega')->count();
         $entregadas = WorkOrder::where('status', 'Entregado')->count();
         $enRevision = WorkOrder::where('status', 'En Revisión')->count();
@@ -261,6 +263,7 @@ class Dashboard extends Component
             'Ingresado' => $ingresadas,
             'En Revisión' => $enRevision,
             'En Reparación' => $enReparacion,
+            'Esperando Repuestos' => $esperandoRepuestos,
             'Listo p/ Entrega' => $listas,
             'Entregado' => $entregadas,
         ];
@@ -269,6 +272,7 @@ class Dashboard extends Component
             'totalOrders' => $totalOrders,
             'ingresadas' => $ingresadas,
             'enReparacion' => $enReparacion,
+            'esperandoRepuestos' => $esperandoRepuestos,
             'listas' => $listas,
             'entregadas' => $entregadas,
             'enRevision' => $enRevision,

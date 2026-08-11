@@ -60,6 +60,7 @@
         .status-revision { background-color: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe; }
         .status-presupuestado { background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
         .status-aprobado { background-color: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+        .status-repuestos { background-color: #ffedd5; color: #c2410c; border: 1px solid #fed7aa; }
         .status-reparacion { background-color: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe; }
         .status-listo { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
         .status-entregado { background-color: #f3e8ff; color: #6b21a8; border: 1px solid #e9d5ff; }
@@ -139,6 +140,7 @@
             'En Revisión' => 'status-revision',
             'Presupuestado' => 'status-presupuestado',
             'Aprobado' => 'status-aprobado',
+            'Esperando Repuestos' => 'status-repuestos',
             'En Reparación' => 'status-reparacion',
             'Listo para Entrega' => 'status-listo',
             'Entregado' => 'status-entregado',
@@ -151,6 +153,7 @@
             'En Revisión' => 'Tu equipo ya se encuentra en la mesa de trabajo de nuestros técnicos siendo evaluado minuciosamente.',
             'Presupuestado' => 'Hemos finalizado la revisión técnica de tu equipo y preparamos la propuesta de trabajo.',
             'Aprobado' => 'Recibimos la confirmación de tu presupuesto. Tu equipo entra de inmediato en proceso de reparación.',
+            'Esperando Repuestos' => 'Tu equipo se encuentra a la espera de los repuestos necesarios para proceder con su reparación.',
             'En Reparación' => 'Nuestros técnicos están ejecutando la reparación y sustitución de piezas de tu dispositivo.',
             'Listo para Entrega' => '¡Excelentes noticias! Tu equipo ya fue reparado, pasó todas las pruebas de calidad y está listo para ser retirado.',
             'Entregado' => 'El equipo ha sido entregado conforme en nuestra sucursal. ¡Muchas gracias por confiar en Sointech!',

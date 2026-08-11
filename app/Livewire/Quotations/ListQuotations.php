@@ -93,13 +93,18 @@ class ListQuotations extends Component
                 }
             }
 
+            $firstItemDesc = $quote->items->first()?->description ?? 'Servicios Generales';
+            $itemCount = $quote->items->count();
+            $issueSummary = $itemCount > 1 ? ($firstItemDesc . ' + ' . ($itemCount - 1) . ' ítem(s)') : $firstItemDesc;
+            $reportedIssue = 'Cotización ' . $quote->quote_number . ': ' . $issueSummary;
+
             // Crear Orden de Trabajo con UUID obligatorio y 0 abono por defecto
             $workOrder = WorkOrder::create([
                 'uuid'               => (string) Str::uuid(),
                 'client_id'          => $client->id,
                 'device_type'        => $deviceType,
                 'brand_model'        => $quote->device_info ?? 'Equipo Presupuestado',
-                'reported_issue'     => 'Trabajo según Cotización ' . $quote->quote_number . ': ' . implode(', ', $quote->items->pluck('description')->toArray()),
+                'reported_issue'     => $reportedIssue,
                 'status'             => 'Ingresado',
                 'estimated_delivery' => Carbon::now()->addDays(2),
                 'estimated_cost'     => $quote->total,

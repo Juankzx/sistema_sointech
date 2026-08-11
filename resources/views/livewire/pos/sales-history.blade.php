@@ -18,14 +18,13 @@
             </span>
         </div>
     </div>
-
     <!-- Filters Bar -->
-    <div class="bg-slate-900/90 backdrop-blur-xl p-4 sm:p-5 rounded-3xl border border-slate-800/80 shadow-2xl space-y-4">
+    <div class="bg-slate-900/90 backdrop-blur-xl p-4 sm:p-5 rounded-3xl border border-slate-800/80 shadow-2xl space-y-4 max-w-full overflow-hidden">
         <div class="grid grid-cols-1 md:grid-cols-12 gap-3.5 items-end">
             <!-- Search -->
-            <div class="md:col-span-6 w-full">
+            <div class="md:col-span-6 w-full min-w-0">
                 <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Buscar Venta</label>
-                <div class="relative">
+                <div class="relative w-full">
                     <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </span>
@@ -33,7 +32,7 @@
                         wire:model.live.debounce.300ms="search" 
                         type="text" 
                         placeholder="Cliente, teléfono, código #..." 
-                        class="w-full bg-slate-950/80 border border-slate-700/80 focus:border-orange-500 rounded-2xl py-2.5 pl-10 pr-9 text-white text-xs font-medium placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition duration-200"
+                        class="w-full max-w-full bg-slate-950/80 border border-slate-700/80 focus:border-orange-500 rounded-2xl py-2.5 pl-10 pr-9 text-white text-xs font-medium placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition duration-200"
                     >
                     @if($search)
                         <button wire:click="$set('search', '')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-white">
@@ -43,24 +42,24 @@
                 </div>
             </div>
             
-            <!-- Dates in 2 Cols on Mobile -->
-            <div class="md:col-span-6 grid grid-cols-2 gap-3 w-full">
-                <div>
+            <!-- Dates in 2 Cols on Mobile (Strictly bounded) -->
+            <div class="md:col-span-6 grid grid-cols-2 gap-2.5 w-full min-w-0">
+                <div class="min-w-0">
                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Desde</label>
                     <input 
                         wire:model.live="dateFrom" 
                         type="date" 
-                        class="w-full bg-slate-950/80 border border-slate-700/80 focus:border-orange-500 rounded-2xl py-2 px-3 text-white text-xs font-medium focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition duration-200" 
+                        class="w-full max-w-full bg-slate-950/80 border border-slate-700/80 focus:border-orange-500 rounded-2xl py-2 px-2.5 sm:px-3 text-white text-xs font-medium focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition duration-200" 
                         max="{{ date('Y-m-d') }}"
                     >
                 </div>
 
-                <div>
+                <div class="min-w-0">
                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Hasta</label>
                     <input 
                         wire:model.live="dateTo" 
                         type="date" 
-                        class="w-full bg-slate-950/80 border border-slate-700/80 focus:border-orange-500 rounded-2xl py-2 px-3 text-white text-xs font-medium focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition duration-200" 
+                        class="w-full max-w-full bg-slate-950/80 border border-slate-700/80 focus:border-orange-500 rounded-2xl py-2 px-2.5 sm:px-3 text-white text-xs font-medium focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition duration-200" 
                         max="{{ date('Y-m-d') }}"
                     >
                 </div>
@@ -69,13 +68,14 @@
     </div>
 
     <!-- Content Container -->
-    <div class="bg-slate-900/60 backdrop-blur-xl rounded-3xl border border-slate-800 shadow-2xl overflow-hidden">
+    <div class="bg-slate-900/60 backdrop-blur-xl rounded-3xl border border-slate-800 shadow-2xl overflow-hidden max-w-full">
         
         <!-- DESKTOP TABLE -->
         <div class="hidden md:block overflow-x-auto theme-scrollbar">
             <table class="w-full text-left text-xs whitespace-nowrap">
                 <thead>
                     <tr class="bg-slate-950/80 text-slate-400 font-bold uppercase text-[10px] tracking-widest border-b border-slate-800">
+                        <th class="px-4 py-4 w-12 text-center">N°</th>
                         <th class="px-6 py-4">Fecha & Hora</th>
                         <th class="px-6 py-4">Código</th>
                         <th class="px-6 py-4">Cliente</th>
@@ -87,8 +87,11 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-800/60">
-                    @forelse($sales as $sale)
+                    @forelse($sales as $index => $sale)
                         <tr class="hover:bg-slate-800/40 transition duration-150 group">
+                            <td class="px-4 py-4 text-center font-mono font-bold text-slate-500 text-xs">
+                                #{{ ($sales->currentPage() - 1) * $sales->perPage() + $loop->iteration }}
+                            </td>
                             <td class="px-6 py-4 text-slate-400 font-medium">
                                 <div class="flex flex-col">
                                     <span class="text-slate-200 font-semibold">{{ $sale->created_at->format('d/m/Y') }}</span>
@@ -115,8 +118,8 @@
                                 <div class="flex flex-col gap-1 overflow-hidden">
                                     @foreach($sale->items as $item)
                                         <div class="flex items-center gap-1.5 text-slate-300">
-                                            <span class="px-1.5 py-0.5 rounded bg-slate-800 text-[10px] font-black text-amber-400 border border-slate-700/60">{{ $item->quantity }}x</span>
-                                            <span class="truncate text-xs font-medium">{{ $item->name }}</span>
+                                            <span class="px-1.5 py-0.5 rounded bg-slate-800 text-[10px] font-black text-amber-400 border border-slate-700/60 shrink-0">{{ $item->quantity }}x</span>
+                                            <span class="truncate text-xs font-medium" title="{{ $item->name }}">{{ $item->name }}</span>
                                         </div>
                                     @endforeach
                                 </div>
@@ -174,7 +177,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-6 py-12 text-center text-slate-500">
+                            <td colspan="9" class="px-6 py-12 text-center text-slate-500">
                                 <div class="flex flex-col items-center justify-center gap-2">
                                     <svg class="w-10 h-10 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                     <span>No se encontraron ventas registradas con los filtros actuales.</span>
@@ -188,14 +191,19 @@
 
         <!-- MOBILE CARDS VIEW (REFINED & ELEGANT) -->
         <div class="md:hidden flex flex-col gap-4 p-3.5 sm:p-4">
-            @forelse($sales as $sale)
-                <div class="bg-gradient-to-br from-slate-900/90 to-slate-950/90 border border-slate-800 rounded-3xl p-4 shadow-xl flex flex-col gap-3.5 relative overflow-hidden transition-all duration-200 active:scale-[0.99] border-l-4 border-l-orange-500">
+            @forelse($sales as $index => $sale)
+                <div class="bg-gradient-to-br from-slate-900/90 to-slate-950/90 border border-slate-800 rounded-3xl p-4 shadow-xl flex flex-col gap-3.5 relative overflow-hidden transition-all duration-200 border-l-4 border-l-orange-500">
                     
-                    <!-- Top Bar: Code & Date -->
+                    <!-- Top Bar: Index Number, Code & Date -->
                     <div class="flex items-center justify-between border-b border-slate-800/80 pb-2.5">
-                        <span class="font-mono text-xs font-black text-orange-400 bg-orange-500/10 px-2.5 py-0.5 rounded-lg border border-orange-500/20 shadow-xs">
-                            #{{ substr($sale->uuid, 0, 8) }}
-                        </span>
+                        <div class="flex items-center gap-1.5">
+                            <span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-slate-800 text-slate-300 border border-slate-700/80">
+                                N° {{ ($sales->currentPage() - 1) * $sales->perPage() + $loop->iteration }}
+                            </span>
+                            <span class="font-mono text-xs font-black text-orange-400 bg-orange-500/10 px-2.5 py-0.5 rounded-lg border border-orange-500/20 shadow-xs">
+                                #{{ substr($sale->uuid, 0, 8) }}
+                            </span>
+                        </div>
                         <div class="text-[11px] text-slate-400 font-semibold flex items-center gap-1.5">
                             <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             <span>{{ $sale->created_at->format('d/m/Y H:i') }}</span>
@@ -233,7 +241,7 @@
                                     <span class="px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20 font-black text-[10px] shrink-0 mt-0.5">
                                         {{ $item->quantity }}x
                                     </span>
-                                    <span class="text-slate-300 font-medium leading-tight">{{ $item->name }}</span>
+                                    <span class="text-slate-300 font-medium leading-tight line-clamp-2" title="{{ $item->name }}">{{ $item->name }}</span>
                                 </div>
                             @endforeach
                         </div>
@@ -259,7 +267,7 @@
 
                         <div class="text-right">
                             <span class="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-0.5">Total Venta</span>
-                            <span class="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-300">
+                            <span class="text-base sm:text-lg font-black text-amber-400 block">
                                 ${{ number_format($sale->total, 0, ',', '.') }}
                             </span>
                         </div>

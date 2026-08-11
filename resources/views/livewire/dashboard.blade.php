@@ -58,7 +58,7 @@
                         labels: statusLabels,
                         datasets: [{
                             data: statusValues,
-                            backgroundColor: ['#64748b', '#6366f1', '#3b82f6', '#10b981', '#a855f7'],
+                            backgroundColor: ['#64748b', '#6366f1', '#3b82f6', '#f59e0b', '#10b981', '#a855f7'],
                             borderWidth: 0
                         }]
                     },
@@ -110,8 +110,8 @@
         </div>
     </div>
 
-    <!-- 2. TARJETAS DE KPIS PRINCIPALES (GRID 4 COLS) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- 2. TARJETAS DE KPIS PRINCIPALES (GRID 5 COLS) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <!-- Total Órdenes -->
         <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-5 shadow-sm flex items-center justify-between">
             <div>
@@ -133,6 +133,18 @@
             </div>
             <div class="p-3 bg-indigo-500/10 text-indigo-500 rounded-2xl">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
+            </div>
+        </div>
+
+        <!-- Esperando Repuestos -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-5 shadow-sm flex items-center justify-between">
+            <div>
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Esperando Repuestos</span>
+                <span class="text-3xl font-black text-amber-500 mt-1 block">{{ $esperandoRepuestos }}</span>
+                <span class="text-[11px] text-slate-400 font-medium mt-0.5 block">Equipos a la espera de piezas</span>
+            </div>
+            <div class="p-3 bg-amber-500/10 text-amber-500 rounded-2xl">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
             </div>
         </div>
 
@@ -256,6 +268,7 @@
                                     'En Revisión' => 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20',
                                     'Presupuestado' => 'bg-amber-500/10 text-amber-500 border-amber-500/20',
                                     'Aprobado' => 'bg-blue-500/10 text-blue-500 border-blue-500/20',
+                                    'Esperando Repuestos' => 'bg-amber-500/10 text-amber-500 border-amber-500/20',
                                     'Rechazado' => 'bg-red-500/10 text-red-500 border-red-500/20',
                                     'En Reparación' => 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20',
                                     'Listo para Entrega' => 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',

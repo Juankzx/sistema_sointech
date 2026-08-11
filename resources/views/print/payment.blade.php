@@ -17,10 +17,16 @@
         .uppercase { text-transform: uppercase; }
         @media print {
             body { margin: 0; padding: 0; }
+            .no-print { display: none !important; }
         }
     </style>
 </head>
 <body onload="window.print();">
+    <div class="no-print" style="margin-bottom: 14px; text-align: center;">
+        <button onclick="if(window.history.length > 1){ window.history.back(); } else { window.location.href='{{ route('work-orders.index') }}'; }" style="background: #0f172a; color: #ffffff; border: 1px solid #334155; padding: 10px 20px; border-radius: 12px; font-weight: 800; font-size: 13px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+            ← Volver a Órdenes de Trabajo
+        </button>
+    </div>
     <div class="text-center font-bold mb-4 uppercase border-b pb-2">
         @if(isset($appSettings) && $appSettings->logo_path)
             <img src="{{ Storage::url($appSettings->logo_path) }}" alt="Logo" style="max-width: 120px; max-height: 60px; margin-bottom: 8px; filter: grayscale(100%) contrast(1.2);">

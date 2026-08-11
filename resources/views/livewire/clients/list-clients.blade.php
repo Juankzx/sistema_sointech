@@ -596,6 +596,7 @@
                                                     'Ingresado' => 'background:rgba(14,165,233,.1); color:#38bdf8; border:1px solid rgba(14,165,233,.2);',
                                                     'En Revisión' => 'background:rgba(245,158,11,.1); color:#fbbf24; border:1px solid rgba(245,158,11,.2);',
                                                     'Aprobado' => 'background:rgba(16,185,129,.1); color:#34d399; border:1px solid rgba(16,185,129,.2);',
+                                                    'Esperando Repuestos' => 'background:rgba(249,115,22,.1); color:#fb923c; border:1px solid rgba(249,115,22,.2);',
                                                     'En Reparación' => 'background:rgba(139,92,246,.1); color:#c084fc; border:1px solid rgba(139,92,246,.2);',
                                                     'Listo para Entrega' => 'background:rgba(16,185,129,.15); color:#34d399; border:1px solid rgba(16,185,129,.3);',
                                                     'Entregado' => 'background:rgba(107,114,128,.1); color:#9ca3af; border:1px solid rgba(107,114,128,.2);',
