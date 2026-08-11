@@ -23,6 +23,7 @@ php artisan migrate --force
 
 # 4. Limpiar y regenerar cachés de producción
 echo "[+] Optimizando caché de Laravel..."
+php artisan optimize:clear
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
