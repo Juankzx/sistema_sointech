@@ -42,25 +42,27 @@
                 </div>
             </div>
             
-            <!-- Dates in 2 Cols on Mobile (Strictly bounded) -->
-            <div class="md:col-span-6 grid grid-cols-2 gap-2.5 w-full min-w-0">
-                <div class="min-w-0">
+            <!-- Dates: Stacked on Mobile (iPhone 13 Pro friendly), 2 Cols on Tablet/Desktop -->
+            <div class="md:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+                <div class="w-full">
                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Desde</label>
                     <input 
                         wire:model.live="dateFrom" 
                         type="date" 
-                        class="w-full max-w-full bg-slate-950/80 border border-slate-700/80 focus:border-orange-500 rounded-2xl py-2 px-2.5 sm:px-3 text-white text-xs font-medium focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition duration-200" 
+                        class="w-full bg-slate-950/80 border border-slate-700/80 focus:border-orange-500 rounded-2xl py-2.5 px-3 text-white text-xs font-medium focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition duration-200" 
                         max="{{ date('Y-m-d') }}"
+                        style="-webkit-appearance: none; appearance: none; min-height: 42px;"
                     >
                 </div>
 
-                <div class="min-w-0">
+                <div class="w-full">
                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Hasta</label>
                     <input 
                         wire:model.live="dateTo" 
                         type="date" 
-                        class="w-full max-w-full bg-slate-950/80 border border-slate-700/80 focus:border-orange-500 rounded-2xl py-2 px-2.5 sm:px-3 text-white text-xs font-medium focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition duration-200" 
+                        class="w-full bg-slate-950/80 border border-slate-700/80 focus:border-orange-500 rounded-2xl py-2.5 px-3 text-white text-xs font-medium focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition duration-200" 
                         max="{{ date('Y-m-d') }}"
+                        style="-webkit-appearance: none; appearance: none; min-height: 42px;"
                     >
                 </div>
             </div>
