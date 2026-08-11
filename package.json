@@ -4,7 +4,9 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "push": "push.bat",
+        "auto-sync": "auto-sync.bat"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
