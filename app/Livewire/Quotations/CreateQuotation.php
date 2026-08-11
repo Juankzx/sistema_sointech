@@ -468,18 +468,18 @@ class CreateQuotation extends Component
             $laborTotal = $quote->items->where('type', 'servicio')->sum('subtotal');
 
             $wo = WorkOrder::create([
+                'uuid'                => (string) \Illuminate\Support\Str::uuid(),
                 'client_id'           => $client->id,
                 'received_by_user_id' => auth()->id(),
-                'device_type'         => 'Equipo Informático',
-                'device_brand'        => 'Apple',
-                'device_model'        => $quote->device_info ?? 'Modelo en Cotización',
-                'serial_number'       => 'COT-' . $quote->quote_number,
+                'technician_id'       => auth()->id(),
+                'device_type'         => $quote->device_type ?? 'desktop',
+                'brand_model'         => $quote->device_info ?? 'Modelo en Cotización',
+                'imei_serial'         => 'COT-' . $quote->quote_number,
                 'reported_issue'      => 'Servicio/Reparación según Cotización N° ' . $quote->quote_number,
-                'diagnostic'          => 'Aprobado vía Cotización N° ' . $quote->quote_number,
-                'status'              => 'Aprobado',
+                'status'              => 'Ingresado',
                 'labor_cost'          => $laborTotal,
                 'estimated_cost'      => $quote->total,
-                'down_payment'        => $partsTotal,
+                'down_payment'        => 0,
             ]);
 
             $quote->update([
