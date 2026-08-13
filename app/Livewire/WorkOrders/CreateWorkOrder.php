@@ -576,7 +576,7 @@ class CreateWorkOrder extends Component
     public function getCreatedOrderProperty()
     {
         if ($this->created_order_id) {
-            return WorkOrder::with(['client', 'components'])->find($this->created_order_id);
+            return WorkOrder::with(['client', 'components', 'images'])->find($this->created_order_id);
         }
         return null;
     }

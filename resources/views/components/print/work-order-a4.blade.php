@@ -277,6 +277,33 @@
                         </div>
                     </div>
                 @endif
+
+                {{-- Fotografías de Ingreso del Equipo (Check-in) --}}
+                @if($order->images && $order->images->count() > 0)
+                    <div style="margin-top: 10px;">
+                        <span style="display: block; margin-bottom: 5px; font-size: 10px; font-weight: 900; color: #475569; text-transform: uppercase; letter-spacing: 0.5px;">
+                            📷 REGISTRO FOTOGRÁFICO DE INGRESO (CHECK-IN)
+                        </span>
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                            @foreach($order->images as $img)
+                                @php
+                                    $imgSrc = null;
+                                    $fullImgPath = storage_path('app/public/' . $img->image_path);
+                                    if (file_exists($fullImgPath)) {
+                                        $imgData = base64_encode(file_get_contents($fullImgPath));
+                                        $mime = mime_content_type($fullImgPath) ?: 'image/jpeg';
+                                        $imgSrc = 'data:' . $mime . ';base64,' . $imgData;
+                                    } else {
+                                        $imgSrc = asset('storage/' . $img->image_path);
+                                    }
+                                @endphp
+                                <div style="width: 100px; height: 75px; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden; background: #f8fafc; display: inline-block;">
+                                    <img src="{{ $imgSrc }}" style="width: 100%; height: 100%; object-fit: cover; display: block;" alt="Foto ingreso">
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
             </div>
 
             {{-- ══ CONDICIONES LEGALES Y FIRMA COMPROBADA ══ --}}

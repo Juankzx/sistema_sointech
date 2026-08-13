@@ -158,6 +158,45 @@
                 </div>
             </div>
         </div>
+
+        <!-- FOTOS DE INGRESO (RESPALDO CHECK-IN) -->
+        @if($workOrder->images && $workOrder->images->count() > 0)
+            <div class="pt-4 border-t border-gray-800/80 space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-blue-400 uppercase tracking-wider flex items-center gap-2">
+                        📸 Fotos de Ingreso del Equipo (Respaldo Check-in)
+                    </span>
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-950/80 text-blue-300 border border-blue-500/30">
+                        {{ $workOrder->images->count() }} {{ $workOrder->images->count() === 1 ? 'imagen' : 'imágenes' }}
+                    </span>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                    @foreach($workOrder->images as $img)
+                        <div 
+                            onclick="openImageModal('{{ asset('storage/' . $img->image_path) }}')"
+                            class="relative group aspect-square rounded-2xl overflow-hidden border border-gray-800 bg-gray-950 cursor-pointer shadow-lg hover:border-blue-500/50 hover:scale-[1.02] transition-all duration-200"
+                        >
+                            <img 
+                                src="{{ asset('storage/' . $img->image_path) }}" 
+                                loading="lazy"
+                                class="w-full h-full object-cover group-hover:opacity-90 transition"
+                                onerror="this.onerror=null; this.src='/images/logo-dark.png';"
+                                alt="Foto de ingreso del equipo"
+                            >
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2.5">
+                                <span class="text-[10px] font-bold text-white flex items-center gap-1">
+                                    🔍 Ampliar Foto
+                                </span>
+                            </div>
+                            <span class="absolute top-1.5 right-1.5 px-2 py-0.5 rounded-md text-[8px] font-extrabold uppercase bg-gray-950/80 text-blue-300 border border-blue-500/30 backdrop-blur-sm">
+                                Check-in
+                            </span>
+                        </div>
+                    @endforeach
+                </div>
+                <p class="text-[11px] text-gray-400 italic">Haz clic en cualquier imagen para verla en tamaño completo.</p>
+            </div>
+        @endif
     </div>
 
     <!-- FLASH MESSAGES -->

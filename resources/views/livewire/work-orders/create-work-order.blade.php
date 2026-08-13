@@ -1413,6 +1413,11 @@
                     <h3 class="text-xl font-black text-white">¡Orden de Trabajo Creada!</h3>
                     <p class="text-xs text-gray-400 mt-1.5">La orden de servicio <strong>#{{ $created_order_id }}</strong>
                         ha sido ingresada en el sistema. Puedes proceder a imprimir los comprobantes.</p>
+                    @if($this->createdOrder && $this->createdOrder->images && $this->createdOrder->images->count() > 0)
+                        <div class="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 bg-blue-950/80 border border-blue-500/30 text-blue-300 text-xs font-bold rounded-xl">
+                            📸 {{ $this->createdOrder->images->count() }} foto(s) de check-in respaldada(s)
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Botones de Acción de Impresión -->
