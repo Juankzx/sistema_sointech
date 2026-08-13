@@ -517,8 +517,11 @@
                 $totalCost = (float)$managingOrder->labor_cost + $partsCost;
                 $balanceDue = $totalCost - (float)$managingOrder->down_payment;
             @endphp
-            <div x-data="{ previewImage: null, zoomLevel: 1, mobileMenuOpen: false }" class="fixed inset-0 bg-gray-950/80 backdrop-blur-md z-50 flex items-center justify-center p-0 md:p-6 overflow-hidden">
-                <div class="bg-gray-850 border-0 md:border border-gray-800 rounded-none md:rounded-3xl w-full max-w-6xl h-full md:h-auto md:max-h-[88vh] overflow-hidden shadow-2xl animate-fade-in flex flex-col min-w-0" @keydown.escape.window="if(!previewImage) closeManagingModal()" @click.outside="if(!previewImage) closeManagingModal()">
+            <div x-data="{ previewImage: null, zoomLevel: 1, mobileMenuOpen: false }" 
+                 x-init="document.body.style.overflow = 'hidden'" 
+                 x-on:destroy="document.body.style.overflow = ''" 
+                 class="fixed inset-0 bg-gray-950/85 backdrop-blur-md z-50 flex items-center justify-center p-0 md:p-6 overflow-hidden">
+                <div class="bg-gray-850 border-0 md:border border-gray-800 rounded-none md:rounded-3xl w-full max-w-5xl h-full md:h-[88vh] overflow-hidden shadow-2xl animate-fade-in flex flex-col min-w-0" @keydown.escape.window="if(!previewImage) closeManagingModal()" @click.outside="if(!previewImage) closeManagingModal()">
                     
                     <!-- Modal Header -->
                     <div class="flex justify-between items-center border-b border-gray-800 p-3 md:p-6 shrink-0">
@@ -1802,8 +1805,9 @@
                     </div>
 
                     <!-- Desktop Footer actions (hidden on mobile) -->
-                    <div class="hidden md:flex bg-gray-900/40 p-6 border-t border-gray-800 justify-end shrink-0">
-                        <button wire:click="closeManagingModal" class="py-2.5 px-6 rounded-xl border border-gray-800 hover:border-gray-700 text-gray-400 hover:text-white font-bold text-xs transition cursor-pointer">
+                    <div class="hidden md:flex bg-gray-900/60 p-4 px-6 border-t border-gray-800 justify-end items-center shrink-0 w-full">
+                        <button type="button" wire:click="closeManagingModal" class="py-2.5 px-6 rounded-xl bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 hover:text-white font-bold text-xs transition cursor-pointer shadow flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                             Cerrar Panel de Gestión
                         </button>
                     </div>
