@@ -518,7 +518,7 @@
                 $balanceDue = $totalCost - (float)$managingOrder->down_payment;
             @endphp
             <div x-data="{ previewImage: null, zoomLevel: 1, mobileMenuOpen: false }" class="fixed inset-0 bg-gray-950/80 backdrop-blur-md z-50 flex items-center justify-center p-0 md:p-6 overflow-hidden">
-                <div class="bg-gray-850 border-0 md:border border-gray-800 rounded-none md:rounded-3xl w-full max-w-6xl h-full md:h-auto md:max-h-[85vh] overflow-hidden shadow-2xl animate-fade-in flex flex-col" @keydown.escape.window="if(!previewImage) closeManagingModal()" @click.outside="if(!previewImage) closeManagingModal()">
+                <div class="bg-gray-850 border-0 md:border border-gray-800 rounded-none md:rounded-3xl w-full max-w-6xl h-full md:h-auto md:max-h-[88vh] overflow-hidden shadow-2xl animate-fade-in flex flex-col min-w-0" @keydown.escape.window="if(!previewImage) closeManagingModal()" @click.outside="if(!previewImage) closeManagingModal()">
                     
                     <!-- Modal Header -->
                     <div class="flex justify-between items-center border-b border-gray-800 p-3 md:p-6 shrink-0">
@@ -633,10 +633,10 @@
                     @endif
 
                     <!-- Main Grid -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 p-3 sm:p-4 lg:p-8 overflow-y-auto flex-1 theme-scrollbar pb-20 lg:pb-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 p-3 sm:p-4 lg:p-6 overflow-y-auto flex-1 theme-scrollbar min-w-0 w-full pb-20 lg:pb-8">
                         
                         <!-- LEFT COLUMN: Summary & Financials (4 cols) -->
-                        <div class="col-span-12 lg:col-span-4 space-y-5">
+                        <div class="col-span-12 lg:col-span-4 space-y-5 min-w-0">
                             
                             <!-- Status Selector Card -->
                             <div class="bg-gray-900/40 p-4 rounded-2xl border border-gray-800 space-y-3">
@@ -936,10 +936,10 @@
                         </div>
 
                         <!-- RIGHT COLUMN: Interactive Tabs Section (8 cols) -->
-                        <div class="lg:col-span-8 flex flex-col space-y-6">
+                        <div class="lg:col-span-8 flex flex-col space-y-6 min-w-0">
                             
                             <!-- Desktop Navigation Tabs (hidden on mobile) -->
-                            <div class="hidden md:flex border-b border-gray-800 gap-1 overflow-x-auto pb-px theme-scrollbar">
+                            <div class="hidden md:flex border-b border-gray-800 gap-1 overflow-x-auto min-w-0 w-full no-scrollbar">
                                 <button 
                                     wire:click="$set('activeTab', 'details')" 
                                     class="px-4 py-3 text-xs font-bold uppercase tracking-wider border-b-2 transition duration-200 cursor-pointer flex items-center gap-1.5 shrink-0 {{ $activeTab === 'details' ? 'border-blue-500 text-blue-400 bg-blue-500/5 rounded-t-xl' : 'border-transparent text-gray-400 hover:text-white hover:bg-gray-800/30' }}">
