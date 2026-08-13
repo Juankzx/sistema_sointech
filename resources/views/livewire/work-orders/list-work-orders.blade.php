@@ -633,10 +633,10 @@
                     @endif
 
                     <!-- Main Grid -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 p-3 sm:p-4 lg:p-6 overflow-y-auto flex-1 theme-scrollbar min-w-0 w-full pb-20 lg:pb-8">
+                    <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 xl:gap-6 p-3 sm:p-4 lg:p-6 overflow-y-auto flex-1 theme-scrollbar min-w-0 w-full pb-20 lg:pb-8">
                         
                         <!-- LEFT COLUMN: Summary & Financials (4 cols) -->
-                        <div class="col-span-12 lg:col-span-4 space-y-5 min-w-0">
+                        <div class="col-span-12 xl:col-span-4 space-y-5 min-w-0">
                             
                             <!-- Status Selector Card -->
                             <div class="bg-gray-900/40 p-4 rounded-2xl border border-gray-800 space-y-3">
@@ -936,7 +936,7 @@
                         </div>
 
                         <!-- RIGHT COLUMN: Interactive Tabs Section (8 cols) -->
-                        <div class="lg:col-span-8 flex flex-col space-y-6 min-w-0">
+                        <div class="col-span-12 xl:col-span-8 flex flex-col space-y-6 min-w-0">
                             
                             <!-- Desktop Navigation Tabs (hidden on mobile) -->
                             <div class="hidden md:flex border-b border-gray-800 gap-1 overflow-x-auto min-w-0 w-full no-scrollbar">
@@ -1174,18 +1174,19 @@
                                             @endif
                                             <!-- 📸 FOTOS DE INGRESO DEL EQUIPO -->
                                             @if($managingOrder->images && $managingOrder->images->count() > 0)
-                                            <div class="bg-gray-900/50 p-4 rounded-2xl border border-blue-900/40 space-y-3">
+                                            <div class="bg-gray-900/50 p-3 sm:p-4 rounded-2xl border border-blue-900/40 space-y-2.5 min-w-0">
                                                 <div class="flex items-center gap-2 border-b border-gray-800 pb-2">
                                                     <span class="text-xs font-black text-blue-400 uppercase tracking-widest flex items-center gap-1.5">
                                                         📸 Fotos de Ingreso del Equipo
                                                     </span>
                                                     <span class="ml-auto px-2 py-0.5 bg-blue-950/60 text-blue-400 text-[9px] font-black uppercase rounded-full border border-blue-800/40">{{ $managingOrder->images->count() }} foto(s)</span>
                                                 </div>
-                                                <div class="flex flex-wrap gap-3">
+                                                <div class="flex flex-wrap gap-2.5">
                                                     @foreach($managingOrder->images as $img)
                                                         <div 
                                                             onclick="openGlobalLightbox('{{ asset('storage/' . $img->image_path) }}')"
-                                                            class="relative w-28 h-28 rounded-2xl overflow-hidden border border-blue-800/40 bg-gray-950 cursor-pointer group shadow-lg hover:scale-105 transition active:scale-95"
+                                                            class="relative w-20 h-20 shrink-0 aspect-square rounded-xl overflow-hidden border border-blue-800/40 bg-gray-950 cursor-pointer group shadow hover:scale-105 transition active:scale-95"
+                                                            title="Clic para ampliar foto"
                                                         >
                                                             <img 
                                                                 src="{{ asset('storage/' . $img->image_path) }}" 
@@ -1194,16 +1195,13 @@
                                                                 onerror="this.onerror=null; this.src='/images/logo-dark.png';"
                                                                 alt="Foto de ingreso"
                                                             >
-                                                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/40">
-                                                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                                                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/50">
+                                                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
                                                             </div>
-                                                            @if($img->type)
-                                                            <span class="absolute bottom-1 left-1 right-1 text-center text-[8px] font-bold bg-black/70 text-white rounded-lg px-1 py-0.5 truncate">{{ $img->type }}</span>
-                                                            @endif
                                                         </div>
                                                     @endforeach
                                                 </div>
-                                                <p class="text-[10px] text-gray-500 italic">Toca cualquier foto para verla en pantalla completa con zoom.</p>
+                                                <p class="text-[10px] text-gray-500 italic">Miniaturas compactas. Toca cualquier foto para verla en pantalla completa con zoom.</p>
                                             </div>
                                             @endif
 
