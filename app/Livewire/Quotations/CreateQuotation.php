@@ -442,54 +442,14 @@ class CreateQuotation extends Component
                 $quoteId = $this->quote_id;
             }
 
-            $quote = Quotation::with('items')->findOrFail($quoteId);
+            $quote = Quotation::findOrFail($quoteId);
 
             if ($quote->status === 'convertida' && $quote->work_order_id) {
-                session()->flash('error', 'Esta cotización ya fue convertida previamente.');
+                session()->flash('error', 'Esta cotización ya fue convertida previamente a la Orden de Trabajo #' . $quote->work_order_id);
                 return redirect()->route('work-orders.index');
             }
 
-            $client = null;
-            if ($quote->client_id) {
-                $client = Client::find($quote->client_id);
-            }
-            if (!$client) {
-                $clientName = !empty($quote->client_name) ? $quote->client_name : 'Cliente Cotización ' . $quote->quote_number;
-                $client = Client::create([
-                    'full_name' => $clientName,
-                    'rut_dni'   => $quote->client_rut,
-                    'phone'     => !empty($quote->client_phone) ? $quote->client_phone : 'Sin teléfono',
-                    'email'     => $quote->client_email,
-                ]);
-                $quote->update(['client_id' => $client->id]);
-            }
-
-            $partsTotal = $quote->items->where('type', 'producto')->sum('subtotal');
-            $laborTotal = $quote->items->where('type', 'servicio')->sum('subtotal');
-
-            $wo = WorkOrder::create([
-                'uuid'                => (string) \Illuminate\Support\Str::uuid(),
-                'client_id'           => $client->id,
-                'received_by_user_id' => auth()->id(),
-                'technician_id'       => auth()->id(),
-                'device_type'         => $quote->device_type ?? 'desktop',
-                'brand_model'         => $quote->device_info ?? 'Modelo en Cotización',
-                'imei_serial'         => 'COT-' . $quote->quote_number,
-                'reported_issue'      => 'Servicio/Reparación según Cotización N° ' . $quote->quote_number,
-                'status'              => 'Ingresado',
-                'labor_cost'          => $laborTotal,
-                'estimated_cost'      => $quote->total,
-                'down_payment'        => 0,
-            ]);
-
-            $quote->update([
-                'status'        => 'convertida',
-                'work_order_id' => $wo->id,
-            ]);
-
-            session()->flash('success', "¡Excelente! La cotización N° {$quote->quote_number} fue convertida en la Orden de Trabajo #" . substr($wo->uuid, 0, 8) . ".");
-
-            return redirect()->route('work-orders.index');
+            return redirect()->route('work-orders.create', ['from_quote' => $quoteId]);
         } catch (\Exception $e) {
             session()->flash('error', 'Error al convertir cotización: ' . $e->getMessage());
             return redirect()->back();

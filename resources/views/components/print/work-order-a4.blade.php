@@ -337,6 +337,12 @@
                                     <img src="{{ $sigSrc }}" alt="Firma Conforme"
                                         style="max-height: 55px; max-width: 180px; object-fit: contain; display: block;">
                                 </div>
+                            @elseif(is_array($order->checklist) && ($order->checklist['client_absent'] ?? false))
+                                <div
+                                    style="height: 60px; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f0f9ff; border: 1.5px dashed #0284c7; border-radius: 8px; padding: 4px; text-align: center;">
+                                    <span style="font-size: 9.5px; font-weight: 900; color: #0369a1; text-transform: uppercase;">📦 RECEPCIÓN REMOTA (CLIENTE AUSENTE)</span>
+                                    <span style="font-size: 7.5px; color: #0284c7; font-weight: 600; margin-top: 2px; line-height: 1.1;">Notificación y condiciones validadas vía enlace web.</span>
+                                </div>
                             @else
                                 <div
                                     style="height: 60px; width: 100%; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 10px; font-style: italic;">

@@ -51,79 +51,17 @@ class ListQuotations extends Component
     public function convertToWorkOrder($id)
     {
         try {
-            $quote = Quotation::with('items')->findOrFail($id);
+            $quote = Quotation::findOrFail($id);
 
             if ($quote->status === 'convertida' && $quote->work_order_id) {
-                session()->flash('error', 'Esta cotización ya fue convertida previamente.');
+                session()->flash('error', 'Esta cotización ya fue convertida previamente a la Orden de Trabajo #' . $quote->work_order_id);
                 return;
             }
 
-            // Buscar o crear cliente con las columnas correctas ('full_name', 'rut_dni', 'phone', 'email')
-            $client = null;
-            if ($quote->client_id) {
-                $client = Client::find($quote->client_id);
-            }
-            if (!$client) {
-                $clientName = !empty($quote->client_name) ? $quote->client_name : 'Cliente Cotización ' . $quote->quote_number;
-                $client = Client::create([
-                    'full_name' => $clientName,
-                    'rut_dni'   => $quote->client_rut,
-                    'phone'     => !empty($quote->client_phone) ? $quote->client_phone : 'Sin teléfono',
-                    'email'     => $quote->client_email,
-                ]);
-                $quote->update(['client_id' => $client->id]);
-            }
-
-            // Inferir el tipo de equipo si no está definido o es ambiguo
-            $deviceType = $quote->device_type;
-            if (empty($deviceType) || $deviceType === 'desktop') {
-                $info = strtolower(($quote->device_info ?? '') . ' ' . implode(' ', $quote->items->pluck('description')->toArray()));
-                if (preg_match('/(a\d+|galaxy|iphone|samsung|xiaomi|motorola|redmi|huawei|celular|phone|smartphone|bateria|pantalla|fpc)/i', $info)) {
-                    $deviceType = 'smartphone';
-                } elseif (preg_match('/(macbook|notebook|laptop|thinkpad|zenbook)/i', $info)) {
-                    $deviceType = 'notebook';
-                } elseif (preg_match('/(imac|mac all-in-one)/i', $info)) {
-                    $deviceType = 'imac';
-                } elseif (preg_match('/(ipad|tablet)/i', $info)) {
-                    $deviceType = 'tablet';
-                } elseif (preg_match('/(ps4|ps5|playstation|xbox|switch|nintendo|consola)/i', $info)) {
-                    $deviceType = 'console';
-                } else {
-                    $deviceType = 'desktop';
-                }
-            }
-
-            $firstItemDesc = $quote->items->first()?->description ?? 'Servicios Generales';
-            $itemCount = $quote->items->count();
-            $issueSummary = $itemCount > 1 ? ($firstItemDesc . ' + ' . ($itemCount - 1) . ' ítem(s)') : $firstItemDesc;
-            $reportedIssue = 'Cotización ' . $quote->quote_number . ': ' . $issueSummary;
-
-            // Crear Orden de Trabajo con UUID obligatorio y 0 abono por defecto
-            $workOrder = WorkOrder::create([
-                'uuid'               => (string) Str::uuid(),
-                'client_id'          => $client->id,
-                'device_type'        => $deviceType,
-                'brand_model'        => $quote->device_info ?? 'Equipo Presupuestado',
-                'reported_issue'     => $reportedIssue,
-                'status'             => 'Ingresado',
-                'estimated_delivery' => Carbon::now()->addDays(2),
-                'estimated_cost'     => $quote->total,
-                'labor_cost'         => $quote->services_total,
-                'down_payment'       => 0, // Inicia en 0 (sin abono ficticio)
-                'technician_id'      => auth()->id(),
-                'received_by_user_id' => auth()->id(),
-            ]);
-
-            $quote->update([
-                'status' => 'convertida',
-                'work_order_id' => $workOrder->id,
-            ]);
-
-            session()->flash('success', 'Cotización ' . $quote->quote_number . ' convertida exitosamente a Orden de Trabajo #' . $workOrder->id);
-            return redirect()->route('work-orders.index');
+            return redirect()->route('work-orders.create', ['from_quote' => $id]);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Error al convertir cotización a OT: ' . $e->getMessage());
-            session()->flash('error', 'Ocurrió un error al convertir la cotización: ' . $e->getMessage());
+            session()->flash('error', 'Ocurrió un error al procesar la cotización: ' . $e->getMessage());
         }
     }
 

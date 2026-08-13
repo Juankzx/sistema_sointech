@@ -42,6 +42,16 @@
             </div>
         @endif
 
+        @if($from_quote_number)
+            <div class="m-6 mb-0 p-4 rounded-2xl text-xs font-bold animate-fade-in flex items-center justify-between gap-3 bg-purple-950/40 border border-purple-500/30 text-purple-200 shadow-lg">
+                <div class="flex items-center gap-2">
+                    <span class="text-base">📋</span>
+                    <span>Convirtiendo Cotización <strong>#{{ $from_quote_number }}</strong> a Orden de Trabajo. Los datos del cliente, equipo y repuestos han sido cargados. Adjunta las fotos de ingreso y checklist para finalizar el respaldo.</span>
+                </div>
+                <span class="px-2.5 py-1 bg-purple-900/60 border border-purple-400/30 rounded-xl text-[10px] uppercase font-black shrink-0">Cotización Vinculada</span>
+            </div>
+        @endif
+
         <form wire:submit.prevent="save" class="p-6 space-y-8 text-gray-300">
 
             <!-- SECCIÓN 1: DATOS DEL CLIENTE -->

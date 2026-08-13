@@ -79,6 +79,18 @@ class CreateWorkOrder extends Component
     public $signature_base64; // from canvas
     public $signature_token = null; // token for mobile signing session
     public $kiosk_mode = false;     // Kiosk client mode overlay control
+    public $is_client_absent = false; // Remote reception / Courier / Delivery
+    public $from_quote_id = null;
+    public $from_quote_number = null;
+
+    public function toggleClientAbsent()
+    {
+        $this->is_client_absent = !$this->is_client_absent;
+        if ($this->is_client_absent) {
+            $this->terms_accepted = true;
+            $this->signature_base64 = null;
+        }
+    }
 
     // ---------- COMPONENTES DE PC DE TORRE ----------
     public $components = [];
@@ -107,8 +119,10 @@ class CreateWorkOrder extends Component
     public $created_order_uuid = null;
     public $created_order_id = null;
 
-    public function mount()
+    public function mount($from_quote = null)
     {
+        $quoteId = $from_quote ?: request('from_quote');
+
         // Cargar checklists desde settings configurados en base de datos
         $settings = Setting::find(1);
         if ($settings) {
@@ -116,6 +130,56 @@ class CreateWorkOrder extends Component
         }
 
         $this->updatedDeviceType();
+
+        if ($quoteId) {
+            $quote = \App\Models\Quotation::with('items')->find($quoteId);
+            if ($quote) {
+                $this->from_quote_id = $quote->id;
+                $this->from_quote_number = $quote->quote_number;
+
+                // Cargar datos del cliente
+                if ($quote->client_id) {
+                    $client = Client::find($quote->client_id);
+                    if ($client) {
+                        $this->selectClient($client->id);
+                    }
+                }
+                if (!$this->client_selected) {
+                    $this->full_name = $quote->client_name;
+                    $this->phone = $quote->client_phone;
+                    $this->rut_dni = $quote->client_rut;
+                    $this->email = $quote->client_email;
+                }
+
+                if (!empty($quote->device_type)) {
+                    $this->device_type = $quote->device_type;
+                    $this->updatedDeviceType();
+                }
+                if (!empty($quote->device_info)) {
+                    $this->brand_model = $quote->device_info;
+                }
+
+                $firstItemDesc = $quote->items->first()?->description ?? 'Servicios Generales';
+                $this->reported_issue = "Servicio/Reparación según Cotización N° {$quote->quote_number}: {$firstItemDesc}";
+
+                $laborTotal = $quote->items->where('type', 'servicio')->sum('subtotal');
+                $this->budget_type = 'fixed';
+                $this->labor_cost = $laborTotal;
+
+                // Cargar repuestos cotizados si coinciden con inventario
+                foreach ($quote->items->where('type', 'producto') as $prod) {
+                    $invPart = \App\Models\Inventory::where('name', 'like', '%' . $prod->description . '%')->first();
+                    if ($invPart) {
+                        $this->selected_parts[] = [
+                            'id' => $invPart->id,
+                            'name' => $invPart->name,
+                            'sale_price' => $prod->unit_price ?: $invPart->sale_price,
+                            'quantity' => $prod->quantity ?: 1
+                        ];
+                    }
+                }
+            }
+        }
     }
 
     public function updatedDeviceType()
@@ -360,7 +424,7 @@ class CreateWorkOrder extends Component
             'device_type' => 'required|string',
             'brand_model' => 'required|string',
             'reported_issue' => 'required|string',
-            'terms_accepted' => 'accepted',
+            'terms_accepted' => $this->is_client_absent ? 'nullable' : 'accepted',
             'signature_base64' => 'nullable|string',
             'components.*.type' => 'required|in:cpu,gpu,ram,storage,psu,case,motherboard,cooler,mouse,keyboard,other',
             'initialPhotos.*' => 'nullable|file|max:30720',
@@ -413,6 +477,7 @@ class CreateWorkOrder extends Component
             'turns_on' => $this->turns_on,
             'liquid_contact' => $this->liquid_contact,
             'aesthetic_notes' => $this->aesthetic_notes,
+            'client_absent' => $this->is_client_absent,
             'features' => $this->checklist_values // Dynamic checklists populated from database
         ];
 
@@ -557,6 +622,14 @@ class CreateWorkOrder extends Component
                     \Illuminate\Support\Facades\Log::warning("No se pudo enviar correo de ingreso de OT #{$workOrder->id}: " . $e->getMessage());
                 }
             }
+        }
+
+        // Si proviene de una cotización, actualizar estado de la cotización
+        if ($this->from_quote_id) {
+            \App\Models\Quotation::where('id', $this->from_quote_id)->update([
+                'status' => 'convertida',
+                'work_order_id' => $workOrder->id,
+            ]);
         }
 
         // Cargar datos para el modal de impresión sin salir de la vista
