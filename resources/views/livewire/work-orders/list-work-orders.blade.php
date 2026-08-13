@@ -633,10 +633,10 @@
                     @endif
 
                     <!-- Main Grid -->
-                    <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 xl:gap-6 p-3 sm:p-4 lg:p-6 overflow-y-auto flex-1 theme-scrollbar min-w-0 w-full pb-20 lg:pb-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 p-3 sm:p-4 lg:p-6 overflow-y-auto flex-1 theme-scrollbar min-w-0 w-full pb-20 lg:pb-8">
                         
                         <!-- LEFT COLUMN: Summary & Financials (4 cols) -->
-                        <div class="col-span-12 xl:col-span-4 space-y-5 min-w-0">
+                        <div class="col-span-12 lg:col-span-4 space-y-5 min-w-0 w-full">
                             
                             <!-- Status Selector Card -->
                             <div class="bg-gray-900/40 p-4 rounded-2xl border border-gray-800 space-y-3">
@@ -936,7 +936,7 @@
                         </div>
 
                         <!-- RIGHT COLUMN: Interactive Tabs Section (8 cols) -->
-                        <div class="col-span-12 xl:col-span-8 flex flex-col space-y-6 min-w-0">
+                        <div class="col-span-12 lg:col-span-8 flex flex-col space-y-6 min-w-0 w-full">
                             
                             <!-- Desktop Navigation Tabs (hidden on mobile) -->
                             <div class="hidden md:flex border-b border-gray-800 gap-1 overflow-x-auto min-w-0 w-full no-scrollbar">
