@@ -520,8 +520,9 @@
             <div x-data="{ previewImage: null, zoomLevel: 1, mobileMenuOpen: false }" 
                  x-init="document.body.style.overflow = 'hidden'" 
                  x-on:destroy="document.body.style.overflow = ''" 
-                 class="fixed inset-0 bg-gray-950/85 backdrop-blur-md z-50 flex items-center justify-center p-0 md:p-6 overflow-hidden">
-                <div class="bg-gray-850 border-0 md:border border-gray-800 rounded-none md:rounded-3xl w-full max-w-5xl h-full md:h-[88vh] overflow-hidden shadow-2xl animate-fade-in flex flex-col min-w-0" @keydown.escape.window="if(!previewImage) closeManagingModal()" @click.outside="if(!previewImage) closeManagingModal()">
+                 @keydown.escape.window="if(!previewImage) $wire.closeManagingModal()"
+                 class="fixed inset-0 bg-gray-950/85 backdrop-blur-md z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden">
+                <div class="bg-gray-850 border border-gray-800 rounded-2xl md:rounded-3xl w-full max-w-6xl h-full md:h-[90vh] overflow-hidden shadow-2xl animate-fade-in flex flex-col min-w-0">
                     
                     <!-- Modal Header -->
                     <div class="flex justify-between items-center border-b border-gray-800 p-3 md:p-6 shrink-0">
