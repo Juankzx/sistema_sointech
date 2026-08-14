@@ -619,17 +619,17 @@
                         </div>
                     </div>
 
-                    <!-- Mobile Sticky Action Banner (P4) -->
+                    <!-- Mobile Action Banner -->
                     @if(auth()->user()->hasRole(['admin', 'tecnico']))
                         @if($managingOrder->status === 'Aprobado')
-                            <div class="lg:hidden bg-blue-900/40 border-b border-blue-800 px-3 py-3 shrink-0">
-                                <button wire:click="startRepair" type="button" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-blue-900/50 transition text-sm flex items-center justify-center gap-2">
+                            <div class="lg:hidden bg-gray-900 border-b border-blue-800/60 px-3.5 py-2.5 shrink-0 z-20 shadow-md">
+                                <button wire:click="startRepair" type="button" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-blue-900/50 transition text-xs sm:text-sm flex items-center justify-center gap-2 active:scale-95">
                                     ▶ Iniciar Reparación
                                 </button>
                             </div>
                         @elseif($managingOrder->status === 'En Reparación')
-                            <div class="lg:hidden bg-amber-900/30 border-b border-amber-800 px-3 py-3 shrink-0">
-                                <button wire:click="finishRepair" type="button" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-amber-900/50 transition text-sm flex items-center justify-center gap-2">
+                            <div class="lg:hidden bg-gray-900 border-b border-amber-800/60 px-3.5 py-2.5 shrink-0 z-20 shadow-md">
+                                <button wire:click="finishRepair" type="button" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-amber-900/50 transition text-xs sm:text-sm flex items-center justify-center gap-2 active:scale-95">
                                     ✔ Finalizar Reparación
                                 </button>
                             </div>
@@ -637,7 +637,7 @@
                     @endif
 
                     <!-- Main Grid -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 p-3 sm:p-4 lg:p-6 overflow-y-auto flex-1 theme-scrollbar min-w-0 w-full pb-20 lg:pb-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 p-3 sm:p-4 lg:p-6 overflow-y-auto flex-1 theme-scrollbar min-w-0 w-full pb-32 sm:pb-36 lg:pb-8">
                         
                         <!-- LEFT COLUMN: Summary & Financials (4 cols) -->
                         <div class="col-span-12 lg:col-span-4 space-y-5 min-w-0 w-full">
