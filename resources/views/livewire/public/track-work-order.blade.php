@@ -161,6 +161,12 @@
 
         <!-- FOTOS DE INGRESO (RESPALDO CHECK-IN) -->
         @if($workOrder->images && $workOrder->images->count() > 0)
+            @php
+                $checkInList = $workOrder->images->map(fn($img) => [
+                    'src' => asset('storage/' . $img->image_path),
+                    'caption' => 'Foto de Ingreso del Equipo (Check-in)'
+                ])->values()->toArray();
+            @endphp
             <div class="pt-4 border-t border-gray-800/80 space-y-3">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-bold text-blue-400 uppercase tracking-wider flex items-center gap-2">
@@ -171,9 +177,9 @@
                     </span>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                    @foreach($workOrder->images as $img)
+                    @foreach($workOrder->images as $imgIndex => $img)
                         <div 
-                            onclick="openImageModal('{{ asset('storage/' . $img->image_path) }}')"
+                            onclick='openGlobalLightbox(@json($checkInList), {{ $imgIndex }}, "Fotos de Ingreso (Check-in)")'
                             class="relative group aspect-square rounded-2xl overflow-hidden border border-gray-800 bg-gray-950 cursor-pointer shadow-lg hover:border-blue-500/50 hover:scale-[1.02] transition-all duration-200"
                         >
                             <img 
@@ -185,7 +191,7 @@
                             >
                             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2.5">
                                 <span class="text-[10px] font-bold text-white flex items-center gap-1">
-                                    🔍 Ampliar Foto
+                                    🔍 Ampliar / Carrusel
                                 </span>
                             </div>
                             <span class="absolute top-1.5 right-1.5 px-2 py-0.5 rounded-md text-[8px] font-extrabold uppercase bg-gray-950/80 text-blue-300 border border-blue-500/30 backdrop-blur-sm">
@@ -194,7 +200,7 @@
                         </div>
                     @endforeach
                 </div>
-                <p class="text-[11px] text-gray-400 italic">Haz clic en cualquier imagen para verla en tamaño completo.</p>
+                <p class="text-[11px] text-gray-400 italic">Toca cualquier imagen para abrir el visor interactivo en carrusel.</p>
             </div>
         @endif
     </div>
@@ -367,12 +373,49 @@
 
 
 
+    <!-- LATEST LOG HERO HIGHLIGHT CARD -->
+    @if(isset($latestLog) && $latestLog)
+        <div class="bg-gradient-to-r from-blue-950/40 via-indigo-950/30 to-gray-900 border border-blue-500/30 rounded-3xl p-5 sm:p-6 shadow-2xl space-y-3 relative overflow-hidden">
+            <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-2">
+                    <span class="relative flex h-3 w-3">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+                    </span>
+                    <span class="text-xs font-black text-blue-400 uppercase tracking-wider">Último Avance Registrado</span>
+                </div>
+                <span class="text-[10px] font-bold text-gray-400 bg-gray-900/80 px-2.5 py-1 rounded-full border border-gray-800">
+                    {{ $latestLog->created_at->format('d/m/Y H:i') }}
+                </span>
+            </div>
+            <h3 class="text-base font-extrabold text-white tracking-tight">{{ $latestLog->title }}</h3>
+            @if($latestLog->notes)
+                <p class="text-xs text-gray-300 leading-relaxed">{{ $latestLog->notes }}</p>
+            @endif
+        </div>
+    @endif
+
     <!-- TECHNICAL LOGS HISTORY (BITACORA DE AVANCES) -->
     <div class="bg-gray-900/80 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-gray-800 shadow-2xl space-y-6">
-        <h2 class="text-sm font-bold text-white uppercase tracking-wider">Bitácora Histórica de Avances</h2>
+        <div class="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-gray-800/80">
+            <h2 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                📌 Bitácora Histórica de Avances
+            </h2>
+            <button 
+                wire:click="toggleSortOrder" 
+                type="button"
+                class="px-3 py-1.5 rounded-xl bg-gray-800/90 hover:bg-gray-750 border border-gray-700/80 text-xs font-bold text-blue-400 hover:text-blue-300 transition duration-150 flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
+            >
+                @if($sortAsc)
+                    <span>⬆️ Más antiguos primero</span>
+                @else
+                    <span>⬇️ Más recientes primero</span>
+                @endif
+            </button>
+        </div>
         
         <div class="relative pl-6 border-l-2 border-gray-800 space-y-6">
-            @forelse($workOrder->logs as $log)
+            @forelse($orderedLogs as $log)
                 <div class="relative">
                     <!-- Circle Indicator on the line -->
                     <span class="absolute -left-[31px] top-1.5 w-3 h-3 rounded-full border bg-gray-950 {{ $log->status === 'Listo para Entrega' || $log->status === 'Entregado' ? 'border-emerald-500 bg-emerald-500/25' : ($log->status === 'Rechazado' ? 'border-red-500 bg-red-500/25' : 'border-orange-500 bg-orange-500/25') }}"></span>
@@ -383,21 +426,34 @@
                             <span class="text-[10px] text-gray-500 font-semibold">{{ $log->created_at->format('d/m/Y H:i') }}</span>
                         </div>
                         @if($log->notes)
-                            <p class="text-xs text-gray-400 leading-relaxed">{{ $log->notes }}</p>
+                            <p class="text-xs text-gray-400 leading-relaxed whitespace-pre-wrap">{{ $log->notes }}</p>
                         @endif
                         
                         @if(count($log->images) > 0)
+                            @php
+                                $logImgArray = array_values(array_map(function($path) use ($log) {
+                                    return [
+                                        'src' => asset('storage/' . $path),
+                                        'caption' => 'Avance: ' . $log->title
+                                    ];
+                                }, $log->images));
+                            @endphp
                             <div class="mt-2.5 flex flex-wrap gap-2.5">
-                                @foreach($log->images as $imgPath)
-                                    <div class="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 aspect-square rounded-2xl overflow-hidden border border-gray-700/60 shadow-lg bg-gray-950">
+                                @foreach($log->images as $lIdx => $imgPath)
+                                    <div 
+                                        onclick='openGlobalLightbox(@json($logImgArray), {{ $lIdx }}, "Avance Técnico: {{ addslashes($log->title) }}")'
+                                        class="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 aspect-square rounded-2xl overflow-hidden border border-gray-700/60 shadow-lg bg-gray-950 cursor-pointer group hover:border-orange-500/50 hover:scale-105 transition duration-300"
+                                    >
                                         <img 
                                             src="{{ asset('storage/' . $imgPath) }}" 
                                             loading="lazy"
-                                            class="w-full h-full object-cover group-hover:scale-105 transition duration-300 cursor-pointer rounded-2xl"
-                                            onclick="openImageModal('{{ asset('storage/' . $imgPath) }}')"
+                                            class="w-full h-full object-cover group-hover:opacity-90 transition rounded-2xl"
                                             onerror="this.onerror=null; this.src='/images/logo-dark.png';"
                                             alt="Evidencia del hito"
                                         >
+                                        <span class="absolute top-1 right-1 px-1.5 py-0.5 rounded text-[7px] font-black uppercase bg-gray-950/80 text-orange-400 border border-orange-500/30 backdrop-blur-sm">
+                                            Bitácora
+                                        </span>
                                     </div>
                                 @endforeach
                             </div>
@@ -433,12 +489,6 @@
             </ol>
         </div>
     </div>
-    
-    <!-- Lightbox modal script & container -->
-    <div id="imageLightbox" class="fixed inset-0 bg-black/95 z-50 hidden items-center justify-center p-4" onclick="closeImageModal()">
-        <img id="lightboxImg" src="" class="max-w-full max-h-full rounded-2xl shadow-2xl border border-gray-800">
-        <button class="absolute top-6 right-6 text-gray-400 hover:text-white text-3xl font-black cursor-pointer text-2xl">&times;</button>
-    </div>
 
     <!-- Hidden Print Templates -->
     <div style="display: none;">
@@ -447,16 +497,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <script>
-        function openImageModal(src) {
-            const lightbox = document.getElementById('imageLightbox');
-            const img = document.getElementById('lightboxImg');
-            img.src = src;
-            lightbox.style.display = 'flex';
-        }
-        function closeImageModal() {
-            document.getElementById('imageLightbox').style.display = 'none';
-        }
-
         window.printContent = function(elementId, qrCanvasId = 'qr-canvas') {
             const el = document.getElementById(elementId);
             if (!el) { console.error('Elemento no encontrado:', elementId); return; }

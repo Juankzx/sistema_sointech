@@ -21,6 +21,7 @@
     </head>
     <body class="bg-gray-950 text-gray-100 antialiased selection:bg-blue-500 selection:text-white">
         {{ $slot }}
+        @include('components.global-lightbox')
         @livewireScripts
     </body>
 </html>

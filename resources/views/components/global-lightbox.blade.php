@@ -1,0 +1,355 @@
+<!-- ===== GLOBAL TOUCH LIGHTBOX & CAROUSEL COMPONENT ===== -->
+<div 
+    id="global-lightbox" 
+    class="fixed inset-0 z-[999999] hidden flex-col items-center justify-between p-3 sm:p-5 select-none transition-opacity duration-300 opacity-0"
+    style="background: rgba(4, 7, 13, 0.96); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); touch-action: none; overscroll-behavior: contain;"
+>
+    <!-- Top Minimalist Header Bar -->
+    <div class="w-full flex items-center justify-between gap-3 shrink-0 z-20 max-w-5xl mx-auto pt-1">
+        <!-- Title & Category Badge -->
+        <div class="flex items-center gap-2 overflow-hidden">
+            <span id="gl-title" class="text-xs sm:text-sm font-extrabold text-white tracking-tight truncate max-w-[200px] sm:max-w-md">
+                Evidencia Fotográfica
+            </span>
+            <span id="gl-counter" class="hidden px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-widest bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                1 / 1
+            </span>
+        </div>
+
+        <!-- Close Button -->
+        <button 
+            type="button"
+            onclick="closeGlobalLightbox()" 
+            class="w-10 h-10 rounded-2xl bg-gray-900/80 border border-gray-700/80 text-gray-300 hover:text-white hover:bg-gray-800 hover:border-gray-600 active:scale-95 transition-all duration-200 flex items-center justify-center shadow-lg shrink-0 cursor-pointer"
+            aria-label="Cerrar modal"
+        >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Main Image Viewport with Nav Arrows -->
+    <div 
+        id="gl-viewport" 
+        class="relative flex-1 w-full flex items-center justify-center overflow-hidden my-2 cursor-grab active:cursor-grabbing"
+    >
+        <!-- Desktop Previous Button -->
+        <button 
+            id="gl-btn-prev"
+            type="button"
+            onclick="glPrevImage(event)" 
+            class="absolute left-2 sm:left-4 z-20 w-11 h-11 rounded-2xl bg-gray-900/70 border border-gray-700/60 text-white hover:bg-blue-600 hover:border-blue-500 active:scale-90 transition-all duration-200 flex items-center justify-center shadow-2xl backdrop-blur-md hidden"
+            aria-label="Foto anterior"
+        >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path>
+            </svg>
+        </button>
+
+        <!-- Image Container for Scale & Pan Transforms -->
+        <div id="gl-img-wrapper" class="relative max-w-full max-h-full flex items-center justify-center transition-transform duration-150 ease-out">
+            <img 
+                id="global-lightbox-img" 
+                src="" 
+                alt="Imagen ampliada"
+                class="max-w-full max-h-[78vh] sm:max-h-[82vh] object-contain rounded-2xl border border-gray-800/80 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] select-none"
+                draggable="false"
+            />
+        </div>
+
+        <!-- Desktop Next Button -->
+        <button 
+            id="gl-btn-next"
+            type="button"
+            onclick="glNextImage(event)" 
+            class="absolute right-2 sm:right-4 z-20 w-11 h-11 rounded-2xl bg-gray-900/70 border border-gray-700/60 text-white hover:bg-blue-600 hover:border-blue-500 active:scale-90 transition-all duration-200 flex items-center justify-center shadow-2xl backdrop-blur-md hidden"
+            aria-label="Siguiente foto"
+        >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Minimalist Bottom Bar / Gesture Hint -->
+    <div class="w-full flex flex-col items-center gap-1 shrink-0 z-20">
+        <div 
+            id="gl-caption"
+            class="text-xs text-gray-300 font-medium text-center max-w-xl truncate px-4 py-1 rounded-full bg-gray-900/60 border border-gray-800/60 backdrop-blur-md hidden"
+        ></div>
+
+        <div class="text-[10px] sm:text-xs text-gray-400 font-semibold tracking-wide text-center px-4 py-1 rounded-full bg-gray-900/50 border border-gray-800/50 backdrop-blur-sm flex items-center justify-center gap-1.5">
+            <span class="text-blue-400">👈 Desliza a los lados</span> para cambiar foto &bull; 
+            <span class="text-indigo-400">Doble toque</span> para zoom &bull; 
+            <span class="text-gray-400">Desliza abajo</span> para cerrar
+        </div>
+    </div>
+</div>
+
+<script>
+    // ===== GLOBAL TOUCH LIGHTBOX & CAROUSEL ENGINE =====
+    var _glState = {
+        images: [],
+        index: 0,
+        zoom: 1,
+        panX: 0,
+        panY: 0,
+        title: '',
+        // Touch tracking
+        startX: 0,
+        startY: 0,
+        currentX: 0,
+        currentY: 0,
+        isDragging: false,
+        pinchDist: 0,
+        lastTap: 0
+    };
+
+    function openGlobalLightbox(input, startIndex, title) {
+        if (!input) return;
+        
+        // Handle input formats: string or array of strings/objects
+        if (typeof input === 'string') {
+            _glState.images = [{ src: input, caption: '' }];
+        } else if (Array.isArray(input)) {
+            _glState.images = input.map(item => {
+                if (typeof item === 'string') return { src: item, caption: '' };
+                return { src: item.src || item.url || item.image_path || '', caption: item.caption || item.notes || item.title || '' };
+            }).filter(i => i.src);
+        }
+
+        if (_glState.images.length === 0) return;
+
+        _glState.index = typeof startIndex === 'number' && startIndex >= 0 && startIndex < _glState.images.length ? startIndex : 0;
+        _glState.title = title || 'Evidencia Fotográfica';
+
+        _glResetZoom();
+        _glUpdateDOM();
+
+        var lb = document.getElementById('global-lightbox');
+        lb.classList.remove('hidden');
+        // Trigger smooth fade in
+        requestAnimationFrame(() => {
+            lb.classList.remove('opacity-0');
+            lb.classList.add('opacity-100');
+        });
+
+        // Strict background scroll lock
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.touchAction = 'none';
+
+        // Add keyboard listener
+        document.addEventListener('keydown', _glHandleKeyDown);
+    }
+
+    // Alias for backwards compatibility
+    function openImageModal(src, title) {
+        openGlobalLightbox(src, 0, title);
+    }
+
+    function closeGlobalLightbox() {
+        var lb = document.getElementById('global-lightbox');
+        lb.classList.remove('opacity-100');
+        lb.classList.add('opacity-0');
+        
+        setTimeout(() => {
+            lb.classList.add('hidden');
+            document.getElementById('global-lightbox-img').src = '';
+            document.body.style.overflow = '';
+            document.documentElement.style.overflow = '';
+            document.body.style.touchAction = '';
+            document.removeEventListener('keydown', _glHandleKeyDown);
+            _glResetZoom();
+        }, 200);
+    }
+
+    function glNextImage(e) {
+        if (e) e.stopPropagation();
+        if (_glState.images.length <= 1) return;
+        _glState.index = (_glState.index + 1) % _glState.images.length;
+        _glResetZoom();
+        _glUpdateDOM();
+    }
+
+    function glPrevImage(e) {
+        if (e) e.stopPropagation();
+        if (_glState.images.length <= 1) return;
+        _glState.index = (_glState.index - 1 + _glState.images.length) % _glState.images.length;
+        _glResetZoom();
+        _glUpdateDOM();
+    }
+
+    function _glResetZoom() {
+        _glState.zoom = 1;
+        _glState.panX = 0;
+        _glState.panY = 0;
+        _glApplyTransforms();
+    }
+
+    function _glApplyTransforms() {
+        var wrapper = document.getElementById('gl-img-wrapper');
+        if (wrapper) {
+            wrapper.style.transform = `translate3d(${_glState.panX}px, ${_glState.panY}px, 0) scale(${_glState.zoom})`;
+        }
+    }
+
+    function _glUpdateDOM() {
+        var current = _glState.images[_glState.index];
+        if (!current) return;
+
+        var img = document.getElementById('global-lightbox-img');
+        img.src = current.src;
+
+        // Title
+        document.getElementById('gl-title').textContent = _glState.title;
+
+        // Counter
+        var counter = document.getElementById('gl-counter');
+        if (_glState.images.length > 1) {
+            counter.textContent = `${_glState.index + 1} / ${_glState.images.length}`;
+            counter.classList.remove('hidden');
+        } else {
+            counter.classList.add('hidden');
+        }
+
+        // Nav Buttons
+        var prevBtn = document.getElementById('gl-btn-prev');
+        var nextBtn = document.getElementById('gl-btn-next');
+        if (_glState.images.length > 1) {
+            prevBtn.classList.remove('hidden');
+            nextBtn.classList.remove('hidden');
+        } else {
+            prevBtn.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+        }
+
+        // Caption
+        var captionEl = document.getElementById('gl-caption');
+        if (current.caption && current.caption.trim()) {
+            captionEl.textContent = current.caption;
+            captionEl.classList.remove('hidden');
+        } else {
+            captionEl.classList.add('hidden');
+        }
+    }
+
+    function _glHandleKeyDown(e) {
+        if (e.key === 'Escape') {
+            closeGlobalLightbox();
+        } else if (e.key === 'ArrowRight') {
+            glNextImage();
+        } else if (e.key === 'ArrowLeft') {
+            glPrevImage();
+        }
+    }
+
+    // ===== TOUCH GESTURE RECOGNIZER & INTERACTION ENGINE =====
+    document.addEventListener('DOMContentLoaded', function() {
+        var viewport = document.getElementById('gl-viewport');
+        var lightbox = document.getElementById('global-lightbox');
+        if (!viewport || !lightbox) return;
+
+        // Prevent scrolling background bleed when touchmoving inside lightbox
+        lightbox.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+
+        // Touch start
+        viewport.addEventListener('touchstart', function(e) {
+            if (e.touches.length === 1) {
+                // Single touch: start drag / swipe
+                _glState.startX = e.touches[0].clientX;
+                _glState.startY = e.touches[0].clientY;
+                _glState.currentX = _glState.startX;
+                _glState.currentY = _glState.startY;
+                _glState.isDragging = true;
+
+                // Double tap detection
+                var now = new Date().getTime();
+                var timesince = now - _glState.lastTap;
+                if (timesince < 300 && timesince > 0) {
+                    // Double tap triggered
+                    if (_glState.zoom > 1) {
+                        _glResetZoom();
+                    } else {
+                        _glState.zoom = 2.5;
+                        _glApplyTransforms();
+                    }
+                    _glState.isDragging = false;
+                }
+                _glState.lastTap = now;
+            } else if (e.touches.length === 2) {
+                // Pinch zoom start
+                _glState.isDragging = false;
+                _glState.pinchDist = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+            }
+        }, { passive: true });
+
+        // Touch move
+        viewport.addEventListener('touchmove', function(e) {
+            if (e.touches.length === 1 && _glState.isDragging) {
+                var deltaX = e.touches[0].clientX - _glState.currentX;
+                var deltaY = e.touches[0].clientY - _glState.currentY;
+                _glState.currentX = e.touches[0].clientX;
+                _glState.currentY = e.touches[0].clientY;
+
+                if (_glState.zoom > 1) {
+                    // Pan image when zoomed in
+                    _glState.panX += deltaX;
+                    _glState.panY += deltaY;
+                    _glApplyTransforms();
+                }
+            } else if (e.touches.length === 2 && _glState.pinchDist > 0) {
+                // Pinch zooming
+                var newDist = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+                var scaleRatio = newDist / _glState.pinchDist;
+                _glState.zoom = Math.min(4, Math.max(1, _glState.zoom * scaleRatio));
+                _glState.pinchDist = newDist;
+                _glApplyTransforms();
+            }
+        }, { passive: true });
+
+        // Touch end
+        viewport.addEventListener('touchend', function(e) {
+            if (!_glState.isDragging) return;
+            _glState.isDragging = false;
+
+            var totalDeltaX = _glState.currentX - _glState.startX;
+            var totalDeltaY = _glState.currentY - _glState.startY;
+
+            if (_glState.zoom === 1) {
+                // Swipe Left / Right to cycle photos
+                if (Math.abs(totalDeltaX) > 45 && Math.abs(totalDeltaX) > Math.abs(totalDeltaY)) {
+                    if (totalDeltaX < 0) {
+                        glNextImage();
+                    } else {
+                        glPrevImage();
+                    }
+                }
+                // Swipe Down / Up to close modal
+                else if (Math.abs(totalDeltaY) > 80 && Math.abs(totalDeltaY) > Math.abs(totalDeltaX)) {
+                    closeGlobalLightbox();
+                }
+            }
+        }, { passive: true });
+
+        // Backdrop click to close (if target is viewport or wrapper area when not zoomed)
+        viewport.addEventListener('click', function(e) {
+            if (e.target === viewport || e.target === document.getElementById('gl-img-wrapper')) {
+                if (_glState.zoom > 1) {
+                    _glResetZoom();
+                } else {
+                    closeGlobalLightbox();
+                }
+            }
+        });
+    });
+</script>

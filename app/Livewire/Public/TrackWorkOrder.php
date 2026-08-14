@@ -8,12 +8,18 @@ use Livewire\Component;
 class TrackWorkOrder extends Component
 {
     public WorkOrder $workOrder;
+    public bool $sortAsc = false; // false = Más recientes primero, true = Más antiguos primero
 
     public function mount($uuid)
     {
         $this->workOrder = WorkOrder::with(['client', 'parts', 'logs', 'images'])
             ->where('uuid', $uuid)
             ->firstOrFail();
+    }
+
+    public function toggleSortOrder()
+    {
+        $this->sortAsc = !$this->sortAsc;
     }
 
     public function approveBudget()
@@ -58,7 +64,18 @@ class TrackWorkOrder extends Component
 
     public function render()
     {
-        return view('livewire.public.track-work-order')
-            ->layout('layouts.public');
+        $logs = $this->workOrder->logs;
+        if ($this->sortAsc) {
+            $logs = $logs->sortBy('created_at');
+        } else {
+            $logs = $logs->sortByDesc('created_at');
+        }
+
+        $latestLog = $this->workOrder->logs->sortByDesc('created_at')->first();
+
+        return view('livewire.public.track-work-order', [
+            'orderedLogs' => $logs,
+            'latestLog'   => $latestLog,
+        ])->layout('layouts.public');
     }
 }

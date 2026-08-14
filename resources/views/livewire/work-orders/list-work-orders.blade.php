@@ -1185,10 +1185,16 @@
                                                     </span>
                                                     <span class="ml-auto px-2 py-0.5 bg-blue-950/60 text-blue-400 text-[9px] font-black uppercase rounded-full border border-blue-800/40">{{ $managingOrder->images->count() }} foto(s)</span>
                                                 </div>
+                                                @php
+                                                    $adminCheckInList = $managingOrder->images->map(fn($img) => [
+                                                        'src' => asset('storage/' . $img->image_path),
+                                                        'caption' => 'Foto de Ingreso del Equipo (Check-in)'
+                                                    ])->values()->toArray();
+                                                @endphp
                                                 <div class="flex flex-wrap gap-2.5">
-                                                    @foreach($managingOrder->images as $img)
+                                                    @foreach($managingOrder->images as $mIdx => $img)
                                                         <div 
-                                                            onclick="openGlobalLightbox('{{ asset('storage/' . $img->image_path) }}')"
+                                                            onclick='openGlobalLightbox(@json($adminCheckInList), {{ $mIdx }}, "Fotos de Ingreso (Check-in)")'
                                                             class="relative w-20 h-20 shrink-0 aspect-square rounded-xl overflow-hidden border border-blue-800/40 bg-gray-950 cursor-pointer group shadow hover:scale-105 transition active:scale-95"
                                                             title="Clic para ampliar foto"
                                                         >
@@ -1205,7 +1211,7 @@
                                                         </div>
                                                     @endforeach
                                                 </div>
-                                                <p class="text-[10px] text-gray-500 italic">Miniaturas compactas. Toca cualquier foto para verla en pantalla completa con zoom.</p>
+                                                <p class="text-[10px] text-gray-500 italic">Miniaturas compactas. Toca cualquier foto para verla en visor interactivo con carrusel.</p>
                                             </div>
                                             @endif
 
@@ -1460,29 +1466,37 @@
                                                             <p class="text-xs text-gray-400 leading-relaxed whitespace-pre-wrap">{{ $log->notes }}</p>
                                                             
                                                             @if(count($log->images) > 0)
-                                                                <div class="mt-2 flex flex-wrap gap-2">
-                                                                    @foreach($log->images as $imgPath)
-                                                                        <div 
-                                                                            onclick="openGlobalLightbox('{{ asset('storage/' . $imgPath) }}')"
-                                                                            class="relative w-20 h-20 shrink-0 aspect-square rounded-2xl overflow-hidden border border-indigo-700/60 shadow-lg bg-gray-950 cursor-pointer group active:scale-95 transition"
-                                                                            title="Clic para ampliar evidencia"
-                                                                        >
-                                                                            <img 
-                                                                                src="{{ asset('storage/' . $imgPath) }}" 
-                                                                                loading="lazy" 
-                                                                                class="w-full h-full object-cover group-hover:scale-105 transition duration-300 rounded-2xl"
-                                                                                onerror="this.onerror=null; this.src='/images/logo-dark.png';"
-                                                                                alt="Evidencia técnica"
-                                                                            >
-                                                                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/40">
-                                                                                <span class="px-2 py-0.5 rounded text-[8px] font-black uppercase bg-black/80 text-white flex items-center gap-1">
-                                                                                    🔍 Ampliar
-                                                                                </span>
-                                                                            </div>
-                                                                        </div>
-                                                                    @endforeach
-                                                                </div>
-                                                            @endif
+                                                                 @php
+                                                                     $adminLogImgList = array_values(array_map(function($path) use ($log) {
+                                                                         return [
+                                                                             'src' => asset('storage/' . $path),
+                                                                             'caption' => 'Avance: ' . $log->title
+                                                                         ];
+                                                                     }, $log->images));
+                                                                 @endphp
+                                                                 <div class="mt-2 flex flex-wrap gap-2">
+                                                                     @foreach($log->images as $mLogIdx => $imgPath)
+                                                                         <div 
+                                                                             onclick='openGlobalLightbox(@json($adminLogImgList), {{ $mLogIdx }}, "Avance Técnico: {{ addslashes($log->title) }}")'
+                                                                             class="relative w-20 h-20 shrink-0 aspect-square rounded-2xl overflow-hidden border border-indigo-700/60 shadow-lg bg-gray-950 cursor-pointer group active:scale-95 transition"
+                                                                             title="Clic para ampliar evidencia"
+                                                                         >
+                                                                             <img 
+                                                                                 src="{{ asset('storage/' . $imgPath) }}" 
+                                                                                 loading="lazy" 
+                                                                                 class="w-full h-full object-cover group-hover:scale-105 transition duration-300 rounded-2xl"
+                                                                                 onerror="this.onerror=null; this.src='/images/logo-dark.png';"
+                                                                                 alt="Evidencia técnica"
+                                                                             >
+                                                                             <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/40">
+                                                                                 <span class="px-2 py-0.5 rounded text-[8px] font-black uppercase bg-black/80 text-white flex items-center gap-1">
+                                                                                     🔍 Ampliar / Carrusel
+                                                                                 </span>
+                                                                             </div>
+                                                                         </div>
+                                                                     @endforeach
+                                                                 </div>
+                                                             @endif
                                                             
                                                             @if($log->user)
                                                                 <span class="text-[9px] text-indigo-400/80 font-semibold block pt-0.5">Registrado por: {{ $log->user->name }}</span>

@@ -675,73 +675,10 @@
             };
         </script>
 
-        <!-- ===== GLOBAL PHOTO LIGHTBOX ===== -->
-        <!-- Lives at body level = never trapped by overflow:hidden or backdrop-filter stacking contexts -->
-        <div 
-            id="global-lightbox" 
-            onclick="if(event.target===this) closeGlobalLightbox()"
-            style="display:none; position:fixed; inset:0; z-index:999999; background:rgba(0,0,0,0.97); backdrop-filter:blur(20px); flex-direction:column; align-items:center; justify-content:space-between; padding:12px;"
-        >
-            <!-- Top Bar -->
-            <div style="width:100%; display:flex; align-items:center; justify-content:space-between; gap:8px; flex-shrink:0;">
-                <!-- Zoom controls -->
-                <div style="display:flex; align-items:center; gap:6px; background:rgba(17,24,39,0.95); border:1px solid rgba(75,85,99,0.6); border-radius:14px; padding:6px 12px; box-shadow:0 8px 32px rgba(0,0,0,0.5);">
-                    <span id="gl-zoom-label" style="font-family:monospace; font-size:11px; font-weight:900; color:#2dd4bf; min-width:38px;">100%</span>
-                    <button onclick="glZoomOut()" style="width:30px; height:30px; border-radius:10px; background:#1f2937; border:1px solid #374151; color:white; font-size:16px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center;">−</button>
-                    <button onclick="glZoomIn()" style="width:30px; height:30px; border-radius:10px; background:#4f46e5; border:1px solid #6366f1; color:white; font-size:16px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center;">+</button>
-                    <button onclick="glZoomReset()" style="padding:5px 10px; border-radius:10px; background:#1f2937; border:1px solid #374151; color:white; font-size:10px; font-weight:900; cursor:pointer;">Restablecer</button>
-                </div>
-                <!-- Close button -->
-                <button onclick="closeGlobalLightbox()" style="width:40px; height:40px; border-radius:50%; background:rgba(17,24,39,0.95); border:1px solid #374151; color:#d1d5db; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 16px rgba(0,0,0,0.5); flex-shrink:0;">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
-            </div>
-
-            <!-- Scrollable image viewport -->
-            <div id="gl-viewport" onclick="if(event.target===this) closeGlobalLightbox()" style="flex:1; width:100%; display:flex; align-items:center; justify-content:center; overflow:auto; padding:8px; cursor:zoom-in;">
-                <div id="gl-img-wrapper" style="display:inline-block; transition:transform .2s ease; transform-origin:center;">
-                    <img id="global-lightbox-img" src="" onclick="glCycleZoom()" style="max-width:100%; max-height:76vh; object-fit:contain; border-radius:16px; border:1px solid rgba(55,65,81,1); box-shadow:0 20px 60px rgba(0,0,0,0.8); display:block;" alt="Imagen ampliada">
-                </div>
-            </div>
-
-            <!-- Bottom hint -->
-            <div style="flex-shrink:0; font-size:10px; color:#6b7280; text-align:center; padding:4px 16px; background:rgba(17,24,39,0.8); border:1px solid rgba(55,65,81,0.5); border-radius:999px;">
-                📸 Toca la foto para ciclar el zoom &bull; Usa +/− para ajustar &bull; Toca fuera de la imagen para cerrar
-            </div>
-        </div>
+        <!-- ===== GLOBAL PHOTO LIGHTBOX & CAROUSEL ===== -->
+        @include('components.global-lightbox')
 
         <script>
-            // ===== GLOBAL LIGHTBOX CONTROLLER =====
-            var _glZoom = 1;
-
-            function openGlobalLightbox(src) {
-                var lb = document.getElementById('global-lightbox');
-                var img = document.getElementById('global-lightbox-img');
-                _glZoom = 1;
-                img.src = src;
-                document.getElementById('gl-img-wrapper').style.transform = 'scale(1)';
-                document.getElementById('gl-zoom-label').textContent = '100%';
-                lb.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
-            }
-
-            function closeGlobalLightbox() {
-                document.getElementById('global-lightbox').style.display = 'none';
-                document.getElementById('global-lightbox-img').src = '';
-                document.body.style.overflow = '';
-                _glZoom = 1;
-            }
-
-            function _applyGlZoom() {
-                document.getElementById('gl-img-wrapper').style.transform = 'scale(' + _glZoom + ')';
-                document.getElementById('gl-zoom-label').textContent = Math.round(_glZoom * 100) + '%';
-            }
-
-            function glZoomIn()  { _glZoom = Math.min(4, _glZoom + 0.5); _applyGlZoom(); }
-            function glZoomOut() { _glZoom = Math.max(1, _glZoom - 0.5); _applyGlZoom(); }
-            function glZoomReset() { _glZoom = 1; _applyGlZoom(); }
-            function glCycleZoom() { _glZoom = (_glZoom === 1 ? 2 : (_glZoom === 2 ? 3.5 : 1)); _applyGlZoom(); }
-
             // ===== PWA SERVICE WORKER & STANDALONE DETECTOR =====
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', function() {
