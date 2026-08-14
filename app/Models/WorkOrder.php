@@ -37,7 +37,7 @@ class WorkOrder extends Model
 
     public function logs()
     {
-        return $this->hasMany(WorkOrderLog::class)->orderBy('created_at', 'desc');
+        return $this->hasMany(WorkOrderLog::class)->orderBy('created_at', 'asc');
     }
 
     public function technician()

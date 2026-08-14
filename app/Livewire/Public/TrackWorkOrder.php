@@ -8,7 +8,7 @@ use Livewire\Component;
 class TrackWorkOrder extends Component
 {
     public WorkOrder $workOrder;
-    public bool $sortAsc = false; // false = Más recientes primero, true = Más antiguos primero
+    public bool $sortAsc = true; // true = Más antiguos primero (Inicio a Fin: cronología natural)
 
     public function mount($uuid)
     {

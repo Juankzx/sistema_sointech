@@ -1517,7 +1517,7 @@
                                         
                                         @if(count($managingOrder->logs) > 0)
                                             <div class="relative pl-5 border-l-2 border-gray-800 space-y-5">
-                                                @foreach($managingOrder->logs as $log)
+                                                @foreach($managingOrder->logs->sortBy('created_at') as $log)
                                                     <div class="relative">
                                                         <!-- Bullet node point -->
                                                         <span class="absolute -left-[27px] mt-1 bg-gray-900 border-2 border-indigo-500 w-3.5 h-3.5 rounded-full flex items-center justify-center"></span>
