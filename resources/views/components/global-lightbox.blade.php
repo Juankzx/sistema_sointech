@@ -29,21 +29,21 @@
         </button>
     </div>
 
-    <!-- Main Image Viewport with Nav Arrows -->
+    <!-- Centered Main Image Viewport with Nav Arrows -->
     <div 
         id="gl-viewport" 
-        class="relative flex-1 w-full flex items-center justify-center overflow-hidden my-2 cursor-grab active:cursor-grabbing"
+        class="relative flex-1 w-full flex flex-col items-center justify-center overflow-hidden my-auto cursor-grab active:cursor-grabbing max-w-5xl"
     >
-        <!-- Desktop Previous Button -->
+        <!-- Desktop Previous Button (Ultra-subtle, hidden on mobile touch screens) -->
         <button 
             id="gl-btn-prev"
             type="button"
             onclick="glPrevImage(event)" 
-            class="absolute left-2 sm:left-4 z-20 w-11 h-11 rounded-2xl bg-gray-900/70 border border-gray-700/60 text-white hover:bg-blue-600 hover:border-blue-500 active:scale-90 transition-all duration-200 flex items-center justify-center shadow-2xl backdrop-blur-md hidden"
+            class="absolute left-2 sm:left-4 z-30 w-9 h-9 rounded-full bg-gray-900/40 border border-gray-700/40 text-white/70 hover:text-white hover:bg-blue-600 hover:border-blue-500 active:scale-90 transition-all duration-200 hidden md:flex items-center justify-center shadow-xl backdrop-blur-sm"
             aria-label="Foto anterior"
         >
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path>
             </svg>
         </button>
 
@@ -53,27 +53,27 @@
                 id="global-lightbox-img" 
                 src="" 
                 alt="Imagen ampliada"
-                class="max-w-full max-h-[78vh] sm:max-h-[82vh] object-contain rounded-2xl border border-gray-800/80 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] select-none"
+                class="max-w-full max-h-[70vh] sm:max-h-[74vh] object-contain rounded-2xl border border-gray-800/80 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] select-none"
                 draggable="false"
             />
         </div>
 
-        <!-- Desktop Next Button -->
+        <!-- Desktop Next Button (Ultra-subtle, hidden on mobile touch screens) -->
         <button 
             id="gl-btn-next"
             type="button"
             onclick="glNextImage(event)" 
-            class="absolute right-2 sm:right-4 z-20 w-11 h-11 rounded-2xl bg-gray-900/70 border border-gray-700/60 text-white hover:bg-blue-600 hover:border-blue-500 active:scale-90 transition-all duration-200 flex items-center justify-center shadow-2xl backdrop-blur-md hidden"
+            class="absolute right-2 sm:right-4 z-30 w-9 h-9 rounded-full bg-gray-900/40 border border-gray-700/40 text-white/70 hover:text-white hover:bg-blue-600 hover:border-blue-500 active:scale-90 transition-all duration-200 hidden md:flex items-center justify-center shadow-xl backdrop-blur-sm"
             aria-label="Siguiente foto"
         >
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
             </svg>
         </button>
     </div>
 
     <!-- Minimalist Bottom Title & Description Overlay -->
-    <div id="gl-info-card" class="w-full max-w-xl mx-auto shrink-0 z-20 transition-opacity duration-200 hidden">
+    <div id="gl-info-card" class="w-full max-w-xl mx-auto shrink-0 z-20 transition-opacity duration-200 hidden pb-2">
         <div class="p-3 sm:p-4 rounded-2xl bg-gray-950/85 border border-gray-800/80 backdrop-blur-md shadow-2xl flex flex-col items-center text-center gap-1">
             <h4 id="gl-info-title" class="text-xs sm:text-sm font-black text-white leading-tight"></h4>
             <p id="gl-info-desc" class="text-[11px] sm:text-xs text-gray-300 font-medium leading-relaxed max-h-20 overflow-y-auto custom-scrollbar"></p>
@@ -220,15 +220,15 @@
             counter.classList.add('hidden');
         }
 
-        // Nav Buttons
+        // Nav Buttons (Hidden on mobile touch screens, subtle on desktop)
         var prevBtn = document.getElementById('gl-btn-prev');
         var nextBtn = document.getElementById('gl-btn-next');
-        if (_glState.images.length > 1) {
-            prevBtn.classList.remove('hidden');
-            nextBtn.classList.remove('hidden');
+        if (_glState.images.length > 1 && window.innerWidth >= 768) {
+            prevBtn.style.display = 'flex';
+            nextBtn.style.display = 'flex';
         } else {
-            prevBtn.classList.add('hidden');
-            nextBtn.classList.add('hidden');
+            prevBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
         }
 
         // Title & Description Info Card
