@@ -159,7 +159,7 @@
             </div>
         </div>
 
-        <!-- FOTOS DE INGRESO (RESPALDO CHECK-IN) -->
+        <!-- FOTOS DE INGRESO (CARRUSEL INTERACTIVO CHECK-IN) -->
         @if($workOrder->images && $workOrder->images->count() > 0)
             @php
                 $checkInList = $workOrder->images->map(fn($img) => [
@@ -167,40 +167,99 @@
                     'caption' => 'Foto de Ingreso del Equipo (Check-in)'
                 ])->values()->toArray();
             @endphp
-            <div class="pt-4 border-t border-gray-800/80 space-y-3">
+            <div 
+                x-data="{ 
+                    activeIndex: 0, 
+                    photos: {{ json_encode($checkInList) }},
+                    next() { this.activeIndex = (this.activeIndex + 1) % this.photos.length },
+                    prev() { this.activeIndex = (this.activeIndex - 1 + this.photos.length) % this.photos.length },
+                    touchStartX: 0,
+                    touchEndX: 0,
+                    handleTouchStart(e) { this.touchStartX = e.changedTouches[0].screenX },
+                    handleTouchEnd(e) { 
+                        this.touchEndX = e.changedTouches[0].screenX;
+                        if (this.touchStartX - this.touchEndX > 35) this.next();
+                        if (this.touchEndX - this.touchStartX > 35) this.prev();
+                    }
+                }" 
+                class="pt-4 border-t border-gray-800/80 space-y-3"
+            >
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-bold text-blue-400 uppercase tracking-wider flex items-center gap-2">
                         📸 Fotos de Ingreso del Equipo (Respaldo Check-in)
                     </span>
                     <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-950/80 text-blue-300 border border-blue-500/30">
-                        {{ $workOrder->images->count() }} {{ $workOrder->images->count() === 1 ? 'imagen' : 'imágenes' }}
+                        <span x-text="activeIndex + 1"></span> / <span x-text="photos.length"></span> {{ $workOrder->images->count() === 1 ? 'imagen' : 'imágenes' }}
                     </span>
                 </div>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                    @foreach($workOrder->images as $imgIndex => $img)
+
+                <!-- Frame Principal Interactivo -->
+                <div 
+                    @touchstart="handleTouchStart($event)" 
+                    @touchend="handleTouchEnd($event)"
+                    class="relative aspect-[4/3] sm:aspect-[16/9] w-full rounded-2xl overflow-hidden border border-gray-800 bg-gray-950 shadow-inner group flex items-center justify-center select-none"
+                >
+                    <template x-for="(photo, index) in photos" :key="index">
                         <div 
-                            onclick='openGlobalLightbox(@json($checkInList), {{ $imgIndex }}, "Fotos de Ingreso (Check-in)")'
-                            class="relative group aspect-square rounded-2xl overflow-hidden border border-gray-800 bg-gray-950 cursor-pointer shadow-lg hover:border-blue-500/50 hover:scale-[1.02] transition-all duration-200"
+                            x-show="activeIndex === index"
+                            x-transition:enter="transition ease-out duration-200"
+                            x-transition:enter-start="opacity-0 scale-95"
+                            x-transition:enter-end="opacity-100 scale-100"
+                            class="absolute inset-0 w-full h-full flex items-center justify-center p-1"
                         >
                             <img 
-                                src="{{ asset('storage/' . $img->image_path) }}" 
-                                loading="lazy"
-                                class="w-full h-full object-cover group-hover:opacity-90 transition"
-                                onerror="this.onerror=null; this.src='/images/logo-dark.png';"
+                                :src="photo.src" 
+                                @click="openGlobalLightbox(photos, activeIndex, 'Fotos de Ingreso (Check-in)')"
+                                class="max-w-full max-h-full object-contain cursor-pointer rounded-xl"
                                 alt="Foto de ingreso del equipo"
-                            >
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2.5">
-                                <span class="text-[10px] font-bold text-white flex items-center gap-1">
-                                    🔍 Ampliar / Carrusel
-                                </span>
-                            </div>
-                            <span class="absolute top-1.5 right-1.5 px-2 py-0.5 rounded-md text-[8px] font-extrabold uppercase bg-gray-950/80 text-blue-300 border border-blue-500/30 backdrop-blur-sm">
-                                Check-in
-                            </span>
+                            />
                         </div>
-                    @endforeach
+                    </template>
+
+                    <!-- Botones de Navegación -->
+                    <button 
+                        x-show="photos.length > 1"
+                        @click="prev()" 
+                        type="button" 
+                        class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-900/80 border border-gray-700 text-white font-bold flex items-center justify-center hover:bg-blue-600 transition shadow-lg z-10 active:scale-90 text-lg"
+                        aria-label="Anterior"
+                    >
+                        ‹
+                    </button>
+                    <button 
+                        x-show="photos.length > 1"
+                        @click="next()" 
+                        type="button" 
+                        class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-900/80 border border-gray-700 text-white font-bold flex items-center justify-center hover:bg-blue-600 transition shadow-lg z-10 active:scale-90 text-lg"
+                        aria-label="Siguiente"
+                    >
+                        ›
+                    </button>
+
+                    <!-- Botón Ampliar -->
+                    <button 
+                        type="button"
+                        @click="openGlobalLightbox(photos, activeIndex, 'Fotos de Ingreso (Check-in)')"
+                        class="absolute bottom-2.5 right-2.5 px-3 py-1 rounded-full text-[10px] font-bold bg-black/75 text-gray-200 border border-gray-700 hover:bg-blue-600 hover:text-white transition flex items-center gap-1 backdrop-blur-md shadow-lg"
+                    >
+                        🔍 Ampliar Foto
+                    </button>
                 </div>
-                <p class="text-[11px] text-gray-400 italic">Toca cualquier imagen para abrir el visor interactivo en carrusel.</p>
+
+                <!-- Tira de Miniaturas -->
+                <div class="flex items-center gap-2 overflow-x-auto py-1 px-0.5 custom-scrollbar">
+                    <template x-for="(photo, index) in photos" :key="index">
+                        <button 
+                            type="button"
+                            @click="activeIndex = index"
+                            :class="activeIndex === index ? 'border-blue-500 ring-2 ring-blue-500/40 scale-105 opacity-100' : 'border-gray-800 opacity-50 hover:opacity-100'"
+                            class="relative w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-xl overflow-hidden border bg-gray-950 transition duration-200 cursor-pointer"
+                        >
+                            <img :src="photo.src" class="w-full h-full object-cover" />
+                        </button>
+                    </template>
+                </div>
+                <p class="text-[10px] text-gray-400 italic text-center">👈 Desliza con el dedo o toca cualquier miniatura para navegar por las fotos.</p>
             </div>
         @endif
     </div>
