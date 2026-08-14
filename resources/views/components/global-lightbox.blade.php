@@ -1,8 +1,8 @@
 <!-- ===== GLOBAL TOUCH LIGHTBOX & CAROUSEL COMPONENT ===== -->
 <div 
     id="global-lightbox" 
-    class="fixed inset-0 z-[999999] hidden flex-col items-center justify-between p-3 sm:p-5 select-none transition-opacity duration-300 opacity-0"
-    style="background: rgba(4, 7, 13, 0.96); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); touch-action: none; overscroll-behavior: contain;"
+    class="fixed inset-0 hidden flex-col items-center justify-between p-3 sm:p-5 select-none transition-opacity duration-300 opacity-0"
+    style="z-index: 99999999 !important; background: rgba(4, 7, 13, 0.98); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); touch-action: none; overscroll-behavior: contain;"
 >
     <!-- Top Minimalist Header Bar -->
     <div class="w-full flex items-center justify-between gap-3 shrink-0 z-20 max-w-5xl mx-auto pt-1">
@@ -128,6 +128,14 @@
         _glUpdateDOM();
 
         var lb = document.getElementById('global-lightbox');
+        if (!lb) return;
+
+        // Force move lightbox to document.body root so NO parent modal or stacking context can obscure it
+        if (lb.parentElement !== document.body) {
+            document.body.appendChild(lb);
+        }
+        lb.style.zIndex = '99999999';
+
         lb.classList.remove('hidden');
         // Trigger smooth fade in
         requestAnimationFrame(() => {
