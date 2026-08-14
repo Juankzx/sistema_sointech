@@ -83,7 +83,7 @@ class Dashboard extends Component
     public function saveManualLog()
     {
         $this->validate([
-            'newLogNotes' => 'required|string|min:5',
+            'newLogNotes' => 'nullable|string',
             'newLogTitle' => 'required|string|max:100',
             'newLogPhoto' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,heic,heif|max:30720',
         ], [

@@ -382,21 +382,24 @@
                             <h3 class="text-sm font-bold text-white leading-snug">{{ $log->title }}</h3>
                             <span class="text-[10px] text-gray-500 font-semibold">{{ $log->created_at->format('d/m/Y H:i') }}</span>
                         </div>
-                        <p class="text-xs text-gray-400 leading-relaxed">{{ $log->notes }}</p>
+                        @if($log->notes)
+                            <p class="text-xs text-gray-400 leading-relaxed">{{ $log->notes }}</p>
+                        @endif
                         
-                        @if($log->image_path)
-                            <div class="mt-2.5 relative inline-block group max-w-[260px] rounded-2xl overflow-hidden border border-gray-700/60 shadow-lg bg-gray-950">
-                                <img 
-                                    src="{{ asset('storage/' . $log->image_path) }}" 
-                                    loading="lazy"
-                                    class="w-full max-h-52 object-cover group-hover:scale-105 transition duration-300 cursor-pointer rounded-2xl"
-                                    onclick="openImageModal('{{ asset('storage/' . $log->image_path) }}')"
-                                    onerror="this.onerror=null; this.src='/images/logo-dark.png';"
-                                    alt="Evidencia del hito"
-                                >
-                                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-lg text-[8px] font-black uppercase bg-gray-950/90 text-gray-200 border border-gray-700/60 pointer-events-none shadow-md">
-                                    🔍 Ampliar Imagen
-                                </span>
+                        @if(count($log->images) > 0)
+                            <div class="mt-2.5 flex flex-wrap gap-2.5">
+                                @foreach($log->images as $imgPath)
+                                    <div class="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 aspect-square rounded-2xl overflow-hidden border border-gray-700/60 shadow-lg bg-gray-950">
+                                        <img 
+                                            src="{{ asset('storage/' . $imgPath) }}" 
+                                            loading="lazy"
+                                            class="w-full h-full object-cover group-hover:scale-105 transition duration-300 cursor-pointer rounded-2xl"
+                                            onclick="openImageModal('{{ asset('storage/' . $imgPath) }}')"
+                                            onerror="this.onerror=null; this.src='/images/logo-dark.png';"
+                                            alt="Evidencia del hito"
+                                        >
+                                    </div>
+                                @endforeach
                             </div>
                         @endif
                     </div>

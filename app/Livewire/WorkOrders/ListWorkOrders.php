@@ -219,27 +219,32 @@ class ListWorkOrders extends Component
         }
 
         $this->validate([
-            'newLogNotes' => 'required|string|min:5',
+            'newLogNotes' => 'nullable|string',
             'newLogTitle' => 'required|string|max:100',
             'newLogPhotos.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,heic,heif|max:30720',
         ]);
 
-        $firstFileName = null;
+        $storedPaths = [];
         
         // Procesar array de fotos múltiples
         $photosToProcess = !empty($this->newLogPhotos) ? $this->newLogPhotos : ($this->newLogPhoto ? [$this->newLogPhoto] : []);
 
-        foreach ($photosToProcess as $idx => $photo) {
+        foreach ($photosToProcess as $photo) {
             $fileName = ImageOptimizer::optimizeAndStore($photo, 'work-orders');
-            if ($idx === 0) {
-                $firstFileName = $fileName;
-            }
+            $storedPaths[] = $fileName;
             
             // Auto agregar a la galería de la orden (WorkOrderImage)
             $order->images()->create([
                 'type' => 'progress',
                 'image_path' => $fileName,
             ]);
+        }
+
+        $imagePathValue = null;
+        if (count($storedPaths) === 1) {
+            $imagePathValue = $storedPaths[0];
+        } elseif (count($storedPaths) > 1) {
+            $imagePathValue = json_encode($storedPaths);
         }
 
         $oldStatus = $order->status;
@@ -253,9 +258,9 @@ class ListWorkOrders extends Component
 
         $order->logs()->create([
             'status' => $order->status,
-            'title' => $this->newLogTitle,
-            'notes' => $this->newLogNotes,
-            'image_path' => $firstFileName,
+            'title' => $this->newLogTitle ?: 'Avance Técnico',
+            'notes' => $this->newLogNotes ?: null,
+            'image_path' => $imagePathValue,
             'user_id' => auth()->id(),
         ]);
 

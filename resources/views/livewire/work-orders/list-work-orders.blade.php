@@ -1181,7 +1181,7 @@
                                             <div class="bg-gray-900/50 p-3 sm:p-4 rounded-2xl border border-blue-900/40 space-y-2.5 min-w-0">
                                                 <div class="flex items-center gap-2 border-b border-gray-800 pb-2">
                                                     <span class="text-xs font-black text-blue-400 uppercase tracking-widest flex items-center gap-1.5">
-                                                        📸 Fotos de Ingreso del Equipo
+                                                        📸 Fotos de Ingreso (Estado Inicial / Check-in)
                                                     </span>
                                                     <span class="ml-auto px-2 py-0.5 bg-blue-950/60 text-blue-400 text-[9px] font-black uppercase rounded-full border border-blue-800/40">{{ $managingOrder->images->count() }} foto(s)</span>
                                                 </div>
@@ -1350,13 +1350,12 @@
                                              
                                              <!-- Notes -->
                                              <div class="space-y-1.5">
-                                                 <label class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider">Detalle / Notas *</label>
+                                                 <label class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider">Detalle / Notas (Opcional)</label>
                                                  <textarea 
                                                      wire:model="newLogNotes" 
-                                                     rows="3" 
+                                                     rows="2" 
                                                      class="w-full bg-gray-950 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500 text-sm leading-relaxed" 
-                                                     placeholder="Describe el estado o labores realizadas..."
-                                                     required
+                                                     placeholder="Describe opcionalmente las labores realizadas..."
                                                  ></textarea>
                                                  @error('newLogNotes') <span class="text-red-400 text-xs block font-bold mt-1">{{ $message }}</span> @enderror
                                              </div>
@@ -1460,21 +1459,28 @@
                                                             </div>
                                                             <p class="text-xs text-gray-400 leading-relaxed whitespace-pre-wrap">{{ $log->notes }}</p>
                                                             
-                                                            @if($log->image_path)
-                                                                <div 
-                                                                    onclick="openGlobalLightbox('{{ asset('storage/' . $log->image_path) }}')"
-                                                                    class="mt-2.5 relative inline-block group max-w-[240px] rounded-2xl overflow-hidden border border-indigo-700/60 shadow-lg bg-gray-950 cursor-pointer active:scale-95 transition"
-                                                                >
-                                                                    <img 
-                                                                        src="{{ asset('storage/' . $log->image_path) }}" 
-                                                                        loading="lazy" 
-                                                                        class="w-full max-h-48 object-cover group-hover:scale-105 transition duration-300 rounded-2xl"
-                                                                        onerror="this.onerror=null; this.src='/images/logo-dark.png';"
-                                                                        alt="Evidencia técnica"
-                                                                    >
-                                                                    <span class="absolute bottom-2 right-2 px-2 py-1 rounded-lg text-[9px] font-black uppercase bg-gray-900/90 text-gray-100 border border-gray-700/80 pointer-events-none flex items-center gap-1 shadow-md">
-                                                                        🔍 Ampliar
-                                                                    </span>
+                                                            @if(count($log->images) > 0)
+                                                                <div class="mt-2 flex flex-wrap gap-2">
+                                                                    @foreach($log->images as $imgPath)
+                                                                        <div 
+                                                                            onclick="openGlobalLightbox('{{ asset('storage/' . $imgPath) }}')"
+                                                                            class="relative w-20 h-20 shrink-0 aspect-square rounded-2xl overflow-hidden border border-indigo-700/60 shadow-lg bg-gray-950 cursor-pointer group active:scale-95 transition"
+                                                                            title="Clic para ampliar evidencia"
+                                                                        >
+                                                                            <img 
+                                                                                src="{{ asset('storage/' . $imgPath) }}" 
+                                                                                loading="lazy" 
+                                                                                class="w-full h-full object-cover group-hover:scale-105 transition duration-300 rounded-2xl"
+                                                                                onerror="this.onerror=null; this.src='/images/logo-dark.png';"
+                                                                                alt="Evidencia técnica"
+                                                                            >
+                                                                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/40">
+                                                                                <span class="px-2 py-0.5 rounded text-[8px] font-black uppercase bg-black/80 text-white flex items-center gap-1">
+                                                                                    🔍 Ampliar
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                    @endforeach
                                                                 </div>
                                                             @endif
                                                             
