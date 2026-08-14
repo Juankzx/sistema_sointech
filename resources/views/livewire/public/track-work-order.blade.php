@@ -473,6 +473,24 @@
             </button>
         </div>
         
+        @php
+            $allBitacoraPhotos = [];
+            $bIndexMap = [];
+            $gCount = 0;
+            foreach($orderedLogs as $logItem) {
+                if(count($logItem->images) > 0) {
+                    foreach($logItem->images as $lIdx => $imgPath) {
+                        $allBitacoraPhotos[] = [
+                            'src' => asset('storage/' . $imgPath),
+                            'title' => $logItem->title,
+                            'description' => $logItem->notes ?? ''
+                        ];
+                        $bIndexMap[$logItem->id . '_' . $lIdx] = $gCount++;
+                    }
+                }
+            }
+        @endphp
+        
         <div class="relative pl-6 border-l-2 border-gray-800 space-y-6">
             @forelse($orderedLogs as $log)
                 <div class="relative">
@@ -489,18 +507,13 @@
                         @endif
                         
                         @if(count($log->images) > 0)
-                            @php
-                                $logImgArray = array_values(array_map(function($path) use ($log) {
-                                    return [
-                                        'src' => asset('storage/' . $path),
-                                        'caption' => 'Avance: ' . $log->title
-                                    ];
-                                }, $log->images));
-                            @endphp
                             <div class="mt-2.5 flex flex-wrap gap-2.5">
                                 @foreach($log->images as $lIdx => $imgPath)
+                                    @php
+                                        $gPos = $bIndexMap[$log->id . '_' . $lIdx] ?? 0;
+                                    @endphp
                                     <div 
-                                        onclick='openGlobalLightbox(@json($logImgArray), {{ $lIdx }}, "Avance Técnico: {{ addslashes($log->title) }}")'
+                                        onclick='openGlobalLightbox(@json($allBitacoraPhotos), {{ $gPos }}, "Bitácora de Avances")'
                                         class="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 aspect-square rounded-2xl overflow-hidden border border-gray-700/60 shadow-lg bg-gray-950 cursor-pointer group hover:border-orange-500/50 hover:scale-105 transition duration-300"
                                     >
                                         <img 

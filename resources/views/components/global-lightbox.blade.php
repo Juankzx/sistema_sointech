@@ -72,17 +72,11 @@
         </button>
     </div>
 
-    <!-- Minimalist Bottom Bar / Gesture Hint -->
-    <div class="w-full flex flex-col items-center gap-1 shrink-0 z-20">
-        <div 
-            id="gl-caption"
-            class="text-xs text-gray-300 font-medium text-center max-w-xl truncate px-4 py-1 rounded-full bg-gray-900/60 border border-gray-800/60 backdrop-blur-md hidden"
-        ></div>
-
-        <div class="text-[10px] sm:text-xs text-gray-400 font-semibold tracking-wide text-center px-4 py-1 rounded-full bg-gray-900/50 border border-gray-800/50 backdrop-blur-sm flex items-center justify-center gap-1.5">
-            <span class="text-blue-400">👈 Desliza a los lados</span> para cambiar foto &bull; 
-            <span class="text-indigo-400">Doble toque</span> para zoom &bull; 
-            <span class="text-gray-400">Desliza abajo</span> para cerrar
+    <!-- Minimalist Bottom Title & Description Overlay -->
+    <div id="gl-info-card" class="w-full max-w-xl mx-auto shrink-0 z-20 transition-opacity duration-200 hidden">
+        <div class="p-3 sm:p-4 rounded-2xl bg-gray-950/85 border border-gray-800/80 backdrop-blur-md shadow-2xl flex flex-col items-center text-center gap-1">
+            <h4 id="gl-info-title" class="text-xs sm:text-sm font-black text-white leading-tight"></h4>
+            <p id="gl-info-desc" class="text-[11px] sm:text-xs text-gray-300 font-medium leading-relaxed max-h-20 overflow-y-auto custom-scrollbar"></p>
         </div>
     </div>
 </div>
@@ -111,11 +105,15 @@
         
         // Handle input formats: string or array of strings/objects
         if (typeof input === 'string') {
-            _glState.images = [{ src: input, caption: '' }];
+            _glState.images = [{ src: input, title: title || '', description: '' }];
         } else if (Array.isArray(input)) {
             _glState.images = input.map(item => {
-                if (typeof item === 'string') return { src: item, caption: '' };
-                return { src: item.src || item.url || item.image_path || '', caption: item.caption || item.notes || item.title || '' };
+                if (typeof item === 'string') return { src: item, title: '', description: '' };
+                return { 
+                    src: item.src || item.url || item.image_path || '', 
+                    title: item.title || item.caption || '', 
+                    description: item.description || item.notes || '' 
+                };
             }).filter(i => i.src);
         }
 
@@ -233,13 +231,25 @@
             nextBtn.classList.add('hidden');
         }
 
-        // Caption
-        var captionEl = document.getElementById('gl-caption');
-        if (current.caption && current.caption.trim()) {
-            captionEl.textContent = current.caption;
-            captionEl.classList.remove('hidden');
+        // Title & Description Info Card
+        var infoCard = document.getElementById('gl-info-card');
+        var infoTitle = document.getElementById('gl-info-title');
+        var infoDesc = document.getElementById('gl-info-desc');
+
+        var itemTitle = current.title || current.caption || '';
+        var itemDesc = current.description || current.notes || '';
+
+        if (itemTitle || itemDesc) {
+            infoTitle.textContent = itemTitle;
+            infoDesc.textContent = itemDesc;
+            if (itemDesc) {
+                infoDesc.classList.remove('hidden');
+            } else {
+                infoDesc.classList.add('hidden');
+            }
+            infoCard.classList.remove('hidden');
         } else {
-            captionEl.classList.add('hidden');
+            infoCard.classList.add('hidden');
         }
     }
 

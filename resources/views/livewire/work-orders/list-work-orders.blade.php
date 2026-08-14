@@ -1516,8 +1516,26 @@
                                         <span class="text-xs font-black text-gray-400 uppercase tracking-widest block border-b border-gray-800 pb-1.5">Historial de Eventos</span>
                                         
                                         @if(count($managingOrder->logs) > 0)
+                                            @php
+                                                $adminAllBitacoraPhotos = [];
+                                                $adminBIndexMap = [];
+                                                $adminGCount = 0;
+                                                $sortedLogsList = $managingOrder->logs->sortBy('created_at');
+                                                foreach($sortedLogsList as $logItem) {
+                                                    if(count($logItem->images) > 0) {
+                                                        foreach($logItem->images as $lIdx => $imgPath) {
+                                                            $adminAllBitacoraPhotos[] = [
+                                                                'src' => asset('storage/' . $imgPath),
+                                                                'title' => 'Avance: ' . $logItem->title,
+                                                                'description' => $logItem->notes ?? ''
+                                                            ];
+                                                            $adminBIndexMap[$logItem->id . '_' . $lIdx] = $adminGCount++;
+                                                        }
+                                                    }
+                                                }
+                                            @endphp
                                             <div class="relative pl-5 border-l-2 border-gray-800 space-y-5">
-                                                @foreach($managingOrder->logs->sortBy('created_at') as $log)
+                                                @foreach($sortedLogsList as $log)
                                                     <div class="relative">
                                                         <!-- Bullet node point -->
                                                         <span class="absolute -left-[27px] mt-1 bg-gray-900 border-2 border-indigo-500 w-3.5 h-3.5 rounded-full flex items-center justify-center"></span>
@@ -1531,18 +1549,13 @@
                                                             <p class="text-xs text-gray-400 leading-relaxed whitespace-pre-wrap">{{ $log->notes }}</p>
                                                             
                                                             @if(count($log->images) > 0)
-                                                                 @php
-                                                                     $adminLogImgList = array_values(array_map(function($path) use ($log) {
-                                                                         return [
-                                                                             'src' => asset('storage/' . $path),
-                                                                             'caption' => 'Avance: ' . $log->title
-                                                                         ];
-                                                                     }, $log->images));
-                                                                 @endphp
                                                                  <div class="mt-2 flex flex-wrap gap-2">
                                                                      @foreach($log->images as $mLogIdx => $imgPath)
+                                                                         @php
+                                                                             $adminPos = $adminBIndexMap[$log->id . '_' . $mLogIdx] ?? 0;
+                                                                         @endphp
                                                                          <div 
-                                                                             onclick='openGlobalLightbox(@json($adminLogImgList), {{ $mLogIdx }}, "Avance Técnico: {{ addslashes($log->title) }}")'
+                                                                             onclick='openGlobalLightbox(@json($adminAllBitacoraPhotos), {{ $adminPos }}, "Bitácora de Avances")'
                                                                              class="relative w-20 h-20 shrink-0 aspect-square rounded-2xl overflow-hidden border border-indigo-700/60 shadow-lg bg-gray-950 cursor-pointer group active:scale-95 transition"
                                                                              title="Clic para ampliar evidencia"
                                                                          >
