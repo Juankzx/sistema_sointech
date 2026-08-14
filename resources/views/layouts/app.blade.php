@@ -40,14 +40,6 @@
                 padding-top: env(safe-area-inset-top, 0px);
                 padding-bottom: env(safe-area-inset-bottom, 0px);
             }
-            @media all and (display-mode: standalone), (display-mode: fullscreen) {
-                .pwa-bottom-nav {
-                    display: none !important;
-                }
-            }
-            body.is-standalone .pwa-bottom-nav {
-                display: none !important;
-            }
         </style>
     </head>
     <body class="bg-slate-950 text-slate-100 antialiased selection:bg-orange-500 selection:text-white" x-data="{ mobileMenuOpen: false, isDark: true }">
@@ -445,30 +437,30 @@
                     {{ $slot }}
                 </main>
 
-                <!-- MOBILE BOTTOM NAVIGATION -->
+                <!-- MOBILE BOTTOM NAVIGATION (PWA GLOBAL NAV) -->
                 @auth
                 @if(!auth()->user()->isCliente())
-                <nav class="fixed bottom-0 w-full bg-gray-950 border-t border-gray-800 z-40 md:hidden pwa-bottom-nav">
-                    <div class="flex justify-around items-center h-16">
-                        <!-- Dashboard -->
-                        <a href="{{ route('dashboard') }}" class="flex flex-col items-center justify-center w-full {{ Route::is('dashboard') ? 'text-orange-500' : 'text-gray-400 hover:text-gray-300' }}">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z"></path></svg>
-                            <span class="text-[9px] mt-1 font-semibold">Inicio</span>
+                <nav class="fixed bottom-0 left-0 right-0 w-full bg-slate-950/95 backdrop-blur-xl border-t border-slate-800/80 z-40 md:hidden pwa-bottom-nav safe-area-bottom shadow-[0_-8px_30px_rgba(0,0,0,0.8)]">
+                    <div class="grid grid-cols-4 h-16 max-w-lg mx-auto items-center">
+                        <!-- 1. Inicio (Dashboard) -->
+                        <a href="{{ route('dashboard') }}" class="flex flex-col items-center justify-center h-full transition duration-150 active:scale-90 {{ Route::is('dashboard') ? 'text-orange-500 font-black' : 'text-slate-400 hover:text-slate-200 font-semibold' }}">
+                            <svg class="w-6 h-6 shrink-0 {{ Route::is('dashboard') ? 'text-orange-500 scale-110' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z"></path></svg>
+                            <span class="text-[9px] mt-1 tracking-tight">Inicio</span>
                         </a>
-                        <!-- Nueva OT -->
-                        <a href="{{ route('work-orders.create') }}" class="flex flex-col items-center justify-center w-full {{ Route::is('work-orders.create') ? 'text-orange-500' : 'text-gray-400 hover:text-gray-300' }}">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                            <span class="text-[9px] mt-1 font-semibold">Nueva OT</span>
+                        <!-- 2. Nueva OT -->
+                        <a href="{{ route('work-orders.index', ['create' => 1]) }}" class="flex flex-col items-center justify-center h-full transition duration-150 active:scale-90 {{ Route::is('work-orders.index') && request()->get('create') ? 'text-orange-500 font-black' : 'text-slate-400 hover:text-slate-200 font-semibold' }}">
+                            <svg class="w-6 h-6 shrink-0 {{ Route::is('work-orders.index') && request()->get('create') ? 'text-orange-500 scale-110' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                            <span class="text-[9px] mt-1 tracking-tight">Nueva OT</span>
                         </a>
-                        <!-- Órdenes -->
-                        <a href="{{ route('work-orders.index') }}" class="flex flex-col items-center justify-center w-full {{ Route::is('work-orders.index') ? 'text-orange-500' : 'text-gray-400 hover:text-gray-300' }}">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-                            <span class="text-[9px] mt-1 font-semibold">Órdenes</span>
+                        <!-- 3. Órdenes -->
+                        <a href="{{ route('work-orders.index') }}" class="flex flex-col items-center justify-center h-full transition duration-150 active:scale-90 {{ Route::is('work-orders.index') && !request()->get('create') ? 'text-orange-500 font-black' : 'text-slate-400 hover:text-slate-200 font-semibold' }}">
+                            <svg class="w-6 h-6 shrink-0 {{ Route::is('work-orders.index') && !request()->get('create') ? 'text-orange-500 scale-110' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                            <span class="text-[9px] mt-1 tracking-tight">Órdenes</span>
                         </a>
-                        <!-- Inventario -->
-                        <a href="{{ route('inventory.index') }}" class="flex flex-col items-center justify-center w-full {{ Route::is('inventory.index') ? 'text-orange-500' : 'text-gray-400 hover:text-gray-300' }}">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-                            <span class="text-[9px] mt-1 font-semibold">Inventario</span>
+                        <!-- 4. Inventario -->
+                        <a href="{{ route('inventory.index') }}" class="flex flex-col items-center justify-center h-full transition duration-150 active:scale-90 {{ Route::is('inventory.index') ? 'text-orange-500 font-black' : 'text-slate-400 hover:text-slate-200 font-semibold' }}">
+                            <svg class="w-6 h-6 shrink-0 {{ Route::is('inventory.index') ? 'text-orange-500 scale-110' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                            <span class="text-[9px] mt-1 tracking-tight">Inventario</span>
                         </a>
                     </div>
                 </nav>
