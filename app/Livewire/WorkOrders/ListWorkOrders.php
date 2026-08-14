@@ -66,7 +66,7 @@ class ListWorkOrders extends Component
     public $deliveryPayBalance = false;
     public $deliveryPaymentMethod = 'Efectivo';
 
-    public function openWorkOrderDetails($id)
+    public function openWorkOrderDetails($id, $targetTab = 'details')
     {
         $order = WorkOrder::with(['client', 'parts', 'images', 'logs', 'payments.user', 'technician', 'receivedBy'])->findOrFail($id);
         
@@ -141,7 +141,7 @@ class ListWorkOrders extends Component
         
         $this->loadCurrentImages();
         
-        $this->activeTab = 'details';
+        $this->activeTab = in_array($targetTab, ['details', 'logs', 'share', 'payments']) ? $targetTab : 'details';
         $this->isManaging = true;
     }
 
