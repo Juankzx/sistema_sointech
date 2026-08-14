@@ -518,11 +518,21 @@
                 $balanceDue = $totalCost - (float)$managingOrder->down_payment;
             @endphp
             <div x-data="{ previewImage: null, zoomLevel: 1, mobileMenuOpen: false }" 
-                 x-init="document.body.style.overflow = 'hidden'" 
-                 x-on:destroy="document.body.style.overflow = ''" 
+                 x-init="
+                     document.body.style.overflow = 'hidden';
+                     document.body.style.touchAction = 'none';
+                     document.documentElement.style.overflow = 'hidden';
+                 " 
+                 x-on:destroy="
+                     document.body.style.overflow = '';
+                     document.body.style.touchAction = '';
+                     document.documentElement.style.overflow = '';
+                 " 
                  @keydown.escape.window="if(!previewImage) $wire.closeManagingModal()"
-                 class="fixed inset-0 bg-gray-950/85 backdrop-blur-md z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden">
-                <div class="bg-gray-850 border border-gray-800 rounded-2xl md:rounded-3xl w-full max-w-6xl h-full md:h-[90vh] overflow-hidden shadow-2xl animate-fade-in flex flex-col min-w-0">
+                 class="fixed inset-0 bg-gray-950/85 backdrop-blur-md z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden overscroll-none"
+                 style="touch-action: none;">
+                <div class="bg-gray-850 border border-gray-800 rounded-2xl md:rounded-3xl w-full max-w-6xl h-full md:h-[90vh] overflow-hidden shadow-2xl animate-fade-in flex flex-col min-w-0 overscroll-contain"
+                     style="touch-action: pan-y; -webkit-overflow-scrolling: touch;">
                     
                     <!-- Modal Header -->
                     <div class="flex justify-between items-center border-b border-gray-800 p-3 md:p-6 shrink-0">
@@ -637,7 +647,7 @@
                     @endif
 
                     <!-- Main Grid -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 p-3 sm:p-4 lg:p-6 overflow-y-auto flex-1 theme-scrollbar min-w-0 w-full pb-32 sm:pb-36 lg:pb-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 p-3 sm:p-4 lg:p-6 overflow-y-auto flex-1 theme-scrollbar min-w-0 w-full pb-32 sm:pb-36 lg:pb-8 overscroll-contain" style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
                         
                         <!-- LEFT COLUMN: Summary & Financials (4 cols) -->
                         <div class="col-span-12 lg:col-span-4 space-y-5 min-w-0 w-full">
