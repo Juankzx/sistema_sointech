@@ -679,7 +679,7 @@
                     @endif
 
                     <!-- Main Grid -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 p-3 sm:p-4 lg:p-6 overflow-y-auto flex-1 theme-scrollbar min-w-0 w-full pb-36 sm:pb-40 lg:pb-8 overscroll-contain" style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 p-3 sm:p-4 lg:p-6 overflow-y-auto flex-1 theme-scrollbar min-w-0 w-full pb-6 sm:pb-8 lg:pb-8 overscroll-contain" style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
                         
                         <!-- LEFT COLUMN: Summary & Financials (4 cols) -->
                         <div class="col-span-12 lg:col-span-4 space-y-5 min-w-0 w-full">
@@ -1953,33 +1953,33 @@
                         </button>
                     </div>
 
-                    <!-- Mobile Bottom Navigation Bar (P2 - Ultra-compact & low profile) -->
-                    <div class="md:hidden fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-md border-t border-gray-800/80 z-50 safe-area-bottom shrink-0 shadow-[0_-4px_20px_rgba(0,0,0,0.6)]">
-                        <div class="grid grid-cols-4 h-12">
+                    <!-- Mobile Bottom Navigation Bar (P2 - Solid Flex Child, non-overlapping) -->
+                    <div class="md:hidden bg-gray-900 border-t border-gray-800/80 z-20 safe-area-bottom shrink-0 w-full">
+                        <div class="grid grid-cols-4 h-14">
                             <button 
                                 wire:click="$set('activeTab', 'details')" 
-                                class="flex flex-col items-center justify-center py-1 transition active:scale-95 {{ $activeTab === 'details' ? 'text-blue-400 font-extrabold bg-blue-500/10' : 'text-gray-400 font-medium' }}"
+                                class="flex flex-col items-center justify-center py-1.5 transition active:scale-95 {{ $activeTab === 'details' ? 'text-blue-400 font-extrabold bg-blue-500/10' : 'text-gray-400 font-semibold' }}"
                             >
                                 <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                                 <span class="text-[9px] leading-tight">Costos</span>
                             </button>
                             <button 
                                 wire:click="$set('activeTab', 'logs')" 
-                                class="flex flex-col items-center justify-center py-1 transition active:scale-95 {{ $activeTab === 'logs' ? 'text-indigo-400 font-extrabold bg-indigo-500/10' : 'text-gray-400 font-medium' }}"
+                                class="flex flex-col items-center justify-center py-1.5 transition active:scale-95 {{ $activeTab === 'logs' ? 'text-indigo-400 font-extrabold bg-indigo-500/10' : 'text-gray-400 font-semibold' }}"
                             >
                                 <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                                 <span class="text-[9px] leading-tight">Bitácora</span>
                             </button>
                             <button 
                                 wire:click="$set('activeTab', 'share')" 
-                                class="flex flex-col items-center justify-center py-1 transition active:scale-95 {{ $activeTab === 'share' ? 'text-amber-400 font-extrabold bg-amber-500/10' : 'text-gray-400 font-medium' }}"
+                                class="flex flex-col items-center justify-center py-1.5 transition active:scale-95 {{ $activeTab === 'share' ? 'text-amber-400 font-extrabold bg-amber-500/10' : 'text-gray-400 font-semibold' }}"
                             >
                                 <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
                                 <span class="text-[9px] leading-tight">Links</span>
                             </button>
                             <button 
                                 wire:click="$set('activeTab', 'payments')" 
-                                class="flex flex-col items-center justify-center py-1 transition active:scale-95 {{ $activeTab === 'payments' ? 'text-emerald-400 font-extrabold bg-emerald-500/10' : 'text-gray-400 font-medium' }}"
+                                class="flex flex-col items-center justify-center py-1.5 transition active:scale-95 {{ $activeTab === 'payments' ? 'text-emerald-400 font-extrabold bg-emerald-500/10' : 'text-gray-400 font-semibold' }}"
                             >
                                 <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 <span class="text-[9px] leading-tight">Pagos</span>
