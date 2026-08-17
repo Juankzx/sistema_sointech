@@ -1310,15 +1310,22 @@
                                                          <template x-for="(photo, index) in photos" :key="index">
                                                              <button 
                                                                  type="button"
-                                                                 @click="activeIndex = index"
+                                                                 @click="activeIndex = index; openGlobalLightbox(photos, index, 'Fotos de Ingreso (Check-in)')"
                                                                  :class="activeIndex === index ? 'border-blue-500 ring-2 ring-blue-500/40 scale-105 opacity-100' : 'border-gray-800 opacity-50 hover:opacity-100'"
-                                                                 class="relative w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-xl overflow-hidden border bg-gray-950 transition duration-200 cursor-pointer"
+                                                                 class="relative w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-xl overflow-hidden border bg-gray-950 transition duration-200 cursor-pointer group"
+                                                                 title="Ver foto en pantalla completa"
                                                              >
-                                                                 <img :src="photo.src" class="w-full h-full object-cover" />
+                                                                 <img :src="photo.src" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200" />
+                                                                 <!-- Hover overlay zoom icon -->
+                                                                 <div class="absolute inset-0 bg-blue-600/0 group-hover:bg-blue-600/30 transition-colors duration-200 flex items-center justify-center">
+                                                                     <svg class="w-4 h-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                                                                     </svg>
+                                                                 </div>
                                                              </button>
                                                          </template>
                                                      </div>
-                                                     <p class="text-[10px] text-gray-400 italic text-center">👈 Desliza con el dedo o toca las miniaturas para interactuar con el carrusel.</p>
+                                                     <p class="text-[10px] text-gray-400 italic text-center">🔍 Toca una miniatura o la imagen principal para verla en pantalla completa — desliza entre fotos.</p>
                                                  </div>
                                              @endif
 
