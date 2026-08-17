@@ -679,7 +679,7 @@
                     @endif
 
                     <!-- Main Grid -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 p-3 sm:p-4 lg:p-6 overflow-y-auto flex-1 theme-scrollbar min-w-0 w-full pb-52 sm:pb-44 lg:pb-8 overscroll-contain" style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 p-3 sm:p-4 lg:p-6 overflow-y-auto flex-1 theme-scrollbar min-w-0 w-full pb-6 lg:pb-8 overscroll-contain" style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
                         
                         <!-- LEFT COLUMN: Summary & Financials (4 cols) -->
                         <div class="col-span-12 lg:col-span-4 space-y-5 min-w-0 w-full">
@@ -1961,7 +1961,7 @@
                     </div>
 
                     <!-- Mobile Bottom Navigation Bar (P2 - Full-screen Modal Bottom Fixed) -->
-                    <div class="md:hidden fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-md border-t border-gray-800/80 z-50 safe-area-bottom shrink-0 shadow-2xl">
+                    <div class="md:hidden bg-gray-900/98 backdrop-blur-md border-t border-gray-800/80 shrink-0 safe-area-bottom shadow-2xl">
                         <div class="grid grid-cols-4 h-14">
                             <button 
                                 wire:click="$set('activeTab', 'details')" 
