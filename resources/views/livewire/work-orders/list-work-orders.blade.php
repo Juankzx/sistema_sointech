@@ -679,7 +679,7 @@
                     @endif
 
                     <!-- Main Grid -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 p-3 sm:p-4 lg:p-6 overflow-y-auto flex-1 theme-scrollbar min-w-0 w-full pb-32 sm:pb-36 lg:pb-8 overscroll-contain" style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 p-3 sm:p-4 lg:p-6 overflow-y-auto flex-1 theme-scrollbar min-w-0 w-full pb-52 sm:pb-44 lg:pb-8 overscroll-contain" style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
                         
                         <!-- LEFT COLUMN: Summary & Financials (4 cols) -->
                         <div class="col-span-12 lg:col-span-4 space-y-5 min-w-0 w-full">
