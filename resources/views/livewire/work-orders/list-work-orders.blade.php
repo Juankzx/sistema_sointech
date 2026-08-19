@@ -1936,72 +1936,76 @@
                                              <span>Registrar Pago (<span x-text="formatted"></span>)</span>
                                          </button>
                                      </div>
-                                    @endif
+                                     @endif
 
-                                    <!-- Ir al POS para factura completa -->
-                                    <div class="bg-gray-850 p-4 rounded-2xl border border-gray-700 space-y-3 text-center">
-                                        <h5 class="text-xs font-black text-blue-400 uppercase tracking-wider">🖨️ Facturación y POS</h5>
-                                        <p class="text-[11px] text-gray-400">Para emitir boletas, facturas o registrar pagos con múltiples métodos, dirígete al módulo de Punto de Venta (POS).</p>
-                                        <a href="/pos?ot_id={{ $managingOrder->id }}" class="inline-flex items-center justify-center gap-2 w-full bg-blue-700 hover:bg-blue-600 text-white font-bold py-2.5 px-6 rounded-xl text-xs transition duration-200 cursor-pointer shadow">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                                            PAGAR / FACTURAR EN POS
-                                        </a>
-                                    </div>
-                                </div>
+                                     <!-- Ir al POS para factura completa -->
+                                     <div class="bg-gray-850 p-4 rounded-2xl border border-gray-700 space-y-3 text-center">
+                                         <h5 class="text-xs font-black text-blue-400 uppercase tracking-wider">🖨️ Facturación y POS</h5>
+                                         <p class="text-[11px] text-gray-400">Para emitir boletas, facturas o registrar pagos con múltiples métodos, dirígete al módulo de Punto de Venta (POS).</p>
+                                         <a href="/pos?ot_id={{ $managingOrder->id }}" class="inline-flex items-center justify-center gap-2 w-full bg-blue-700 hover:bg-blue-600 text-white font-bold py-2.5 px-6 rounded-xl text-xs transition duration-200 cursor-pointer shadow">
+                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                             PAGAR / FACTURAR EN POS
+                                         </a>
+                                     </div>
+                                 </div>
 
-                            </div>
-                        </div>
+                             </div>
+                         </div>
 
-                    </div>
+                     </div>
 
-                    <!-- Desktop Footer actions (hidden on mobile) -->
-                    <div class="hidden md:flex bg-gray-900/60 p-4 px-6 border-t border-gray-800 justify-end items-center shrink-0 w-full">
-                        <button type="button" wire:click="closeManagingModal" class="py-2.5 px-6 rounded-xl bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 hover:text-white font-bold text-xs transition cursor-pointer shadow flex items-center gap-2">
-                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                            Cerrar Panel de Gestión
-                        </button>
-                    </div>
+                     <!-- Desktop Footer actions (hidden on mobile) -->
+                     <div class="hidden md:flex bg-gray-900/60 p-4 px-6 border-t border-gray-800 justify-end items-center shrink-0 w-full">
+                         <button type="button" wire:click="closeManagingModal" class="py-2.5 px-6 rounded-xl bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 hover:text-white font-bold text-xs transition cursor-pointer shadow flex items-center gap-2">
+                             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                             Cerrar Panel de Gestión
+                         </button>
+                     </div>
 
-                    <!-- Mobile Bottom Navigation Bar (P2 - Full-screen Modal Bottom Fixed) -->
-                    <div class="md:hidden bg-gray-900/98 backdrop-blur-xl border-t border-gray-800/90 shrink-0 shadow-[0_-8px_25px_rgba(0,0,0,0.7)] p-2 z-50" style="padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));">
-                        <div class="grid grid-cols-4 gap-1.5 min-h-[54px] items-center">
-                            <!-- 1. Costos (Details) -->
-                            <button 
-                                wire:click="$set('activeTab', 'details')" 
-                                type="button"
-                                class="flex flex-col items-center justify-center py-2 px-1 rounded-2xl transition-all duration-150 active:scale-95 cursor-pointer {{ $activeTab === 'details' ? 'text-blue-400 font-extrabold bg-blue-500/15 border border-blue-500/30 shadow-md shadow-blue-500/10' : 'text-gray-400 font-bold hover:text-gray-200 hover:bg-gray-800/40 border border-transparent' }}"
-                            >
-                                <svg class="w-5 h-5 shrink-0 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                                <span class="text-[11px] leading-tight font-bold">Costos</span>
-                            </button>
+                     <!-- Mobile Bottom Navigation Bar (P2 - Full-screen Modal Bottom Fixed) -->
+                     <div class="md:hidden bg-gray-900/98 backdrop-blur-xl border-t border-gray-800/90 shrink-0 safe-area-bottom shadow-[0_-8px_25px_rgba(0,0,0,0.7)] z-50">
+                         <div class="grid grid-cols-4 max-w-lg mx-auto items-center py-1.5 px-2">
+                             <!-- 1. Costos (Details) -->
+                             <button 
+                                 wire:click="$set('activeTab', 'details')" 
+                                 type="button"
+                                 class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all duration-150 active:scale-95 cursor-pointer {{ $activeTab === 'details' ? 'text-blue-400 font-extrabold bg-blue-500/15 border border-blue-500/30 shadow-md shadow-blue-500/10' : 'text-gray-400 font-bold hover:text-gray-200 hover:bg-gray-800/40 border border-transparent' }}"
+                             >
+                                 <svg class="w-5 h-5 shrink-0 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                 <span class="text-[10px] leading-tight font-bold">Costos</span>
+                             </button>
 
-                            <!-- 2. Bitácora (Logs) -->
-                            <button 
-                                wire:click="$set('activeTab', 'logs')" 
-                                type="button"
-                                class="flex flex-col items-center justify-center py-2 px-1 rounded-2xl transition-all duration-150 active:scale-95 cursor-pointer {{ $activeTab === 'logs' ? 'text-indigo-400 font-extrabold bg-indigo-500/15 border border-indigo-500/30 shadow-md shadow-indigo-500/10' : 'text-gray-400 font-bold hover:text-gray-200 hover:bg-gray-800/40 border border-transparent' }}"
-                            >
-                                <svg class="w-5 h-5 shrink-0 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-                                <span class="text-[11px] leading-tight font-bold">Bitácora</span>
-                            </button>
+                             <!-- 2. Bitácora (Logs) -->
+                             <button 
+                                 wire:click="$set('activeTab', 'logs')" 
+                                 type="button"
+                                 class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all duration-150 active:scale-95 cursor-pointer {{ $activeTab === 'logs' ? 'text-indigo-400 font-extrabold bg-indigo-500/15 border border-indigo-500/30 shadow-md shadow-indigo-500/10' : 'text-gray-400 font-bold hover:text-gray-200 hover:bg-gray-800/40 border border-transparent' }}"
+                             >
+                                 <svg class="w-5 h-5 shrink-0 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                                 <span class="text-[10px] leading-tight font-bold">Bitácora</span>
+                             </button>
 
-                            <!-- 3. Links / Compartir -->
-                            <button 
-                                wire:click="$set('activeTab', 'share')" 
-                                type="button"
-                                class="flex flex-col items-center justify-center py-2 px-1 rounded-2xl transition-all duration-150 active:scale-95 cursor-pointer {{ $activeTab === 'share' ? 'text-amber-400 font-extrabold bg-amber-500/15 border border-amber-500/30 shadow-md shadow-amber-500/10' : 'text-gray-400 font-bold hover:text-gray-200 hover:bg-gray-800/40 border border-transparent' }}"
-                            >
-                                <svg class="w-5 h-5 shrink-0 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
-                                <span class="text-[11px] leading-tight font-bold">Links</span>
-                            </button>
+                             <!-- 3. Links / Compartir -->
+                             <button 
+                                 wire:click="$set('activeTab', 'share')" 
+                                 type="button"
+                                 class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all duration-150 active:scale-95 cursor-pointer {{ $activeTab === 'share' ? 'text-amber-400 font-extrabold bg-amber-500/15 border border-amber-500/30 shadow-md shadow-amber-500/10' : 'text-gray-400 font-bold hover:text-gray-200 hover:bg-gray-800/40 border border-transparent' }}"
+                             >
+                                 <svg class="w-5 h-5 shrink-0 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                                 <span class="text-[10px] leading-tight font-bold">Links</span>
+                             </button>
 
-                            <!-- 4. Pagos -->
-                            <button 
-                                wire:click="$set('activeTab', 'payments')" 
-                                type="button"
-                                class="flex flex-col items-center justify-center py-2 px-1 rounded-2xl transition-all duration-150 active:scale-95 cursor-pointer {{ $activeTab === 'payments' ? 'text-emerald-400 font-extrabold bg-emerald-500/15 border border-emerald-500/30 shadow-md shadow-emerald-500/10' : 'text-gray-400 font-bold hover:text-gray-200 hover:bg-gray-800/40 border border-transparent' }}"
-                            >
-                                <svg class="w-5 h-5 shrink-0 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                             <!-- 4. Pagos -->
+                             <button 
+                                 wire:click="$set('activeTab', 'payments')" 
+                                 type="button"
+                                 class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all duration-150 active:scale-95 cursor-pointer {{ $activeTab === 'payments' ? 'text-emerald-400 font-extrabold bg-emerald-500/15 border border-emerald-500/30 shadow-md shadow-emerald-500/10' : 'text-gray-400 font-bold hover:text-gray-200 hover:bg-gray-800/40 border border-transparent' }}"
+                             >
+                                 <svg class="w-5 h-5 shrink-0 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                 <span class="text-[10px] leading-tight font-bold">Pagos</span>
+                             </button>
+                         </div>
+                     </div>>1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 <span class="text-[11px] leading-tight font-bold">Pagos</span>
                             </button>
                         </div>
