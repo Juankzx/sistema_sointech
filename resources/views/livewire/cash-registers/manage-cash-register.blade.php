@@ -35,110 +35,6 @@
             <p class="text-gray-400 max-w-md mx-auto">Para poder ingresar equipos con abonos o registrar pagos, debes realizar la apertura de caja indicando el monto inicial (base).</p>
         </div>
 
-        @if(isset($recentRegisters))
-        <!-- Historial de Cajas Cerradas -->
-        <div class="mt-8 bg-gray-850 rounded-3xl border border-gray-800 shadow-xl overflow-hidden">
-            <div class="p-5 border-b border-gray-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <h3 class="text-lg font-bold text-white">Historial de Cajas</h3>
-                
-                <!-- Buscador -->
-                <div class="relative w-full sm:w-72">
-                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    </span>
-                    <input wire:model.live.debounce.300ms="searchRegister" type="text" class="w-full bg-gray-900 border border-gray-700 rounded-xl py-2 pl-10 pr-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition" placeholder="Buscar por ID o responsable...">
-                </div>
-            </div>
-
-            <!-- DESKTOP TABLE -->
-            <div class="hidden md:block overflow-x-auto theme-scrollbar">
-                <table class="w-full text-left text-sm whitespace-nowrap">
-                    <thead>
-                        <tr class="bg-gray-900/40 text-gray-400 font-semibold uppercase text-[10px] tracking-wider border-b border-gray-800">
-                            <th class="px-6 py-4">ID Caja</th>
-                            <th class="px-6 py-4">Apertura</th>
-                            <th class="px-6 py-4">Cierre</th>
-                            <th class="px-6 py-4 text-right">Monto Final</th>
-                            <th class="px-6 py-4">Responsable</th>
-                            <th class="px-6 py-4 text-right">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-800/60">
-                        @forelse($recentRegisters as $reg)
-                            <tr class="hover:bg-gray-900/20 transition">
-                                <td class="px-6 py-4 text-xs font-bold text-gray-300">#{{ $reg->id }}</td>
-                                <td class="px-6 py-4 text-xs text-gray-400">{{ $reg->opened_at ? $reg->opened_at->format('d/m/Y H:i') : 'N/A' }}</td>
-                                <td class="px-6 py-4 text-xs font-medium text-white">
-                                    {{ $reg->closed_at ? $reg->closed_at->format('d/m/Y H:i') : 'N/A' }}
-                                    <span class="ml-2 px-2 py-0.5 bg-red-950/50 text-red-400 text-[9px] font-black rounded border border-red-500/20 uppercase">Cerrada</span>
-                                </td>
-                                <td class="px-6 py-4 text-right font-black text-white">${{ number_format($reg->closing_balance, 0, ',', '.') }}</td>
-                                <td class="px-6 py-4 text-xs text-gray-400">{{ $reg->user->name }}</td>
-                                <td class="px-6 py-4 text-right">
-                                    <a href="/caja/{{ $reg->id }}/print" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 text-xs font-bold rounded-lg border border-blue-500/20 transition">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                                        Imprimir
-                                    </a>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="px-6 py-12 text-center text-gray-500">
-                                    <svg class="w-12 h-12 text-gray-700 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                                    No se encontraron registros de caja.
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- MOBILE CARDS -->
-            <div class="md:hidden flex flex-col gap-3 p-4">
-                @forelse($recentRegisters as $reg)
-                    <div class="bg-gray-800/50 border border-gray-700/60 rounded-2xl p-4 flex flex-col gap-3">
-                        <div class="flex justify-between items-center border-b border-gray-700/50 pb-2">
-                            <span class="text-xs font-bold text-gray-300">Caja #{{ $reg->id }}</span>
-                            <span class="px-2 py-0.5 bg-red-950/50 text-red-400 text-[9px] font-black rounded border border-red-500/20 uppercase">Cerrada</span>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2 text-xs">
-                            <div>
-                                <span class="block text-[10px] text-gray-500 uppercase">Apertura</span>
-                                <span class="text-gray-300">{{ $reg->opened_at ? $reg->opened_at->format('d/m H:i') : 'N/A' }}</span>
-                            </div>
-                            <div>
-                                <span class="block text-[10px] text-gray-500 uppercase">Cierre</span>
-                                <span class="text-white">{{ $reg->closed_at ? $reg->closed_at->format('d/m H:i') : 'N/A' }}</span>
-                            </div>
-                            <div>
-                                <span class="block text-[10px] text-gray-500 uppercase">Monto Final</span>
-                                <span class="font-black text-white">${{ number_format($reg->closing_balance, 0, ',', '.') }}</span>
-                            </div>
-                            <div>
-                                <span class="block text-[10px] text-gray-500 uppercase">Responsable</span>
-                                <span class="text-gray-400">{{ $reg->user->name }}</span>
-                            </div>
-                        </div>
-                        <div class="pt-2">
-                            <a href="/caja/{{ $reg->id }}/print" target="_blank" class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 text-xs font-bold rounded-xl border border-blue-500/20 transition">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                                Imprimir
-                            </a>
-                        </div>
-                    </div>
-                @empty
-                    <div class="text-center py-6 text-gray-500 text-sm">No se encontraron registros de caja.</div>
-                @endforelse
-            </div>
-            
-            @if($recentRegisters->hasPages())
-                <div class="p-4 border-t border-gray-800 bg-gray-900/30">
-                    {{ $recentRegisters->links() }}
-                </div>
-            @endif
-        </div>
-        @endif
-
     @else
         <!-- Dashboard de Caja Abierta -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -336,6 +232,121 @@
             </div>
         </div>
         @endif
+    @endif
+
+    <!-- Historial de Cajas Cerradas (siempre visible) -->
+    @if(isset($recentRegisters))
+    <div class="mt-8 bg-gray-850 rounded-3xl border border-gray-800 shadow-xl overflow-hidden">
+        <div class="p-5 border-b border-gray-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <h3 class="text-lg font-bold text-white">Historial de Cajas</h3>
+            
+            <!-- Buscador -->
+            <div class="relative w-full sm:w-72">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </span>
+                <input wire:model.live.debounce.300ms="searchRegister" type="text" class="w-full bg-gray-900 border border-gray-700 rounded-xl py-2 pl-10 pr-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition" placeholder="Buscar por ID o responsable...">
+            </div>
+        </div>
+
+        <!-- DESKTOP TABLE -->
+        <div class="hidden md:block overflow-x-auto theme-scrollbar">
+            <table class="w-full text-left text-sm whitespace-nowrap">
+                <thead>
+                    <tr class="bg-gray-900/40 text-gray-400 font-semibold uppercase text-[10px] tracking-wider border-b border-gray-800">
+                        <th class="px-6 py-4">ID Caja</th>
+                        <th class="px-6 py-4">Apertura</th>
+                        <th class="px-6 py-4">Cierre</th>
+                        <th class="px-6 py-4 text-right">Monto Final</th>
+                        <th class="px-6 py-4">Responsable</th>
+                        <th class="px-6 py-4 text-center">Tipo Cierre</th>
+                        <th class="px-6 py-4 text-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-800/60">
+                    @forelse($recentRegisters as $reg)
+                        <tr class="hover:bg-gray-900/20 transition">
+                            <td class="px-6 py-4 text-xs font-bold text-gray-300">#{{ $reg->id }}</td>
+                            <td class="px-6 py-4 text-xs text-gray-400">{{ $reg->opened_at ? $reg->opened_at->format('d/m/Y H:i') : 'N/A' }}</td>
+                            <td class="px-6 py-4 text-xs font-medium text-white">
+                                {{ $reg->closed_at ? $reg->closed_at->format('d/m/Y H:i') : 'N/A' }}
+                            </td>
+                            <td class="px-6 py-4 text-right font-black text-white">${{ number_format($reg->closing_balance ?? 0, 0, ',', '.') }}</td>
+                            <td class="px-6 py-4 text-xs text-gray-400">{{ $reg->user->name ?? 'N/A' }}</td>
+                            <td class="px-6 py-4 text-center">
+                                @if($reg->notes && str_contains($reg->notes, 'automático'))
+                                    <span class="px-2 py-0.5 bg-amber-950/50 text-amber-400 text-[9px] font-black rounded border border-amber-500/20 uppercase">Auto</span>
+                                @else
+                                    <span class="px-2 py-0.5 bg-emerald-950/50 text-emerald-400 text-[9px] font-black rounded border border-emerald-500/20 uppercase">Manual</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <a href="/caja/{{ $reg->id }}/print" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 text-xs font-bold rounded-lg border border-blue-500/20 transition">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                                    Imprimir
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="px-6 py-12 text-center text-gray-500">
+                                <svg class="w-12 h-12 text-gray-700 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                No se encontraron registros de caja.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <!-- MOBILE CARDS -->
+        <div class="md:hidden flex flex-col gap-3 p-4">
+            @forelse($recentRegisters as $reg)
+                <div class="bg-gray-800/50 border border-gray-700/60 rounded-2xl p-4 flex flex-col gap-3">
+                    <div class="flex justify-between items-center border-b border-gray-700/50 pb-2">
+                        <span class="text-xs font-bold text-gray-300">Caja #{{ $reg->id }}</span>
+                        @if($reg->notes && str_contains($reg->notes, 'automático'))
+                            <span class="px-2 py-0.5 bg-amber-950/50 text-amber-400 text-[9px] font-black rounded border border-amber-500/20 uppercase">Cierre Auto</span>
+                        @else
+                            <span class="px-2 py-0.5 bg-emerald-950/50 text-emerald-400 text-[9px] font-black rounded border border-emerald-500/20 uppercase">Cierre Manual</span>
+                        @endif
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                            <span class="block text-[10px] text-gray-500 uppercase">Apertura</span>
+                            <span class="text-gray-300">{{ $reg->opened_at ? $reg->opened_at->format('d/m H:i') : 'N/A' }}</span>
+                        </div>
+                        <div>
+                            <span class="block text-[10px] text-gray-500 uppercase">Cierre</span>
+                            <span class="text-white">{{ $reg->closed_at ? $reg->closed_at->format('d/m H:i') : 'N/A' }}</span>
+                        </div>
+                        <div>
+                            <span class="block text-[10px] text-gray-500 uppercase">Monto Final</span>
+                            <span class="font-black text-white">${{ number_format($reg->closing_balance ?? 0, 0, ',', '.') }}</span>
+                        </div>
+                        <div>
+                            <span class="block text-[10px] text-gray-500 uppercase">Responsable</span>
+                            <span class="text-gray-400">{{ $reg->user->name ?? 'N/A' }}</span>
+                        </div>
+                    </div>
+                    <div class="pt-2">
+                        <a href="/caja/{{ $reg->id }}/print" target="_blank" class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 text-xs font-bold rounded-xl border border-blue-500/20 transition">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                            Imprimir
+                        </a>
+                    </div>
+                </div>
+            @empty
+                <div class="text-center py-6 text-gray-500 text-sm">No se encontraron registros de caja.</div>
+            @endforelse
+        </div>
+        
+        @if($recentRegisters->hasPages())
+            <div class="p-4 border-t border-gray-800 bg-gray-900/30">
+                {{ $recentRegisters->links() }}
+            </div>
+        @endif
+    </div>
     @endif
 
     <!-- MODAL ABRIR CAJA -->

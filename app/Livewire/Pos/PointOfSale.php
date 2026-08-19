@@ -107,14 +107,8 @@ class PointOfSale extends Component
 
     public function loadActiveRegister()
     {
-        // Cierre automático de cajas no cerradas de días anteriores
-        CashRegister::where('status', 'open')
-            ->whereDate('opened_at', '<', \Carbon\Carbon::today())
-            ->update([
-                'status' => 'closed',
-                'closed_at' => \Carbon\Carbon::now(),
-                'notes' => 'Cierre automático por cambio de fecha'
-            ]);
+        // Cierre automático de cajas no cerradas de días anteriores (con cálculo de balances)
+        CashRegister::autoCloseStaleRegisters();
 
         $this->activeRegister = CashRegister::where('status', 'open')
             ->whereDate('opened_at', \Carbon\Carbon::today())

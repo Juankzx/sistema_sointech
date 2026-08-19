@@ -46,6 +46,9 @@ class ManageCashRegister extends Component
 
     public function loadActiveRegister()
     {
+        // Cierre automático de cajas no cerradas de días anteriores (con cálculo de balances)
+        CashRegister::autoCloseStaleRegisters();
+
         $this->activeRegister = CashRegister::where('status', 'open')
             ->whereDate('opened_at', Carbon::today())
             ->first();
@@ -156,29 +159,25 @@ class ManageCashRegister extends Component
         $payments = [];
         if ($this->activeRegister) {
             $payments = $this->activeRegister->payments()->with(['workOrder', 'user'])->latest()->get();
-        } else {
-            // Show paginated closed registers with search
-            $query = CashRegister::with('user')->where('status', 'closed');
-            
-            if (!empty($this->searchRegister)) {
-                $query->where(function($q) {
-                    $q->where('id', 'like', '%' . $this->searchRegister . '%')
-                      ->orWhereHas('user', function($qu) {
-                          $qu->where('name', 'like', '%' . $this->searchRegister . '%');
-                      });
-                });
-            }
-            
-            $recentRegisters = $query->latest()->paginate(10);
-            
-            return view('livewire.cash-registers.manage-cash-register', [
-                'payments' => $payments,
-                'recentRegisters' => $recentRegisters
-            ])->layout('layouts.app');
         }
 
+        // Historial de cajas cerradas (siempre visible)
+        $query = CashRegister::with('user')->where('status', 'closed');
+        
+        if (!empty($this->searchRegister)) {
+            $query->where(function($q) {
+                $q->where('id', 'like', '%' . $this->searchRegister . '%')
+                  ->orWhereHas('user', function($qu) {
+                      $qu->where('name', 'like', '%' . $this->searchRegister . '%');
+                  });
+            });
+        }
+        
+        $recentRegisters = $query->latest()->paginate(10);
+
         return view('livewire.cash-registers.manage-cash-register', [
-            'payments' => $payments
+            'payments' => $payments,
+            'recentRegisters' => $recentRegisters
         ])->layout('layouts.app');
     }
 }
