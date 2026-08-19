@@ -1050,13 +1050,13 @@
                                         <form wire:submit.prevent="saveBudget" class="space-y-5">
                                             
                                             @php
-                                                $isLocked = in_array($managingOrder->status, ['Presupuestado', 'Aprobado', 'En Reparación', 'Listo para Entrega', 'Entregado', 'Rechazado']) && !$forceEditBudget;
+                                                $isLocked = in_array($managingOrder->status, ['Presupuestado', 'Aprobado', 'En Reparación', 'En Verificación', 'Listo para Entrega', 'Entregado']) && !$forceEditBudget;
                                             @endphp
                                             
                                             <!-- PASO 1: Asignar Técnico -->
                                             @if(auth()->user()->isAdmin())
                                             @php
-                                                $isDelivered = $managingOrder->status === 'Entregado';
+                                                $isTechLocked = in_array($managingOrder->status, ['Presupuestado', 'Aprobado', 'En Reparación', 'En Verificación', 'Listo para Entrega', 'Entregado']) && !$forceEditBudget;
                                             @endphp
                                             <div class="space-y-1.5 p-4 rounded-2xl" style="background:#111827; border:1.5px solid #1f2937;">
                                                 <div class="flex justify-between items-center mb-1">
@@ -1064,15 +1064,15 @@
                                                         <span class="w-5 h-5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 flex items-center justify-center text-[10px]">1</span>
                                                         Técnico Responsable
                                                     </label>
-                                                    @if($isDelivered)
+                                                    @if($isTechLocked)
                                                         <span class="text-[10px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-lg flex items-center gap-1">
-                                                            🔒 Métrica Congelada al Entregar
+                                                            🔒 Asignación Fijada ({{ $managingOrder->status }})
                                                         </span>
                                                     @endif
                                                 </div>
                                                 <select wire:model.live="managingTechnicianId" wire:change="assignTechnician"
-                                                    {{ $isDelivered ? 'disabled' : '' }}
-                                                    class="w-full rounded-xl py-2.5 px-3 text-white text-xs font-medium focus:outline-none transition {{ $isDelivered ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer' }}"
+                                                    {{ $isTechLocked ? 'disabled' : '' }}
+                                                    class="w-full rounded-xl py-2.5 px-3 text-white text-xs font-medium focus:outline-none transition {{ $isTechLocked ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer' }}"
                                                     style="background:#0d1117; border:1px solid #1f2937;">
                                                     <option value="">-- Sin Asignar --</option>
                                                     @foreach($technicians as $tech)
@@ -1080,9 +1080,9 @@
                                                     @endforeach
                                                 </select>
 
-                                                @if($isDelivered)
+                                                @if($isTechLocked)
                                                     <p class="text-[10px] text-amber-400/80 mt-1">
-                                                        No se puede cambiar el técnico asignado a una orden en estado Entregado (métrica fija para reportes y comisiones).
+                                                        No se puede cambiar el técnico asignado cuando la orden está en proceso o entregada.
                                                     </p>
                                                 @else
                                                     <p class="text-[10px] text-gray-500 mt-1">Se guarda automáticamente al seleccionar.</p>
@@ -1099,10 +1099,16 @@
                                                         <span class="w-5 h-5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 flex items-center justify-center text-[10px]">2</span>
                                                         Diagnóstico Técnico del Dispositivo *
                                                     </label>
-                                                    @if($isLocked && $managingOrder->status === 'Presupuestado')
-                                                        <button type="button" wire:click="unlockBudgetEditing" class="text-[10px] text-amber-400 hover:text-amber-300 font-bold px-2 py-1 border border-amber-500/30 rounded-lg bg-amber-950/30 transition">
-                                                            ✏️ Desbloquear Edición
-                                                        </button>
+                                                    @if($isLocked)
+                                                        @if($managingOrder->status === 'Presupuestado' || auth()->user()->isAdmin())
+                                                            <button type="button" wire:click="unlockBudgetEditing" class="text-[10px] text-amber-400 hover:text-amber-300 font-bold px-2 py-1 border border-amber-500/30 rounded-lg bg-amber-950/30 transition flex items-center gap-1">
+                                                                ✏️ Desbloquear Edición {{ auth()->user()->isAdmin() && $managingOrder->status !== 'Presupuestado' ? '(Admin)' : '' }}
+                                                            </button>
+                                                        @else
+                                                            <span class="text-[10px] font-bold text-gray-500 bg-gray-800 px-2 py-0.5 rounded-lg">
+                                                                🔒 Diagnóstico Congelado
+                                                            </span>
+                                                        @endif
                                                     @endif
                                                 </div>
                                                 <textarea 

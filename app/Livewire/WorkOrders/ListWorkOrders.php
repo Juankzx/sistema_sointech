@@ -516,6 +516,11 @@ class ListWorkOrders extends Component
         ]);
 
         $order = WorkOrder::findOrFail($this->editingOrderId);
+
+        if (in_array($order->status, ['Aprobado', 'En Reparación', 'En Verificación', 'Listo para Entrega', 'Entregado']) && !$this->forceEditBudget) {
+            session()->flash('message', 'No se puede modificar el diagnóstico o presupuesto de una orden en estado "' . $order->status . '".');
+            return;
+        }
         
         // 1. Devolver stock de repuestos cargados anteriormente para recalcular
         foreach ($order->parts as $oldPart) {
@@ -821,8 +826,8 @@ class ListWorkOrders extends Component
 
         $order = WorkOrder::findOrFail($this->editingOrderId);
 
-        if ($order->status === 'Entregado') {
-            session()->flash('message', 'No se puede cambiar el técnico asignado a una orden entregada al cliente.');
+        if (in_array($order->status, ['Presupuestado', 'Aprobado', 'En Reparación', 'En Verificación', 'Listo para Entrega', 'Entregado'])) {
+            session()->flash('message', 'No se puede cambiar el técnico asignado a una orden en estado "' . $order->status . '".');
             $this->managingTechnicianId = $order->technician_id;
             return;
         }
