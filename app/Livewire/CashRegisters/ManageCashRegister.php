@@ -95,28 +95,64 @@ class ManageCashRegister extends Component
     public function openRegister()
     {
         $this->validate([
-            'opening_balance' => 'required|numeric|min:0',
+            'opening_balance' => 'required|numeric|min:0|max:100000000',
+        ], [
+            'opening_balance.required' => 'El monto inicial (base) es obligatorio.',
+            'opening_balance.numeric'  => 'El monto inicial debe ser un número válido.',
+            'opening_balance.min'      => 'El monto inicial no puede ser negativo.',
+            'opening_balance.max'      => 'El monto inicial excede el límite permitido.',
         ]);
 
-        CashRegister::create([
-            'user_id' => auth()->id(),
-            'opening_balance' => $this->opening_balance,
-            'status' => 'open',
-            'opened_at' => now(),
-        ]);
+        try {
+            \Illuminate\Support\Facades\DB::transaction(function () {
+                // Validación estricta: Solo 1 caja abierta a la vez en todo el sistema
+                $existingOpen = CashRegister::where('status', 'open')->lockForUpdate()->first();
+                if ($existingOpen) {
+                    $openedUser = $existingOpen->user ? $existingOpen->user->name : 'un usuario';
+                    throw new \Exception("Ya existe una caja abierta en el sistema (Caja #{$existingOpen->id} abierta por {$openedUser}). Debes cerrarla antes de abrir una nueva.");
+                }
 
-        $this->showOpenModal = false;
-        $this->loadActiveRegister();
-        session()->flash('message', 'Caja abierta exitosamente.');
+                CashRegister::create([
+                    'user_id' => auth()->id(),
+                    'opening_balance' => (float)$this->opening_balance,
+                    'status' => 'open',
+                    'opened_at' => now(),
+                ]);
+            });
+
+            $this->showOpenModal = false;
+            $this->loadActiveRegister();
+            session()->flash('message', 'Caja abierta exitosamente.');
+        } catch (\Exception $e) {
+            $this->showOpenModal = false;
+            $this->loadActiveRegister();
+            session()->flash('error', '⚠️ ' . $e->getMessage());
+        }
     }
 
     public function closeRegister()
     {
         $this->validate([
-            'closing_cash' => 'required|numeric|min:0',
-            'closing_transfer' => 'required|numeric|min:0',
-            'closing_card' => 'required|numeric|min:0',
+            'closing_cash'     => 'required|numeric|min:0|max:100000000',
+            'closing_transfer' => 'required|numeric|min:0|max:100000000',
+            'closing_card'     => 'required|numeric|min:0|max:100000000',
+        ], [
+            'closing_cash.required'     => 'Ingresa el conteo físico de efectivo.',
+            'closing_cash.numeric'      => 'El efectivo debe ser un número válido.',
+            'closing_cash.min'          => 'El efectivo no puede ser negativo.',
+            'closing_transfer.required' => 'Ingresa el monto verificado de transferencias.',
+            'closing_transfer.numeric'  => 'Las transferencias deben ser un número válido.',
+            'closing_transfer.min'      => 'Las transferencias no pueden ser negativas.',
+            'closing_card.required'     => 'Ingresa el monto de comprobantes de tarjeta.',
+            'closing_card.numeric'      => 'Las tarjetas deben ser un número válido.',
+            'closing_card.min'          => 'Las tarjetas no pueden ser negativas.',
         ]);
+
+        if (!$this->activeRegister) {
+            session()->flash('error', '⚠️ No hay ninguna caja activa para cerrar.');
+            $this->showCloseModal = false;
+            return;
+        }
 
         $this->closing_balance = (float)$this->closing_cash + (float)$this->closing_transfer + (float)$this->closing_card;
         $diferencia = $this->closing_balance - $this->expected_closing_balance;
@@ -135,23 +171,42 @@ class ManageCashRegister extends Component
             return;
         }
 
-        $this->activeRegister->update([
-            'expected_cash' => $this->expected_cash,
-            'expected_transfer' => $this->expected_transfer,
-            'expected_card' => $this->expected_card,
-            'closing_cash' => (float)$this->closing_cash,
-            'closing_transfer' => (float)$this->closing_transfer,
-            'closing_card' => (float)$this->closing_card,
-            'closing_balance' => $this->closing_balance,
-            'expected_closing_balance' => $this->expected_closing_balance,
-            'notes' => $this->closing_notes,
-            'status' => 'closed',
-            'closed_at' => now(),
-        ]);
+        try {
+            $registerId = $this->activeRegister->id;
 
-        $this->showCloseModal = false;
-        $this->loadActiveRegister();
-        session()->flash('message', 'Caja cerrada exitosamente con arqueo validado.');
+            \Illuminate\Support\Facades\DB::transaction(function () use ($registerId) {
+                $register = CashRegister::where('id', $registerId)
+                    ->where('status', 'open')
+                    ->lockForUpdate()
+                    ->first();
+
+                if (!$register) {
+                    throw new \Exception('Esta caja ya no se encuentra abierta o fue cerrada por otro usuario.');
+                }
+
+                $register->update([
+                    'expected_cash' => $this->expected_cash,
+                    'expected_transfer' => $this->expected_transfer,
+                    'expected_card' => $this->expected_card,
+                    'closing_cash' => (float)$this->closing_cash,
+                    'closing_transfer' => (float)$this->closing_transfer,
+                    'closing_card' => (float)$this->closing_card,
+                    'closing_balance' => $this->closing_balance,
+                    'expected_closing_balance' => $this->expected_closing_balance,
+                    'notes' => trim($this->closing_notes),
+                    'status' => 'closed',
+                    'closed_at' => now(),
+                ]);
+            });
+
+            $this->showCloseModal = false;
+            $this->loadActiveRegister();
+            session()->flash('message', 'Caja cerrada y arqueada exitosamente.');
+        } catch (\Exception $e) {
+            $this->showCloseModal = false;
+            $this->loadActiveRegister();
+            session()->flash('error', '⚠️ ' . $e->getMessage());
+        }
     }
 
     public function render()

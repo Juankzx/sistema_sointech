@@ -25,6 +25,20 @@
         @endif
     </div>
 
+    @if (session()->has('message'))
+        <div class="bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 px-5 py-4 rounded-2xl shadow-lg flex items-center gap-3 animate-fade-in">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-sm font-bold">{{ session('message') }}</span>
+        </div>
+    @endif
+
+    @if (session()->has('error'))
+        <div class="bg-red-950/60 border border-red-500/40 text-red-300 px-5 py-4 rounded-2xl shadow-lg flex items-center gap-3 animate-fade-in">
+            <span class="w-2.5 h-2.5 rounded-full bg-red-400 animate-ping"></span>
+            <span class="text-sm font-bold">{{ session('error') }}</span>
+        </div>
+    @endif
+
     @if(!$activeRegister)
         <!-- Caja Cerrada State -->
         <div class="bg-gray-850 p-8 rounded-3xl border border-gray-800 shadow-xl text-center space-y-4">
