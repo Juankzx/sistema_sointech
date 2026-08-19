@@ -693,5 +693,40 @@
         </script>
 
         @livewireScripts
+        <script>
+            // ===== LIVEWIRE 3 ANTI-FREEZE & AUTOMATIC SESSION REFRESH =====
+            document.addEventListener('livewire:init', () => {
+                // Handle 419 (Page Expired / Token Timeout) or 401 (Unauthorized) seamlessly
+                Livewire.hook('request', ({ fail }) => {
+                    fail(({ status, preventDefault }) => {
+                        if (status === 419 || status === 401) {
+                            preventDefault();
+                            console.warn('Sesión expirada o token CSRF caducado. Recargando página para restaurar conexión...');
+                            window.location.reload();
+                        }
+                    });
+                });
+            });
+
+            // ===== MOBILE APP RESUME / VISIBILITY CHECK =====
+            (function() {
+                let lastActiveTimestamp = Date.now();
+
+                document.addEventListener('visibilitychange', () => {
+                    if (document.visibilityState === 'visible') {
+                        const inactiveElapsed = Date.now() - lastActiveTimestamp;
+                        // Si la app estuvo minimizada o bloqueada por más de 30 minutos, refrescar suavemente
+                        if (inactiveElapsed > 30 * 60 * 1000) {
+                            console.info('Retorno a la app tras inactividad prolongada. Actualizando vista...');
+                            window.location.reload();
+                        } else {
+                            lastActiveTimestamp = Date.now();
+                        }
+                    } else {
+                        lastActiveTimestamp = Date.now();
+                    }
+                });
+            })();
+        </script>
     </body>
 </html>
