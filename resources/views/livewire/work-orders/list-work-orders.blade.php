@@ -1,4 +1,4 @@
-<div class="space-y-6 animate-fade-in">
+<div class="space-y-6 animate-fade-in" wire:poll.visible.8s>
     <!-- Top Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

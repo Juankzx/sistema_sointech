@@ -1,4 +1,4 @@
-<div class="space-y-6 animate-fade-in max-w-full overflow-x-hidden"
+<div class="space-y-6 animate-fade-in max-w-full overflow-x-hidden" wire:poll.visible.10s
      x-data="{
         chartTrend: null,
         chartStatus: null,
