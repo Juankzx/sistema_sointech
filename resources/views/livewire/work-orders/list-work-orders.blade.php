@@ -484,7 +484,7 @@
                             title="Gestionar / Ver Detalles"
                         >
                             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                            <span class="text-[9px] font-extrabold tracking-tight">Gestionar</span>
+                            <span class="text-[10px] font-bold tracking-tight">Gestionar</span>
                         </button>
 
                         <!-- 2. Bitácora de Avances -->
@@ -495,7 +495,7 @@
                             title="Bitácora / Registrar Avances"
                         >
                             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-                            <span class="text-[9px] font-extrabold tracking-tight">Bitácora</span>
+                            <span class="text-[10px] font-bold tracking-tight">Bitácora</span>
                         </button>
 
                         <!-- 3. Pagos y Cobro -->
@@ -506,7 +506,7 @@
                             title="Pagos / Registrar Abono"
                         >
                             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            <span class="text-[9px] font-extrabold tracking-tight">Pagos</span>
+                            <span class="text-[10px] font-bold tracking-tight">Pagos</span>
                         </button>
 
                         <!-- 4. WhatsApp al Cliente -->
@@ -521,7 +521,7 @@
                             title="Enviar Notificación por WhatsApp"
                         >
                             <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c-.001 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                            <span class="text-[9px] font-extrabold tracking-tight">WhatsApp</span>
+                            <span class="text-[10px] font-bold tracking-tight">WhatsApp</span>
                         </a>
                     </div>
                 @endif
@@ -554,11 +554,13 @@
                      document.body.style.overflow = 'hidden';
                      document.body.style.touchAction = 'none';
                      document.documentElement.style.overflow = 'hidden';
+                     document.body.classList.add('modal-open');
                  " 
                  x-on:destroy="
                      document.body.style.overflow = '';
                      document.body.style.touchAction = '';
                      document.documentElement.style.overflow = '';
+                     document.body.classList.remove('modal-open');
                  " 
                  @keydown.escape.window="if(!previewImage) $wire.closeManagingModal()"
                  class="fixed inset-0 bg-gray-950/90 backdrop-blur-md z-50 flex flex-col items-center justify-center p-0 md:p-6 overflow-hidden overscroll-none"
@@ -679,7 +681,7 @@
                     @endif
 
                     <!-- Main Grid -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 p-3 sm:p-4 lg:p-6 overflow-y-auto flex-1 theme-scrollbar min-w-0 w-full pb-6 lg:pb-8 overscroll-contain" style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 p-3 sm:p-4 lg:p-6 overflow-y-auto flex-1 theme-scrollbar min-w-0 w-full pb-28 md:pb-8 overscroll-contain" style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
                         
                         <!-- LEFT COLUMN: Summary & Financials (4 cols) -->
                         <div class="col-span-12 lg:col-span-4 space-y-5 min-w-0 w-full">
@@ -1961,35 +1963,46 @@
                     </div>
 
                     <!-- Mobile Bottom Navigation Bar (P2 - Full-screen Modal Bottom Fixed) -->
-                    <div class="md:hidden bg-gray-900/98 backdrop-blur-md border-t border-gray-800/80 shrink-0 safe-area-bottom shadow-2xl">
-                        <div class="grid grid-cols-4 h-14">
+                    <div class="md:hidden bg-gray-900/98 backdrop-blur-xl border-t border-gray-800/90 shrink-0 shadow-[0_-8px_25px_rgba(0,0,0,0.7)] p-2 z-50" style="padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));">
+                        <div class="grid grid-cols-4 gap-1.5 min-h-[54px] items-center">
+                            <!-- 1. Costos (Details) -->
                             <button 
                                 wire:click="$set('activeTab', 'details')" 
-                                class="flex flex-col items-center justify-center py-1.5 transition active:scale-95 {{ $activeTab === 'details' ? 'text-blue-400 font-extrabold bg-blue-500/10' : 'text-gray-400 font-semibold' }}"
+                                type="button"
+                                class="flex flex-col items-center justify-center py-2 px-1 rounded-2xl transition-all duration-150 active:scale-95 cursor-pointer {{ $activeTab === 'details' ? 'text-blue-400 font-extrabold bg-blue-500/15 border border-blue-500/30 shadow-md shadow-blue-500/10' : 'text-gray-400 font-bold hover:text-gray-200 hover:bg-gray-800/40 border border-transparent' }}"
                             >
-                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                                <span class="text-[9px] leading-tight">Costos</span>
+                                <svg class="w-5 h-5 shrink-0 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                <span class="text-[11px] leading-tight font-bold">Costos</span>
                             </button>
+
+                            <!-- 2. Bitácora (Logs) -->
                             <button 
                                 wire:click="$set('activeTab', 'logs')" 
-                                class="flex flex-col items-center justify-center py-1.5 transition active:scale-95 {{ $activeTab === 'logs' ? 'text-indigo-400 font-extrabold bg-indigo-500/10' : 'text-gray-400 font-semibold' }}"
+                                type="button"
+                                class="flex flex-col items-center justify-center py-2 px-1 rounded-2xl transition-all duration-150 active:scale-95 cursor-pointer {{ $activeTab === 'logs' ? 'text-indigo-400 font-extrabold bg-indigo-500/15 border border-indigo-500/30 shadow-md shadow-indigo-500/10' : 'text-gray-400 font-bold hover:text-gray-200 hover:bg-gray-800/40 border border-transparent' }}"
                             >
-                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-                                <span class="text-[9px] leading-tight">Bitácora</span>
+                                <svg class="w-5 h-5 shrink-0 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                                <span class="text-[11px] leading-tight font-bold">Bitácora</span>
                             </button>
+
+                            <!-- 3. Links / Compartir -->
                             <button 
                                 wire:click="$set('activeTab', 'share')" 
-                                class="flex flex-col items-center justify-center py-1.5 transition active:scale-95 {{ $activeTab === 'share' ? 'text-amber-400 font-extrabold bg-amber-500/10' : 'text-gray-400 font-semibold' }}"
+                                type="button"
+                                class="flex flex-col items-center justify-center py-2 px-1 rounded-2xl transition-all duration-150 active:scale-95 cursor-pointer {{ $activeTab === 'share' ? 'text-amber-400 font-extrabold bg-amber-500/15 border border-amber-500/30 shadow-md shadow-amber-500/10' : 'text-gray-400 font-bold hover:text-gray-200 hover:bg-gray-800/40 border border-transparent' }}"
                             >
-                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
-                                <span class="text-[9px] leading-tight">Links</span>
+                                <svg class="w-5 h-5 shrink-0 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                                <span class="text-[11px] leading-tight font-bold">Links</span>
                             </button>
+
+                            <!-- 4. Pagos -->
                             <button 
                                 wire:click="$set('activeTab', 'payments')" 
-                                class="flex flex-col items-center justify-center py-1.5 transition active:scale-95 {{ $activeTab === 'payments' ? 'text-emerald-400 font-extrabold bg-emerald-500/10' : 'text-gray-400 font-semibold' }}"
+                                type="button"
+                                class="flex flex-col items-center justify-center py-2 px-1 rounded-2xl transition-all duration-150 active:scale-95 cursor-pointer {{ $activeTab === 'payments' ? 'text-emerald-400 font-extrabold bg-emerald-500/15 border border-emerald-500/30 shadow-md shadow-emerald-500/10' : 'text-gray-400 font-bold hover:text-gray-200 hover:bg-gray-800/40 border border-transparent' }}"
                             >
-                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                <span class="text-[9px] leading-tight">Pagos</span>
+                                <svg class="w-5 h-5 shrink-0 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span class="text-[11px] leading-tight font-bold">Pagos</span>
                             </button>
                         </div>
                     </div>

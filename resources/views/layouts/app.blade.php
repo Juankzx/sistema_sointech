@@ -440,6 +440,11 @@
                 <!-- MOBILE BOTTOM NAVIGATION (PWA GLOBAL NAV) -->
                 @auth
                 @if(!auth()->user()->isCliente())
+                <style>
+                    body.modal-open .pwa-bottom-nav {
+                        display: none !important;
+                    }
+                </style>
                 <nav class="fixed bottom-0 left-0 right-0 w-full bg-slate-950/95 backdrop-blur-xl border-t border-slate-800/80 z-40 md:hidden pwa-bottom-nav safe-area-bottom shadow-[0_-8px_30px_rgba(0,0,0,0.8)]">
                     <div class="grid grid-cols-4 h-16 max-w-lg mx-auto items-center">
                         <!-- 1. Inicio (Dashboard) -->
