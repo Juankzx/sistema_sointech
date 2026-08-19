@@ -700,6 +700,7 @@
                                             'Esperando Repuestos' => ['label' => 'Esperando Repuestos', 'color' => 'bg-orange-950/60 text-orange-400 border-orange-800/50', 'dot' => 'bg-orange-400'],
                                             'Rechazado' => ['label' => 'Rechazado', 'color' => 'bg-red-950/60 text-red-400 border-red-800/50', 'dot' => 'bg-red-400'],
                                             'En Reparación' => ['label' => 'En Reparación', 'color' => 'bg-indigo-950/60 text-indigo-400 border-indigo-800/50', 'dot' => 'bg-indigo-400'],
+                                            'En Verificación' => ['label' => 'En Verificación', 'color' => 'bg-cyan-950/60 text-cyan-400 border-cyan-800/50', 'dot' => 'bg-cyan-400'],
                                             'Listo para Entrega' => ['label' => 'Listo para Entrega', 'color' => 'bg-emerald-950/60 text-emerald-400 border-emerald-800/50', 'dot' => 'bg-emerald-400'],
                                             'Entregado' => ['label' => 'Entregado', 'color' => 'bg-purple-950/60 text-purple-400 border-purple-800/50', 'dot' => 'bg-purple-400'],
                                         ];
@@ -759,6 +760,7 @@
                                             'Esperando Repuestos' => 'bg-orange-950/40 text-orange-400 border-orange-500/20',
                                             'Rechazado' => 'bg-red-950/40 text-red-400 border-red-500/20',
                                             'En Reparación' => 'bg-indigo-950/40 text-indigo-400 border-indigo-500/20',
+                                            'En Verificación' => 'bg-cyan-950/40 text-cyan-400 border-cyan-500/20',
                                             'Listo para Entrega' => 'bg-emerald-950/40 text-emerald-400 border-emerald-500/20',
                                             'Entregado' => 'bg-purple-950/40 text-purple-400 border-purple-500/20',
                                         ];

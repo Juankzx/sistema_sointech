@@ -471,7 +471,7 @@ class ListWorkOrders extends Component
         $totalBudget = (float)$this->editingLaborCost + $partsCost;
 
         // 3. Actualizar la orden de trabajo (preservando Aprobado, En Reparación, etc.)
-        $newStatus = in_array($order->status, ['Aprobado', 'En Reparación', 'Listo para Entrega', 'Entregado']) 
+        $newStatus = in_array($order->status, ['Aprobado', 'En Reparación', 'En Verificación', 'Listo para Entrega', 'Entregado']) 
             ? $order->status 
             : 'Presupuestado';
 
@@ -518,6 +518,7 @@ class ListWorkOrders extends Component
             'Esperando Repuestos' => ['title' => 'En Espera de Repuestos', 'notes' => 'Estamos a la espera de que los repuestos lleguen de proveedor para iniciar la reparación.'],
             'Rechazado' => ['title' => 'Presupuesto Rechazado', 'notes' => 'El cliente ha rechazado el presupuesto propuesto. Se procederá con la devolución del equipo sin reparar.'],
             'En Reparación' => ['title' => 'Reparación en Proceso', 'notes' => 'El técnico ha iniciado las labores de reparación y cambio de componentes del equipo.'],
+            'En Verificación' => ['title' => 'Control de Calidad y Pruebas', 'notes' => 'La reparación ha concluido. El equipo se encuentra en fase de pruebas de laboratorio y control de calidad.'],
             'Listo para Entrega' => ['title' => 'Reparación Finalizada', 'notes' => 'El proceso de reparación ha concluido exitosamente y el equipo ha pasado todos los controles de calidad. Listo para retiro.'],
             'Entregado' => ['title' => 'Equipo Entregado', 'notes' => 'El equipo ha sido devuelto formalmente al cliente. Garantía y orden de servicio cerradas.'],
         ];
