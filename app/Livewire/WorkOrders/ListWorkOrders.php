@@ -32,6 +32,7 @@ class ListWorkOrders extends Component
     public $newLogNotes = '';
     public $newLogPhoto;
     public $newLogPhotos = [];
+    public $quickPhotos = []; // For quick photo upload FAB
     public $uploadPhoto;
     public $uploadPhotoType = 'progress'; // 'before', 'progress', 'after'
     public $currentOrderImages = []; // to display in the modal gallery
@@ -280,7 +281,82 @@ class ListWorkOrders extends Component
         
         $this->loadCurrentImages();
         
+        $this->dispatch('logSaved');
         session()->flash('message', 'Comentario de bitácora agregado con éxito.');
+    }
+
+    public function updatedQuickPhotos()
+    {
+        $this->validateOnly('quickPhotos.*', [
+            'quickPhotos.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,heic,heif|max:30720',
+        ], [
+            'quickPhotos.*.file' => 'Una de las fotos no es válida.',
+            'quickPhotos.*.mimes' => 'Formato no soportado. Usa JPG, PNG, WEBP o HEIC.',
+            'quickPhotos.*.max' => 'Una de las fotos supera 30 MB.',
+        ]);
+    }
+
+    public function quickPhotoLog()
+    {
+        $order = WorkOrder::findOrFail($this->loggingOrderId);
+
+        if (in_array($order->status, ['Listo para Entrega', 'Entregado', 'Anulada'])) {
+            session()->flash('message', 'No se pueden registrar avances en una orden finalizada.');
+            return;
+        }
+
+        $this->validate([
+            'quickPhotos.*' => 'required|file|mimes:jpeg,png,jpg,gif,webp,heic,heif|max:30720',
+        ]);
+
+        if (empty($this->quickPhotos)) {
+            return;
+        }
+
+        $storedPaths = [];
+        foreach ($this->quickPhotos as $photo) {
+            $fileName = ImageOptimizer::optimizeAndStore($photo, 'work-orders');
+            $storedPaths[] = $fileName;
+
+            $order->images()->create([
+                'type' => 'progress',
+                'image_path' => $fileName,
+            ]);
+        }
+
+        $imagePathValue = count($storedPaths) === 1 ? $storedPaths[0] : json_encode($storedPaths);
+
+        $photoCount = count($storedPaths);
+        $title = '📸 Registro Fotográfico (' . $photoCount . ' ' . ($photoCount === 1 ? 'foto' : 'fotos') . ')';
+
+        $oldStatus = $order->status;
+        if ($order->status === 'Ingresado') {
+            $order->status = 'En Revisión';
+            $order->save();
+        }
+
+        $order->logs()->create([
+            'status' => $order->status,
+            'title' => $title,
+            'notes' => 'Evidencia fotográfica registrada rápidamente desde el botón de foto rápida.',
+            'image_path' => $imagePathValue,
+            'user_id' => auth()->id(),
+        ]);
+
+        if ($oldStatus === 'Ingresado' && $order->status === 'En Revisión') {
+            $order->logs()->create([
+                'status' => 'En Revisión',
+                'title' => 'Revisión Técnica en Curso',
+                'notes' => 'El sistema actualizó automáticamente el estado a "En Revisión" tras el primer registro técnico.',
+                'user_id' => auth()->id(),
+            ]);
+        }
+
+        $this->quickPhotos = [];
+        $this->loadCurrentImages();
+
+        $this->dispatch('logSaved');
+        session()->flash('message', '📸 ' . $photoCount . ' foto(s) registrada(s) en la bitácora exitosamente.');
     }
 
     public function uploadProgressPhoto()

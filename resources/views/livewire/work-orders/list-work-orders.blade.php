@@ -1443,129 +1443,201 @@
                                              </p>
                                          </div>
                                      @else
-                                         <!-- Formulario de nuevo avance con soporte de múltiples fotos -->
-                                         <form wire:submit.prevent="saveManualLog" class="bg-gray-900/50 p-3 md:p-4 rounded-2xl border border-gray-800 space-y-3 md:space-y-4">
-                                             <span class="text-xs font-black text-white uppercase tracking-wider block border-b border-gray-800 pb-1.5 flex items-center gap-1.5">
-                                                 <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                                                 <span class="hidden sm:inline">Registrar Nuevo Hito en la Bitácora</span>
-                                                 <span class="sm:hidden">Nuevo Avance</span>
-                                             </span>
+                                         {{-- ===== QUICK PHOTO FAB + COMPACT FORM ===== --}}
+                                         <div x-data="{ formExpanded: false, quickUploading: false }" class="space-y-3">
                                              
-                                             <!-- Quick Title Chips -->
-                                             <div class="space-y-1.5">
-                                                 <label class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider">Título del Hito *</label>
-                                                 <div class="flex flex-wrap gap-1.5 mb-2" x-data>
-                                                     @foreach(['Avance Técnico', 'Cambio de Pieza', 'Prueba Realizada', 'Diagnóstico', 'Nota Interna'] as $chip)
-                                                         <button 
-                                                             type="button" 
-                                                             wire:click="$set('newLogTitle', '{{ $chip }}')"
-                                                             class="px-3 py-1.5 rounded-lg text-[11px] font-bold border transition active:scale-95 {{ $newLogTitle === $chip ? 'bg-indigo-600 text-white border-indigo-500' : 'bg-gray-900 text-gray-400 border-gray-700 hover:text-white' }}"
-                                                         >{{ $chip }}</button>
-                                                     @endforeach
-                                                 </div>
-                                                 <input 
-                                                     type="text" 
-                                                     wire:model="newLogTitle" 
-                                                     class="w-full bg-gray-950 border border-gray-700 rounded-xl p-2.5 text-white focus:outline-none focus:border-indigo-500 text-xs font-bold"
-                                                     placeholder="O escribe un título personalizado..."
-                                                     required
+                                             {{-- Quick Photo FAB Row --}}
+                                             <div class="flex gap-2">
+                                                 {{-- 📸 Quick Photo Button (Mobile - opens camera directly) --}}
+                                                 <label class="md:hidden flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black py-3 px-4 rounded-xl cursor-pointer transition active:scale-95 shadow-lg shadow-emerald-500/25 border border-emerald-400/30"
+                                                     x-bind:class="quickUploading ? 'opacity-60 pointer-events-none' : ''"
                                                  >
-                                             </div>
-                                             
-                                             <!-- Notes -->
-                                             <div class="space-y-1.5">
-                                                 <label class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider">Detalle / Notas (Opcional)</label>
-                                                 <textarea 
-                                                     wire:model="newLogNotes" 
-                                                     rows="2" 
-                                                     class="w-full bg-gray-950 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500 text-sm leading-relaxed" 
-                                                     placeholder="Describe opcionalmente las labores realizadas..."
-                                                 ></textarea>
-                                                 @error('newLogNotes') <span class="text-red-400 text-xs block font-bold mt-1">{{ $message }}</span> @enderror
-                                             </div>
+                                                     <template x-if="!quickUploading">
+                                                         <span class="flex items-center gap-2">
+                                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                                             📸 Foto Rápida
+                                                         </span>
+                                                     </template>
+                                                     <template x-if="quickUploading">
+                                                         <span class="flex items-center gap-2">
+                                                             <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                                             Subiendo...
+                                                         </span>
+                                                     </template>
+                                                     <input type="file" multiple accept="image/*" capture="environment" class="hidden"
+                                                         @change="
+                                                             quickUploading = true;
+                                                             compressAndUploadMultiplePhotos($event, 'quickPhotos', $wire);
+                                                             // Watch for upload complete
+                                                             const checkInterval = setInterval(() => {
+                                                                 if ($wire.quickPhotos && $wire.quickPhotos.length > 0) {
+                                                                     clearInterval(checkInterval);
+                                                                     $wire.quickPhotoLog().then(() => { quickUploading = false; });
+                                                                 }
+                                                             }, 500);
+                                                             setTimeout(() => { clearInterval(checkInterval); quickUploading = false; }, 30000);
+                                                         "
+                                                     >
+                                                 </label>
+                                                 
+                                                 {{-- Desktop Quick Photo --}}
+                                                 <label class="hidden md:flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-2 px-4 rounded-xl cursor-pointer transition active:scale-95 shadow-md shadow-emerald-500/20 border border-emerald-400/30 text-xs"
+                                                     x-bind:class="quickUploading ? 'opacity-60 pointer-events-none' : ''"
+                                                 >
+                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                                     📸 Foto Rápida
+                                                     <input type="file" multiple accept="image/*" class="hidden"
+                                                         @change="
+                                                             quickUploading = true;
+                                                             compressAndUploadMultiplePhotos($event, 'quickPhotos', $wire);
+                                                             const checkInterval2 = setInterval(() => {
+                                                                 if ($wire.quickPhotos && $wire.quickPhotos.length > 0) {
+                                                                     clearInterval(checkInterval2);
+                                                                     $wire.quickPhotoLog().then(() => { quickUploading = false; });
+                                                                 }
+                                                             }, 500);
+                                                             setTimeout(() => { clearInterval(checkInterval2); quickUploading = false; }, 30000);
+                                                         "
+                                                     >
+                                                 </label>
 
-                                             <!-- Photo Attachment - Multiple Photos Supported -->
-                                             <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between pt-1">
-                                                 <!-- Camera capture button / file input -->
-                                                 <div class="w-full sm:w-auto">
-                                                     <label class="md:hidden flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-xl cursor-pointer transition active:scale-95 border border-gray-700">
-                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                                         📸 Adjuntar / Tomar Fotos
-                                                         <input type="file" multiple @change="compressAndUploadMultiplePhotos($event, 'newLogPhotos', $wire)" accept="image/*" class="hidden">
-                                                     </label>
-                                                     <div class="hidden md:flex items-center gap-3">
-                                                         <label class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider shrink-0">Adjuntar Foto(s):</label>
-                                                         <input 
-                                                             type="file" 
-                                                             multiple
-                                                             @change="compressAndUploadMultiplePhotos($event, 'newLogPhotos', $wire)" 
-                                                             accept="image/*"
-                                                             class="text-xs text-gray-400 focus:outline-none file:mr-2 file:py-1.5 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-semibold file:bg-gray-800 file:text-white file:cursor-pointer"
-                                                         >
-                                                     </div>
-                                                     @error('newLogPhotos.*') <span class="text-red-400 text-xs block mt-1">{{ $message }}</span> @enderror
-                                                     @error('newLogPhoto') <span class="text-red-400 text-xs block mt-1">{{ $message }}</span> @enderror
-                                                 </div>
-
-                                                 <button type="submit" wire:loading.attr="disabled" wire:target="newLogPhotos, newLogPhoto, saveManualLog" class="w-full sm:w-auto py-3 sm:py-2.5 px-6 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm sm:text-xs shadow-md shadow-indigo-500/25 transition cursor-pointer flex justify-center items-center shrink-0 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
-                                                     ✅ Registrar Avance
+                                                 {{-- Toggle full form button --}}
+                                                 <button type="button" 
+                                                     @click="formExpanded = !formExpanded"
+                                                     class="flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-xl transition active:scale-95 border border-gray-700 text-xs"
+                                                     :class="formExpanded ? 'bg-indigo-900/50 border-indigo-600/50 text-indigo-300' : ''"
+                                                 >
+                                                     <svg class="w-4 h-4 transition-transform" :class="formExpanded ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                                     <span x-text="formExpanded ? 'Cerrar Formulario' : '✏️ Avance Detallado'"></span>
                                                  </button>
                                              </div>
 
-                                             <!-- Preview and loading -->
-                                             <div wire:loading wire:target="newLogPhotos, newLogPhoto" class="text-xs text-blue-400 font-semibold flex items-center gap-1.5">
-                                                 <svg class="animate-spin h-4 w-4 text-blue-400" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                                                 Procesando y cargando fotos adjuntas...
+                                             {{-- Quick upload loading indicator --}}
+                                             <div wire:loading wire:target="quickPhotos" class="text-xs text-emerald-400 font-semibold flex items-center gap-1.5 bg-emerald-950/30 p-2 rounded-lg border border-emerald-800/40">
+                                                 <svg class="animate-spin h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                                 📸 Procesando foto(s)...
+                                             </div>
+                                             <div wire:loading wire:target="quickPhotoLog" class="text-xs text-emerald-400 font-semibold flex items-center gap-1.5 bg-emerald-950/30 p-2 rounded-lg border border-emerald-800/40">
+                                                 <svg class="animate-spin h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                                 ✅ Guardando en bitácora...
                                              </div>
 
-                                             <!-- Gallery preview list of attached photos -->
-                                             @if(count($newLogPhotos) > 0)
-                                                 <div class="space-y-2 bg-gray-955 p-3 rounded-xl border border-gray-850">
-                                                     <div class="flex items-center justify-between text-xs font-bold text-gray-300">
-                                                         <span>📷 Fotos Adjuntas ({{ count($newLogPhotos) }})</span>
-                                                         <button type="button" wire:click="$set('newLogPhotos', [])" class="text-red-400 hover:underline text-[10px] font-bold">
-                                                             Quitar todas
-                                                         </button>
+                                             {{-- ===== EXPANDABLE DETAILED FORM ===== --}}
+                                             <div x-show="formExpanded" x-collapse x-cloak>
+                                                 <form wire:submit.prevent="saveManualLog" class="bg-gray-900/50 p-3 md:p-4 rounded-2xl border border-gray-800 space-y-3">
+                                                     <span class="text-xs font-black text-white uppercase tracking-wider block border-b border-gray-800 pb-1.5 flex items-center gap-1.5">
+                                                         <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                                         <span class="hidden sm:inline">Registrar Nuevo Hito en la Bitácora</span>
+                                                         <span class="sm:hidden">Nuevo Avance</span>
+                                                     </span>
+                                                     
+                                                     {{-- Quick Title Chips --}}
+                                                     <div class="space-y-1.5">
+                                                         <label class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider">Título del Hito *</label>
+                                                         <div class="flex flex-wrap gap-1.5 mb-2" x-data>
+                                                             @foreach(['Avance Técnico', 'Cambio de Pieza', 'Prueba Realizada', 'Diagnóstico', 'Nota Interna'] as $chip)
+                                                                 <button 
+                                                                     type="button" 
+                                                                     wire:click="$set('newLogTitle', '{{ $chip }}')"
+                                                                     class="px-3 py-1.5 rounded-lg text-[11px] font-bold border transition active:scale-95 {{ $newLogTitle === $chip ? 'bg-indigo-600 text-white border-indigo-500' : 'bg-gray-900 text-gray-400 border-gray-700 hover:text-white' }}"
+                                                                 >{{ $chip }}</button>
+                                                             @endforeach
+                                                         </div>
+                                                         <input 
+                                                             type="text" 
+                                                             wire:model="newLogTitle" 
+                                                             class="w-full bg-gray-950 border border-gray-700 rounded-xl p-2.5 text-white focus:outline-none focus:border-indigo-500 text-xs font-bold"
+                                                             placeholder="O escribe un título personalizado..."
+                                                             required
+                                                         >
                                                      </div>
-                                                     <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                                                         @foreach($newLogPhotos as $idx => $photo)
-                                                             <div class="relative group aspect-square rounded-xl overflow-hidden border border-gray-700 bg-gray-900 shadow">
-                                                                 <img src="{{ $photo->temporaryUrl() }}" class="w-full h-full object-cover">
-                                                                 <button type="button" 
-                                                                         wire:click="removeNewLogPhoto({{ $idx }})" 
-                                                                         class="absolute top-1 right-1 bg-red-600/90 text-white rounded-full p-1 hover:bg-red-500 transition shadow"
-                                                                         title="Eliminar esta foto">
-                                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                                     
+                                                     {{-- Notes --}}
+                                                     <div class="space-y-1.5">
+                                                         <label class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider">Detalle / Notas (Opcional)</label>
+                                                         <textarea 
+                                                             wire:model="newLogNotes" 
+                                                             rows="2" 
+                                                             class="w-full bg-gray-950 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500 text-sm leading-relaxed" 
+                                                             placeholder="Describe opcionalmente las labores realizadas..."
+                                                         ></textarea>
+                                                         @error('newLogNotes') <span class="text-red-400 text-xs block font-bold mt-1">{{ $message }}</span> @enderror
+                                                     </div>
+
+                                                     {{-- Photo + Submit Row (INLINE - no extra scroll needed) --}}
+                                                     <div class="flex items-center gap-2 flex-wrap">
+                                                         {{-- Camera/file button --}}
+                                                         <label class="flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 px-3 rounded-xl cursor-pointer transition active:scale-95 border border-gray-700 text-xs shrink-0">
+                                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                                             📷 Fotos
+                                                             <input type="file" multiple @change="compressAndUploadMultiplePhotos($event, 'newLogPhotos', $wire)" accept="image/*" class="hidden">
+                                                         </label>
+
+                                                         {{-- Inline photo thumbnails (compact chips) --}}
+                                                         @if(count($newLogPhotos) > 0)
+                                                             <div class="flex items-center gap-1.5 flex-wrap flex-1 min-w-0">
+                                                                 @foreach($newLogPhotos as $idx => $photo)
+                                                                     <div class="relative group w-10 h-10 rounded-lg overflow-hidden border border-gray-700 bg-gray-900 shrink-0 shadow">
+                                                                         <img src="{{ $photo->temporaryUrl() }}" class="w-full h-full object-cover">
+                                                                         <button type="button" 
+                                                                                 wire:click="removeNewLogPhoto({{ $idx }})" 
+                                                                                 class="absolute inset-0 bg-red-600/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 active:opacity-100 transition"
+                                                                                 title="Eliminar">
+                                                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                                                         </button>
+                                                                     </div>
+                                                                 @endforeach
+                                                                 <button type="button" wire:click="$set('newLogPhotos', [])" class="text-red-400 hover:text-red-300 text-[10px] font-bold shrink-0 px-1">
+                                                                     ✕ Todas
                                                                  </button>
                                                              </div>
-                                                         @endforeach
-                                                     </div>
-                                                 </div>
-                                             @elseif($newLogPhoto)
-                                                 <div class="flex items-center justify-between bg-gray-955 p-2.5 rounded-xl border border-gray-850">
-                                                     <div class="flex items-center gap-3">
-                                                         <img src="{{ $newLogPhoto->temporaryUrl() }}" class="w-14 h-14 object-cover rounded-lg border border-gray-800">
-                                                         <div>
-                                                             <div class="text-xs font-bold text-white">Foto adjunta lista</div>
-                                                             <div class="text-[10px] text-gray-400">Se incluirá en este registro de bitácora.</div>
+                                                         @elseif($newLogPhoto)
+                                                             <div class="relative group w-10 h-10 rounded-lg overflow-hidden border border-gray-700 bg-gray-900 shrink-0 shadow">
+                                                                 <img src="{{ $newLogPhoto->temporaryUrl() }}" class="w-full h-full object-cover">
+                                                                 <button type="button" 
+                                                                         wire:click="$set('newLogPhoto', null)" 
+                                                                         class="absolute inset-0 bg-red-600/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 active:opacity-100 transition"
+                                                                         title="Quitar">
+                                                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                                                 </button>
+                                                             </div>
+                                                         @endif
+
+                                                         {{-- Loading indicator inline --}}
+                                                         <div wire:loading wire:target="newLogPhotos, newLogPhoto" class="flex items-center gap-1 text-[10px] text-blue-400 font-semibold shrink-0">
+                                                             <svg class="animate-spin h-3 w-3" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                                             Cargando...
                                                          </div>
+
+                                                         {{-- Submit button --}}
+                                                         <button type="submit" wire:loading.attr="disabled" wire:target="newLogPhotos, newLogPhoto, saveManualLog" class="ml-auto py-2.5 px-5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-500/25 transition cursor-pointer flex items-center gap-1.5 shrink-0 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                                                             <svg wire:loading.remove wire:target="saveManualLog" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                                             <svg wire:loading wire:target="saveManualLog" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                                             Registrar
+                                                         </button>
                                                      </div>
-                                                     <button type="button" 
-                                                             wire:click="$set('newLogPhoto', null)" 
-                                                             class="px-3 py-1.5 bg-red-950/60 hover:bg-red-900 border border-red-700/60 text-red-300 hover:text-white rounded-lg text-xs font-bold transition duration-150 cursor-pointer flex items-center gap-1.5 shrink-0"
-                                                             title="Quitar esta foto">
-                                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                                         </svg>
-                                                         Quitar foto
-                                                     </button>
-                                                 </div>
-                                             @endif
-                                         </form>
+
+                                                     @error('newLogPhotos.*') <span class="text-red-400 text-xs block mt-1">{{ $message }}</span> @enderror
+                                                     @error('newLogPhoto') <span class="text-red-400 text-xs block mt-1">{{ $message }}</span> @enderror
+                                                 </form>
+                                             </div>
+                                         </div>
                                      @endif
  
                                     <!-- Vertical Timeline -->
-                                    <div class="space-y-4">
+                                    <div class="space-y-4" 
+                                        x-data
+                                        x-on:log-saved.window="
+                                            $nextTick(() => {
+                                                const target = document.getElementById('bitacora-timeline-latest');
+                                                if (target) {
+                                                    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                                    target.classList.add('ring-2', 'ring-emerald-500/50', 'bg-emerald-950/20', 'rounded-xl', 'p-2', '-m-2');
+                                                    setTimeout(() => { target.classList.remove('ring-2', 'ring-emerald-500/50', 'bg-emerald-950/20', 'rounded-xl', 'p-2', '-m-2'); }, 3000);
+                                                }
+                                            });
+                                        "
+                                    >
                                         <span class="text-xs font-black text-gray-400 uppercase tracking-widest block border-b border-gray-800 pb-1.5">Historial de Eventos</span>
                                         
                                         @if(count($managingOrder->logs) > 0)
@@ -1573,7 +1645,7 @@
                                                 $adminAllBitacoraPhotos = [];
                                                 $adminBIndexMap = [];
                                                 $adminGCount = 0;
-                                                $sortedLogsList = $managingOrder->logs->sortBy('created_at');
+                                                $sortedLogsList = $managingOrder->logs->sortByDesc('created_at');
                                                 foreach($sortedLogsList as $logItem) {
                                                     if(count($logItem->images) > 0) {
                                                         foreach($logItem->images as $lIdx => $imgPath) {
@@ -1589,7 +1661,7 @@
                                             @endphp
                                             <div class="relative pl-5 border-l-2 border-gray-800 space-y-5">
                                                 @foreach($sortedLogsList as $log)
-                                                    <div class="relative">
+                                                    <div class="relative transition-all duration-500" @if($loop->first) id="bitacora-timeline-latest" @endif>
                                                         <!-- Bullet node point -->
                                                         <span class="absolute -left-[27px] mt-1 bg-gray-900 border-2 border-indigo-500 w-3.5 h-3.5 rounded-full flex items-center justify-center"></span>
                                                         
