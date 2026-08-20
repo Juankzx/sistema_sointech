@@ -74,13 +74,6 @@ class CreateWorkOrder extends Component
     public $payment_method = 'Efectivo';
     public $selected_parts = []; // array of ['id', 'name', 'sale_price', 'quantity']
 
-    // Service Selection Properties
-    public $selected_services = []; // array of ['service_id', 'name', 'price']
-    public $searchService = '';
-    public $foundServices = [];
-    public $customServiceName = '';
-    public $customServicePrice = '';
-
     // Legal & Images
     public $terms_accepted = false;
     public $signature_base64; // from canvas
@@ -445,6 +438,13 @@ class CreateWorkOrder extends Component
             if ($hasActive) {
                 $query->where('is_active', true);
             }
+
+            // Filtrar por categoría compatible con el tipo de equipo seleccionado (Ej: no mostrar SSD notebook en celular)
+            if ($hasCategory && !empty($this->device_type)) {
+                $allowedCategories = [$this->device_type, 'general', 'microsoldering', 'software'];
+                $query->whereIn('category', $allowedCategories);
+            }
+
             $query->where(function($q) use ($hasCategory) {
                 $q->where('name', 'like', '%' . $this->searchService . '%');
                 if ($hasCategory) {
@@ -495,20 +495,18 @@ class CreateWorkOrder extends Component
         }
     }
 
-    public function updatedSelectedServices($value, $key)
+    public function updatedSelectedServices()
     {
         $this->recalculateLaborCostFromServices();
     }
 
     public function recalculateLaborCostFromServices()
     {
-        if (!empty($this->selected_services)) {
-            $total = 0;
-            foreach ($this->selected_services as $srv) {
-                $total += (float)($srv['price'] ?? 0);
-            }
-            $this->labor_cost = $total;
+        $total = 0;
+        foreach ($this->selected_services as $srv) {
+            $total += (float)($srv['price'] ?? 0);
         }
+        $this->labor_cost = $total;
     }
 
     public function getTotalProperty()
@@ -638,18 +636,6 @@ class CreateWorkOrder extends Component
                     'brand' => $comp['brand'] ?? null,
                     'model' => $comp['model'] ?? null,
                     'serial_number' => $comp['serial_number'] ?? null,
-                ]);
-            }
-        }
-
-        // Persistir servicios de catálogo asignados a la OT
-        if (!empty($this->selected_services)) {
-            foreach ($this->selected_services as $srv) {
-                \App\Models\WorkOrderService::create([
-                    'work_order_id' => $workOrder->id,
-                    'service_id' => $srv['service_id'] ?? null,
-                    'name' => $srv['name'],
-                    'price' => (float)$srv['price'],
                 ]);
             }
         }

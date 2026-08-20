@@ -489,6 +489,16 @@ class ListWorkOrders extends Component
             if ($hasActive) {
                 $query->where('is_active', true);
             }
+
+            // Filtrar por categoría compatible con el tipo de equipo de la OT
+            if ($hasCategory && $this->editingOrderId) {
+                $order = \App\Models\WorkOrder::find($this->editingOrderId);
+                if ($order && $order->device_type) {
+                    $allowedCategories = [$order->device_type, 'general', 'microsoldering', 'software'];
+                    $query->whereIn('category', $allowedCategories);
+                }
+            }
+
             $query->where(function($q) use ($hasCategory) {
                 $q->where('name', 'like', '%' . $this->editingSearchService . '%');
                 if ($hasCategory) {

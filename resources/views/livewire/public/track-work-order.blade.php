@@ -141,12 +141,12 @@
                 </div>
                 
                 <div x-show="openChecklist" x-collapse x-cloak>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1">
+                    <div class="grid grid-cols-2 gap-2 text-xs pt-1">
                         @forelse($features as $item => $checked)
                             @if(!in_array($item, ['turns_on', 'liquid_contact', 'aesthetic_notes', 'features']))
-                                <div class="flex items-center justify-between bg-gray-950/50 p-2.5 rounded-lg border border-gray-800/60 transition-colors hover:border-gray-700 gap-2">
-                                    <span class="text-gray-400 font-semibold leading-snug whitespace-normal break-words" title="{{ $item }}">{{ $item }}</span>
-                                    <span class="{{ $checked ? 'text-emerald-400' : 'text-red-400' }} font-bold text-[10px] uppercase shrink-0">
+                                <div class="flex items-center justify-between bg-gray-950/50 p-2.5 rounded-lg border border-gray-800/60 transition-colors hover:border-gray-700">
+                                    <span class="truncate pr-1 text-gray-400" title="{{ $item }}">{{ \Illuminate\Support\Str::limit($item, 16) }}</span>
+                                    <span class="{{ $checked ? 'text-emerald-400' : 'text-red-400' }} font-bold text-[10px] uppercase">
                                         {{ $checked ? '✓ OK' : '✗ Falla' }}
                                     </span>
                                 </div>

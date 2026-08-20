@@ -791,7 +791,7 @@
                     <div class="space-y-2 mb-4">
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 px-1">Pruebas
                             Funcionales Realizadas (Desmarca las que fallan)</label>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                             @foreach($checklist_values as $item => $checked)
                                 @php
                                     $icon = '<svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
@@ -822,11 +822,9 @@
                                 <label
                                     class="flex items-center space-x-2.5 cursor-pointer bg-gray-800/40 p-3 rounded-2xl border border-gray-700 hover:border-gray-650 hover:bg-gray-800/80 transition-all duration-150">
                                     <input type="checkbox" wire:model="checklist_values.{{ $item }}"
-                                        class="w-4.5 h-4.5 text-blue-500 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 cursor-pointer shrink-0">
-                                    <span class="text-xs font-bold text-gray-200 flex items-center gap-1.5 leading-snug whitespace-normal break-words">
-                                        <span class="text-base shrink-0">{!! $icon !!}</span>
-                                        <span>{{ $item }}</span>
-                                    </span>
+                                        class="w-4.5 h-4.5 text-blue-500 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 cursor-pointer">
+                                    <span class="text-xs font-bold text-gray-200 truncate flex items-center gap-1.5"><span
+                                            class="text-base">{!! $icon !!}</span> {{ $item }}</span>
                                 </label>
                             @endforeach
                         </div>
@@ -1045,82 +1043,41 @@
                             </div>
                         @endif
 
-                        <!-- Búsqueda y Selección de Servicios del Catálogo -->
-                        <div class="relative">
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Agregar Servicios (Mano de Obra) del Catálogo</label>
-                            <div class="relative">
-                                <input type="text" wire:model.live.debounce.150ms="searchService"
-                                    class="w-full rounded-2xl px-4 py-3 text-sm font-medium text-white placeholder-gray-600 transition-all duration-200 focus:outline-none focus:ring-2"
-                                    style="background:#111827; border:1.5px solid #1f2937;"
-                                    placeholder="Escribe para buscar servicio (Ej: Cambio de pantalla, Limpieza...)..."
-                                    autocomplete="off">
-                            </div>
+                        <!-- Formulario para Servicio Personalizado / Extra -->
+                        <div x-data="{ openCustom: false }" class="mt-2">
+                            <button type="button" @click="openCustom = !openCustom" class="text-xs font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-1.5 transition cursor-pointer">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                <span>+ ¿Servicio o labor personalizada no catalogada?</span>
+                            </button>
 
-                            @if(count($foundServices) > 0)
-                                <div class="absolute z-20 w-full mt-1.5 overflow-hidden rounded-2xl shadow-2xl"
-                                    style="background:#0d1117; border:1.5px solid #1f2937;">
-                                    <div class="px-4 py-2 flex items-center justify-between" style="border-bottom:1px solid #1f2937;">
-                                        <span class="text-[10px] font-black uppercase tracking-widest text-gray-500">
-                                            {{ count($foundServices) }} servicio(s) encontrado(s)
-                                        </span>
-                                        <span class="text-[10px] text-gray-600">Clic para añadir</span>
+                            <div x-show="openCustom" x-collapse x-cloak class="mt-2.5 p-3.5 bg-gray-900 border border-gray-700 rounded-xl space-y-3">
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                                    <div class="sm:col-span-2">
+                                        <input type="text" wire:model="customServiceName" placeholder="Nombre de la labor técnica..." class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white placeholder-gray-500 focus:ring-1 focus:ring-indigo-500">
                                     </div>
-                                    <ul>
-                                        @foreach($foundServices as $fs)
-                                            <li wire:click="addServiceFromCatalog({{ $fs->id }})"
-                                                class="flex items-center justify-between gap-3 px-4 py-3 cursor-pointer transition-all duration-150 border-b last:border-0 hover:bg-gray-800/60"
-                                                style="border-color:#1f2937;">
-                                                <div class="min-w-0">
-                                                    <div class="font-bold text-white text-sm leading-tight truncate">{{ $fs->name }}</div>
-                                                    <div class="text-[11px] text-gray-400 mt-0.5">{{ $fs->category_label }}</div>
-                                                </div>
-                                                <div class="flex items-center gap-2 shrink-0">
-                                                    <span class="font-mono font-bold text-indigo-400 text-sm">
-                                                        ${{ number_format($fs->default_price, 0, ',', '.') }}
-                                                    </span>
-                                                    <span class="text-[10px] font-bold px-2 py-1 rounded-lg bg-indigo-950/60 text-indigo-300 border border-indigo-500/30">
-                                                        + Añadir
-                                                    </span>
-                                                </div>
-                                            </li>
-                                        @endforeach
-                                    </ul>
+                                    <div>
+                                        <input type="number" wire:model="customServicePrice" placeholder="Precio ($)..." class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-xs font-bold text-emerald-400 placeholder-gray-500 text-right focus:ring-1 focus:ring-indigo-500">
+                                    </div>
                                 </div>
-                            @endif
+                                <button type="button" wire:click="addCustomService" @click="openCustom = false" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg transition cursor-pointer">
+                                    + Agregar Labor al Presupuesto
+                                </button>
+                            </div>
                         </div>
 
-                        <!-- Lista de servicios seleccionados con precios editables -->
-                        @if(count($selected_services) > 0)
-                            <div class="bg-gray-900 border border-gray-700 rounded-2xl p-4 space-y-2 animate-fade-in">
-                                <h4 class="text-xs font-bold text-indigo-400 uppercase tracking-widest px-1 mb-2">Servicios Asignados a esta OT</h4>
-                                <div class="space-y-2">
-                                    @foreach($selected_services as $index => $srv)
-                                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3 bg-gray-800/60 rounded-xl border border-gray-700">
-                                            <span class="text-xs font-bold text-white flex-1">{{ $srv['name'] }}</span>
-                                            <div class="flex items-center gap-2 w-full sm:w-auto">
-                                                <span class="text-[10px] text-gray-400">Precio ($):</span>
-                                                <input type="number" wire:model.live="selected_services.{{ $index }}.price" class="w-28 bg-gray-900 border border-gray-700 rounded-lg px-2 py-1 text-xs font-bold text-emerald-400 text-right">
-                                                <button type="button" wire:click="removeSelectedService({{ $index }})" class="text-gray-500 hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition cursor-pointer">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    @endforeach
+                        <!-- Resumen y Presupuesto Estimado -->
+                        <div class="bg-gradient-to-r from-blue-950/40 to-indigo-950/40 border border-blue-500/30 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
+                            <div class="space-y-1">
+                                <span class="text-xs font-bold text-blue-300 uppercase tracking-widest block">Resumen del Presupuesto</span>
+                                <div class="text-xs text-gray-300 flex items-center gap-3">
+                                    <span>🛠️ Mano de Obra: <strong class="text-emerald-400 font-bold">${{ number_format($this->labor_cost, 0, ',', '.') }}</strong></span>
+                                    <span>•</span>
+                                    <span>📦 Repuestos: <strong class="text-emerald-400 font-bold">${{ number_format(collect($selected_parts)->sum(fn($p) => $p['sale_price'] * $p['quantity']), 0, ',', '.') }}</strong></span>
                                 </div>
                             </div>
-                        @endif
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Total Mano de Obra ($)</label>
-                                <input type="number" wire:model.live="labor_cost"
-                                    class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3.5 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            </div>
-                            <div
-                                class="bg-blue-900/30 border border-blue-500 rounded-2xl p-4 flex justify-between items-center">
-                                <span class="text-xs font-bold text-blue-200">PRESUPUESTO ESTIMADO</span>
-                                <span
-                                    class="text-xl font-black text-white">${{ number_format($this->total, 0, ',', '.') }}</span>
+                            <div class="flex items-center gap-3 self-end sm:self-auto">
+                                <span class="text-xs font-black text-blue-200 uppercase tracking-wider">TOTAL ESTIMADO:</span>
+                                <span class="text-2xl font-black text-white bg-blue-600/30 px-3.5 py-1 rounded-xl border border-blue-400/30">${{ number_format($this->total, 0, ',', '.') }}</span>
                             </div>
                         </div>
 
@@ -1823,6 +1780,70 @@
                 if (this.selectedDots.length === 0) return 'Sin trazar';
                 return this.selectedDots.join(' ➔ ');
             },
+
+            renderLines(e = null) {
+                if (!this.canvas || !this.ctx) return;
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                if (this.selectedDots.length === 0) return;
+
+                this.ctx.lineWidth = 4;
+                this.ctx.lineCap = 'round';
+                this.ctx.lineJoin = 'round';
+
+                this.ctx.strokeStyle = '#f97316'; // orange-500
+                this.ctx.shadowBlur = 10;
+                this.ctx.shadowColor = '#ea580c'; // orange-600
+
+                this.ctx.beginPath();
+
+                this.selectedDots.forEach((index, idx) => {
+                    const dot = this.dots.find(d => d.index === index);
+                    if (dot) {
+                        if (idx === 0) {
+                            this.ctx.moveTo(dot.x, dot.y);
+                        } else {
+                            this.ctx.lineTo(dot.x, dot.y);
+                        }
+                    }
+                });
+
+                this.ctx.stroke();
+
+                if (this.isDrawing && e) {
+                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                    const containerRect = document.getElementById('pattern-matrix').getBoundingClientRect();
+                    const curX = clientX - containerRect.left;
+                    const curY = clientY - containerRect.top;
+
+                    const lastDotIdx = this.selectedDots[this.selectedDots.length - 1];
+                    const lastDot = this.dots.find(d => d.index === lastDotIdx);
+                    if (lastDot) {
+                        this.ctx.beginPath();
+                        this.ctx.lineWidth = 3;
+                        this.ctx.strokeStyle = 'rgba(249, 115, 22, 0.6)';
+                        this.ctx.moveTo(lastDot.x, lastDot.y);
+                        this.ctx.lineTo(curX, curY);
+                        this.ctx.stroke();
+                    }
+                }
+            },
+
+            clearPattern() {
+                this.selectedDots = [];
+                this.renderLines();
+            },
+
+            applyPattern() {
+                if (this.selectedDots.length > 0) {
+                    const patternString = 'Patrón: ' + this.selectedDots.join('-');
+                    @this.set('unlock_password', patternString);
+                }
+            }
+        }));
+    });
+</script>   },
 
             renderLines(e = null) {
                 if (!this.canvas || !this.ctx) return;
