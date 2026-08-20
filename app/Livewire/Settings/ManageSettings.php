@@ -412,14 +412,30 @@ class ManageSettings extends Component
 
         $devices = $query->orderBy('brand')->orderBy('model')->paginate(10);
 
-        // Paginación del catálogo de servicios
-        $serviceQuery = \App\Models\Service::query();
-        if ($this->service_search) {
-            $serviceQuery->where('name', 'like', '%' . $this->service_search . '%')
-                         ->orWhere('category', 'like', '%' . $this->service_search . '%')
-                         ->orWhere('description', 'like', '%' . $this->service_search . '%');
+        // Paginación del catálogo de servicios (Defensivo ante migraciones pendientes)
+        $servicesList = collect();
+        if (\Illuminate\Support\Facades\Schema::hasTable('services')) {
+            $serviceQuery = \App\Models\Service::query();
+            $hasCategory = \Illuminate\Support\Facades\Schema::hasColumn('services', 'category');
+            $hasDesc = \Illuminate\Support\Facades\Schema::hasColumn('services', 'description');
+
+            if ($this->service_search) {
+                $serviceQuery->where(function ($q) use ($hasCategory, $hasDesc) {
+                    $q->where('name', 'like', '%' . $this->service_search . '%');
+                    if ($hasCategory) {
+                        $q->orWhere('category', 'like', '%' . $this->service_search . '%');
+                    }
+                    if ($hasDesc) {
+                        $q->orWhere('description', 'like', '%' . $this->service_search . '%');
+                    }
+                });
+            }
+
+            if ($hasCategory) {
+                $serviceQuery->orderBy('category');
+            }
+            $servicesList = $serviceQuery->orderBy('name')->get();
         }
-        $servicesList = $serviceQuery->orderBy('category')->orderBy('name')->get();
 
         return view('livewire.settings.manage-settings', [
             'devices' => $devices,

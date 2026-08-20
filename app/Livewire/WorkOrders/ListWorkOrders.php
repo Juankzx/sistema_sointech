@@ -481,13 +481,21 @@ class ListWorkOrders extends Component
 
     public function updatedEditingSearchService()
     {
-        if (strlen($this->editingSearchService) >= 1) {
-            $this->editingFoundServices = \App\Models\Service::where('is_active', true)
-                ->where(function($q) {
-                    $q->where('name', 'like', '%' . $this->editingSearchService . '%')
-                      ->orWhere('category', 'like', '%' . $this->editingSearchService . '%');
-                })
-                ->take(6)->get();
+        if (\Illuminate\Support\Facades\Schema::hasTable('services') && strlen($this->editingSearchService) >= 1) {
+            $hasCategory = \Illuminate\Support\Facades\Schema::hasColumn('services', 'category');
+            $hasActive = \Illuminate\Support\Facades\Schema::hasColumn('services', 'is_active');
+
+            $query = \App\Models\Service::query();
+            if ($hasActive) {
+                $query->where('is_active', true);
+            }
+            $query->where(function($q) use ($hasCategory) {
+                $q->where('name', 'like', '%' . $this->editingSearchService . '%');
+                if ($hasCategory) {
+                    $q->orWhere('category', 'like', '%' . $this->editingSearchService . '%');
+                }
+            });
+            $this->editingFoundServices = $query->take(6)->get();
         } else {
             $this->editingFoundServices = [];
         }

@@ -126,21 +126,27 @@ class Dashboard extends Component
             ->take(5)
             ->get();
 
-        // Top Servicios (Mano de Obra) más solicitados y sus KPIs
-        $topServices = \App\Models\WorkOrderService::select(
-                'name',
-                DB::raw('COUNT(*) as total_qty'),
-                DB::raw('SUM(price) as total_amount'),
-                DB::raw('AVG(price) as avg_price')
-            )
-            ->whereBetween('created_at', [$start, $end])
-            ->groupBy('name')
-            ->orderByDesc('total_qty')
-            ->take(6)
-            ->get();
+        // Top Servicios (Mano de Obra) más solicitados y sus KPIs (Defensivo ante migraciones)
+        $topServices = collect();
+        $servicesTotalRevenue = 0;
+        $servicesTotalCount = 0;
 
-        $servicesTotalRevenue = \App\Models\WorkOrderService::whereBetween('created_at', [$start, $end])->sum('price');
-        $servicesTotalCount = \App\Models\WorkOrderService::whereBetween('created_at', [$start, $end])->count();
+        if (\Illuminate\Support\Facades\Schema::hasTable('work_order_services')) {
+            $topServices = \App\Models\WorkOrderService::select(
+                    'name',
+                    DB::raw('COUNT(*) as total_qty'),
+                    DB::raw('SUM(price) as total_amount'),
+                    DB::raw('AVG(price) as avg_price')
+                )
+                ->whereBetween('created_at', [$start, $end])
+                ->groupBy('name')
+                ->orderByDesc('total_qty')
+                ->take(6)
+                ->get();
+
+            $servicesTotalRevenue = \App\Models\WorkOrderService::whereBetween('created_at', [$start, $end])->sum('price');
+            $servicesTotalCount = \App\Models\WorkOrderService::whereBetween('created_at', [$start, $end])->count();
+        }
 
         // 3. Egresos / Compras & Cálculos de IVA Crédito
         $expenses = Expense::whereBetween('date', [$start->format('Y-m-d'), $end->format('Y-m-d')])->latest()->get();
