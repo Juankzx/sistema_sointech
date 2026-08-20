@@ -11,8 +11,9 @@ class PrintController extends Controller
 {
     public function cashRegister($id)
     {
-        $register = CashRegister::with(['user', 'payments'])->findOrFail($id);
-        return view('print.cash-register', compact('register'));
+        $register = CashRegister::with(['user', 'payments.workOrder', 'payments.user'])->findOrFail($id);
+        $appSettings = \App\Models\Setting::first();
+        return view('print.cash-register', compact('register', 'appSettings'));
     }
 
     public function workOrder($id)

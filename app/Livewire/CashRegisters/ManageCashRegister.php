@@ -200,8 +200,8 @@ class ManageCashRegister extends Component
             });
 
             $this->showCloseModal = false;
-            $this->loadActiveRegister();
-            session()->flash('message', 'Caja cerrada y arqueada exitosamente.');
+            session()->flash('message', '¡Caja cerrada y arqueada exitosamente!');
+            return redirect()->route('caja.print', ['id' => $registerId]);
         } catch (\Exception $e) {
             $this->showCloseModal = false;
             $this->loadActiveRegister();
