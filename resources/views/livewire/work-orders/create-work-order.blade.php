@@ -791,7 +791,7 @@
                     <div class="space-y-2 mb-4">
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 px-1">Pruebas
                             Funcionales Realizadas (Desmarca las que fallan)</label>
-                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
                             @foreach($checklist_values as $item => $checked)
                                 @php
                                     $icon = '<svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
@@ -822,9 +822,11 @@
                                 <label
                                     class="flex items-center space-x-2.5 cursor-pointer bg-gray-800/40 p-3 rounded-2xl border border-gray-700 hover:border-gray-650 hover:bg-gray-800/80 transition-all duration-150">
                                     <input type="checkbox" wire:model="checklist_values.{{ $item }}"
-                                        class="w-4.5 h-4.5 text-blue-500 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 cursor-pointer">
-                                    <span class="text-xs font-bold text-gray-200 truncate flex items-center gap-1.5"><span
-                                            class="text-base">{!! $icon !!}</span> {{ $item }}</span>
+                                        class="w-4.5 h-4.5 text-blue-500 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 cursor-pointer shrink-0">
+                                    <span class="text-xs font-bold text-gray-200 flex items-center gap-1.5 leading-snug whitespace-normal break-words">
+                                        <span class="text-base shrink-0">{!! $icon !!}</span>
+                                        <span>{{ $item }}</span>
+                                    </span>
                                 </label>
                             @endforeach
                         </div>
