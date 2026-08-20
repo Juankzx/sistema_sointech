@@ -105,11 +105,13 @@ class CreateQuotation extends Component
     // Items array
     public $items = [];
 
-    // Templates & Inventory search
+    // Templates & Inventory / Service search
     public $selected_template_id = null;
     public $templates = [];
     public $search_inventory = '';
     public $found_inventory = [];
+    public $search_service = '';
+    public $found_services = [];
 
     public function mount($id = null)
     {
@@ -274,6 +276,51 @@ class CreateQuotation extends Component
     public function addOnDemandPart()
     {
         $this->addItem('[A Pedido] ', 'producto', 0, 1);
+    }
+
+    public function updatedSearchService()
+    {
+        if (\Illuminate\Support\Facades\Schema::hasTable('services') && strlen(trim($this->search_service)) >= 1) {
+            $hasCategory = \Illuminate\Support\Facades\Schema::hasColumn('services', 'category');
+            $hasActive = \Illuminate\Support\Facades\Schema::hasColumn('services', 'is_active');
+
+            $query = \App\Models\Service::query();
+            if ($hasActive) {
+                $query->where('is_active', true);
+            }
+
+            // Filtrar por categoría compatible con el equipo seleccionado en la cotización
+            if ($hasCategory && !empty($this->device_type)) {
+                $allowedCategories = [$this->device_type, 'general', 'microsoldering', 'software'];
+                $query->whereIn('category', $allowedCategories);
+            }
+
+            $query->where(function($q) use ($hasCategory) {
+                $q->where('name', 'like', '%' . trim($this->search_service) . '%');
+                if ($hasCategory) {
+                    $q->orWhere('category', 'like', '%' . trim($this->search_service) . '%');
+                }
+            });
+
+            $this->found_services = $query->take(6)->get()->toArray();
+        } else {
+            $this->found_services = [];
+        }
+    }
+
+    public function addServiceItem($serviceId)
+    {
+        $service = \App\Models\Service::find($serviceId);
+        if ($service) {
+            $this->addItem(
+                $service->name,
+                'servicio',
+                (float)$service->default_price,
+                1
+            );
+            $this->search_service = '';
+            $this->found_services = [];
+        }
     }
 
     public function loadTemplate($templateId)

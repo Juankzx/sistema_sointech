@@ -188,6 +188,67 @@
                             + Fila Libre
                         </button>
                     </div>
+                <!-- Buscadores Predictivos de Servicios y Repuestos -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-2 border-b border-slate-100 dark:border-slate-700/60">
+                    <!-- Buscador Predictivo de Servicios del Catálogo -->
+                    <div class="relative">
+                        <label class="block text-[11px] font-bold text-indigo-500 dark:text-indigo-400 uppercase tracking-wider mb-1">🛠️ Añadir Servicio del Catálogo</label>
+                        <div class="relative">
+                            <input type="text" wire:model.live.debounce.150ms="search_service"
+                                class="w-full text-xs p-2.5 rounded-xl border border-indigo-200 dark:border-indigo-900/60 bg-indigo-50/40 dark:bg-slate-900 text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                placeholder="Buscar servicio (Ej: Pantalla, Limpieza, Mantenimiento)..." autocomplete="off">
+                        </div>
+
+                        @if(count($found_services) > 0)
+                            <div class="absolute z-20 w-full mt-1 overflow-hidden rounded-xl shadow-xl bg-white dark:bg-slate-900 border border-indigo-200 dark:border-indigo-900">
+                                <div class="px-3 py-1.5 bg-indigo-50 dark:bg-indigo-950/60 flex items-center justify-between border-b border-indigo-100 dark:border-indigo-900 text-[10px] text-indigo-600 dark:text-indigo-400 font-bold">
+                                    <span>Servicios Compatibles</span>
+                                    <span>Clic para añadir</span>
+                                </div>
+                                <ul class="divide-y divide-slate-100 dark:divide-slate-800 max-h-48 overflow-y-auto">
+                                    @foreach($found_services as $fs)
+                                        <li wire:click="addServiceItem({{ $fs['id'] }})" class="p-2.5 hover:bg-indigo-50/60 dark:hover:bg-indigo-950/40 cursor-pointer flex items-center justify-between transition">
+                                            <div>
+                                                <div class="font-bold text-xs text-slate-800 dark:text-slate-200">{{ $fs['name'] }}</div>
+                                                <div class="text-[10px] text-slate-400">🛠️ Servicio</div>
+                                            </div>
+                                            <span class="font-mono font-bold text-xs text-emerald-600 dark:text-emerald-400">${{ number_format($fs['default_price'], 0, ',', '.') }}</span>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                    </div>
+
+                    <!-- Buscador Predictivo de Repuestos del Inventario -->
+                    <div class="relative">
+                        <label class="block text-[11px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-1">📦 Añadir Repuesto del Inventario</label>
+                        <div class="relative">
+                            <input type="text" wire:model.live.debounce.150ms="search_inventory"
+                                class="w-full text-xs p-2.5 rounded-xl border border-teal-200 dark:border-teal-900/60 bg-teal-50/40 dark:bg-slate-900 text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                placeholder="Buscar repuesto en stock..." autocomplete="off">
+                        </div>
+
+                        @if(count($found_inventory) > 0)
+                            <div class="absolute z-20 w-full mt-1 overflow-hidden rounded-xl shadow-xl bg-white dark:bg-slate-900 border border-teal-200 dark:border-teal-900">
+                                <div class="px-3 py-1.5 bg-teal-50 dark:bg-teal-950/60 flex items-center justify-between border-b border-teal-100 dark:border-teal-900 text-[10px] text-teal-600 dark:text-teal-400 font-bold">
+                                    <span>Stock de Inventario</span>
+                                    <span>Clic para añadir</span>
+                                </div>
+                                <ul class="divide-y divide-slate-100 dark:divide-slate-800 max-h-48 overflow-y-auto">
+                                    @foreach($found_inventory as $fi)
+                                        <li wire:click="addInventoryItem({{ $fi['id'] }})" class="p-2.5 hover:bg-teal-50/60 dark:hover:bg-teal-950/40 cursor-pointer flex items-center justify-between transition">
+                                            <div>
+                                                <div class="font-bold text-xs text-slate-800 dark:text-slate-200">{{ $fi['name'] }}</div>
+                                                <div class="text-[10px] text-slate-400">Stock: {{ $fi['stock'] }} uds</div>
+                                            </div>
+                                            <span class="font-mono font-bold text-xs text-emerald-600 dark:text-emerald-400">${{ number_format($fi['sale_price'] ?? 0, 0, ',', '.') }}</span>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                    </div>
                 </div>
 
                 <!-- Tabla de Ítems -->
