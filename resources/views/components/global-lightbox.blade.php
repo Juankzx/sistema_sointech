@@ -32,15 +32,14 @@
     <!-- Centered Main Image Viewport with Nav Arrows -->
     <div 
         id="gl-viewport" 
-        class="relative flex-1 w-full flex flex-col items-center justify-center overflow-hidden mx-auto cursor-grab active:cursor-grabbing"
-        style="max-width: 1280px;"
+        class="relative flex-1 w-full flex items-center justify-center overflow-hidden mx-auto my-auto p-2 sm:p-4 cursor-grab active:cursor-grabbing max-w-6xl"
     >
         <!-- Desktop Previous Button -->
         <button 
             id="gl-btn-prev"
             type="button"
             onclick="glPrevImage(event)" 
-            class="absolute left-3 sm:left-6 z-30 w-11 h-11 rounded-2xl bg-black/50 border border-white/10 text-white/80 hover:text-white hover:bg-blue-600/80 hover:border-blue-500/60 active:scale-90 transition-all duration-200 hidden md:flex items-center justify-center shadow-2xl backdrop-blur-sm"
+            class="absolute left-2 sm:left-4 lg:left-8 z-30 w-11 h-11 rounded-2xl bg-gray-900/80 border border-gray-700/80 text-white/80 hover:text-white hover:bg-blue-600 hover:border-blue-500 active:scale-90 transition-all duration-200 hidden md:flex items-center justify-center shadow-2xl backdrop-blur-md"
             aria-label="Foto anterior"
         >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -49,14 +48,13 @@
         </button>
 
         <!-- Image Container for Scale & Pan Transforms -->
-        <div id="gl-img-wrapper" class="relative w-full h-full flex items-center justify-center transition-transform duration-150 ease-out">
+        <div id="gl-img-wrapper" class="relative max-w-full max-h-full flex items-center justify-center transition-transform duration-150 ease-out">
             <img 
                 id="global-lightbox-img" 
                 src="" 
                 alt="Imagen ampliada"
-                class="max-w-full max-h-[65vh] sm:max-h-[70vh] lg:max-h-[78vh] object-contain rounded-xl border border-white/5 shadow-[0_30px_80px_-15px_rgba(0,0,0,0.9)] select-none"
+                class="max-w-[88vw] md:max-w-[78vw] lg:max-w-[70vw] max-h-[56vh] sm:max-h-[62vh] md:max-h-[66vh] w-auto h-auto object-contain rounded-2xl border border-white/10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] select-none"
                 draggable="false"
-                style="display: block; margin: auto;"
             />
         </div>
 
@@ -65,7 +63,7 @@
             id="gl-btn-next"
             type="button"
             onclick="glNextImage(event)" 
-            class="absolute right-3 sm:right-6 z-30 w-11 h-11 rounded-2xl bg-black/50 border border-white/10 text-white/80 hover:text-white hover:bg-blue-600/80 hover:border-blue-500/60 active:scale-90 transition-all duration-200 hidden md:flex items-center justify-center shadow-2xl backdrop-blur-sm"
+            class="absolute right-2 sm:right-4 lg:right-8 z-30 w-11 h-11 rounded-2xl bg-gray-900/80 border border-gray-700/80 text-white/80 hover:text-white hover:bg-blue-600 hover:border-blue-500 active:scale-90 transition-all duration-200 hidden md:flex items-center justify-center shadow-2xl backdrop-blur-md"
             aria-label="Siguiente foto"
         >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,7 +73,7 @@
     </div>
 
     <!-- Minimalist Bottom Title & Description Overlay -->
-    <div id="gl-info-card" class="w-full max-w-2xl mx-auto shrink-0 z-20 transition-opacity duration-200 hidden pb-2">
+    <div id="gl-info-card" class="w-full max-w-xl mx-auto shrink-0 z-20 transition-opacity duration-200 hidden pb-2">
         <div class="p-3 sm:p-4 rounded-2xl bg-gray-950/90 border border-gray-700/50 backdrop-blur-xl shadow-2xl flex flex-col items-center text-center gap-1.5">
             <h4 id="gl-info-title" class="text-xs sm:text-sm font-black text-white leading-tight"></h4>
             <p id="gl-info-desc" class="text-[11px] sm:text-xs text-gray-300 font-medium leading-relaxed max-h-20 overflow-y-auto custom-scrollbar"></p>
