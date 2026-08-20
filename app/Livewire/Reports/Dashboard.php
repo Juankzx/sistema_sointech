@@ -126,6 +126,22 @@ class Dashboard extends Component
             ->take(5)
             ->get();
 
+        // Top Servicios (Mano de Obra) más solicitados y sus KPIs
+        $topServices = \App\Models\WorkOrderService::select(
+                'name',
+                DB::raw('COUNT(*) as total_qty'),
+                DB::raw('SUM(price) as total_amount'),
+                DB::raw('AVG(price) as avg_price')
+            )
+            ->whereBetween('created_at', [$start, $end])
+            ->groupBy('name')
+            ->orderByDesc('total_qty')
+            ->take(6)
+            ->get();
+
+        $servicesTotalRevenue = \App\Models\WorkOrderService::whereBetween('created_at', [$start, $end])->sum('price');
+        $servicesTotalCount = \App\Models\WorkOrderService::whereBetween('created_at', [$start, $end])->count();
+
         // 3. Egresos / Compras & Cálculos de IVA Crédito
         $expenses = Expense::whereBetween('date', [$start->format('Y-m-d'), $end->format('Y-m-d')])->latest()->get();
         $totalExpenses = $expenses->sum('total_amount');
@@ -206,6 +222,9 @@ class Dashboard extends Component
             'salesNetTotal' => $salesNetTotal,
             'salesTaxTotal' => $salesTaxTotal,
             'topProducts' => $topProducts,
+            'topServices' => $topServices,
+            'servicesTotalRevenue' => $servicesTotalRevenue,
+            'servicesTotalCount' => $servicesTotalCount,
             
             'expenses' => $expenses,
             'totalExpenses' => $totalExpenses,

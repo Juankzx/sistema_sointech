@@ -60,6 +60,11 @@ class WorkOrder extends Model
         return $this->hasMany(Payment::class);
     }
 
+    public function services()
+    {
+        return $this->hasMany(WorkOrderService::class);
+    }
+
     /**
      * Etiqueta formateada con ícono para el Tipo de Equipo.
      */

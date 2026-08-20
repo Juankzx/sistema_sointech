@@ -69,7 +69,7 @@ class ListWorkOrders extends Component
 
     public function openWorkOrderDetails($id, $targetTab = 'details')
     {
-        $order = WorkOrder::with(['client', 'parts', 'images', 'logs', 'payments.user', 'technician', 'receivedBy'])->findOrFail($id);
+        $order = WorkOrder::with(['client', 'parts', 'services', 'images', 'logs', 'payments.user', 'technician', 'receivedBy'])->findOrFail($id);
         
         // 1. Bitacora / Log properties initialization
         $this->loggingOrderId = $order->id;
@@ -137,12 +137,26 @@ class ListWorkOrders extends Component
             ];
         }
 
+        // Cargar servicios asociados previamente
+        $this->editingSelectedServices = [];
+        foreach ($order->services as $srv) {
+            $this->editingSelectedServices[] = [
+                'service_id' => $srv->service_id,
+                'name' => $srv->name,
+                'price' => (float)$srv->price,
+            ];
+        }
+        $this->editingSearchService = '';
+        $this->editingFoundServices = [];
+        $this->customServiceName = '';
+        $this->customServicePrice = '';
+
         $this->editingSearchPart = '';
         $this->editingFoundParts = [];
         
         $this->loadCurrentImages();
         
-        $this->activeTab = in_array($targetTab, ['details', 'logs', 'share', 'payments']) ? $targetTab : 'details';
+        $this->activeTab = in_array($targetTab, ['details', 'logs', 'gallery', 'share', 'payments']) ? $targetTab : 'details';
         $this->isManaging = true;
     }
 
@@ -458,6 +472,70 @@ class ListWorkOrders extends Component
     public $editingFoundParts = [];
     public $forceEditBudget = false;
 
+    // Service Selection Properties
+    public $editingSelectedServices = []; // array of ['service_id', 'name', 'price']
+    public $editingSearchService = '';
+    public $editingFoundServices = [];
+    public $customServiceName = '';
+    public $customServicePrice = '';
+
+    public function updatedEditingSearchService()
+    {
+        if (strlen($this->editingSearchService) >= 1) {
+            $this->editingFoundServices = \App\Models\Service::where('is_active', true)
+                ->where(function($q) {
+                    $q->where('name', 'like', '%' . $this->editingSearchService . '%')
+                      ->orWhere('category', 'like', '%' . $this->editingSearchService . '%');
+                })
+                ->take(6)->get();
+        } else {
+            $this->editingFoundServices = [];
+        }
+    }
+
+    public function addEditingService($serviceId)
+    {
+        $service = \App\Models\Service::find($serviceId);
+        if ($service) {
+            $this->editingSelectedServices[] = [
+                'service_id' => $service->id,
+                'name' => $service->name,
+                'price' => (float)$service->default_price,
+            ];
+            $this->editingSearchService = '';
+            $this->editingFoundServices = [];
+            $this->recalculateLaborCost();
+        }
+    }
+
+    public function addCustomService()
+    {
+        if (!empty(trim($this->customServiceName)) && is_numeric($this->customServicePrice)) {
+            $this->editingSelectedServices[] = [
+                'service_id' => null,
+                'name' => trim($this->customServiceName),
+                'price' => (float)$this->customServicePrice,
+            ];
+            $this->customServiceName = '';
+            $this->customServicePrice = '';
+            $this->recalculateLaborCost();
+        }
+    }
+
+    public function removeEditingService($index)
+    {
+        unset($this->editingSelectedServices[$index]);
+        $this->editingSelectedServices = array_values($this->editingSelectedServices);
+        $this->recalculateLaborCost();
+    }
+
+    public function recalculateLaborCost()
+    {
+        if (count($this->editingSelectedServices) > 0) {
+            $this->editingLaborCost = (float)collect($this->editingSelectedServices)->sum('price');
+        }
+    }
+
     public function unlockBudgetEditing()
     {
         $this->forceEditBudget = true;
@@ -551,7 +629,17 @@ class ListWorkOrders extends Component
         });
         $totalBudget = (float)$this->editingLaborCost + $partsCost;
 
-        // 3. Actualizar la orden de trabajo (preservando Aprobado, En Reparación, etc.)
+        // 3. Guardar servicios asignados a la orden
+        $order->services()->delete();
+        foreach ($this->editingSelectedServices as $srv) {
+            $order->services()->create([
+                'service_id' => $srv['service_id'],
+                'name' => $srv['name'],
+                'price' => (float)$srv['price'],
+            ]);
+        }
+
+        // 4. Actualizar la orden de trabajo (preservando Aprobado, En Reparación, etc.)
         $newStatus = in_array($order->status, ['Aprobado', 'En Reparación', 'En Verificación', 'Listo para Entrega', 'Entregado']) 
             ? $order->status 
             : 'Presupuestado';

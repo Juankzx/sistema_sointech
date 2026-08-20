@@ -17,6 +17,9 @@
             <button @click="activeTab = 'checklist'" :class="activeTab === 'checklist' ? 'bg-blue-600 text-white shadow' : 'text-gray-400 hover:text-white'" class="px-4 py-2 rounded-xl text-xs font-bold transition duration-200">
                 ✅ Checklists
             </button>
+            <button @click="activeTab = 'services'" :class="activeTab === 'services' ? 'bg-blue-600 text-white shadow' : 'text-gray-400 hover:text-white'" class="px-4 py-2 rounded-xl text-xs font-bold transition duration-200">
+                🛠️ Servicios
+            </button>
             <button @click="activeTab = 'catalog'" :class="activeTab === 'catalog' ? 'bg-blue-600 text-white shadow' : 'text-gray-400 hover:text-white'" class="px-4 py-2 rounded-xl text-xs font-bold transition duration-200">
                 📱 Catálogo
             </button>
@@ -474,23 +477,6 @@
                                         <span class="font-bold text-[10px] text-gray-500">#{{ $dev->id }}</span>
                                         <span class="font-black text-white text-xs">{{ $dev->brand }}</span>
                                     </div>
-                                    <div class="text-xs font-semibold text-gray-300">{{ $dev->model }}</div>
-                                </div>
-                                <div>
-                                    <button type="button" wire:click="deleteDeviceFromCatalog({{ $dev->id }})" class="text-gray-500 hover:text-red-400 p-2 rounded-xl bg-gray-900/50 hover:bg-red-500/10 border border-gray-700 transition" title="Eliminar equipo">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                    </button>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-
-                    <div class="mt-6">
-                        {{ $devices->links() }}
-                    </div>
-                @else
-                    <div class="text-center py-12 text-gray-500 bg-gray-900/30 rounded-3xl border border-dashed border-gray-700">
-                        <svg class="w-10 h-10 text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                         <h4 class="text-sm font-bold text-gray-300">Catálogo Vacío</h4>
                         <p class="text-xs text-gray-500 mt-1 max-w-sm mx-auto">No se encontraron marcas o modelos registrados en esta categoría que coincidan con tu búsqueda.</p>
                     </div>

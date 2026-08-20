@@ -426,7 +426,7 @@
             <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
                 <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
-                    Top Vendidos
+                    Top Repuestos POS
                 </h3>
             </div>
 
@@ -443,6 +443,35 @@
                 </div>
                 @empty
                 <p class="text-xs text-slate-400 text-center py-6">No hay productos vendidos en este período.</p>
+                @endforelse
+            </div>
+        </div>
+
+        <!-- Top Servicios (Mano de Obra) más solicitados -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
+                <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    Top Servicios
+                </h3>
+                <span class="text-[10px] font-black text-indigo-500 bg-indigo-500/10 px-2 py-0.5 rounded-lg">
+                    ${{ number_format($servicesTotalRevenue, 0, ',', '.') }}
+                </span>
+            </div>
+
+            <div class="space-y-3">
+                @forelse($topServices as $srv)
+                <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200/60 dark:border-slate-800">
+                    <div class="truncate max-w-[170px]">
+                        <p class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">{{ $srv->name }}</p>
+                        <span class="text-[10px] text-slate-400">{{ $srv->total_qty }} realizado(s) • Prom. ${{ number_format($srv->avg_price, 0, ',', '.') }}</span>
+                    </div>
+                    <span class="text-xs font-black text-indigo-400">
+                        ${{ number_format($srv->total_amount, 0, ',', '.') }}
+                    </span>
+                </div>
+                @empty
+                <p class="text-xs text-slate-400 text-center py-6">No hay servicios catalogados en este período.</p>
                 @endforelse
             </div>
         </div>

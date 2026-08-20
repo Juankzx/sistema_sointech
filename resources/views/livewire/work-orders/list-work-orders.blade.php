@@ -1339,6 +1339,100 @@
                                                  </div>
                                              @endif
 
+                                             <!-- PASO 3.5: Catálogo y Selección de Servicios -->
+                                             @if(!$isLocked)
+                                             <div class="space-y-2 p-4 rounded-2xl relative" style="background:#111827; border:1.5px solid #1f2937;">
+                                                 <label class="block text-xs font-black text-indigo-400 uppercase tracking-widest flex items-center gap-1.5 mb-1">
+                                                     <span class="w-5 h-5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 flex items-center justify-center text-[10px]">3.5</span>
+                                                     Añadir Servicios del Catálogo (Mano de Obra)
+                                                 </label>
+                                                 
+                                                 <!-- Buscador Predictivo de Servicios -->
+                                                 <div class="relative">
+                                                     <input 
+                                                         type="text" 
+                                                         wire:model.live.debounce.250ms="editingSearchService" 
+                                                         placeholder="🔍 Buscar servicio (ej: Mantenimiento, Cambio Pantalla, Reballing)..." 
+                                                         class="w-full rounded-xl py-2.5 pl-9 pr-3 text-white placeholder-gray-500 focus:outline-none transition text-xs"
+                                                         style="background:#0d1117; border:1px solid #1f2937;"
+                                                     >
+                                                     <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                                     </span>
+                                                     
+                                                     <!-- Desplegable Predictivo -->
+                                                     @if(count($editingFoundServices) > 0)
+                                                         <div class="absolute z-30 w-full left-0 right-0 mt-1 overflow-hidden rounded-xl shadow-2xl bg-gray-900 border border-gray-800">
+                                                             <div class="px-3 py-1.5 flex items-center justify-between border-b border-gray-800 text-[10px] font-bold text-gray-400 uppercase">
+                                                                 <span>{{ count($editingFoundServices) }} servicio(s) encontrado(s)</span>
+                                                                 <span class="text-indigo-400">Clic para añadir</span>
+                                                             </div>
+                                                             <ul class="max-h-48 overflow-y-auto custom-scrollbar divide-y divide-gray-800">
+                                                                 @foreach($editingFoundServices as $srv)
+                                                                     <li wire:click="addEditingService({{ $srv->id }})" class="p-2.5 cursor-pointer hover:bg-indigo-950/40 transition flex items-center justify-between group text-xs">
+                                                                         <div>
+                                                                             <span class="font-bold text-white block">{{ $srv->name }}</span>
+                                                                             <span class="text-[10px] text-gray-400">{{ $srv->category_label }}</span>
+                                                                         </div>
+                                                                         <div class="flex items-center gap-2">
+                                                                             <span class="font-mono font-bold text-emerald-400 text-xs">${{ number_format($srv->default_price, 0, ',', '.') }}</span>
+                                                                             <span class="text-[9.5px] font-bold px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 opacity-0 group-hover:opacity-100 transition">+ Añadir</span>
+                                                                         </div>
+                                                                     </li>
+                                                                 @endforeach
+                                                             </ul>
+                                                         </div>
+                                                     @endif
+                                                 </div>
+
+                                                 <!-- Opción de Inserción Manual / Servicio Personalizado -->
+                                                 <div x-data="{ showCustom: false }" class="mt-2">
+                                                     <button type="button" @click="showCustom = !showCustom" class="text-[11px] text-indigo-400 hover:text-indigo-300 font-bold flex items-center gap-1 cursor-pointer">
+                                                         <span>+ ¿Servicio personalizado no catalogado?</span>
+                                                     </button>
+                                                     <div x-show="showCustom" x-cloak class="mt-2 grid grid-cols-1 sm:grid-cols-12 gap-2 bg-gray-900/60 p-3 rounded-xl border border-gray-800">
+                                                         <div class="sm:col-span-6">
+                                                             <input type="text" wire:model="customServiceName" placeholder="Nombre del servicio libre..." class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2 text-xs text-white">
+                                                         </div>
+                                                         <div class="sm:col-span-4">
+                                                             <input type="number" wire:model="customServicePrice" placeholder="Precio ($)" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2 text-xs text-white font-bold">
+                                                         </div>
+                                                         <div class="sm:col-span-2">
+                                                             <button type="button" wire:click="addCustomService" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 rounded-lg text-xs transition cursor-pointer">
+                                                                 + Añadir
+                                                             </button>
+                                                         </div>
+                                                     </div>
+                                                 </div>
+
+                                                 <!-- Servicios Cargados a la Orden -->
+                                                 @if(count($editingSelectedServices) > 0)
+                                                     <div class="mt-3 bg-gray-900/60 p-3.5 rounded-xl border border-gray-800 space-y-2">
+                                                         <h5 class="text-[10px] font-black text-indigo-300 uppercase tracking-widest border-b border-gray-800 pb-1.5">Servicios de Mano de Obra Cargados</h5>
+                                                         <div class="space-y-2 max-h-48 overflow-y-auto pr-1 custom-scrollbar">
+                                                             @foreach($editingSelectedServices as $index => $srv)
+                                                                 <div class="flex items-center justify-between text-xs py-1.5 border-b border-gray-800/60 last:border-0 gap-3">
+                                                                     <span class="text-white font-semibold flex-1 truncate">{{ $srv['name'] }}</span>
+                                                                     <div class="flex items-center gap-2">
+                                                                         <span class="text-[10px] text-gray-500">Precio:</span>
+                                                                         <input 
+                                                                             type="number" 
+                                                                             wire:model.live="editingSelectedServices.{{ $index }}.price" 
+                                                                             wire:change="recalculateLaborCost"
+                                                                             class="w-24 bg-gray-950 border border-gray-700 rounded-lg py-1 px-2 text-xs font-bold text-emerald-400 text-right focus:border-indigo-500 focus:outline-none"
+                                                                         >
+                                                                         <button type="button" wire:click="removeEditingService({{ $index }})" class="text-red-400 hover:text-red-300 p-1 hover:bg-red-950/30 rounded-lg cursor-pointer">
+                                                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                                         </button>
+                                                                     </div>
+                                                                 </div>
+                                                             @endforeach
+                                                         </div>
+                                                     </div>
+                                                 @endif
+                                             </div>
+                                             @endif
+
                                             <!-- PASO 4: Costs Editor Grid -->
 
                                             <div class="p-4 rounded-2xl space-y-3" style="background:#111827; border:1.5px solid #1f2937;">
