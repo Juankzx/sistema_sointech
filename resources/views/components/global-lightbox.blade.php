@@ -2,7 +2,7 @@
 <div 
     id="global-lightbox" 
     class="fixed inset-0 hidden flex-col items-center justify-between p-3 sm:p-5 select-none transition-opacity duration-300 opacity-0"
-    style="z-index: 99999999 !important; background: rgba(4, 7, 13, 0.98); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); touch-action: none; overscroll-behavior: contain;"
+    style="z-index: 99999999 !important; background: rgba(4, 7, 13, 0.97); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); touch-action: none; overscroll-behavior: contain;"
 >
     <!-- Top Minimalist Header Bar -->
     <div class="w-full flex items-center justify-between gap-3 shrink-0 z-20 max-w-5xl mx-auto pt-1">
@@ -32,14 +32,15 @@
     <!-- Centered Main Image Viewport with Nav Arrows -->
     <div 
         id="gl-viewport" 
-        class="relative flex-1 w-full flex flex-col items-center justify-center overflow-hidden my-auto cursor-grab active:cursor-grabbing max-w-5xl"
+        class="relative flex-1 w-full flex flex-col items-center justify-center overflow-hidden mx-auto cursor-grab active:cursor-grabbing"
+        style="max-width: 1280px;"
     >
-        <!-- Desktop Previous Button (Ultra-subtle, hidden on mobile touch screens) -->
+        <!-- Desktop Previous Button -->
         <button 
             id="gl-btn-prev"
             type="button"
             onclick="glPrevImage(event)" 
-            class="absolute left-2 sm:left-4 z-30 w-9 h-9 rounded-full bg-gray-900/40 border border-gray-700/40 text-white/70 hover:text-white hover:bg-blue-600 hover:border-blue-500 active:scale-90 transition-all duration-200 hidden md:flex items-center justify-center shadow-xl backdrop-blur-sm"
+            class="absolute left-3 sm:left-6 z-30 w-11 h-11 rounded-2xl bg-black/50 border border-white/10 text-white/80 hover:text-white hover:bg-blue-600/80 hover:border-blue-500/60 active:scale-90 transition-all duration-200 hidden md:flex items-center justify-center shadow-2xl backdrop-blur-sm"
             aria-label="Foto anterior"
         >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -48,22 +49,23 @@
         </button>
 
         <!-- Image Container for Scale & Pan Transforms -->
-        <div id="gl-img-wrapper" class="relative max-w-full max-h-full flex items-center justify-center transition-transform duration-150 ease-out">
+        <div id="gl-img-wrapper" class="relative w-full h-full flex items-center justify-center transition-transform duration-150 ease-out">
             <img 
                 id="global-lightbox-img" 
                 src="" 
                 alt="Imagen ampliada"
-                class="max-w-full max-h-[70vh] sm:max-h-[74vh] object-contain rounded-2xl border border-gray-800/80 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] select-none"
+                class="max-w-full max-h-[65vh] sm:max-h-[70vh] lg:max-h-[78vh] object-contain rounded-xl border border-white/5 shadow-[0_30px_80px_-15px_rgba(0,0,0,0.9)] select-none"
                 draggable="false"
+                style="display: block; margin: auto;"
             />
         </div>
 
-        <!-- Desktop Next Button (Ultra-subtle, hidden on mobile touch screens) -->
+        <!-- Desktop Next Button -->
         <button 
             id="gl-btn-next"
             type="button"
             onclick="glNextImage(event)" 
-            class="absolute right-2 sm:right-4 z-30 w-9 h-9 rounded-full bg-gray-900/40 border border-gray-700/40 text-white/70 hover:text-white hover:bg-blue-600 hover:border-blue-500 active:scale-90 transition-all duration-200 hidden md:flex items-center justify-center shadow-xl backdrop-blur-sm"
+            class="absolute right-3 sm:right-6 z-30 w-11 h-11 rounded-2xl bg-black/50 border border-white/10 text-white/80 hover:text-white hover:bg-blue-600/80 hover:border-blue-500/60 active:scale-90 transition-all duration-200 hidden md:flex items-center justify-center shadow-2xl backdrop-blur-sm"
             aria-label="Siguiente foto"
         >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,8 +75,8 @@
     </div>
 
     <!-- Minimalist Bottom Title & Description Overlay -->
-    <div id="gl-info-card" class="w-full max-w-xl mx-auto shrink-0 z-20 transition-opacity duration-200 hidden pb-2">
-        <div class="p-3 sm:p-4 rounded-2xl bg-gray-950/85 border border-gray-800/80 backdrop-blur-md shadow-2xl flex flex-col items-center text-center gap-1">
+    <div id="gl-info-card" class="w-full max-w-2xl mx-auto shrink-0 z-20 transition-opacity duration-200 hidden pb-2">
+        <div class="p-3 sm:p-4 rounded-2xl bg-gray-950/90 border border-gray-700/50 backdrop-blur-xl shadow-2xl flex flex-col items-center text-center gap-1.5">
             <h4 id="gl-info-title" class="text-xs sm:text-sm font-black text-white leading-tight"></h4>
             <p id="gl-info-desc" class="text-[11px] sm:text-xs text-gray-300 font-medium leading-relaxed max-h-20 overflow-y-auto custom-scrollbar"></p>
         </div>
@@ -135,6 +137,7 @@
         lb.style.zIndex = '99999999';
 
         lb.classList.remove('hidden');
+        lb.style.display = 'flex'; // Force flex layout for proper centering on desktop
         // Trigger smooth fade in
         requestAnimationFrame(() => {
             lb.classList.remove('opacity-0');
@@ -162,6 +165,7 @@
         
         setTimeout(() => {
             lb.classList.add('hidden');
+            lb.style.display = ''; // Reset display
             document.getElementById('global-lightbox-img').src = '';
             document.body.style.overflow = '';
             document.documentElement.style.overflow = '';
