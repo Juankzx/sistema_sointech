@@ -270,12 +270,12 @@
                             @foreach($items as $index => $item)
                                 <tr class="hover:bg-gray-800/40 transition">
                                     <td class="p-2">
-                                        <input type="text" wire:model="items.{{ $index }}.description" placeholder="Descripción del ítem..." class="w-full text-xs p-2 rounded-lg border border-gray-800 bg-gray-950 text-white focus:outline-none focus:border-gray-600">
+                                        <input type="text" wire:model="items.{{ $index }}.description" placeholder="Descripción del servicio o producto..." class="w-full text-xs py-1.5 px-3 rounded-lg border border-gray-800 bg-gray-950 text-white font-medium focus:outline-none focus:border-gray-600">
                                     </td>
                                     <td class="p-2">
-                                        <select wire:model.live="items.{{ $index }}.type" class="w-full text-xs p-2 rounded-lg border border-gray-800 bg-gray-950 font-bold text-indigo-400 focus:outline-none cursor-pointer">
-                                            <option value="servicio">Servicio (M. Obra)</option>
-                                            <option value="producto">Producto (Repuesto)</option>
+                                        <select wire:model.live="items.{{ $index }}.type" class="w-full text-xs py-1.5 px-2 rounded-lg border border-gray-800 bg-gray-950 font-bold focus:outline-none cursor-pointer {{ ($item['type'] ?? 'servicio') === 'servicio' ? 'text-indigo-400' : 'text-teal-400' }}">
+                                            <option value="servicio">🛠️ Servicio</option>
+                                            <option value="producto">📦 Producto</option>
                                         </select>
                                     </td>
                                     <td class="p-2 text-center">
