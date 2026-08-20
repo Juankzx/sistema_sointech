@@ -87,6 +87,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/clientes', ListClients::class)->name('clients.index');
         Route::get('/proveedores', \App\Livewire\Finance\ManageSuppliers::class)->name('suppliers.index');
         Route::get('/inventario', ManageInventory::class)->name('inventory.index');
+        Route::get('/servicios', \App\Livewire\Services\ManageServices::class)->name('services.index');
         Route::get('/configuracion', ManageSettings::class)->name('settings.index');
         Route::get('/reportes', \App\Livewire\Reports\Dashboard::class)->name('reports.index');
         Route::get('/reportes/pdf', [ReportController::class, 'downloadPdf'])->name('reports.pdf');

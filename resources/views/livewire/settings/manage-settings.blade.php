@@ -17,9 +17,6 @@
             <button @click="activeTab = 'checklist'" :class="activeTab === 'checklist' ? 'bg-blue-600 text-white shadow' : 'text-gray-400 hover:text-white'" class="px-4 py-2 rounded-xl text-xs font-bold transition duration-200">
                 ✅ Checklists
             </button>
-            <button @click="activeTab = 'services'" :class="activeTab === 'services' ? 'bg-blue-600 text-white shadow' : 'text-gray-400 hover:text-white'" class="px-4 py-2 rounded-xl text-xs font-bold transition duration-200">
-                🛠️ Servicios
-            </button>
             <button @click="activeTab = 'catalog'" :class="activeTab === 'catalog' ? 'bg-blue-600 text-white shadow' : 'text-gray-400 hover:text-white'" class="px-4 py-2 rounded-xl text-xs font-bold transition duration-200">
                 📱 Catálogo
             </button>
