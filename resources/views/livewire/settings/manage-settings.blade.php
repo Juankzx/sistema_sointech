@@ -376,11 +376,14 @@
                 <div>
                     <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Categoría</label>
                     <select wire:model.live="catalog_category" class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="smartphone">📱 Smartphone</option>
-                        <option value="notebook">💻 Notebook / PC</option>
-                        <option value="console">🎮 Consola de Videojuego</option>
-                        <option value="tablet">📟 Tablet</option>
-                        <option value="other">⚙️ Otro Tipo</option>
+                        <option value="smartphone">📱 Smartphone / Celular</option>
+                        <option value="smartwatch">⌚ Smartwatch / Reloj Inteligente</option>
+                        <option value="allinone">🖥️ PC All-in-One / iMac</option>
+                        <option value="notebook">💻 Notebook / Laptop</option>
+                        <option value="desktop">🖥️ PC de Escritorio (Torre)</option>
+                        <option value="tablet">📟 Tablet / iPad</option>
+                        <option value="console">🎮 Consola de Videojuegos</option>
+                        <option value="other">⚙️ Otro Tipo / Especializado</option>
                     </select>
                 </div>
 
@@ -409,7 +412,18 @@
                 <div>
                     <h3 class="text-base font-bold text-white flex items-center gap-2">
                         <span>Catálogo:</span>
-                        <span class="text-blue-400 font-black capitalize">{{ $catalog_category }}s</span>
+                        <span class="text-blue-400 font-black">
+                            @switch($catalog_category)
+                                @case('smartphone') Smartphones / Celulares @break
+                                @case('smartwatch') Smartwatches / Relojes @break
+                                @case('allinone') All-in-One / iMac @break
+                                @case('notebook') Notebooks / Laptops @break
+                                @case('desktop') PCs de Escritorio @break
+                                @case('tablet') Tablets / iPads @break
+                                @case('console') Consolas de Videojuegos @break
+                                @default {{ ucfirst($catalog_category) }}s
+                            @endswitch
+                        </span>
                     </h3>
                 </div>
                 <div class="relative w-full md:w-64">
