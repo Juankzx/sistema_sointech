@@ -32,17 +32,17 @@
     <!-- Centered Main Image Viewport with Nav Arrows -->
     <div 
         id="gl-viewport" 
-        class="relative flex-1 w-full flex items-center justify-center overflow-hidden mx-auto my-auto p-2 sm:p-4 cursor-grab active:cursor-grabbing max-w-6xl"
+        class="relative flex-1 w-full flex items-center justify-center overflow-hidden mx-auto my-auto p-2 sm:p-4 cursor-grab active:cursor-grabbing"
     >
-        <!-- Desktop Previous Button -->
+        <!-- Desktop Previous Button (Anchored to far left of viewport) -->
         <button 
             id="gl-btn-prev"
             type="button"
             onclick="glPrevImage(event)" 
-            class="absolute left-2 sm:left-4 lg:left-8 z-30 w-11 h-11 rounded-2xl bg-gray-900/80 border border-gray-700/80 text-white/80 hover:text-white hover:bg-blue-600 hover:border-blue-500 active:scale-90 transition-all duration-200 hidden md:flex items-center justify-center shadow-2xl backdrop-blur-md"
+            class="fixed left-3 md:left-8 top-1/2 -translate-y-1/2 z-40 w-12 h-12 rounded-2xl bg-gray-900/90 border border-gray-700/90 text-white hover:text-white hover:bg-blue-600 hover:border-blue-500 active:scale-90 transition-all duration-200 hidden md:flex items-center justify-center shadow-2xl backdrop-blur-md cursor-pointer"
             aria-label="Foto anterior"
         >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path>
             </svg>
         </button>
@@ -53,20 +53,21 @@
                 id="global-lightbox-img" 
                 src="" 
                 alt="Imagen ampliada"
-                class="max-w-[88vw] md:max-w-[78vw] lg:max-w-[70vw] max-h-[56vh] sm:max-h-[62vh] md:max-h-[66vh] w-auto h-auto object-contain rounded-2xl border border-white/10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] select-none"
+                class="w-auto h-auto object-contain rounded-2xl border border-white/10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] select-none"
+                style="max-width: min(78vw, 950px); max-height: min(64vh, 620px); object-fit: contain;"
                 draggable="false"
             />
         </div>
 
-        <!-- Desktop Next Button -->
+        <!-- Desktop Next Button (Anchored to far right of viewport) -->
         <button 
             id="gl-btn-next"
             type="button"
             onclick="glNextImage(event)" 
-            class="absolute right-2 sm:right-4 lg:right-8 z-30 w-11 h-11 rounded-2xl bg-gray-900/80 border border-gray-700/80 text-white/80 hover:text-white hover:bg-blue-600 hover:border-blue-500 active:scale-90 transition-all duration-200 hidden md:flex items-center justify-center shadow-2xl backdrop-blur-md"
+            class="fixed right-3 md:right-8 top-1/2 -translate-y-1/2 z-40 w-12 h-12 rounded-2xl bg-gray-900/90 border border-gray-700/90 text-white hover:text-white hover:bg-blue-600 hover:border-blue-500 active:scale-90 transition-all duration-200 hidden md:flex items-center justify-center shadow-2xl backdrop-blur-md cursor-pointer"
             aria-label="Siguiente foto"
         >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
             </svg>
         </button>
