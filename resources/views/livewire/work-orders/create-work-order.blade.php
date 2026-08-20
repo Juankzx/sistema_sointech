@@ -365,9 +365,10 @@
                             class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             required>
                             <option value="smartphone">📱 Smartphone / Celular</option>
+                            <option value="smartwatch">⌚ Smartwatch / Reloj Inteligente</option>
+                            <option value="allinone">🖥️ PC All-in-One / iMac</option>
                             <option value="notebook">💻 Notebook / Laptop</option>
                             <option value="desktop">🖥️ PC de Escritorio (Torre)</option>
-                            <option value="imac">🍎 iMac / Mac All-in-One</option>
                             <option value="tablet">📟 Tablet / iPad</option>
                             <option value="console">🎮 Consola de Videojuegos</option>
                             <option value="other">⚙️ Otro Equipo / Especializado</option>
@@ -380,19 +381,36 @@
                             Modelo *</label>
                         <input type="text" wire:model.live="brand_model"
                             class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="Ej: iPhone 13 Pro" autocomplete="off" required>
+                            placeholder="Ej: iPhone 15 Pro, Galaxy Watch 6, iMac 24" autocomplete="off" required>
 
                         <!-- Sugerencias del Catálogo Predictivo -->
                         @if(count($foundDevices) > 0)
                             <div
-                                class="absolute z-10 w-full mt-1 bg-gray-800 border border-gray-700 rounded-2xl shadow-xl overflow-hidden">
+                                class="absolute z-20 w-full mt-1.5 bg-gray-900 border border-gray-750 rounded-2xl shadow-2xl overflow-hidden backdrop-blur-xl">
+                                <div class="px-3.5 py-1.5 bg-gray-800/80 border-b border-gray-700 flex items-center justify-between text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                                    <span>Catálogo Predictivo</span>
+                                    <span>Sugerencias en tiempo real</span>
+                                </div>
                                 <ul>
                                     @foreach($foundDevices as $device)
-                                        <li wire:click="selectDevice('{{ $device->brand }}', '{{ $device->model }}')"
-                                            class="p-3 hover:bg-gray-750 cursor-pointer border-b border-gray-700/60 last:border-0 flex items-center justify-between text-xs transition">
-                                            <span class="font-bold text-white">{{ $device->brand }} {{ $device->model }}</span>
-                                            <span
-                                                class="text-[9px] bg-gray-900/60 text-gray-400 px-2 py-0.5 rounded-full">Sugerido</span>
+                                        <li wire:click="selectDevice('{{ addslashes($device->brand) }}', '{{ addslashes($device->model) }}', '{{ $device->device_type }}')"
+                                            class="px-4 py-3 hover:bg-gray-800 cursor-pointer border-b border-gray-800 last:border-0 flex items-center justify-between text-xs transition duration-150 group">
+                                            <div class="flex items-center gap-2">
+                                                <span class="font-black text-white group-hover:text-blue-400 transition">{{ $device->brand }}</span>
+                                                <span class="font-semibold text-gray-300">{{ $device->model }}</span>
+                                            </div>
+                                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border transition {{ $device->device_type === $device_type ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'bg-blue-500/10 text-blue-400 border-blue-500/30' }}">
+                                                @switch($device->device_type)
+                                                    @case('smartphone') 📱 Smartphone @break
+                                                    @case('smartwatch') ⌚ Reloj @break
+                                                    @case('allinone') 🖥️ All-in-One @break
+                                                    @case('notebook') 💻 Notebook @break
+                                                    @case('desktop') 🖥️ PC @break
+                                                    @case('tablet') 📟 Tablet @break
+                                                    @case('console') 🎮 Consola @break
+                                                    @default ⚙️ {{ ucfirst($device->device_type) }}
+                                                @endswitch
+                                            </span>
                                         </li>
                                     @endforeach
                                 </ul>

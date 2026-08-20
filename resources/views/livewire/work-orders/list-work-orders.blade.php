@@ -1840,6 +1840,25 @@
                                         <span class="text-xs text-gray-500">Manejo de abonos y saldos</span>
                                     </div>
                                     
+                                     @php
+                                         $hasOpenCashRegister = \App\Models\CashRegister::where('status', 'open')
+                                             ->whereDate('opened_at', \Carbon\Carbon::today())
+                                             ->exists();
+                                     @endphp
+                                     
+                                     @if(!$hasOpenCashRegister)
+                                         <div class="bg-amber-950/80 border border-amber-500/80 text-amber-200 p-4 rounded-xl text-xs space-y-2">
+                                             <div class="font-bold flex items-center gap-2 text-amber-300">
+                                                 <svg class="w-5 h-5 text-amber-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                                                 <span>⚠️ Caja Diaria Cerrada</span>
+                                             </div>
+                                             <p class="text-gray-300">Para poder registrar cobros de saldos o abonos a esta orden, primero debes abrir la caja del día.</p>
+                                             <a href="{{ route('cash.registers') }}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-lg text-xs transition">
+                                                 🔑 Ir a Apertura de Caja
+                                             </a>
+                                         </div>
+                                     @endif
+                                    
                                     @if (session()->has('error'))
                                         <div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-xl relative" role="alert">
                                             <span class="block sm:inline font-bold text-xs">{{ session('error') }}</span>

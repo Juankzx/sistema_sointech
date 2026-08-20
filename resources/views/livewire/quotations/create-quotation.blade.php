@@ -103,9 +103,10 @@
                     <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Tipo de Equipo</label>
                     <select wire:model.live="device_type" class="w-full text-xs p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white outline-none">
                         <option value="smartphone">📱 Smartphone / Celular</option>
+                        <option value="smartwatch">⌚ Smartwatch / Reloj Inteligente</option>
+                        <option value="allinone">🖥️ PC All-in-One / iMac</option>
                         <option value="notebook">💻 Notebook / Laptop</option>
                         <option value="desktop">🖥️ PC de Escritorio (Torre)</option>
-                        <option value="imac">🍎 iMac / Mac All-in-One</option>
                         <option value="tablet">📟 Tablet / iPad</option>
                         <option value="console">🎮 Consola de Videojuegos</option>
                         <option value="other">⚙️ Otro Equipo / Servicio</option>
@@ -115,14 +116,25 @@
                 <!-- Marca y Modelo con Predictivo -->
                 <div class="relative">
                     <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Marca y Modelo / Servicio <span class="text-red-500">*</span></label>
-                    <input type="text" wire:model.live.debounce.250ms="brand_model" placeholder="Ej: Samsung Galaxy A54, iMac 21.5, etc." class="w-full text-xs p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none">
+                    <input type="text" wire:model.live.debounce.250ms="brand_model" placeholder="Ej: iPhone 15 Pro, Galaxy Watch 6, iMac 24" class="w-full text-xs p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none">
                     
                     @if(!empty($found_devices))
-                    <div class="absolute z-20 top-full left-0 right-0 mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl max-h-48 overflow-y-auto">
+                    <div class="absolute z-20 top-full left-0 right-0 mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl max-h-56 overflow-y-auto">
                         @foreach($found_devices as $dev)
-                        <button type="button" wire:click="selectDevice('{{ $dev['brand'] }}', '{{ $dev['model'] }}')" class="w-full text-left p-2 hover:bg-slate-50 dark:hover:bg-slate-700/50 border-b border-slate-100 dark:border-slate-700/50 transition flex items-center justify-between text-xs">
+                        <button type="button" wire:click="selectDevice('{{ addslashes($dev['brand']) }}', '{{ addslashes($dev['model']) }}', '{{ $dev['device_type'] }}')" class="w-full text-left p-2.5 hover:bg-slate-50 dark:hover:bg-slate-700/50 border-b border-slate-100 dark:border-slate-700/50 transition flex items-center justify-between text-xs">
                             <span class="font-bold text-slate-800 dark:text-white">{{ $dev['brand'] }} {{ $dev['model'] }}</span>
-                            <span class="text-[10px] bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-300 px-2 py-0.5 rounded-full font-semibold">Sugerencia</span>
+                            <span class="text-[10px] bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-300 px-2 py-0.5 rounded-full font-semibold border border-blue-200 dark:border-blue-800">
+                                @switch($dev['device_type'])
+                                    @case('smartphone') 📱 Smartphone @break
+                                    @case('smartwatch') ⌚ Reloj @break
+                                    @case('allinone') 🖥️ All-in-One @break
+                                    @case('notebook') 💻 Notebook @break
+                                    @case('desktop') 🖥️ PC @break
+                                    @case('tablet') 📟 Tablet @break
+                                    @case('console') 🎮 Consola @break
+                                    @default ⚙️ {{ ucfirst($dev['device_type']) }}
+                                @endswitch
+                            </span>
                         </button>
                         @endforeach
                     </div>

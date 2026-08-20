@@ -284,6 +284,14 @@
                     <span>📱 Smartphone</span>
                     <span class="bg-gray-900/40 text-[10px] px-2 py-0.5 rounded-full">{{ count($checklist_templates['smartphone'] ?? []) }} ítems</span>
                 </button>
+                <button wire:click="$set('selected_category', 'smartwatch')" class="w-full text-left px-4 py-3 rounded-2xl text-sm font-bold flex items-center justify-between transition {{ $selected_category === 'smartwatch' ? 'bg-blue-600 text-white shadow' : 'text-gray-300 hover:bg-gray-700/50 hover:text-white' }}">
+                    <span>⌚ Smartwatch</span>
+                    <span class="bg-gray-900/40 text-[10px] px-2 py-0.5 rounded-full">{{ count($checklist_templates['smartwatch'] ?? []) }} ítems</span>
+                </button>
+                <button wire:click="$set('selected_category', 'allinone')" class="w-full text-left px-4 py-3 rounded-2xl text-sm font-bold flex items-center justify-between transition {{ $selected_category === 'allinone' ? 'bg-blue-600 text-white shadow' : 'text-gray-300 hover:bg-gray-700/50 hover:text-white' }}">
+                    <span>🖥️ All-in-One / iMac</span>
+                    <span class="bg-gray-900/40 text-[10px] px-2 py-0.5 rounded-full">{{ count($checklist_templates['allinone'] ?? []) }} ítems</span>
+                </button>
                 <button wire:click="$set('selected_category', 'notebook')" class="w-full text-left px-4 py-3 rounded-2xl text-sm font-bold flex items-center justify-between transition {{ $selected_category === 'notebook' ? 'bg-blue-600 text-white shadow' : 'text-gray-300 hover:bg-gray-700/50 hover:text-white' }}">
                     <span>💻 Notebook / PC</span>
                     <span class="bg-gray-900/40 text-[10px] px-2 py-0.5 rounded-full">{{ count($checklist_templates['notebook'] ?? []) }} ítems</span>

@@ -211,14 +211,21 @@ class CreateWorkOrder extends Component
     public function getQuickTagsProperty()
     {
         return match ($this->device_type) {
-            'smartphone', 'tablet' => [
-                '📱 Pantalla Rota / Táctil',
-                '🔋 Batería no rinde / Hinchada',
-                '⚡ No enciende / Apagado',
-                '🔌 Conector de Carga suelto',
-                '📷 Cámara / Cristal dañado',
-                '💧 Mojado / Contacto Líquido',
-                '🔊 Sin Sonido / Parlante',
+            'smartwatch' => [
+                '⌚ Pantalla / Táctil dañado',
+                '🔋 Batería dura poco / Hinchada',
+                '⚡ No carga / Falla pines de carga',
+                '💧 Mojado / Humedad interna',
+                '🔘 Botón / Corona atascada',
+                '📡 No sincroniza con celular',
+            ],
+            'allinone', 'imac' => [
+                '🖥️ Formateo + Sistema Operativo',
+                '🧹 Mantenimiento + Pasta Térmica',
+                '💾 Cambio SSD / Almacenamiento',
+                '🧠 Ampliación Memoria RAM',
+                '⚡ No enciende / Sin Video',
+                '🔌 Falla Fuente / Adaptador',
             ],
             'notebook', 'desktop' => [
                 '💻 Formateo + Sistema Operativo',
@@ -247,22 +254,46 @@ class CreateWorkOrder extends Component
 
     public function updatedBrandModel()
     {
-        if (strlen($this->brand_model) > 1) {
-            $this->foundDevices = DeviceCatalog::where('device_type', $this->device_type)
-                ->where(function ($q) {
-                    $q->where('brand', 'like', '%' . $this->brand_model . '%')
-                        ->orWhere('model', 'like', '%' . $this->brand_model . '%');
+        if (strlen(trim($this->brand_model)) > 1) {
+            $queryTerm = trim($this->brand_model);
+
+            // Búsqueda priorizada en el tipo de equipo actual
+            $results = DeviceCatalog::where('device_type', $this->device_type)
+                ->where(function ($q) use ($queryTerm) {
+                    $q->where('brand', 'like', '%' . $queryTerm . '%')
+                        ->orWhere('model', 'like', '%' . $queryTerm . '%');
                 })
-                ->take(5)
+                ->take(6)
                 ->get();
+
+            // Si hay pocos resultados, buscar de forma global en todas las categorías
+            if ($results->count() < 6) {
+                $existingIds = $results->pluck('id')->toArray();
+                $globalResults = DeviceCatalog::whereNotIn('id', $existingIds)
+                    ->where(function ($q) use ($queryTerm) {
+                        $q->where('brand', 'like', '%' . $queryTerm . '%')
+                            ->orWhere('model', 'like', '%' . $queryTerm . '%');
+                    })
+                    ->take(6 - $results->count())
+                    ->get();
+
+                $results = $results->concat($globalResults);
+            }
+
+            $this->foundDevices = $results;
         } else {
             $this->foundDevices = [];
         }
     }
 
-    public function selectDevice($brand, $model)
+    public function selectDevice($brand, $model, $deviceType = null)
     {
-        $this->brand_model = $brand . ' ' . $model;
+        $selectedText = trim($brand . ' ' . $model);
+        if ($deviceType && $deviceType !== $this->device_type) {
+            $this->device_type = $deviceType;
+            $this->updatedDeviceType();
+        }
+        $this->brand_model = $selectedText;
         $this->foundDevices = [];
     }
 

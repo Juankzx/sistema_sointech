@@ -34,20 +34,44 @@ class CreateQuotation extends Component
 
     public function updatedBrandModel()
     {
-        if (strlen($this->brand_model) >= 2) {
-            $this->found_devices = \App\Models\DeviceCatalog::where('model', 'like', '%' . $this->brand_model . '%')
-                ->orWhere('brand', 'like', '%' . $this->brand_model . '%')
-                ->limit(5)
-                ->get()
-                ->toArray();
+        if (strlen(trim($this->brand_model)) >= 2) {
+            $queryTerm = trim($this->brand_model);
+
+            // Búsqueda priorizada en la categoría seleccionada
+            $results = \App\Models\DeviceCatalog::where('device_type', $this->device_type)
+                ->where(function ($q) use ($queryTerm) {
+                    $q->where('model', 'like', '%' . $queryTerm . '%')
+                        ->orWhere('brand', 'like', '%' . $queryTerm . '%');
+                })
+                ->limit(6)
+                ->get();
+
+            // Si hay pocos resultados, incluir globales
+            if ($results->count() < 6) {
+                $existingIds = $results->pluck('id')->toArray();
+                $globalResults = \App\Models\DeviceCatalog::whereNotIn('id', $existingIds)
+                    ->where(function ($q) use ($queryTerm) {
+                        $q->where('model', 'like', '%' . $queryTerm . '%')
+                            ->orWhere('brand', 'like', '%' . $queryTerm . '%');
+                    })
+                    ->limit(6 - $results->count())
+                    ->get();
+
+                $results = $results->concat($globalResults);
+            }
+
+            $this->found_devices = $results->toArray();
         } else {
             $this->found_devices = [];
         }
         $this->syncDeviceInfo();
     }
 
-    public function selectDevice($brand, $model)
+    public function selectDevice($brand, $model, $deviceType = null)
     {
+        if ($deviceType && $deviceType !== $this->device_type) {
+            $this->device_type = $deviceType;
+        }
         $this->brand_model = trim("{$brand} {$model}");
         $this->found_devices = [];
         $this->syncDeviceInfo();

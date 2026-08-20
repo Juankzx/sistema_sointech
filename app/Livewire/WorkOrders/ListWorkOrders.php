@@ -876,7 +876,8 @@ class ListWorkOrders extends Component
             'newPaymentAmount.min' => 'El monto debe ser de al menos $1.',
         ]);
 
-        $order = WorkOrder::findOrFail($this->editingOrderId);
+        $orderId = $this->editingOrderId ?: $this->loggingOrderId;
+        $order = WorkOrder::findOrFail($orderId);
 
         // Validar que el monto no exceda el saldo pendiente para evitar errores humanos de digitación
         $partsCost = $order->parts->sum(function($p) {
@@ -896,7 +897,7 @@ class ListWorkOrders extends Component
             ->first();
 
         if (!$activeRegister) {
-            session()->flash('error', 'No puedes registrar un pago porque no hay una caja abierta para hoy.');
+            session()->flash('error', 'No puedes registrar un pago porque la Caja Diaria está cerrada para hoy. Abre la caja primero.');
             return;
         }
 
@@ -955,8 +956,8 @@ class ListWorkOrders extends Component
         $this->newPaymentDescription = 'Abono - ' . ($order->reported_issue ?: 'Servicio Técnico') . ' (' . $order->brand_model . ')';
         $this->skipLogOnPayment = false;
 
-        session()->flash('message', 'Pago registrado exitosamente.');
-        $this->openWorkOrderDetails($this->editingOrderId);
+        session()->flash('message', '¡Pago de $' . number_format($payment->amount, 0, ',', '.') . ' registrado exitosamente!');
+        $this->openWorkOrderDetails($order->id, 'payments');
     }
 
     public function exportCSV()
