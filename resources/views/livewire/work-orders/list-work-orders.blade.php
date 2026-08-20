@@ -1853,7 +1853,7 @@
                                                  <span>⚠️ Caja Diaria Cerrada</span>
                                              </div>
                                              <p class="text-gray-300">Para poder registrar cobros de saldos o abonos a esta orden, primero debes abrir la caja del día.</p>
-                                             <a href="{{ route('cash.registers') }}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-lg text-xs transition">
+                                             <a href="{{ route('cash-registers.index') }}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-lg text-xs transition">
                                                  🔑 Ir a Apertura de Caja
                                              </a>
                                          </div>
