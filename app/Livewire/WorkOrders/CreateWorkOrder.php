@@ -74,6 +74,13 @@ class CreateWorkOrder extends Component
     public $payment_method = 'Efectivo';
     public $selected_parts = []; // array of ['id', 'name', 'sale_price', 'quantity']
 
+    // Service Selection Properties
+    public $selected_services = []; // array of ['service_id', 'name', 'price']
+    public $searchService = '';
+    public $foundServices = [];
+    public $customServiceName = '';
+    public $customServicePrice = '';
+
     // Legal & Images
     public $terms_accepted = false;
     public $signature_base64; // from canvas
