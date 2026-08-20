@@ -9,12 +9,49 @@ use Livewire\Attributes\Layout;
 #[Layout('layouts.app')]
 class ManageServices extends Component
 {
+    // Modal state
+    public $showModal = false;
+    public $editing_service_id = null;
+
+    // Form fields
     public $service_name = '';
     public $service_category = 'general';
     public $service_default_price = '';
     public $service_description = '';
-    public $service_search = '';
-    public $editing_service_id = null;
+
+    // Filters
+    public $search = '';
+    public $filterCategory = '';
+
+    // Confirmation
+    public $confirmingDeleteId = null;
+
+    protected $queryString = ['filterCategory', 'search'];
+
+    public function openCreateModal()
+    {
+        $this->resetForm();
+        $this->showModal = true;
+    }
+
+    public function openEditModal($id)
+    {
+        $service = Service::find($id);
+        if ($service) {
+            $this->editing_service_id = $service->id;
+            $this->service_name = $service->name;
+            $this->service_category = $service->category;
+            $this->service_default_price = $service->default_price;
+            $this->service_description = $service->description;
+            $this->showModal = true;
+        }
+    }
+
+    public function closeModal()
+    {
+        $this->showModal = false;
+        $this->resetForm();
+    }
 
     public function saveService()
     {
@@ -37,7 +74,7 @@ class ManageServices extends Component
                     'default_price' => (float)$this->service_default_price,
                     'description' => trim($this->service_description),
                 ]);
-                session()->flash('message', '¡Servicio actualizado correctamente!');
+                session()->flash('message', 'Servicio actualizado correctamente.');
             }
         } else {
             Service::create([
@@ -47,27 +84,10 @@ class ManageServices extends Component
                 'description' => trim($this->service_description),
                 'is_active' => true,
             ]);
-            session()->flash('message', '¡Servicio agregado al catálogo exitosamente!');
+            session()->flash('message', 'Servicio agregado al catálogo.');
         }
 
-        $this->resetForm();
-    }
-
-    public function editService($id)
-    {
-        $service = Service::find($id);
-        if ($service) {
-            $this->editing_service_id = $service->id;
-            $this->service_name = $service->name;
-            $this->service_category = $service->category;
-            $this->service_default_price = $service->default_price;
-            $this->service_description = $service->description;
-        }
-    }
-
-    public function cancelEdit()
-    {
-        $this->resetForm();
+        $this->closeModal();
     }
 
     public function toggleStatus($id)
@@ -75,8 +95,17 @@ class ManageServices extends Component
         $service = Service::find($id);
         if ($service) {
             $service->update(['is_active' => !$service->is_active]);
-            session()->flash('message', 'Estado del servicio actualizado.');
         }
+    }
+
+    public function confirmDelete($id)
+    {
+        $this->confirmingDeleteId = $id;
+    }
+
+    public function cancelDelete()
+    {
+        $this->confirmingDeleteId = null;
     }
 
     public function deleteService($id)
@@ -86,6 +115,12 @@ class ManageServices extends Component
             $service->delete();
             session()->flash('message', 'Servicio eliminado del catálogo.');
         }
+        $this->confirmingDeleteId = null;
+    }
+
+    public function setCategory($cat)
+    {
+        $this->filterCategory = $cat;
     }
 
     private function resetForm()
@@ -100,18 +135,32 @@ class ManageServices extends Component
     public function render()
     {
         $query = Service::query();
-        if ($this->service_search) {
+
+        if ($this->search) {
             $query->where(function($q) {
-                $q->where('name', 'like', '%' . $this->service_search . '%')
-                  ->orWhere('category', 'like', '%' . $this->service_search . '%')
-                  ->orWhere('description', 'like', '%' . $this->service_search . '%');
+                $q->where('name', 'like', '%' . $this->search . '%')
+                  ->orWhere('description', 'like', '%' . $this->search . '%');
             });
         }
 
-        $servicesList = $query->orderBy('category')->orderBy('name')->get();
+        if ($this->filterCategory) {
+            $query->where('category', $this->filterCategory);
+        }
+
+        $services = $query->orderBy('category')->orderBy('name')->get();
+
+        // Category counts for filter pills
+        $categoryCounts = Service::selectRaw('category, count(*) as total')
+            ->groupBy('category')
+            ->pluck('total', 'category')
+            ->toArray();
+
+        $totalServices = Service::count();
 
         return view('livewire.services.manage-services', [
-            'servicesList' => $servicesList,
+            'services' => $services,
+            'categoryCounts' => $categoryCounts,
+            'totalServices' => $totalServices,
         ]);
     }
 }
