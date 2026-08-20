@@ -1043,6 +1043,80 @@
                             </div>
                         @endif
 
+                        <!-- Búsqueda y Selección de Servicios del Catálogo -->
+                        <div class="relative">
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Agregar Servicios (Mano de Obra) del Catálogo</label>
+                            <div class="relative">
+                                <input type="text" wire:model.live.debounce.150ms="searchService"
+                                    class="w-full rounded-2xl px-4 py-3 text-sm font-medium text-white placeholder-gray-600 transition-all duration-200 focus:outline-none focus:ring-2"
+                                    style="background:#111827; border:1.5px solid #1f2937;"
+                                    placeholder="Escribe para buscar servicio (Ej: Cambio de pantalla, Limpieza...)..."
+                                    autocomplete="off">
+
+                                @if(strlen($searchService) > 0 && count($foundServices) === 0)
+                                    <div class="absolute right-3.5 top-1/2 -translate-y-1/2">
+                                        <svg class="w-4 h-4 animate-spin text-gray-500" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                        </svg>
+                                    </div>
+                                @endif
+                            </div>
+
+                            @if(count($foundServices) > 0)
+                                <div class="absolute z-20 w-full mt-1.5 overflow-hidden rounded-2xl shadow-2xl"
+                                    style="background:#0d1117; border:1.5px solid #1f2937;">
+                                    <div class="px-4 py-2 flex items-center justify-between" style="border-bottom:1px solid #1f2937;">
+                                        <span class="text-[10px] font-black uppercase tracking-widest text-gray-500">
+                                            {{ count($foundServices) }} servicio(s) encontrado(s)
+                                        </span>
+                                        <span class="text-[10px] text-gray-600">Clic para añadir</span>
+                                    </div>
+                                    <ul>
+                                        @foreach($foundServices as $fs)
+                                            <li wire:click="addServiceFromCatalog({{ $fs->id }})"
+                                                class="flex items-center justify-between gap-3 px-4 py-3 cursor-pointer transition-all duration-150 border-b last:border-0 hover:bg-gray-800/60"
+                                                style="border-color:#1f2937;">
+                                                <div class="min-w-0">
+                                                    <div class="font-bold text-white text-sm leading-tight truncate">{{ $fs->name }}</div>
+                                                    <div class="text-[11px] text-gray-400 mt-0.5">{{ $fs->category_label }}</div>
+                                                </div>
+                                                <div class="flex items-center gap-2 shrink-0">
+                                                    <span class="font-mono font-bold text-indigo-400 text-sm">
+                                                        ${{ number_format($fs->default_price, 0, ',', '.') }}
+                                                    </span>
+                                                    <span class="text-[10px] font-bold px-2 py-1 rounded-lg bg-indigo-950/60 text-indigo-300 border border-indigo-500/30">
+                                                        + Añadir
+                                                    </span>
+                                                </div>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- Lista de servicios seleccionados con precios editables -->
+                        @if(count($selected_services) > 0)
+                            <div class="bg-gray-900 border border-gray-700 rounded-2xl p-4 space-y-2 animate-fade-in">
+                                <h4 class="text-xs font-bold text-indigo-400 uppercase tracking-widest px-1 mb-2">Servicios Asignados a esta OT</h4>
+                                <div class="space-y-2">
+                                    @foreach($selected_services as $index => $srv)
+                                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3 bg-gray-800/60 rounded-xl border border-gray-700">
+                                            <span class="text-xs font-bold text-white flex-1">{{ $srv['name'] }}</span>
+                                            <div class="flex items-center gap-2 w-full sm:w-auto">
+                                                <span class="text-[10px] text-gray-400">Precio ($):</span>
+                                                <input type="number" wire:model.live="selected_services.{{ $index }}.price" class="w-28 bg-gray-900 border border-gray-700 rounded-lg px-2 py-1 text-xs font-bold text-emerald-400 text-right">
+                                                <button type="button" wire:click="removeSelectedService({{ $index }})" class="text-gray-500 hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition cursor-pointer">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+
                         <!-- Formulario para Servicio Personalizado / Extra -->
                         <div x-data="{ openCustom: false }" class="mt-2">
                             <button type="button" @click="openCustom = !openCustom" class="text-xs font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-1.5 transition cursor-pointer">
