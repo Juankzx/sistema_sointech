@@ -74,6 +74,13 @@ class CreateWorkOrder extends Component
     public $payment_method = 'Efectivo';
     public $selected_parts = []; // array of ['id', 'name', 'sale_price', 'quantity']
 
+    // Service Selection Properties
+    public $selected_services = []; // array of ['service_id', 'name', 'price']
+    public $searchService = '';
+    public $foundServices = [];
+    public $customServiceName = '';
+    public $customServicePrice = '';
+
     // Legal & Images
     public $terms_accepted = false;
     public $signature_base64; // from canvas
@@ -428,6 +435,82 @@ class CreateWorkOrder extends Component
         $this->components = array_values($this->components);
     }
 
+    public function updatedSearchService()
+    {
+        if (\Illuminate\Support\Facades\Schema::hasTable('services') && strlen($this->searchService) >= 1) {
+            $hasCategory = \Illuminate\Support\Facades\Schema::hasColumn('services', 'category');
+            $hasActive = \Illuminate\Support\Facades\Schema::hasColumn('services', 'is_active');
+
+            $query = \App\Models\Service::query();
+            if ($hasActive) {
+                $query->where('is_active', true);
+            }
+            $query->where(function($q) use ($hasCategory) {
+                $q->where('name', 'like', '%' . $this->searchService . '%');
+                if ($hasCategory) {
+                    $q->orWhere('category', 'like', '%' . $this->searchService . '%');
+                }
+            });
+            $this->foundServices = $query->take(6)->get();
+        } else {
+            $this->foundServices = [];
+        }
+    }
+
+    public function addServiceFromCatalog($serviceId)
+    {
+        $service = \App\Models\Service::find($serviceId);
+        if ($service) {
+            $this->selected_services[] = [
+                'service_id' => $service->id,
+                'name' => $service->name,
+                'price' => (float)$service->default_price,
+            ];
+            $this->recalculateLaborCostFromServices();
+        }
+        $this->searchService = '';
+        $this->foundServices = [];
+    }
+
+    public function addCustomService()
+    {
+        if (trim($this->customServiceName) !== '') {
+            $price = is_numeric($this->customServicePrice) ? (float)$this->customServicePrice : 0;
+            $this->selected_services[] = [
+                'service_id' => null,
+                'name' => trim($this->customServiceName),
+                'price' => $price,
+            ];
+            $this->customServiceName = '';
+            $this->customServicePrice = '';
+            $this->recalculateLaborCostFromServices();
+        }
+    }
+
+    public function removeSelectedService($index)
+    {
+        if (isset($this->selected_services[$index])) {
+            array_splice($this->selected_services, $index, 1);
+            $this->recalculateLaborCostFromServices();
+        }
+    }
+
+    public function updatedSelectedServices($value, $key)
+    {
+        $this->recalculateLaborCostFromServices();
+    }
+
+    public function recalculateLaborCostFromServices()
+    {
+        if (!empty($this->selected_services)) {
+            $total = 0;
+            foreach ($this->selected_services as $srv) {
+                $total += (float)($srv['price'] ?? 0);
+            }
+            $this->labor_cost = $total;
+        }
+    }
+
     public function getTotalProperty()
     {
         if ($this->budget_type === 'pending') {
@@ -555,6 +638,18 @@ class CreateWorkOrder extends Component
                     'brand' => $comp['brand'] ?? null,
                     'model' => $comp['model'] ?? null,
                     'serial_number' => $comp['serial_number'] ?? null,
+                ]);
+            }
+        }
+
+        // Persistir servicios de catálogo asignados a la OT
+        if (!empty($this->selected_services)) {
+            foreach ($this->selected_services as $srv) {
+                \App\Models\WorkOrderService::create([
+                    'work_order_id' => $workOrder->id,
+                    'service_id' => $srv['service_id'] ?? null,
+                    'name' => $srv['name'],
+                    'price' => (float)$srv['price'],
                 ]);
             }
         }
