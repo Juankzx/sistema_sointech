@@ -69,7 +69,11 @@ class ListWorkOrders extends Component
 
     public function openWorkOrderDetails($id, $targetTab = 'details')
     {
-        $order = WorkOrder::with(['client', 'parts', 'services', 'images', 'logs', 'payments.user', 'technician', 'receivedBy'])->findOrFail($id);
+        $relations = ['client', 'parts', 'images', 'logs', 'payments.user', 'technician', 'receivedBy'];
+        if (\Illuminate\Support\Facades\Schema::hasTable('work_order_services')) {
+            $relations[] = 'services';
+        }
+        $order = WorkOrder::with($relations)->findOrFail($id);
         
         // 1. Bitacora / Log properties initialization
         $this->loggingOrderId = $order->id;
@@ -137,14 +141,16 @@ class ListWorkOrders extends Component
             ];
         }
 
-        // Cargar servicios asociados previamente
+        // Cargar servicios asociados previamente (Defensivo ante migraciones)
         $this->editingSelectedServices = [];
-        foreach ($order->services as $srv) {
-            $this->editingSelectedServices[] = [
-                'service_id' => $srv->service_id,
-                'name' => $srv->name,
-                'price' => (float)$srv->price,
-            ];
+        if (\Illuminate\Support\Facades\Schema::hasTable('work_order_services') && $order->relationLoaded('services')) {
+            foreach ($order->services as $srv) {
+                $this->editingSelectedServices[] = [
+                    'service_id' => $srv->service_id,
+                    'name' => $srv->name,
+                    'price' => (float)$srv->price,
+                ];
+            }
         }
         $this->editingSearchService = '';
         $this->editingFoundServices = [];
