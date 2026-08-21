@@ -864,6 +864,9 @@ class CreateWorkOrder extends Component
             }
         }
 
+        // Enviar notificación automática por WhatsApp al cliente al crear la OT
+        \App\Services\WhatsAppService::sendOtStatusNotification($workOrder, $this->initial_status);
+
         // Enviar notificación por correo al cliente al crear la OT
         if ($client->email) {
             $settings = \App\Models\Setting::find(1);

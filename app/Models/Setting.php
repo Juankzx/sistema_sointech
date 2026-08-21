@@ -15,12 +15,14 @@ class Setting extends Model
         'sii_api_key', 'sii_environment', 'company_giro', 'company_activity_code',
         'smtp_host', 'smtp_port', 'smtp_username', 'smtp_password', 'smtp_encryption',
         'smtp_from_address', 'smtp_from_name', 'notify_on_ot_status', 'notify_on_low_stock',
-        'email_ot_subject', 'email_ot_body', 'email_low_stock_subject', 'email_low_stock_body'
+        'email_ot_subject', 'email_ot_body', 'email_low_stock_subject', 'email_low_stock_body',
+        'whatsapp_enabled', 'whatsapp_phone_number_id', 'whatsapp_business_account_id', 'whatsapp_access_token', 'whatsapp_template_name'
     ];
 
     protected $casts = [
         'checklist_template' => 'array',
         'checklist_templates' => 'array',
         'predictive_catalog' => 'array',
+        'whatsapp_enabled' => 'boolean',
     ];
 }

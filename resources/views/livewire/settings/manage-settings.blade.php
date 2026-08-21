@@ -26,6 +26,9 @@
             <button @click="activeTab = 'templates'" :class="activeTab === 'templates' ? 'bg-blue-600 text-white shadow' : 'text-gray-400 hover:text-white'" class="px-4 py-2 rounded-xl text-xs font-bold transition duration-200">
                 📝 Plantillas de Correo
             </button>
+            <button @click="activeTab = 'whatsapp'" :class="activeTab === 'whatsapp' ? 'bg-emerald-600 text-white shadow' : 'text-gray-400 hover:text-white'" class="px-4 py-2 rounded-xl text-xs font-bold transition duration-200 flex items-center gap-1">
+                💬 WhatsApp API (Meta)
+            </button>
         </div>
     </div>
 
@@ -716,6 +719,98 @@
                     <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-6 py-3 rounded-2xl shadow-lg shadow-blue-500/20 transition duration-150 flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                         Guardar Plantillas de Correo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TAB 8: WHATSAPP META CLOUD API -->
+    <div x-show="activeTab === 'whatsapp'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" class="space-y-6" x-cloak>
+        <div class="bg-gray-800 rounded-3xl shadow-xl overflow-hidden border border-gray-700">
+            <div class="bg-gray-900/60 px-6 py-4 border-b border-gray-700 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">💬</span>
+                    <div>
+                        <h3 class="text-base font-bold text-white">Integración con WhatsApp Cloud API (Meta Oficial)</h3>
+                        <p class="text-xs text-gray-400">Envía notificaciones automáticas gratuitas de cambio de estado directamente al celular del cliente.</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold px-3 py-1 rounded-full border {{ $whatsapp_enabled ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'bg-gray-700 text-gray-400 border-gray-600' }}">
+                        {{ $whatsapp_enabled ? '🟢 Notificaciones Activas' : '⚪ Desactivado' }}
+                    </span>
+                </div>
+            </div>
+
+            <form wire:submit.prevent="saveCompanySettings" class="p-6 space-y-6">
+                
+                <div class="bg-emerald-950/40 border border-emerald-500/30 p-4 rounded-2xl text-xs text-emerald-300 space-y-2">
+                    <p class="font-bold text-sm text-emerald-200 flex items-center gap-1.5">
+                        💡 Pasos para obtener tus credenciales de Meta Developers:
+                    </p>
+                    <ol class="list-decimal list-inside space-y-1 text-emerald-300/90 leading-relaxed">
+                        <li>Ingresa a <a href="https://developers.facebook.com/" target="_blank" class="underline font-bold text-white">Meta for Developers</a> e inicia sesión con Facebook.</li>
+                        <li>Crea una aplicación de tipo <strong>"Empresa / Business"</strong> y añade el producto <strong>WhatsApp</strong>.</li>
+                        <li>En <strong>WhatsApp -> Configuración de la API</strong>, copia tu <strong>Phone Number ID</strong> y genera tu <strong>Token de Acceso Permanente</strong>.</li>
+                        <li>Crea tu plantilla en Meta Business Suite con el nombre <strong>ot_status_update</strong> y 5 variables: <code>{1}=Cliente, {2}=Código OT, {3}=Estado, {4}=Equipo, {5}=Enlace Seguimiento</code>.</li>
+                    </ol>
+                </div>
+
+                <div class="flex items-center justify-between bg-gray-900/40 p-4 rounded-2xl border border-gray-750">
+                    <div>
+                        <h4 class="text-sm font-bold text-white">Activar Envíos Automáticos por WhatsApp</h4>
+                        <p class="text-xs text-gray-400">Notificar automáticamente al cliente al ingresar orden o actualizar estado.</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" wire:model="whatsapp_enabled" class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                    </label>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Phone Number ID (Meta) *</label>
+                        <input type="text" wire:model="whatsapp_phone_number_id" class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm font-mono focus:ring-2 focus:ring-emerald-500" placeholder="Ej: 102938475610293">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">WhatsApp Business Account ID *</label>
+                        <input type="text" wire:model="whatsapp_business_account_id" class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm font-mono focus:ring-2 focus:ring-emerald-500" placeholder="Ej: 987654321012345">
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Token de Acceso Permanente (Meta Bearer Token) *</label>
+                        <textarea wire:model="whatsapp_access_token" rows="3" class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-xs font-mono focus:ring-2 focus:ring-emerald-500" placeholder="EAAA..."></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Nombre de la Plantilla en Meta (Template Name)</label>
+                        <input type="text" wire:model="whatsapp_template_name" class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm font-mono focus:ring-2 focus:ring-emerald-500" placeholder="ot_status_update">
+                        <p class="text-[10px] text-gray-400 mt-1">Debe coincidir exactamente con el nombre aprobado en Meta Business Suite.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Probar Conexión WhatsApp</label>
+                        <div class="flex gap-2">
+                            <input type="text" wire:model="test_whatsapp_recipient" class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-emerald-500" placeholder="Ej: +56912345678">
+                            <button type="button" wire:click="sendTestWhatsApp" class="px-4 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-2xl shrink-0 transition">
+                                Probar
+                            </button>
+                        </div>
+                        @if(session()->has('whatsapp_test_success'))
+                            <span class="text-xs text-emerald-400 font-bold mt-1 block">✅ {{ session('whatsapp_test_success') }}</span>
+                        @endif
+                        @if(session()->has('whatsapp_test_error'))
+                            <span class="text-xs text-red-400 font-bold mt-1 block">❌ {{ session('whatsapp_test_error') }}</span>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-4 border-t border-gray-700">
+                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-6 py-3 rounded-2xl shadow-lg shadow-emerald-500/20 transition duration-150 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        Guardar Configuración Meta WhatsApp
                     </button>
                 </div>
             </form>

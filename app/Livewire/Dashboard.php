@@ -192,6 +192,9 @@ class Dashboard extends Component
 
     protected function sendOtStatusEmail(WorkOrder $wo, string $newStatus)
     {
+        // Enviar notificación automática por WhatsApp
+        \App\Services\WhatsAppService::sendOtStatusNotification($wo, $newStatus);
+
         $settings = \App\Models\Setting::find(1);
         if ($settings && isset($settings->notify_on_ot_status) && !$settings->notify_on_ot_status) {
             return;

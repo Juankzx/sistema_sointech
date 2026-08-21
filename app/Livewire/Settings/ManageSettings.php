@@ -68,6 +68,14 @@ class ManageSettings extends Component
     public $email_low_stock_subject;
     public $email_low_stock_body;
 
+    // WhatsApp Meta Cloud API Settings
+    public $whatsapp_enabled = false;
+    public $whatsapp_phone_number_id = '';
+    public $whatsapp_business_account_id = '';
+    public $whatsapp_access_token = '';
+    public $whatsapp_template_name = 'ot_status_update';
+    public $test_whatsapp_recipient = '';
+
     public $activeTab = 'general';
 
     protected $paginationTheme = 'tailwind';
@@ -117,6 +125,14 @@ class ManageSettings extends Component
             $this->email_ot_body = $settings->email_ot_body ?: "Hola {nombre_cliente},\n\nTe informamos que tu orden de trabajo #{codigo_ot} para el equipo {equipo} ha cambiado al estado: {nuevo_estado}.\n\nPuedes consultar el avance detallado en tiempo real ingresando al enlace de seguimiento en vivo.";
             $this->email_low_stock_subject = $settings->email_low_stock_subject ?: '⚠️ Alerta de Inventario: Stock Bajo en [{producto}]';
             $this->email_low_stock_body = $settings->email_low_stock_body ?: "Estimado equipo,\n\nSe ha detectado que el producto/repuesto {producto} ha alcanzado su nivel crítico de inventario.\n\nStock actual: {stock_actual} unidades (Mínimo requerido: {stock_minimo} unidades).\n\nRecomendamos gestionar el reabastecimiento con los proveedores a la brevedad.";
+
+            // WhatsApp Settings
+            $this->whatsapp_enabled = (bool)($settings->whatsapp_enabled ?? false);
+            $this->whatsapp_phone_number_id = $settings->whatsapp_phone_number_id ?? '';
+            $this->whatsapp_business_account_id = $settings->whatsapp_business_account_id ?? '';
+            $this->whatsapp_access_token = $settings->whatsapp_access_token ?? '';
+            $this->whatsapp_template_name = $settings->whatsapp_template_name ?: 'ot_status_update';
+            $this->test_whatsapp_recipient = $settings->support_whatsapp ?: '';
         }
     }
 
@@ -208,14 +224,38 @@ class ManageSettings extends Component
                 
                 'logo_path' => $this->logo_path,
                 'favicon_path' => $this->favicon_path,
+
+                'whatsapp_enabled' => $this->whatsapp_enabled,
+                'whatsapp_phone_number_id' => $this->whatsapp_phone_number_id,
+                'whatsapp_business_account_id' => $this->whatsapp_business_account_id,
+                'whatsapp_access_token' => $this->whatsapp_access_token,
+                'whatsapp_template_name' => $this->whatsapp_template_name,
             ]);
             
             // Si guardamos, limpiamos las variables temporales de imagen para que no vuelva a intentar subirlas en otro render si no cambian
             $this->new_logo = null;
             $this->new_favicon = null;
             
-            session()->flash('message', 'Configuración de Empresa actualizada correctamente.');
+            session()->flash('message', 'Configuración de Empresa y WhatsApp actualizada correctamente.');
             $this->redirect(route('settings.index'));
+        }
+    }
+
+    public function sendTestWhatsApp()
+    {
+        $this->saveCompanySettings();
+
+        if (empty($this->test_whatsapp_recipient)) {
+            session()->flash('whatsapp_test_error', 'Ingresa un número de celular de prueba (ej: +56912345678).');
+            return;
+        }
+
+        $result = \App\Services\WhatsAppService::sendTestMessage($this->test_whatsapp_recipient);
+
+        if ($result['success']) {
+            session()->flash('whatsapp_test_success', $result['message']);
+        } else {
+            session()->flash('whatsapp_test_error', $result['message']);
         }
     }
 
