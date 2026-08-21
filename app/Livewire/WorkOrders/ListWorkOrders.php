@@ -1358,16 +1358,20 @@ class ListWorkOrders extends Component
             }
         }
 
-        $allOrdersForStats = WorkOrder::with(['parts'])->where('status', '!=', 'Rechazado')->get();
+        $totalCollected = (float) WorkOrder::where('status', '!=', 'Rechazado')->sum('down_payment');
+
+        // Optimización: solo filtrar OTs activas o con saldos para las estadísticas de cuentas por cobrar
+        $activeOrdersForStats = WorkOrder::with(['parts'])
+            ->whereNotIn('status', ['Rechazado'])
+            ->get();
+
         $totalPendingReceivables = 0;
         $pendingCount = 0;
-        $totalCollected = 0;
 
-        foreach ($allOrdersForStats as $woStat) {
+        foreach ($activeOrdersForStats as $woStat) {
             $partsCost = $woStat->parts->sum(function($p) { return $p->pivot->price_at_time * $p->pivot->quantity; });
             $totalCost = $woStat->labor_cost + $partsCost;
             $balance = max(0, $totalCost - $woStat->down_payment);
-            $totalCollected += $woStat->down_payment;
             
             if ($balance > 0) {
                 $totalPendingReceivables += $balance;

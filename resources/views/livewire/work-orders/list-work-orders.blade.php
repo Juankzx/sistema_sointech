@@ -479,33 +479,45 @@
                         <!-- 1. Gestionar (Costos / General) -->
                         <button 
                             wire:click="openWorkOrderDetails({{ $order->id }}, 'details')" 
+                            wire:loading.attr="disabled"
+                            wire:loading.class="opacity-60 cursor-wait"
+                            wire:target="openWorkOrderDetails({{ $order->id }}, 'details')"
                             type="button"
                             class="flex flex-col items-center justify-center gap-1 py-1.5 px-1 rounded-xl bg-blue-600/90 hover:bg-blue-500 text-white font-bold transition active:scale-95 shadow-md shadow-blue-600/30 border border-blue-400/30"
                             title="Gestionar / Ver Detalles"
                         >
-                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            <svg wire:loading.remove wire:target="openWorkOrderDetails({{ $order->id }}, 'details')" class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            <svg wire:loading wire:target="openWorkOrderDetails({{ $order->id }}, 'details')" class="w-4 h-4 shrink-0 animate-spin text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
                             <span class="text-[10px] font-bold tracking-tight">Gestionar</span>
                         </button>
 
                         <!-- 2. Bitácora de Avances -->
                         <button 
                             wire:click="openWorkOrderDetails({{ $order->id }}, 'logs')" 
+                            wire:loading.attr="disabled"
+                            wire:loading.class="opacity-60 cursor-wait"
+                            wire:target="openWorkOrderDetails({{ $order->id }}, 'logs')"
                             type="button"
                             class="flex flex-col items-center justify-center gap-1 py-1.5 px-1 rounded-xl bg-indigo-950/60 hover:bg-indigo-900/80 text-indigo-300 border border-indigo-500/40 transition active:scale-95 shadow-sm"
                             title="Bitácora / Registrar Avances"
                         >
-                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                            <svg wire:loading.remove wire:target="openWorkOrderDetails({{ $order->id }}, 'logs')" class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                            <svg wire:loading wire:target="openWorkOrderDetails({{ $order->id }}, 'logs')" class="w-4 h-4 shrink-0 animate-spin text-indigo-300" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
                             <span class="text-[10px] font-bold tracking-tight">Bitácora</span>
                         </button>
 
                         <!-- 3. Pagos y Cobro -->
                         <button 
                             wire:click="openWorkOrderDetails({{ $order->id }}, 'payments')" 
+                            wire:loading.attr="disabled"
+                            wire:loading.class="opacity-60 cursor-wait"
+                            wire:target="openWorkOrderDetails({{ $order->id }}, 'payments')"
                             type="button"
                             class="flex flex-col items-center justify-center gap-1 py-1.5 px-1 rounded-xl bg-emerald-950/60 hover:bg-emerald-900/80 text-emerald-300 border border-emerald-500/40 transition active:scale-95 shadow-sm"
                             title="Pagos / Registrar Abono"
                         >
-                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <svg wire:loading.remove wire:target="openWorkOrderDetails({{ $order->id }}, 'payments')" class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <svg wire:loading wire:target="openWorkOrderDetails({{ $order->id }}, 'payments')" class="w-4 h-4 shrink-0 animate-spin text-emerald-300" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
                             <span class="text-[10px] font-bold tracking-tight">Pagos</span>
                         </button>
 
