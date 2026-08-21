@@ -1545,6 +1545,31 @@
                     @endif
                 </div>
 
+                <!-- FICHA RÁPIDA PARA CINTA DE ENMASCARAR (SIN IMPRESORA) -->
+                @if($this->createdOrder)
+                    @php
+                        $shortUuid = strtoupper(substr($this->createdOrder->uuid, 0, 8));
+                        $clientNameShort = explode(' ', $this->createdOrder->client?->full_name ?? '')[0];
+                        $passText = $this->createdOrder->unlock_password ?: 'Sin Clave';
+                    @endphp
+                    <div class="bg-amber-950/40 border border-amber-500/50 p-4 rounded-2xl text-left space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-black uppercase text-amber-400 tracking-wider">🏷️ ESCRIBIR EN LA CINTA DEL EQUIPO:</span>
+                            <span class="text-[10px] bg-amber-500/20 text-amber-300 font-mono px-2 py-0.5 rounded font-bold">Marcador / Plumón</span>
+                        </div>
+                        <div class="bg-amber-100 text-slate-900 p-3 rounded-xl font-mono font-black text-sm shadow-inner border border-amber-300 select-all space-y-1">
+                            <div class="text-base text-amber-950 font-black border-b border-amber-300 pb-1 flex items-center justify-between">
+                                <span>#{{ $shortUuid }}</span>
+                                <span class="text-xs bg-amber-900 text-amber-100 px-2 py-0.5 rounded">{{ $clientNameShort }}</span>
+                            </div>
+                            <div class="text-xs text-amber-900 font-bold flex items-center justify-between pt-0.5">
+                                <span>📱 {{ $this->createdOrder->brand_model }}</span>
+                                <span>🔒 {{ $passText }}</span>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
                 <!-- Botones de Acción de Impresión -->
                 <div class="grid grid-cols-1 gap-2.5">
                     @if($this->created_order)

@@ -1327,13 +1327,17 @@ class ListWorkOrders extends Component
             ->orderBy('created_at', 'desc');
 
         if ($this->search) {
-            $query->where(function($q) {
-                $q->where('brand_model', 'like', '%' . $this->search . '%')
-                  ->orWhere('device_type', 'like', '%' . $this->search . '%')
-                  ->orWhere('imei_serial', 'like', '%' . $this->search . '%')
-                  ->orWhereHas('client', function($cq) {
-                      $cq->where('full_name', 'like', '%' . $this->search . '%')
-                        ->orWhere('phone', 'like', '%' . $this->search . '%');
+            $cleanSearch = ltrim(trim($this->search), '#');
+            $query->where(function($q) use ($cleanSearch) {
+                $q->where('brand_model', 'like', '%' . $cleanSearch . '%')
+                  ->orWhere('device_type', 'like', '%' . $cleanSearch . '%')
+                  ->orWhere('imei_serial', 'like', '%' . $cleanSearch . '%')
+                  ->orWhere('uuid', 'like', '%' . $cleanSearch . '%')
+                  ->orWhere('id', $cleanSearch)
+                  ->orWhereHas('client', function($cq) use ($cleanSearch) {
+                      $cq->where('full_name', 'like', '%' . $cleanSearch . '%')
+                        ->orWhere('phone', 'like', '%' . $cleanSearch . '%')
+                        ->orWhere('rut_dni', 'like', '%' . $cleanSearch . '%');
                   });
             });
         }
