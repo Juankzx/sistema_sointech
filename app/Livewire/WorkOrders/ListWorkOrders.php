@@ -686,8 +686,7 @@ class ListWorkOrders extends Component
         ]);
 
 
-        $this->isBudgeting = false;
-        $this->isManaging = false;
+        $this->closeManagingModal();
         session()->flash('message', "Presupuesto y diagnóstico para la orden #{$this->editingOrderCode} guardados exitosamente.");
     }
 
