@@ -186,6 +186,37 @@ class ListWorkOrders extends Component
         $this->editingOrderId = null;
     }
 
+    public function updatedManagingTechnicianId()
+    {
+        if ($this->loggingOrderId) {
+            $order = WorkOrder::find($this->loggingOrderId);
+            if ($order) {
+                $order->update(['technician_id' => $this->managingTechnicianId ?: null]);
+                $techName = $order->technician?->name ?: 'Sin Asignar';
+
+                $recentLog = $order->logs()
+                    ->where('created_at', '>=', now()->subSeconds(30))
+                    ->where('title', 'Asignación de Técnico')
+                    ->latest()
+                    ->first();
+
+                if ($recentLog) {
+                    $recentLog->update([
+                        'notes' => "Técnico responsable asignado: {$techName}",
+                        'user_id' => auth()->id(),
+                    ]);
+                } else {
+                    $order->logs()->create([
+                        'status' => $order->status,
+                        'title' => 'Asignación de Técnico',
+                        'notes' => "Técnico responsable asignado: {$techName}",
+                        'user_id' => auth()->id(),
+                    ]);
+                }
+            }
+        }
+    }
+
     public function updatedNewLogPhoto()
     {
         $this->validateOnly('newLogPhoto', [
@@ -618,9 +649,10 @@ class ListWorkOrders extends Component
         ]);
 
         $order = WorkOrder::findOrFail($this->editingOrderId);
+        $protectedStatuses = ['Aprobado', 'En Reparación', 'Esperando Repuestos', 'En Verificación', 'Listo para Entrega', 'Entregado'];
 
-        if (in_array($order->status, ['Aprobado', 'En Reparación', 'En Verificación', 'Listo para Entrega', 'Entregado']) && !$this->forceEditBudget) {
-            session()->flash('message', 'No se puede modificar el diagnóstico o presupuesto de una orden en estado "' . $order->status . '".');
+        if (in_array($order->status, $protectedStatuses) && !$this->forceEditBudget) {
+            session()->flash('message', 'No se puede modificar el diagnóstico o presupuesto de una orden en estado "' . $order->status . '". Utiliza "Desbloquear Edición" si requieres realizar cambios.');
             return;
         }
         
@@ -663,8 +695,8 @@ class ListWorkOrders extends Component
             ]);
         }
 
-        // 4. Actualizar la orden de trabajo (preservando Aprobado, En Reparación, etc.)
-        $newStatus = in_array($order->status, ['Aprobado', 'En Reparación', 'En Verificación', 'Listo para Entrega', 'Entregado']) 
+        // 4. Actualizar la orden de trabajo (preservando Aprobado, Esperando Repuestos, En Reparación, etc.)
+        $newStatus = in_array($order->status, $protectedStatuses) 
             ? $order->status 
             : 'Presupuestado';
 
@@ -674,16 +706,30 @@ class ListWorkOrders extends Component
             'estimated_delivery' => $this->editingEstimatedDelivery ?: $order->estimated_delivery
         ]);
 
-        // 4. Registrar en la bitácora
+        // 5. Registrar o actualizar en la bitácora evitando registros duplicados
         $logTitle = ($newStatus === 'Presupuestado') ? 'Diagnóstico y Presupuesto Listo' : 'Presupuesto Actualizado';
         $logNotes = "Diagnóstico Técnico: " . $this->editingDiagnosticNotes . "\nPresupuesto establecido: Mano de obra $" . number_format($this->editingLaborCost, 0, ',', '.') . " + Repuestos $" . number_format($partsCost, 0, ',', '.') . " (Total del Presupuesto: $" . number_format($totalBudget, 0, ',', '.') . ").\n" . ($this->editingEstimatedDelivery ? "Tiempo Estimado de Entrega: " . $this->editingEstimatedDelivery . ".\n" : "") . ($newStatus === 'Presupuestado' ? "Esperando aprobación del cliente." : "Orden con estado activo (" . $newStatus . ").");
 
-        $order->logs()->create([
-            'status' => $newStatus,
-            'title' => $logTitle,
-            'notes' => $logNotes,
-            'user_id' => auth()->id(),
-        ]);
+        $recentLog = $order->logs()
+            ->where('created_at', '>=', now()->subSeconds(30))
+            ->where('status', $newStatus)
+            ->latest()
+            ->first();
+
+        if ($recentLog && in_array($recentLog->title, ['Diagnóstico y Presupuesto Listo', 'Presupuesto Actualizado', 'En Espera de Repuestos'])) {
+            $recentLog->update([
+                'title' => $logTitle,
+                'notes' => $logNotes,
+                'user_id' => auth()->id(),
+            ]);
+        } else {
+            $order->logs()->create([
+                'status' => $newStatus,
+                'title' => $logTitle,
+                'notes' => $logNotes,
+                'user_id' => auth()->id(),
+            ]);
+        }
 
 
         $this->closeManagingModal();

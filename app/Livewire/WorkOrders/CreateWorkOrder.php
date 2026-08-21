@@ -166,24 +166,73 @@ class CreateWorkOrder extends Component
                     $this->brand_model = $quote->device_info;
                 }
 
-                $firstItemDesc = $quote->items->first()?->description ?? 'Servicios Generales';
-                $this->reported_issue = "Servicio/Reparación según Cotización N° {$quote->quote_number}: {$firstItemDesc}";
+                // Construir resumen detallado de diagnóstico e ítems desde la cotización
+                $itemSummaries = [];
+                foreach ($quote->items as $item) {
+                    $typeLabel = $item->type === 'producto' ? 'Repuesto' : 'Servicio';
+                    $itemSummaries[] = "• {$item->description} ({$typeLabel}): $" . number_format($item->subtotal, 0, ',', '.');
+                }
+                $this->reported_issue = "Servicio/Reparación según Cotización N° {$quote->quote_number}:\n" . implode("\n", $itemSummaries) . ($quote->notes ? "\n\nNotas: " . $quote->notes : "");
 
-                $laborTotal = $quote->items->where('type', 'servicio')->sum('subtotal');
                 $this->budget_type = 'fixed';
-                $this->labor_cost = $laborTotal;
+                $this->labor_cost = (float) $quote->services_total;
 
-                // Cargar repuestos cotizados si coinciden con inventario
+                // Cargar repuestos cotizados (productos), creando ítems externos si no existen en stock
+                $this->selected_parts = [];
+                $hasExternalParts = false;
+
                 foreach ($quote->items->where('type', 'producto') as $prod) {
                     $invPart = \App\Models\Inventory::where('name', 'like', '%' . $prod->description . '%')->first();
                     if ($invPart) {
                         $this->selected_parts[] = [
                             'id' => $invPart->id,
                             'name' => $invPart->name,
-                            'sale_price' => $prod->unit_price ?: $invPart->sale_price,
-                            'quantity' => $prod->quantity ?: 1
+                            'sale_price' => (float)($prod->unit_price ?: $invPart->sale_price),
+                            'quantity' => (int)($prod->quantity ?: 1)
                         ];
+                    } else {
+                        // Repuesto a pedido / encargo externo (no en stock local)
+                        $externalPart = \App\Models\Inventory::firstOrCreate(
+                            ['name' => $prod->description],
+                            [
+                                'category' => 'Repuesto por Encargo',
+                                'cost' => 0,
+                                'price' => (float) $prod->unit_price,
+                                'sale_price' => (float) $prod->unit_price,
+                                'stock' => 0,
+                                'min_stock' => 0,
+                            ]
+                        );
+                        $this->selected_parts[] = [
+                            'id' => $externalPart->id,
+                            'name' => $externalPart->name,
+                            'sale_price' => (float) $prod->unit_price,
+                            'quantity' => (int)($prod->quantity ?: 1)
+                        ];
+                        $hasExternalParts = true;
                     }
+                }
+
+                // Cargar servicios cotizados
+                $this->selected_services = [];
+                foreach ($quote->items->where('type', 'servicio') as $srv) {
+                    $this->selected_services[] = [
+                        'service_id' => null,
+                        'name' => $srv->description,
+                        'price' => (float) $srv->unit_price,
+                    ];
+                }
+
+                // Pre-cargar abono requerido si aplica
+                if ($quote->required_deposit > 0) {
+                    $this->down_payment = (float) $quote->required_deposit;
+                }
+
+                // Pre-seleccionar estado inicial inteligente
+                if ($hasExternalParts) {
+                    $this->initial_status = 'Esperando Repuestos';
+                } elseif ($quote->status === 'aceptada') {
+                    $this->initial_status = 'Aprobado';
                 }
             }
         }
