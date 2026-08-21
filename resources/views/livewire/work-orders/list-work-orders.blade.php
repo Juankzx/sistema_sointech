@@ -2241,8 +2241,8 @@
 
                 <div style="font-size: 0.75rem; text-align: left; width: 100%; margin-bottom: 0.5rem; line-height: 1.3;">
                     <p style="margin: 0;"><strong>OT:</strong> #{{ substr($managingOrder->uuid, 0, 8) }}</p>
-                    <p style="margin: 0;"><strong>Cliente:</strong> {{ \Illuminate\Support\Str::limit($managingOrder->client->full_name, 20) }}</p>
-                    <p style="margin: 0;"><strong>Equipo:</strong> {{ \Illuminate\Support\Str::limit($managingOrder->brand_model, 20) }}</p>
+                    <p style="margin: 0;"><strong>Cliente:</strong> {{ \Illuminate\Support\Str::limit($managingOrder->client?->full_name ?? 'Cliente N/A', 20) }}</p>
+                    <p style="margin: 0;"><strong>Equipo:</strong> {{ \Illuminate\Support\Str::limit($managingOrder->brand_model ?? 'N/A', 20) }}</p>
                     <p style="margin: 0;"><strong>Técnico:</strong> {{ $managingOrder->technician ? \Illuminate\Support\Str::limit($managingOrder->technician->name, 20) : 'N/A' }}</p>
                     <p style="margin: 0;"><strong>Recibido por:</strong> {{ $managingOrder->receivedBy ? \Illuminate\Support\Str::limit($managingOrder->receivedBy->name, 20) : 'Sistema' }}</p>
                     <p style="margin: 0;"><strong>Fecha Entrega:</strong> {{ $managingOrder->delivered_at ? $managingOrder->delivered_at->format('d/m/Y H:i') : now()->format('d/m/Y H:i') }}</p>

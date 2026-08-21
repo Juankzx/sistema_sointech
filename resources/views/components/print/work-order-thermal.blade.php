@@ -46,8 +46,8 @@
         <!-- Detail Section -->
         <div style="font-size: 10px; line-height: 1.35; border-bottom: 1px dashed #000; padding-bottom: 6px; margin-bottom: 6px;">
             <div style="margin-bottom: 4px;">
-                <strong>CLIENTE:</strong> {{ Str::limit($order->client->full_name, 26) }}<br>
-                <strong>RUT/RUN:</strong> {{ $order->client->rut_dni ?? 'N/A' }} | <strong>TEL:</strong> {{ $order->client->phone }}
+                <strong>CLIENTE:</strong> {{ Str::limit($order->client?->full_name ?? 'Cliente N/A', 26) }}<br>
+                <strong>RUT/RUN:</strong> {{ $order->client?->rut_dni ?? 'N/A' }} | <strong>TEL:</strong> {{ $order->client?->phone ?? 'N/A' }}
             </div>
 
             <div style="margin-bottom: 4px; border-top: 1px dotted #ccc; padding-top: 3px;">

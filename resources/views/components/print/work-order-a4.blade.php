@@ -110,17 +110,17 @@
                                 </span>
                             </div>
                             <p style="margin: 0 0 5px; font-size: 13px; font-weight: 800; color: #0f172a;">
-                                {{ $order->client->full_name }}
+                                {{ $order->client?->full_name ?? 'Cliente Registrado' }}
                             </p>
                             <p style="margin: 0 0 3px; font-size: 11.5px; color: #334155;">
-                                📞 <strong>Teléfono:</strong> {{ $order->client->phone }}
+                                📞 <strong>Teléfono:</strong> {{ $order->client?->phone ?? 'N/A' }}
                             </p>
-                            @if($order->client->rut_dni)
+                            @if($order->client?->rut_dni)
                                 <p style="margin: 0 0 3px; font-size: 11.5px; color: #334155;">
                                     📄 <strong>RUT/DNI:</strong> {{ $order->client->rut_dni }}
                                 </p>
                             @endif
-                            @if($order->client->email)
+                            @if($order->client?->email)
                                 <p style="margin: 0; font-size: 11.5px; color: #334155; word-break: break-all;">
                                     ✉️ <strong>Email:</strong> {{ $order->client->email }}
                                 </p>
