@@ -34,6 +34,11 @@ class Dashboard extends Component
     public $budgetPartsCost = 0;
     public $budgetNotes = '';
 
+    // Chart Reactive Properties
+    public $chartLabels = [];
+    public $chartOrderCounts = [];
+    public $statusDistribution = [];
+
     public function startLogging($id)
     {
         $order = WorkOrder::with('images')->findOrFail($id);
@@ -267,6 +272,10 @@ class Dashboard extends Component
             'Listo p/ Entrega' => $listas,
             'Entregado' => $entregadas,
         ];
+
+        $this->chartLabels = $chartLabels;
+        $this->chartOrderCounts = $chartOrderCounts;
+        $this->statusDistribution = $statusDistribution;
 
         return view('livewire.dashboard', [
             'totalOrders' => $totalOrders,

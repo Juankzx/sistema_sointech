@@ -1,84 +1,4 @@
-<div class="space-y-6 animate-fade-in max-w-full overflow-x-hidden" wire:poll.visible.10s
-     x-data="{
-        chartTrend: null,
-        chartStatus: null,
-        initDashboardCharts() {
-            this.$nextTick(() => {
-                this.renderDashboardCharts();
-            });
-        },
-        renderDashboardCharts() {
-            const labels = @js($chartLabels);
-            const orderCounts = @js($chartOrderCounts);
-            const statusMap = @js($statusDistribution);
-            const statusLabels = Object.keys(statusMap);
-            const statusValues = Object.values(statusMap);
-
-            // 1. Chart Tendencia
-            const ctx1 = document.getElementById('dashTrendChart');
-            if (ctx1) {
-                if (this.chartTrend) this.chartTrend.destroy();
-                this.chartTrend = new Chart(ctx1, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Nuevas Órdenes',
-                            data: orderCounts,
-                            borderColor: '#3b82f6',
-                            backgroundColor: 'rgba(59, 130, 246, 0.12)',
-                            fill: true,
-                            tension: 0.4,
-                            borderWidth: 3,
-                            pointBackgroundColor: '#3b82f6',
-                            pointRadius: 4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false }
-                        },
-                        scales: {
-                            x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 11 } } },
-                            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b', precision: 0 } }
-                        }
-                    }
-                });
-            }
-
-            // 2. Chart Distribucion Estados
-            const ctx2 = document.getElementById('dashStatusChart');
-            if (ctx2 && statusLabels.length > 0) {
-                if (this.chartStatus) this.chartStatus.destroy();
-                this.chartStatus = new Chart(ctx2, {
-                    type: 'doughnut',
-                    data: {
-                        labels: statusLabels,
-                        datasets: [{
-                            data: statusValues,
-                            backgroundColor: ['#64748b', '#6366f1', '#3b82f6', '#f59e0b', '#10b981', '#a855f7'],
-                            borderWidth: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { position: 'bottom', labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', weight: '600', size: 11 } } }
-                        },
-                        cutout: '72%'
-                    }
-                });
-            }
-        }
-     }"
-     x-init="initDashboardCharts()"
-     wire:effect="initDashboardCharts()">
-
-    <!-- Include Chart.js via CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="space-y-6 animate-fade-in max-w-full overflow-x-hidden" wire:poll.visible.10s>
 
     <!-- 1. HEADER MINIMALISTA DE BIENVENIDA & ACCIONES -->
     <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-5">
@@ -186,8 +106,58 @@
                 </div>
                 <span class="text-[11px] font-semibold text-slate-400">Flujo Semanal</span>
             </div>
-            <div class="h-60 relative">
-                <canvas id="dashTrendChart"></canvas>
+            <div class="h-60 relative"
+                 wire:ignore
+                 x-data="{
+                     chart: null,
+                     init() {
+                         this.$nextTick(() => this.updateChart());
+                         this.$watch('$wire.chartOrderCounts', () => this.updateChart());
+                         this.$watch('$wire.chartLabels', () => this.updateChart());
+                     },
+                     updateChart() {
+                         const labels = $wire.chartLabels || [];
+                         const data = $wire.chartOrderCounts || [];
+                         const ctx = this.$refs.canvas;
+                         if (!ctx) return;
+
+                         if (this.chart) {
+                             this.chart.data.labels = labels;
+                             this.chart.data.datasets[0].data = data;
+                             this.chart.update();
+                         } else {
+                             this.chart = new Chart(ctx, {
+                                 type: 'line',
+                                 data: {
+                                     labels: labels,
+                                     datasets: [{
+                                         label: 'Nuevas Órdenes',
+                                         data: data,
+                                         borderColor: '#3b82f6',
+                                         backgroundColor: 'rgba(59, 130, 246, 0.12)',
+                                         fill: true,
+                                         tension: 0.4,
+                                         borderWidth: 3,
+                                         pointBackgroundColor: '#3b82f6',
+                                         pointRadius: 4
+                                     }]
+                                 },
+                                 options: {
+                                     responsive: true,
+                                     maintainAspectRatio: false,
+                                     plugins: {
+                                         legend: { display: false }
+                                     },
+                                     scales: {
+                                         x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 11 } } },
+                                         y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b', precision: 0 } }
+                                     }
+                                 }
+                             });
+                         }
+                     }
+                 }">
+                <canvas x-ref="canvas"></canvas>
             </div>
         </div>
 
@@ -200,12 +170,51 @@
                 </div>
                 <span class="text-xs font-bold text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">{{ $totalOrders }} OT</span>
             </div>
-            <div class="h-60 relative flex items-center justify-center">
-                @if($totalOrders > 0)
-                    <canvas id="dashStatusChart"></canvas>
-                @else
-                    <p class="text-xs text-slate-400">Sin órdenes en el sistema.</p>
-                @endif
+            <div class="h-60 relative flex items-center justify-center"
+                 wire:ignore
+                 x-data="{
+                     chart: null,
+                     init() {
+                         this.$nextTick(() => this.updateChart());
+                         this.$watch('$wire.statusDistribution', () => this.updateChart());
+                     },
+                     updateChart() {
+                         const statusMap = $wire.statusDistribution || {};
+                         const statusLabels = Object.keys(statusMap);
+                         const statusValues = Object.values(statusMap);
+                         const ctx = this.$refs.canvas;
+                         if (!ctx) return;
+
+                         if (statusLabels.length === 0) return;
+
+                         if (this.chart) {
+                             this.chart.data.labels = statusLabels;
+                             this.chart.data.datasets[0].data = statusValues;
+                             this.chart.update();
+                         } else {
+                             this.chart = new Chart(ctx, {
+                                 type: 'doughnut',
+                                 data: {
+                                     labels: statusLabels,
+                                     datasets: [{
+                                         data: statusValues,
+                                         backgroundColor: ['#64748b', '#6366f1', '#3b82f6', '#f59e0b', '#10b981', '#a855f7'],
+                                         borderWidth: 0
+                                     }]
+                                 },
+                                 options: {
+                                     responsive: true,
+                                     maintainAspectRatio: false,
+                                     plugins: {
+                                         legend: { position: 'bottom', labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', weight: '600', size: 11 } } }
+                                     },
+                                     cutout: '72%'
+                                 }
+                             });
+                         }
+                     }
+                 }">
+                <canvas x-ref="canvas"></canvas>
             </div>
         </div>
     </div>

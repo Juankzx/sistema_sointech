@@ -26,8 +26,9 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
         <meta name="apple-mobile-web-app-title" content="{{ isset($appSettings) && $appSettings->trade_name ? $appSettings->trade_name : 'Sointech' }}">
 
-        <!-- SweetAlert2 CDN -->
+        <!-- SweetAlert2 & Chart.js CDN -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
         <!-- Scripts & Styles -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])

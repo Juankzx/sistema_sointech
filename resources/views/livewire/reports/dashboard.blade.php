@@ -1,96 +1,4 @@
-<div class="space-y-6 animate-fade-in" 
-     x-data="{
-        chartIncome: null,
-        chartStatus: null,
-        initCharts() {
-            this.$nextTick(() => {
-                this.renderCharts();
-            });
-        },
-        renderCharts() {
-            const labels = @js($chartLabels);
-            const salesData = @js($chartSalesData);
-            const expensesData = @js($chartExpensesData);
-            const statusLabels = @js(array_keys($otStatuses->toArray()));
-            const statusValues = @js(array_values($otStatuses->toArray()));
-
-            // 1. Chart Ingresos vs Egresos
-            const ctx1 = document.getElementById('incomeChart');
-            if (ctx1) {
-                if (this.chartIncome) this.chartIncome.destroy();
-                this.chartIncome = new Chart(ctx1, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [
-                            {
-                                label: 'Ingresos ($)',
-                                data: salesData,
-                                borderColor: '#3b82f6',
-                                backgroundColor: 'rgba(59, 130, 246, 0.15)',
-                                fill: true,
-                                tension: 0.35,
-                                borderWidth: 3,
-                                pointBackgroundColor: '#3b82f6'
-                            },
-                            {
-                                label: 'Egresos ($)',
-                                data: expensesData,
-                                borderColor: '#ef4444',
-                                backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                                fill: true,
-                                tension: 0.35,
-                                borderWidth: 2,
-                                borderDash: [4, 4],
-                                pointBackgroundColor: '#ef4444'
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', weight: '600' } } }
-                        },
-                        scales: {
-                            x: { grid: { display: false }, ticks: { color: '#64748b' } },
-                            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } }
-                        }
-                    }
-                });
-            }
-
-            // 2. Chart Órdenes por Estado
-            const ctx2 = document.getElementById('statusChart');
-            if (ctx2 && statusLabels.length > 0) {
-                if (this.chartStatus) this.chartStatus.destroy();
-                this.chartStatus = new Chart(ctx2, {
-                    type: 'doughnut',
-                    data: {
-                        labels: statusLabels,
-                        datasets: [{
-                            data: statusValues,
-                            backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'],
-                            borderWidth: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { position: 'bottom', labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', weight: '600' } } }
-                        },
-                        cutout: '70%'
-                    }
-                });
-            }
-        }
-     }"
-     x-init="initCharts()"
-     wire:effect="initCharts()">
-
-    <!-- Include Chart.js via CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="space-y-6 animate-fade-in">
 
     <!-- Top Header & Action Buttons -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -293,8 +201,73 @@
                 <span class="text-xs font-semibold text-slate-400">Variación Diaria</span>
             </div>
 
-            <div class="h-64 sm:h-80 relative">
-                <canvas id="incomeChart"></canvas>
+            <div class="h-64 sm:h-80 relative"
+                 wire:ignore
+                 x-data="{
+                     chart: null,
+                     init() {
+                         this.$nextTick(() => this.updateChart());
+                         this.$watch('$wire.chartSalesData', () => this.updateChart());
+                         this.$watch('$wire.chartExpensesData', () => this.updateChart());
+                         this.$watch('$wire.chartLabels', () => this.updateChart());
+                     },
+                     updateChart() {
+                         const labels = $wire.chartLabels || [];
+                         const salesData = $wire.chartSalesData || [];
+                         const expensesData = $wire.chartExpensesData || [];
+                         const ctx = this.$refs.canvas;
+                         if (!ctx) return;
+
+                         if (this.chart) {
+                             this.chart.data.labels = labels;
+                             this.chart.data.datasets[0].data = salesData;
+                             this.chart.data.datasets[1].data = expensesData;
+                             this.chart.update();
+                         } else {
+                             this.chart = new Chart(ctx, {
+                                 type: 'line',
+                                 data: {
+                                     labels: labels,
+                                     datasets: [
+                                         {
+                                             label: 'Ingresos ($)',
+                                             data: salesData,
+                                             borderColor: '#3b82f6',
+                                             backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                                             fill: true,
+                                             tension: 0.35,
+                                             borderWidth: 3,
+                                             pointBackgroundColor: '#3b82f6'
+                                         },
+                                         {
+                                             label: 'Egresos ($)',
+                                             data: expensesData,
+                                             borderColor: '#ef4444',
+                                             backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                                             fill: true,
+                                             tension: 0.35,
+                                             borderWidth: 2,
+                                             borderDash: [4, 4],
+                                             pointBackgroundColor: '#ef4444'
+                                         }
+                                     ]
+                                 },
+                                 options: {
+                                     responsive: true,
+                                     maintainAspectRatio: false,
+                                     plugins: {
+                                         legend: { labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', weight: '600' } } }
+                                     },
+                                     scales: {
+                                         x: { grid: { display: false }, ticks: { color: '#64748b' } },
+                                         y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } }
+                                     }
+                                 }
+                             });
+                         }
+                     }
+                 }">
+                <canvas x-ref="canvas"></canvas>
             </div>
         </div>
 
@@ -308,12 +281,51 @@
                 <span class="text-xs font-extrabold text-orange-500 bg-orange-500/10 px-2.5 py-1 rounded-lg">{{ $otCount }} Total</span>
             </div>
 
-            <div class="h-64 relative flex items-center justify-center">
-                @if($otCount > 0)
-                    <canvas id="statusChart"></canvas>
-                @else
-                    <p class="text-xs text-slate-400 font-medium">Sin órdenes de trabajo en el rango seleccionado.</p>
-                @endif
+            <div class="h-64 relative flex items-center justify-center"
+                 wire:ignore
+                 x-data="{
+                     chart: null,
+                     init() {
+                         this.$nextTick(() => this.updateChart());
+                         this.$watch('$wire.otStatusesMap', () => this.updateChart());
+                     },
+                     updateChart() {
+                         const statusMap = $wire.otStatusesMap || {};
+                         const statusLabels = Object.keys(statusMap);
+                         const statusValues = Object.values(statusMap);
+                         const ctx = this.$refs.canvas;
+                         if (!ctx) return;
+
+                         if (statusLabels.length === 0) return;
+
+                         if (this.chart) {
+                             this.chart.data.labels = statusLabels;
+                             this.chart.data.datasets[0].data = statusValues;
+                             this.chart.update();
+                         } else {
+                             this.chart = new Chart(ctx, {
+                                 type: 'doughnut',
+                                 data: {
+                                     labels: statusLabels,
+                                     datasets: [{
+                                         data: statusValues,
+                                         backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'],
+                                         borderWidth: 0
+                                     }]
+                                 },
+                                 options: {
+                                     responsive: true,
+                                     maintainAspectRatio: false,
+                                     plugins: {
+                                         legend: { position: 'bottom', labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', weight: '600' } } }
+                                     },
+                                     cutout: '70%'
+                                 }
+                             });
+                         }
+                     }
+                 }">
+                <canvas x-ref="canvas"></canvas>
             </div>
         </div>
     </div>

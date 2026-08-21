@@ -21,6 +21,13 @@ class Dashboard extends Component
     public $startDate;
     public $endDate;
 
+    // Chart Reactive Properties
+    public $chartLabels = [];
+    public $chartSalesData = [];
+    public $chartExpensesData = [];
+    public $chartOtData = [];
+    public $otStatusesMap = [];
+
     public function mount()
     {
         $this->setDateRange();
@@ -214,6 +221,12 @@ class Dashboard extends Component
                 $curr->addMonth();
             }
         }
+
+        $this->chartLabels = $chartLabels;
+        $this->chartSalesData = $chartSalesData;
+        $this->chartExpensesData = $chartExpensesData;
+        $this->chartOtData = $chartOtData;
+        $this->otStatusesMap = $otStatuses->toArray();
 
         return view('livewire.reports.dashboard', [
             'otCount' => $otCount,
