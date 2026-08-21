@@ -792,7 +792,7 @@
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2.5 px-1">
                             Pruebas Funcionales Realizadas (Desmarca las que fallan)
                         </label>
-                        <div class="grid grid-cols-1 min-[440px]:grid-cols-2 sm:grid-cols-3 gap-2.5">
+                        <div class="grid grid-cols-1 min-[440px]:grid-cols-2 sm:grid-cols-3 gap-2.5" wire:key="chk-grid-{{ $device_type }}">
                             @foreach($checklist_values as $item => $checked)
                                 @php
                                     $icon = '<svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
@@ -809,18 +809,21 @@
                                         $icon = '🎤';
                                     elseif (str_contains($i, 'parlante') || str_contains($i, 'auricular'))
                                         $icon = '🔊';
-                                    elseif (str_contains($i, 'wi-fi') || str_contains($i, 'bluetooth'))
+                                    elseif (str_contains($i, 'wi-fi') || str_contains($i, 'bluetooth') || str_contains($i, 'red'))
                                         $icon = '📶';
                                     elseif (str_contains($i, 'botones'))
                                         $icon = '🔘';
-                                    elseif (str_contains($i, 'carga'))
+                                    elseif (str_contains($i, 'carga') || str_contains($i, 'batería'))
                                         $icon = '🔋';
-                                    elseif (str_contains($i, 'nfc'))
-                                        $icon = '📡';
-                                    elseif (str_contains($i, 'táctil') || str_contains($i, 'pantalla'))
-                                        $icon = '🖐️';
+                                    elseif (str_contains($i, 'teclado'))
+                                        $icon = '⌨️';
+                                    elseif (str_contains($i, 'mouse') || str_contains($i, 'touchpad'))
+                                        $icon = '🖱️';
+                                    elseif (str_contains($i, 'táctil') || str_contains($i, 'pantalla') || str_contains($i, 'display'))
+                                        $icon = '🖥️';
                                 @endphp
-                                <label class="flex items-center gap-3 cursor-pointer p-3 sm:p-3.5 rounded-2xl border transition-all duration-150 select-none
+                                <label wire:key="chk-item-{{ $device_type }}-{{ \Illuminate\Support\Str::slug($item) }}"
+                                    class="flex items-center gap-3 cursor-pointer p-3 sm:p-3.5 rounded-2xl border transition-all duration-150 select-none
                                     {{ $checked 
                                         ? 'bg-blue-950/40 border-blue-500/50 shadow-sm shadow-blue-500/10 text-white' 
                                         : 'bg-gray-800/40 border-gray-700 hover:border-gray-650 hover:bg-gray-800/80 text-gray-300' }}">

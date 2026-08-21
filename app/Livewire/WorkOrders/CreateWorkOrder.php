@@ -240,17 +240,103 @@ class CreateWorkOrder extends Component
 
     public function updatedDeviceType()
     {
-        // Reconstruir checklist dinámico basado en la base de datos
+        // Reconstruir checklist dinámico basado en la base de datos o plantilla predeterminada de la categoría
         $this->checklist_values = [];
         $items = $this->checklist_templates[$this->device_type] ?? [];
+
+        if (empty($items)) {
+            $items = $this->getDefaultChecklistForCategory($this->device_type);
+        }
+
         foreach ($items as $item) {
-            // Inicializar todos los chequeos como correctos (true) por facilidad
-            $this->checklist_values[$item] = true;
+            $cleanItem = trim($item);
+            // Evitar duplicar las preguntas fijas superiores (encendido y sospecha de líquido)
+            if (in_array(strtolower($cleanItem), ['¿enciende?', 'enciende', 'contacto con líquido', 'contacto liquido'])) {
+                continue;
+            }
+            $this->checklist_values[$cleanItem] = true;
         }
 
         // Limpiar el campo de marca y modelo y autocompletados
         $this->brand_model = '';
         $this->foundDevices = [];
+    }
+
+    public function getDefaultChecklistForCategory($type)
+    {
+        return match ($type) {
+            'notebook' => [
+                'Teclado Completo',
+                'Touchpad / Mouse',
+                'Pantalla / Display',
+                'Puertos USB / Conectores',
+                'Cargador y Batería',
+                'Wi-Fi y Red',
+                'Carcasa / Bisagras',
+                'Audio / Parlantes',
+                'Cámara Web / Micrófono',
+            ],
+            'smartphone' => [
+                'Táctil / Pantalla',
+                'Face ID / Touch ID',
+                'Cámaras (Frontal/Trasera)',
+                'Parlante / Auricular',
+                'Micrófono',
+                'Botones Físicos',
+                'Puerto de Carga',
+                'Wi-Fi y Bluetooth',
+            ],
+            'desktop' => [
+                'Encendido / Fuente de Poder',
+                'Salida de Video (HDMI/DP)',
+                'Puertos USB Frontal/Trasero',
+                'Tarjeta de Red / Wi-Fi',
+                'Carcasa / Gabinete',
+                'Audio Frontal/Trasero',
+            ],
+            'console' => [
+                'Salida de Video HDMI',
+                'Lector de Discos / Lente',
+                'Conectividad Controles',
+                'Wi-Fi / Red Lan',
+                'Ventilador / Ruido',
+                'Puerto de Alimentación',
+                'Botón de Encendido / Eject',
+            ],
+            'tablet' => [
+                'Táctil / Touch',
+                'Pantalla / Display',
+                'Cámaras (Front/Tras)',
+                'Botones de Volumen / Power',
+                'Batería / Carga',
+                'Wi-Fi y Bluetooth',
+                'Audio / Salida audífonos',
+            ],
+            'smartwatch' => [
+                'Pantalla / Táctil',
+                'Batería / Carga',
+                'Correa / Broche',
+                'Sensores (Pulso / SpO2)',
+                'Bluetooth / Sincronización',
+                'Botones / Corona Digital',
+                'Vibración / Altavoz',
+            ],
+            'allinone' => [
+                'Pantalla / Display',
+                'Webcam / Micrófono',
+                'Teclado y Mouse',
+                'Puertos USB / Alimentación',
+                'Wi-Fi / Bluetooth',
+                'Disco / Almacenamiento',
+                'Memoria RAM',
+                'Audio / Parlantes',
+            ],
+            default => [
+                'Estado Estético General',
+                'Puertos de Entrada / Salida',
+                'Funcionamiento Principal',
+            ],
+        };
     }
 
     public function addQuickTag($tag)
