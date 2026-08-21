@@ -789,12 +789,13 @@
                 <!-- checklist_values cargados dinámicamente desde BD de configuraciones -->
                 @if(count($checklist_values) > 0)
                     <div class="space-y-2 mb-4">
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 px-1">Pruebas
-                            Funcionales Realizadas (Desmarca las que fallan)</label>
-                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2.5 px-1">
+                            Pruebas Funcionales Realizadas (Desmarca las que fallan)
+                        </label>
+                        <div class="grid grid-cols-1 min-[440px]:grid-cols-2 sm:grid-cols-3 gap-2.5">
                             @foreach($checklist_values as $item => $checked)
                                 @php
-                                    $icon = '<svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+                                    $icon = '<svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
                                     $i = strtolower($item);
                                     if (str_contains($i, 'enciende'))
                                         $icon = '⚡';
@@ -819,12 +820,16 @@
                                     elseif (str_contains($i, 'táctil') || str_contains($i, 'pantalla'))
                                         $icon = '🖐️';
                                 @endphp
-                                <label
-                                    class="flex items-center space-x-2.5 cursor-pointer bg-gray-800/40 p-3 rounded-2xl border border-gray-700 hover:border-gray-650 hover:bg-gray-800/80 transition-all duration-150">
-                                    <input type="checkbox" wire:model="checklist_values.{{ $item }}"
-                                        class="w-4.5 h-4.5 text-blue-500 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 cursor-pointer">
-                                    <span class="text-xs font-bold text-gray-200 truncate flex items-center gap-1.5"><span
-                                            class="text-base">{!! $icon !!}</span> {{ $item }}</span>
+                                <label class="flex items-center gap-3 cursor-pointer p-3 sm:p-3.5 rounded-2xl border transition-all duration-150 select-none
+                                    {{ $checked 
+                                        ? 'bg-blue-950/40 border-blue-500/50 shadow-sm shadow-blue-500/10 text-white' 
+                                        : 'bg-gray-800/40 border-gray-700 hover:border-gray-650 hover:bg-gray-800/80 text-gray-300' }}">
+                                    <input type="checkbox" wire:model.live="checklist_values.{{ $item }}"
+                                        class="w-5 h-5 text-blue-500 bg-gray-700 border-gray-600 rounded-lg focus:ring-blue-500 cursor-pointer shrink-0">
+                                    <span class="text-xs font-bold text-gray-200 leading-snug whitespace-normal break-words flex-1 flex items-center gap-2 min-w-0">
+                                        <span class="text-base shrink-0">{!! $icon !!}</span>
+                                        <span class="break-words leading-tight">{{ $item }}</span>
+                                    </span>
                                 </label>
                             @endforeach
                         </div>
@@ -1552,19 +1557,25 @@
                         $clientNameShort = explode(' ', $this->createdOrder->client?->full_name ?? '')[0];
                         $passText = $this->createdOrder->unlock_password ?: 'Sin Clave';
                     @endphp
-                    <div class="bg-amber-950/40 border border-amber-500/50 p-4 rounded-2xl text-left space-y-2">
+                    <div class="bg-amber-950/60 border border-amber-500/40 p-4 rounded-2xl text-left space-y-2.5 shadow-xl">
                         <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-black uppercase text-amber-400 tracking-wider">🏷️ ESCRIBIR EN LA CINTA DEL EQUIPO:</span>
-                            <span class="text-[10px] bg-amber-500/20 text-amber-300 font-mono px-2 py-0.5 rounded font-bold">Marcador / Plumón</span>
+                            <span class="text-[11px] font-black uppercase text-amber-300 tracking-wider flex items-center gap-1.5">
+                                🏷️ ESCRIBIR EN LA CINTA DEL EQUIPO:
+                            </span>
+                            <span class="text-[10px] bg-amber-500/20 text-amber-300 font-mono px-2.5 py-0.5 rounded-md font-extrabold border border-amber-500/30">
+                                Marcador / Plumón
+                            </span>
                         </div>
-                        <div class="bg-amber-100 text-slate-900 p-3 rounded-xl font-mono font-black text-sm shadow-inner border border-amber-300 select-all space-y-1">
-                            <div class="text-base text-amber-950 font-black border-b border-amber-300 pb-1 flex items-center justify-between">
-                                <span>#{{ $shortUuid }}</span>
-                                <span class="text-xs bg-amber-900 text-amber-100 px-2 py-0.5 rounded">{{ $clientNameShort }}</span>
+                        
+                        <!-- Etiqueta estilo Cinta Amarilla de Taller (Ultra Alto Contraste) -->
+                        <div class="bg-gradient-to-r from-yellow-300 via-amber-200 to-yellow-300 text-slate-950 p-3.5 rounded-2xl font-mono shadow-md border-2 border-yellow-400 select-all space-y-2 relative overflow-hidden">
+                            <div class="flex items-center justify-between border-b-2 border-dashed border-slate-950/20 pb-2">
+                                <span class="text-xl font-black text-slate-950 tracking-wider drop-shadow-sm font-mono">#{{ $shortUuid }}</span>
+                                <span class="text-xs bg-slate-950 text-yellow-300 font-black px-2.5 py-1 rounded-lg tracking-wide shadow-sm font-sans">{{ $clientNameShort }}</span>
                             </div>
-                            <div class="text-xs text-amber-900 font-bold flex items-center justify-between pt-0.5">
-                                <span>📱 {{ $this->createdOrder->brand_model }}</span>
-                                <span>🔒 {{ $passText }}</span>
+                            <div class="flex items-center justify-between text-xs font-black text-slate-950 pt-0.5 font-sans">
+                                <span class="truncate max-w-[210px] font-extrabold flex items-center gap-1">📱 {{ $this->createdOrder->brand_model }}</span>
+                                <span class="shrink-0 bg-slate-950/10 px-2 py-0.5 rounded border border-slate-950/20 font-bold">🔒 {{ $passText }}</span>
                             </div>
                         </div>
                     </div>
