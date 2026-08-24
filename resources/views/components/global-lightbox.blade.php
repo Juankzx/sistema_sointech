@@ -53,7 +53,7 @@
                 id="global-lightbox-img" 
                 src="" 
                 alt="Imagen ampliada"
-                class="w-auto h-auto object-contain rounded-none border border-white/20 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] select-none"
+                class="w-auto h-auto object-contain rounded-none shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] select-none"
                 style="max-width: min(94vw, 1450px); max-height: min(85vh, 900px); object-fit: contain;"
                 draggable="false"
             />
