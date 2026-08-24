@@ -12,11 +12,11 @@ class ImageOptimizer
      *
      * @param UploadedFile|string $file Source uploaded file or absolute file path
      * @param string $directory Subfolder inside storage/app/public (e.g. 'work-orders')
-     * @param int $maxDimension Maximum width or height in pixels (default 1280px - WhatsApp standard)
-     * @param int $quality JPEG quality 1-100 (default 72% - lightweight & crisp)
+     * @param int $maxDimension Maximum width or height in pixels (default 1600px - high clarity standard)
+     * @param int $quality JPEG quality 1-100 (default 82% - lightweight & crisp)
      * @return string Relative path stored under storage/app/public (e.g. 'work-orders/6652a1b9.jpg')
      */
-    public static function optimizeAndStore($file, string $directory = 'work-orders', int $maxDimension = 1280, int $quality = 72): string
+    public static function optimizeAndStore($file, string $directory = 'work-orders', int $maxDimension = 1600, int $quality = 82): string
     {
         $sourcePath = $file instanceof UploadedFile ? $file->getRealPath() : $file;
         $extension = strtolower($file instanceof UploadedFile ? $file->getClientOriginalExtension() : pathinfo($sourcePath, PATHINFO_EXTENSION));

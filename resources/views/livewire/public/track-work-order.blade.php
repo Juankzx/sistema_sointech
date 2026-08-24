@@ -162,9 +162,11 @@
         <!-- FOTOS DE INGRESO (CARRUSEL INTERACTIVO CHECK-IN) -->
         @if($workOrder->images && $workOrder->images->count() > 0)
             @php
-                $checkInList = $workOrder->images->map(fn($img) => [
+                $checkInList = $workOrder->images->map(fn($img, $idx) => [
                     'src' => asset('storage/' . $img->image_path),
-                    'caption' => 'Foto de Ingreso del Equipo (Check-in)'
+                    'title' => 'Foto de Ingreso #' . ($idx + 1),
+                    'caption' => 'Respaldo Fotográfico Check-in (' . ($idx + 1) . '/' . $workOrder->images->count() . ')',
+                    'description' => 'Fotografía del estado físico del equipo tomada durante la recepción (Check-in).'
                 ])->values()->toArray();
             @endphp
             <div 
@@ -251,15 +253,16 @@
                     <template x-for="(photo, index) in photos" :key="index">
                         <button 
                             type="button"
-                            @click="activeIndex = index"
-                            :class="activeIndex === index ? 'border-blue-500 ring-2 ring-blue-500/40 scale-105 opacity-100' : 'border-gray-800 opacity-50 hover:opacity-100'"
-                            class="relative w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-xl overflow-hidden border bg-gray-950 transition duration-200 cursor-pointer"
+                            @click="activeIndex = index; openGlobalLightbox(photos, index, 'Fotos de Ingreso (Check-in)')"
+                            :class="activeIndex === index ? 'border-blue-500 ring-2 ring-blue-500/40 scale-105 opacity-100' : 'border-gray-800 opacity-60 hover:opacity-100'"
+                            class="relative w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-xl overflow-hidden border bg-gray-950 transition duration-200 cursor-pointer group"
+                            title="Ver foto en pantalla completa"
                         >
-                            <img :src="photo.src" class="w-full h-full object-cover" />
+                            <img :src="photo.src" class="w-full h-full object-cover group-hover:scale-105 transition duration-200" />
                         </button>
                     </template>
                 </div>
-                <p class="text-[10px] text-gray-400 italic text-center">👈 Desliza con el dedo o toca cualquier miniatura para navegar por las fotos.</p>
+                <p class="text-[10px] text-gray-400 italic text-center">👈 Toca cualquier miniatura para verla en pantalla completa o desliza para navegar.</p>
             </div>
         @endif
     </div>
