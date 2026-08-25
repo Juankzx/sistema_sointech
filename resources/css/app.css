@@ -20,27 +20,32 @@
 }
 
 /* Custom styled theme scrollbar (ultra thin, modern, and matching dark-blue theme) */
-.theme-scrollbar::-webkit-scrollbar {
-    height: 5px; /* Thin horizontal scrollbar */
-    width: 5px;  /* Thin vertical scrollbar */
+.theme-scrollbar::-webkit-scrollbar,
+.custom-scrollbar::-webkit-scrollbar {
+    height: 6px; /* Thin horizontal scrollbar */
+    width: 6px;  /* Thin vertical scrollbar */
 }
-.theme-scrollbar::-webkit-scrollbar-track {
-    background: rgba(30, 41, 59, 0.5); /* Transparent dark grey-blue */
+.theme-scrollbar::-webkit-scrollbar-track,
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.6); /* Transparent dark slate/blue */
     border-radius: 9999px;
 }
-.theme-scrollbar::-webkit-scrollbar-thumb {
+.theme-scrollbar::-webkit-scrollbar-thumb,
+.custom-scrollbar::-webkit-scrollbar-thumb {
     background: rgba(59, 130, 246, 0.45); /* Elegant translucent blue */
     border-radius: 9999px;
     border: 1px solid rgba(30, 41, 59, 0.5);
     transition: background 0.2s ease;
 }
-.theme-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(59, 130, 246, 0.8); /* Vibrant blue on hover */
+.theme-scrollbar::-webkit-scrollbar-thumb:hover,
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.85); /* Vibrant blue on hover */
 }
 /* Firefox support */
-.theme-scrollbar {
+.theme-scrollbar,
+.custom-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: rgba(59, 130, 246, 0.45) rgba(30, 41, 59, 0.5);
+    scrollbar-color: rgba(59, 130, 246, 0.45) rgba(15, 23, 42, 0.6);
 }
 
 /* ==========================================
@@ -432,17 +437,21 @@ html:not(.dark) .bg-green-950\/50 {
 }
 
 /* --- Scrollbar Light Theme --- */
-html:not(.dark) .theme-scrollbar::-webkit-scrollbar-track {
+html:not(.dark) .theme-scrollbar::-webkit-scrollbar-track,
+html:not(.dark) .custom-scrollbar::-webkit-scrollbar-track {
     background: #f1f5f9;
 }
-html:not(.dark) .theme-scrollbar::-webkit-scrollbar-thumb {
+html:not(.dark) .theme-scrollbar::-webkit-scrollbar-thumb,
+html:not(.dark) .custom-scrollbar::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border: 1px solid #f1f5f9;
 }
-html:not(.dark) .theme-scrollbar::-webkit-scrollbar-thumb:hover {
+html:not(.dark) .theme-scrollbar::-webkit-scrollbar-thumb:hover,
+html:not(.dark) .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
 }
-html:not(.dark) .theme-scrollbar {
+html:not(.dark) .theme-scrollbar,
+html:not(.dark) .custom-scrollbar {
     scrollbar-color: #cbd5e1 #f1f5f9;
 }
 

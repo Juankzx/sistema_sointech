@@ -17,6 +17,31 @@
         <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet" />
         <style>
             body { font-family: 'Inter', sans-serif; }
+            .custom-scrollbar::-webkit-scrollbar,
+            .theme-scrollbar::-webkit-scrollbar {
+                height: 6px;
+                width: 6px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-track,
+            .theme-scrollbar::-webkit-scrollbar-track {
+                background: rgba(15, 23, 42, 0.6);
+                border-radius: 9999px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb,
+            .theme-scrollbar::-webkit-scrollbar-thumb {
+                background: rgba(59, 130, 246, 0.5);
+                border-radius: 9999px;
+                border: 1px solid rgba(30, 41, 59, 0.5);
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb:hover,
+            .theme-scrollbar::-webkit-scrollbar-thumb:hover {
+                background: rgba(59, 130, 246, 0.85);
+            }
+            .custom-scrollbar,
+            .theme-scrollbar {
+                scrollbar-width: thin;
+                scrollbar-color: rgba(59, 130, 246, 0.5) rgba(15, 23, 42, 0.6);
+            }
         </style>
     </head>
     <body class="bg-gray-950 text-gray-100 antialiased selection:bg-blue-500 selection:text-white">

@@ -249,7 +249,7 @@
                 </div>
 
                 <!-- Tira de Miniaturas -->
-                <div class="flex items-center gap-2 overflow-x-auto py-1 px-0.5 custom-scrollbar">
+                <div class="flex items-center gap-2 overflow-x-auto py-2 px-1 custom-scrollbar scroll-smooth">
                     <template x-for="(photo, index) in photos" :key="index">
                         <button 
                             type="button"
