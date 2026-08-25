@@ -1605,11 +1605,6 @@
                         📄 IMPRIMIR RECIBO CLIENTE (A4 / CARTA)
                     </button>
 
-                    <button type="button" onclick="window.printThermalTicket({{ $created_order_id }})"
-                        class="bg-gray-750 hover:bg-gray-700 text-white font-bold py-3.5 px-4 rounded-2xl text-xs tracking-wide flex items-center justify-center gap-2 border border-gray-700 cursor-pointer">
-                        🏷️ IMPRIMIR TICKET TÉRMICO
-                    </button>
-
                     <button type="button" onclick="window.printStickerLabel({{ $created_order_id }})"
                         class="bg-amber-600 hover:bg-amber-500 text-white font-bold py-3.5 px-4 rounded-2xl text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg shadow-amber-500/10 cursor-pointer">
                         📌 IMPRIMIR ETIQUETA ADHESIVA (STICKER)
