@@ -483,16 +483,11 @@
         <!-- Motor de Impresión Global (A4 y Térmica POS) -->
         <script>
             window.printThermalTicket = function(orderId) {
-                const el = document.getElementById('modal-thermal-template');
-                if (el) {
-                    window.printContent('modal-thermal-template', 'qr-modal-canvas-thermal');
-                } else {
-                    window.open('/ot/' + orderId + '/print-thermal', '_blank', 'width=450,height=650');
-                }
+                window.open('/ot/' + orderId + '/print-sticker', '_blank', 'width=380,height=320');
             };
 
             window.printStickerLabel = function(orderId) {
-                window.open('/ot/' + orderId + '/print-sticker', '_blank', 'width=350,height=300');
+                window.open('/ot/' + orderId + '/print-sticker', '_blank', 'width=380,height=320');
             };
 
             window.printContent = function(elementId, qrCanvasId = 'qr-canvas') {

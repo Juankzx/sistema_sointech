@@ -2,37 +2,57 @@
 <html lang="es">
 <head>
     <meta charset="utf-8">
-    <title>Imprimir Etiqueta Térmica OT #{{ substr($order->uuid, 0, 8) }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Etiqueta Adhesiva OT #{{ strtoupper(substr($order->uuid, 0, 8)) }}</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        @page { size: 80mm auto; margin: 0mm; }
-        html, body { width: 80mm; max-width: 80mm; margin: 0 auto; padding: 2mm; background: #fff; color: #000; font-family: "Inter", sans-serif; font-size: 11px; line-height: 1.2; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-        .thermal-ticket-container { width: 100% !important; max-width: 76mm !important; margin: 0 auto !important; padding: 0 !important; }
+        @page {
+            size: 58mm 40mm;
+            margin: 0;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: #fff;
+            color: #000;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        @media print {
+            body { margin: 0; padding: 0; }
+        }
     </style>
 </head>
-<body class="bg-white text-black p-0">
+<body>
 
-    @include('components.print.work-order-thermal', ['templateId' => 'thermal-print-standalone', 'order' => $order, 'qrCanvasId' => 'qr-canvas-standalone'])
+    @include('components.print.device-label-sticker', [
+        'templateId' => 'sticker-thermal-standalone',
+        'order' => $order,
+    ])
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const container = document.getElementById('thermal-print-standalone');
+            const container = document.getElementById('sticker-thermal-standalone');
             if (container) {
-                container.classList.remove('hidden');
                 container.style.display = 'block';
             }
-            const qrCanvas = document.getElementById('qr-canvas-standalone');
+
+            const qrCanvas = document.getElementById('sticker-thermal-standalone-qr');
             if (qrCanvas && qrCanvas.dataset.url && typeof QRious !== 'undefined') {
                 try {
-                    new QRious({ element: qrCanvas, value: qrCanvas.dataset.url, size: 110 });
+                    new QRious({
+                        element: qrCanvas,
+                        value: qrCanvas.dataset.url,
+                        size: 150,
+                        level: 'M',
+                    });
                 } catch(e) {}
             }
+
             setTimeout(function() {
                 window.focus();
                 window.print();
-            }, 300);
+            }, 400);
         });
     </script>
 </body>
