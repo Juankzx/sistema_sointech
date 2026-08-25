@@ -1369,6 +1369,25 @@ class ListWorkOrders extends Component
         }
     }
 
+    public function updatedSearch($value)
+    {
+        $cleanSearch = ltrim(trim($value), '#');
+        if (str_contains($cleanSearch, '/seguimiento/')) {
+            $cleanSearch = basename(parse_url($cleanSearch, PHP_URL_PATH));
+            $this->search = $cleanSearch;
+        }
+
+        if (!empty($cleanSearch) && strlen($cleanSearch) >= 8) {
+            $exactOrder = WorkOrder::where('uuid', $cleanSearch)
+                ->orWhere('uuid', 'like', $cleanSearch . '%')
+                ->first();
+
+            if ($exactOrder && (strlen($cleanSearch) >= 30 || str_contains($value, '/seguimiento/'))) {
+                $this->openWorkOrderDetails($exactOrder->id);
+            }
+        }
+    }
+
     public function render()
     {
         $query = WorkOrder::with(['client', 'technician'])
@@ -1376,6 +1395,9 @@ class ListWorkOrders extends Component
 
         if ($this->search) {
             $cleanSearch = ltrim(trim($this->search), '#');
+            if (str_contains($cleanSearch, '/seguimiento/')) {
+                $cleanSearch = basename(parse_url($cleanSearch, PHP_URL_PATH));
+            }
             $query->where(function($q) use ($cleanSearch) {
                 $q->where('brand_model', 'like', '%' . $cleanSearch . '%')
                   ->orWhere('device_type', 'like', '%' . $cleanSearch . '%')
