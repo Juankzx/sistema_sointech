@@ -22,6 +22,13 @@ class PrintController extends Controller
         return view('print.work-order', compact('order'));
     }
 
+    public function workOrderThermal($id)
+    {
+        $order = WorkOrder::with(['client', 'payments', 'parts'])->findOrFail($id);
+        $settings = \App\Models\Setting::first() ?? new \App\Models\Setting();
+        return view('print.work-order-thermal-page', compact('order', 'settings'));
+    }
+
     public function payment($id, $payment_id)
     {
         $order = WorkOrder::with(['client', 'parts'])->findOrFail($id);

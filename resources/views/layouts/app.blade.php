@@ -482,6 +482,15 @@
 
         <!-- Motor de Impresión Global (A4 y Térmica POS) -->
         <script>
+            window.printThermalTicket = function(orderId) {
+                const el = document.getElementById('modal-thermal-template');
+                if (el) {
+                    window.printContent('modal-thermal-template', 'qr-modal-canvas-thermal');
+                } else {
+                    window.open('/ot/' + orderId + '/print-thermal', '_blank', 'width=450,height=650');
+                }
+            };
+
             window.printContent = function(elementId, qrCanvasId = 'qr-canvas') {
                 let el = document.getElementById(elementId);
                 if (!el && elementId.includes('thermal')) {
