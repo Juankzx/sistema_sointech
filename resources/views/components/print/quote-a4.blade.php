@@ -82,10 +82,10 @@
         <div class="w-1/2 bg-gray-50/80 backdrop-blur-sm p-4 rounded-xl border border-gray-200">
             <h3 class="text-[10px] font-black text-gray-500 uppercase tracking-widest border-b border-gray-200 pb-2 mb-3">Datos del Cliente</h3>
             <table class="text-xs w-full">
-                <tr><td class="text-gray-500 py-1 w-1/3">Razón Social / Nombre:</td><td class="font-bold text-gray-900">{{ $order->client->full_name }}</td></tr>
-                <tr><td class="text-gray-500 py-1">RUT / DNI:</td><td class="font-bold text-gray-900">{{ $order->client->rut_dni ?: 'No registrado' }}</td></tr>
-                <tr><td class="text-gray-500 py-1">Teléfono:</td><td class="font-bold text-gray-900">{{ $order->client->phone }}</td></tr>
-                <tr><td class="text-gray-500 py-1">Email:</td><td class="font-bold text-gray-900">{{ $order->client->email ?: 'No registrado' }}</td></tr>
+                <tr><td class="text-gray-500 py-1 w-1/3">Razón Social / Nombre:</td><td class="font-bold text-gray-900">{{ $order->client?->full_name ?? 'Cliente N/A' }}</td></tr>
+                <tr><td class="text-gray-500 py-1">RUT / DNI:</td><td class="font-bold text-gray-900">{{ $order->client?->rut_dni ?: 'No registrado' }}</td></tr>
+                <tr><td class="text-gray-500 py-1">Teléfono:</td><td class="font-bold text-gray-900">{{ $order->client?->phone ?? 'No registrado' }}</td></tr>
+                <tr><td class="text-gray-500 py-1">Email:</td><td class="font-bold text-gray-900">{{ $order->client?->email ?: 'No registrado' }}</td></tr>
             </table>
         </div>
         

@@ -357,7 +357,7 @@
                                     Aceptación Conforme del Cliente
                                 </p>
                                 <p style="margin: 1px 0 0; font-size: 9px; color: #475569; font-weight: 700;">
-                                    {{ $order->client->full_name }} @if($order->client->rut_dni)| RUT: {{ $order->client->rut_dni }}@endif
+                                    {{ $order->client?->full_name ?? 'Cliente' }} @if($order->client?->rut_dni)| RUT: {{ $order->client->rut_dni }}@endif
                                 </p>
                                 <p style="margin: 2px 0 0; font-size: 7.5px; color: #64748b; font-style: italic; line-height: 1.1;">
                                     "Al firmar, el cliente declara haber leído, comprendido y aceptado las condiciones de servicio, garantía y la cláusula de abandono."

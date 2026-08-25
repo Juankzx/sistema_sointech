@@ -122,11 +122,11 @@
             @else
                 <div style="border-bottom: 1px solid #000; height: 35px; margin: 5px 15px 3px;"></div>
                 <div style="font-size: 8px; font-weight: bold;">
-                    FIRMA CLIENTE: {{ Str::limit($order->client->full_name, 24) }}
+                    FIRMA CLIENTE: {{ Str::limit($order->client?->full_name ?? 'Cliente N/A', 24) }}
                 </div>
             @endif
             <div style="font-size: 7px; color: #333; margin-top: 2px;">
-                RUT: {{ $order->client->rut_dni ?? '__________________' }}
+                RUT: {{ $order->client?->rut_dni ?? '__________________' }}
             </div>
             <div style="font-size: 7px; color: #555; margin-top: 2px; font-style: italic;">
                 "Declaro haber leído, aceptado y recibido copia de estas condiciones"
