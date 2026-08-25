@@ -1382,7 +1382,7 @@ class ListWorkOrders extends Component
                 ->orWhere('uuid', 'like', $cleanSearch . '%')
                 ->first();
 
-            if ($exactOrder && (strlen($cleanSearch) >= 30 || str_contains($value, '/seguimiento/'))) {
+            if ($exactOrder && (strlen($cleanSearch) >= 8 || str_contains($value, '/seguimiento/'))) {
                 $this->openWorkOrderDetails($exactOrder->id);
             }
         }
