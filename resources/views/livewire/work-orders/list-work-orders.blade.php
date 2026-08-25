@@ -2228,7 +2228,7 @@
             </div>
         
         <!-- PLANTILLAS DE IMPRESIÓN OCULTAS EN EL DOM PARA EL MODAL -->
-        <div style="display: none;">
+        <div wire:key="modal-print-templates-{{ $managingOrder->id }}" style="display: none;">
             
             <!-- 1. COMPROBANTE DE CLIENTE (A4 / Carta) -->
             @include('components.print.work-order-a4', ['templateId' => 'modal-receipt-template', 'order' => $managingOrder, 'qrCanvasId' => 'qr-modal-canvas'])

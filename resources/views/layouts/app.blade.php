@@ -483,7 +483,10 @@
         <!-- Motor de Impresión Global (A4 y Térmica POS) -->
         <script>
             window.printContent = function(elementId, qrCanvasId = 'qr-canvas') {
-                const el = document.getElementById(elementId);
+                let el = document.getElementById(elementId);
+                if (!el && elementId.includes('thermal')) {
+                    el = document.querySelector('.thermal-ticket-container') || document.querySelector('[id*="thermal"]');
+                }
                 if (!el) { 
                     console.error('Elemento no encontrado para imprimir:', elementId); 
                     alert('Error: No se encontró la plantilla de impresión (' + elementId + ').');
