@@ -623,6 +623,9 @@
                                 <button type="button" onclick="window.printThermalTicket({{ $managingOrder->id }})" class="inline-flex items-center gap-1.5 px-3 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold rounded-xl text-xs transition duration-150 border border-gray-700 cursor-pointer">
                                     🏷️ Etiqueta Térmica
                                 </button>
+                                <button type="button" onclick="window.printStickerLabel({{ $managingOrder->id }})" class="inline-flex items-center gap-1.5 px-3 py-2 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-xl text-xs transition duration-150 cursor-pointer shadow">
+                                    📌 Etiqueta Adhesiva
+                                </button>
                             @endif
                         </div>
 
@@ -647,6 +650,9 @@
                                     </button>
                                     <button type="button" onclick="window.printThermalTicket({{ $managingOrder->id }})" @click="mobileMenuOpen=false" class="w-full text-left px-3 py-2.5 text-xs font-bold text-white hover:bg-gray-800 rounded-xl transition flex items-center gap-2">
                                         🏷️ Etiqueta Térmica
+                                    </button>
+                                    <button type="button" onclick="window.printStickerLabel({{ $managingOrder->id }})" @click="mobileMenuOpen=false" class="w-full text-left px-3 py-2.5 text-xs font-bold text-amber-400 hover:bg-gray-800 rounded-xl transition flex items-center gap-2">
+                                        📌 Etiqueta Adhesiva
                                     </button>
                                 @endif
                             </div>

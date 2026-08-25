@@ -29,6 +29,12 @@ class PrintController extends Controller
         return view('print.work-order-thermal-page', compact('order', 'settings'));
     }
 
+    public function deviceLabelSticker($id)
+    {
+        $order = WorkOrder::with(['client'])->findOrFail($id);
+        return view('print.device-label-sticker-page', compact('order'));
+    }
+
     public function payment($id, $payment_id)
     {
         $order = WorkOrder::with(['client', 'parts'])->findOrFail($id);

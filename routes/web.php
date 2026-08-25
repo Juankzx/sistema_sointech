@@ -97,6 +97,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/caja/{id}/print', [PrintController::class, 'cashRegister'])->name('caja.print');
     Route::get('/ot/{id}/print', [PrintController::class, 'workOrder'])->name('ot.print');
     Route::get('/ot/{id}/print-thermal', [PrintController::class, 'workOrderThermal'])->name('ot.print-thermal');
+    Route::get('/ot/{id}/print-sticker', [PrintController::class, 'deviceLabelSticker'])->name('ot.print-sticker');
     Route::get('/ot/{id}/print-payment/{payment_id}', [PrintController::class, 'payment'])->name('ot.print-payment');
     Route::get('/pos/sale/{id}/print', [PrintController::class, 'sale'])->name('sales.print');
     

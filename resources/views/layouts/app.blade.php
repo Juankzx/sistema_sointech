@@ -491,6 +491,10 @@
                 }
             };
 
+            window.printStickerLabel = function(orderId) {
+                window.open('/ot/' + orderId + '/print-sticker', '_blank', 'width=350,height=300');
+            };
+
             window.printContent = function(elementId, qrCanvasId = 'qr-canvas') {
                 let el = document.getElementById(elementId);
                 if (!el && elementId.includes('thermal')) {
