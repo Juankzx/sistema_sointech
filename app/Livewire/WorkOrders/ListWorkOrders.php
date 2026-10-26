@@ -624,7 +624,7 @@ class ListWorkOrders extends Component
     {
         $part = \App\Models\Inventory::find($id);
         if ($part) {
-            $price = (float)($part->cost > 0 ? $part->cost : $part->sale_price);
+            $price = (float)($part->cost_price > 0 ? $part->cost_price : $part->sale_price);
             $this->editingSelectedParts[] = [
                 'id' => $part->id,
                 'name' => $part->name,
@@ -644,11 +644,9 @@ class ListWorkOrders extends Component
                 ['name' => trim($this->editingCustomPartName)],
                 [
                     'category' => 'Repuesto por Encargo',
-                    'cost' => $cost,
-                    'price' => $cost,
+                    'cost_price' => $cost,
                     'sale_price' => $cost,
                     'stock' => 0,
-                    'min_stock' => 0,
                 ]
             );
             $this->editingSelectedParts[] = [

@@ -18,4 +18,14 @@ class Inventory extends Model
                     ->withPivot('quantity', 'price_at_time')
                     ->withTimestamps();
     }
+
+    public function getCostAttribute(): float
+    {
+        return (float) ($this->attributes['cost_price'] ?? $this->attributes['cost'] ?? 0);
+    }
+
+    public function getPriceAttribute(): float
+    {
+        return (float) ($this->attributes['sale_price'] ?? $this->attributes['price'] ?? 0);
+    }
 }

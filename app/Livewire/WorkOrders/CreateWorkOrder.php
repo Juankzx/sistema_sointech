@@ -199,11 +199,9 @@ class CreateWorkOrder extends Component
                             ['name' => $prod->description],
                             [
                                 'category' => 'Repuesto por Encargo',
-                                'cost' => 0,
-                                'price' => (float) $prod->unit_price,
+                                'cost_price' => (float) $prod->unit_price,
                                 'sale_price' => (float) $prod->unit_price,
                                 'stock' => 0,
-                                'min_stock' => 0,
                             ]
                         );
                         $this->selected_parts[] = [
@@ -542,7 +540,7 @@ class CreateWorkOrder extends Component
     {
         $part = Inventory::find($id);
         if ($part) {
-            $price = (float)($part->cost > 0 ? $part->cost : $part->sale_price);
+            $price = (float)($part->cost_price > 0 ? $part->cost_price : $part->sale_price);
             $this->selected_parts[] = [
                 'id' => $part->id,
                 'name' => $part->name,
@@ -562,11 +560,9 @@ class CreateWorkOrder extends Component
                 ['name' => trim($this->customPartName)],
                 [
                     'category' => 'Repuesto por Encargo',
-                    'cost' => $cost,
-                    'price' => $cost,
+                    'cost_price' => $cost,
                     'sale_price' => $cost,
                     'stock' => 0,
-                    'min_stock' => 0,
                 ]
             );
             $this->selected_parts[] = [
