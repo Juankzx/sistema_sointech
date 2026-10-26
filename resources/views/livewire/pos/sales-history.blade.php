@@ -88,61 +88,74 @@
     <div class="bg-slate-900/60 backdrop-blur-xl rounded-3xl border border-slate-800 shadow-2xl overflow-hidden max-w-full">
         
         <!-- DESKTOP TABLE -->
-        <div class="hidden md:block overflow-x-auto theme-scrollbar">
-            <table class="w-full text-left text-xs whitespace-nowrap">
+        <div class="hidden md:block">
+            <table class="w-full text-left text-xs table-fixed">
+                <colgroup>
+                    <col class="w-[4%]">  {{-- N° --}}
+                    <col class="w-[10%]"> {{-- Fecha --}}
+                    <col class="w-[8%]">  {{-- Código --}}
+                    <col class="w-[15%]"> {{-- Cliente --}}
+                    <col class="w-[25%]"> {{-- Detalle --}}
+                    <col class="w-[9%]">  {{-- Método Pago --}}
+                    <col class="w-[9%]">  {{-- Usuario --}}
+                    <col class="w-[7%]">  {{-- Total --}}
+                    <col class="w-[13%]"> {{-- Acciones --}}
+                </colgroup>
                 <thead>
-                    <tr class="bg-slate-950/80 text-slate-400 font-bold uppercase text-[10px] tracking-widest border-b border-slate-800">
-                        <th class="px-4 py-4 w-12 text-center">N°</th>
-                        <th class="px-6 py-4">Fecha & Hora</th>
-                        <th class="px-6 py-4">Código</th>
-                        <th class="px-6 py-4">Cliente</th>
-                        <th class="px-6 py-4">Detalle Artículos</th>
-                        <th class="px-6 py-4">Método Pago</th>
-                        <th class="px-6 py-4">Usuario</th>
-                        <th class="px-6 py-4 text-center">Estado</th>
-                        <th class="px-6 py-4 text-right">Total</th>
-                        <th class="px-6 py-4 text-center">Acciones</th>
+                    <tr class="bg-slate-950/80 text-slate-400 font-bold uppercase text-[10px] tracking-widest border-b border-slate-700/80">
+                        <th class="px-2 py-3.5 text-center">#</th>
+                        <th class="px-3 py-3.5">Fecha</th>
+                        <th class="px-3 py-3.5">Código</th>
+                        <th class="px-3 py-3.5">Cliente</th>
+                        <th class="px-3 py-3.5">Detalle Artículos</th>
+                        <th class="px-3 py-3.5">Pago</th>
+                        <th class="px-3 py-3.5">Usuario</th>
+                        <th class="px-3 py-3.5 text-right">Total</th>
+                        <th class="px-3 py-3.5 text-center">Acciones</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-800/60">
+                <tbody>
                     @forelse($sales as $index => $sale)
-                        <tr class="{{ $sale->isVoided() ? 'opacity-50 bg-red-950/10' : 'hover:bg-slate-800/40' }} transition duration-150 group">
-                            <td class="px-4 py-4 text-center font-mono font-bold text-slate-500 text-xs">
-                                #{{ ($sales->currentPage() - 1) * $sales->perPage() + $loop->iteration }}
+                        <tr class="{{ $sale->isVoided() ? 'opacity-50 bg-red-950/10' : '' }} {{ $loop->even ? 'bg-slate-800/20' : 'bg-transparent' }} hover:bg-slate-800/50 transition duration-150 group border-b border-slate-800/40">
+                            <td class="px-2 py-3 text-center font-mono font-bold text-slate-500 text-[11px] align-top">
+                                {{ ($sales->currentPage() - 1) * $sales->perPage() + $loop->iteration }}
                             </td>
-                            <td class="px-6 py-4 text-slate-400 font-medium">
-                                <div class="flex flex-col">
-                                    <span class="text-slate-200 font-semibold {{ $sale->isVoided() ? 'line-through' : '' }}">{{ $sale->created_at->format('d/m/Y') }}</span>
-                                    <span class="text-[10px] text-slate-500">{{ $sale->created_at->format('H:i') }} hrs</span>
+                            <td class="px-3 py-3 align-top">
+                                <div class="flex flex-col leading-tight">
+                                    <span class="text-slate-200 font-semibold text-[11px] {{ $sale->isVoided() ? 'line-through' : '' }}">{{ $sale->created_at->format('d/m/Y') }}</span>
+                                    <span class="text-[10px] text-slate-500 mt-0.5">{{ $sale->created_at->format('H:i') }} hrs</span>
                                 </div>
                             </td>
-                            <td class="px-6 py-4">
-                                <span class="font-mono text-xs font-extrabold {{ $sale->isVoided() ? 'text-red-400 bg-red-500/10 border-red-500/20' : 'text-orange-400 bg-orange-500/10 border-orange-500/20' }} px-2.5 py-1 rounded-lg border">
-                                    #{{ substr($sale->uuid, 0, 8) }}
+                            <td class="px-3 py-3 align-top">
+                                <span class="font-mono text-[11px] font-extrabold {{ $sale->isVoided() ? 'text-red-400 bg-red-500/10 border-red-500/20' : 'text-orange-400 bg-orange-500/10 border-orange-500/20' }} px-2 py-0.5 rounded-lg border inline-block">
+                                    #{{ substr($sale->uuid, 0, 7) }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4">
-                                <div class="flex flex-col">
-                                    <span class="text-white font-bold {{ $sale->isVoided() ? 'line-through' : '' }}">{{ $sale->client_name }}</span>
+                            <td class="px-3 py-3 align-top">
+                                <div class="flex flex-col leading-tight min-w-0">
+                                    <span class="text-white font-bold text-[11px] truncate {{ $sale->isVoided() ? 'line-through' : '' }}" title="{{ $sale->client_name }}">{{ $sale->client_name }}</span>
                                     @if($sale->client_phone)
                                         <span class="text-[10px] text-slate-400 font-mono flex items-center gap-1 mt-0.5">
-                                            <svg class="w-3 h-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-                                            {{ $sale->client_phone }}
+                                            <svg class="w-3 h-3 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                                            <span class="truncate">{{ $sale->client_phone }}</span>
                                         </span>
                                     @endif
                                 </div>
                             </td>
-                            <td class="px-6 py-4 max-w-xs">
-                                <div class="flex flex-col gap-1 overflow-hidden {{ $sale->isVoided() ? 'line-through' : '' }}">
-                                    @foreach($sale->items as $item)
-                                        <div class="flex items-center gap-1.5 text-slate-300">
-                                            <span class="px-1.5 py-0.5 rounded bg-slate-800 text-[10px] font-black text-amber-400 border border-slate-700/60 shrink-0">{{ $item->quantity }}x</span>
-                                            <span class="truncate text-xs font-medium" title="{{ $item->name }}">{{ $item->name }}</span>
+                            <td class="px-3 py-3 align-top">
+                                <div class="flex flex-col gap-0.5 {{ $sale->isVoided() ? 'line-through' : '' }}">
+                                    @foreach($sale->items->take(3) as $item)
+                                        <div class="flex items-start gap-1.5 text-slate-300 leading-tight">
+                                            <span class="px-1 py-0 rounded bg-slate-800 text-[9px] font-black text-amber-400 border border-slate-700/60 shrink-0 mt-px">{{ $item->quantity }}x</span>
+                                            <span class="text-[11px] font-medium break-words line-clamp-1" title="{{ $item->name }}">{{ $item->name }}</span>
                                         </div>
                                     @endforeach
+                                    @if($sale->items->count() > 3)
+                                        <span class="text-[10px] text-slate-500 font-semibold italic pl-0.5">+{{ $sale->items->count() - 3 }} más...</span>
+                                    @endif
                                 </div>
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-3 py-3 align-top">
                                 @php
                                     $method = strtolower($sale->payment_method ?? '');
                                     $badgeClass = match(true) {
@@ -152,43 +165,37 @@
                                         default => 'bg-slate-800 text-slate-300 border-slate-700'
                                     };
                                 @endphp
-                                <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-[10px] font-bold border uppercase tracking-wider {{ $badgeClass }}">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-lg text-[9px] font-bold border uppercase tracking-wider {{ $badgeClass }} whitespace-nowrap">
                                     {{ $sale->payment_method }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 text-slate-400 font-medium">
-                                <div class="flex items-center gap-1.5">
-                                    <div class="w-5 h-5 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-[9px] font-black text-slate-300 uppercase">
+                            <td class="px-3 py-3 align-top text-slate-400 font-medium">
+                                <div class="flex items-center gap-1.5 min-w-0">
+                                    <div class="w-5 h-5 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-[9px] font-black text-slate-300 uppercase shrink-0">
                                         {{ substr($sale->user->name ?? 'A', 0, 1) }}
                                     </div>
-                                    <span>{{ $sale->user ? $sale->user->name : 'N/A' }}</span>
+                                    <span class="truncate text-[11px]" title="{{ $sale->user ? $sale->user->name : 'N/A' }}">{{ $sale->user ? $sale->user->name : 'N/A' }}</span>
                                 </div>
-                            </td>
-                            <td class="px-6 py-4 text-center">
                                 @if($sale->isVoided())
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-[10px] font-black border uppercase tracking-wider bg-red-950/60 text-red-400 border-red-500/30" title="Anulada por: {{ $sale->voidedByUser->name ?? 'N/A' }} — {{ $sale->void_reason }}">
-                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
-                                        ANULADA
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-[10px] font-bold border uppercase tracking-wider bg-emerald-950/60 text-emerald-400 border-emerald-500/30">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5"></span>
-                                        Activa
+                                    <span class="inline-flex items-center mt-1 px-1.5 py-0.5 rounded-md text-[9px] font-black border uppercase bg-red-950/60 text-red-400 border-red-500/30" title="Motivo: {{ $sale->void_reason }}">
+                                        <svg class="w-2.5 h-2.5 mr-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                                        Anulada
                                     </span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 text-right font-black text-sm {{ $sale->isVoided() ? 'text-red-400 line-through' : 'text-white' }}">
+                            <td class="px-3 py-3 text-right font-black text-[13px] align-top {{ $sale->isVoided() ? 'text-red-400 line-through' : 'text-white' }}">
                                 ${{ number_format($sale->total, 0, ',', '.') }}
                             </td>
-                            <td class="px-6 py-4 text-center">
-                                <div class="flex items-center justify-center gap-2">
+                            <td class="px-3 py-3 text-center align-top">
+                                <div class="flex items-center justify-center gap-1.5">
                                     <a 
                                         href="{{ route('sales.print', $sale->id) }}" 
                                         target="_blank" 
-                                        class="px-3 py-1.5 bg-orange-500/10 hover:bg-orange-500 text-orange-400 hover:text-white border border-orange-500/30 rounded-xl text-xs font-bold transition duration-200 inline-flex items-center gap-1.5 shadow-sm"
+                                        class="px-2 py-1.5 bg-orange-500/10 hover:bg-orange-500 text-orange-400 hover:text-white border border-orange-500/30 rounded-lg text-[10px] font-bold transition duration-200 inline-flex items-center gap-1 shadow-sm"
+                                        title="Ver comprobante"
                                     >
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                                        <span>Comp.</span>
+                                        <span class="hidden lg:inline">Comp.</span>
                                     </a>
 
                                     @if($sale->client_phone)
@@ -196,9 +203,9 @@
                                             href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $sale->client_phone) }}?text={{ urlencode('Hola ' . $sale->client_name . ', te compartimos el detalle de tu compra #' . substr($sale->uuid, 0, 8) . ' por un total de $' . number_format($sale->total, 0, ',', '.')) }}" 
                                             target="_blank" 
                                             title="Enviar WhatsApp"
-                                            class="p-2 bg-emerald-500/10 hover:bg-emerald-600 text-emerald-400 hover:text-white rounded-xl border border-emerald-500/30 transition duration-200 cursor-pointer flex items-center justify-center shadow-sm"
+                                            class="p-1.5 bg-emerald-500/10 hover:bg-emerald-600 text-emerald-400 hover:text-white rounded-lg border border-emerald-500/30 transition duration-200 cursor-pointer flex items-center justify-center shadow-sm"
                                         >
-                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                                                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c-.001 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                                             </svg>
                                         </a>
@@ -207,10 +214,10 @@
                                     @if(!$sale->isVoided())
                                         <button 
                                             wire:click="confirmVoid({{ $sale->id }})"
-                                            class="p-2 bg-red-500/10 hover:bg-red-600 text-red-400 hover:text-white rounded-xl border border-red-500/30 transition duration-200 cursor-pointer flex items-center justify-center shadow-sm"
+                                            class="p-1.5 bg-red-500/10 hover:bg-red-600 text-red-400 hover:text-white rounded-lg border border-red-500/30 transition duration-200 cursor-pointer flex items-center justify-center shadow-sm"
                                             title="Anular venta"
                                         >
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
                                         </button>
                                     @endif
                                 </div>
@@ -218,7 +225,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="10" class="px-6 py-12 text-center text-slate-500">
+                            <td colspan="9" class="px-6 py-12 text-center text-slate-500">
                                 <div class="flex flex-col items-center justify-center gap-2">
                                     <svg class="w-10 h-10 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                     <span>No se encontraron ventas registradas con los filtros actuales.</span>

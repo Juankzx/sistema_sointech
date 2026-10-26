@@ -70,9 +70,12 @@ class CreateWorkOrder extends Component
     // Finances
     public $budget_type = 'fixed'; // 'fixed' or 'pending' (Solo Diagnóstico)
     public $labor_cost = 0;
+    public $shipping_cost = 0;
     public $down_payment = 0;
     public $payment_method = 'Efectivo';
     public $selected_parts = []; // array of ['id', 'name', 'sale_price', 'quantity']
+    public $customPartName = '';
+    public $customPartCost = '';
 
     // Service Selection Properties
     public $selected_services = []; // array of ['service_id', 'name', 'price']
@@ -498,6 +501,7 @@ class CreateWorkOrder extends Component
         } elseif ($value === 'Garantía') {
             $this->budget_type = 'fixed';
             $this->labor_cost = 0;
+            $this->shipping_cost = 0;
             $this->down_payment = 0;
             $this->selected_parts = [];
         }
@@ -507,6 +511,7 @@ class CreateWorkOrder extends Component
     {
         if ($value === 'pending') {
             $this->labor_cost = 0;
+            $this->shipping_cost = 0;
             $this->down_payment = 0;
             $this->selected_parts = [];
             if ($this->initial_status === 'Aprobado') {
@@ -536,16 +541,48 @@ class CreateWorkOrder extends Component
     public function addPart($id)
     {
         $part = Inventory::find($id);
-        if ($part && $part->stock > 0) {
+        if ($part) {
+            $price = (float)($part->cost > 0 ? $part->cost : $part->sale_price);
             $this->selected_parts[] = [
                 'id' => $part->id,
                 'name' => $part->name,
-                'sale_price' => $part->sale_price,
+                'sale_price' => $price,
                 'quantity' => 1
             ];
             $this->searchPart = '';
             $this->foundParts = [];
         }
+    }
+
+    public function addCustomPart()
+    {
+        if (trim($this->customPartName) !== '') {
+            $cost = is_numeric($this->customPartCost) ? (float)$this->customPartCost : 0;
+            $externalPart = Inventory::firstOrCreate(
+                ['name' => trim($this->customPartName)],
+                [
+                    'category' => 'Repuesto por Encargo',
+                    'cost' => $cost,
+                    'price' => $cost,
+                    'sale_price' => $cost,
+                    'stock' => 0,
+                    'min_stock' => 0,
+                ]
+            );
+            $this->selected_parts[] = [
+                'id' => $externalPart->id,
+                'name' => $externalPart->name,
+                'sale_price' => $cost,
+                'quantity' => 1
+            ];
+            $this->customPartName = '';
+            $this->customPartCost = '';
+        }
+    }
+
+    public function setQuickShipping($amount)
+    {
+        $this->shipping_cost = (float)$amount;
     }
 
     public function removePart($index)
@@ -657,9 +694,9 @@ class CreateWorkOrder extends Component
             return 0;
         }
         $totalParts = collect($this->selected_parts)->sum(function ($part) {
-            return $part['sale_price'] * $part['quantity'];
+            return (float)($part['sale_price'] ?? 0) * (int)($part['quantity'] ?? 1);
         });
-        return $totalParts + (float) $this->labor_cost;
+        return $totalParts + (float) $this->shipping_cost + (float) $this->labor_cost;
     }
 
     public function getBalanceProperty()
@@ -736,8 +773,10 @@ class CreateWorkOrder extends Component
         ];
 
         // Costos finales dependen del tipo de presupuesto
-        $finalLaborCost = $this->budget_type === 'pending' ? 0 : $this->labor_cost;
-        $finalDownPayment = $this->budget_type === 'pending' ? 0 : $this->down_payment;
+        $finalLaborCost = $this->budget_type === 'pending' ? 0 : (float)$this->labor_cost;
+        $finalShippingCost = $this->budget_type === 'pending' ? 0 : (float)$this->shipping_cost;
+        $finalDownPayment = $this->budget_type === 'pending' ? 0 : (float)$this->down_payment;
+        $finalEstimatedCost = $this->budget_type === 'pending' ? 0 : $this->getTotalProperty();
 
         // Validar que haya caja abierta si hay abono
         $activeRegister = \App\Models\CashRegister::where('status', 'open')
@@ -762,12 +801,25 @@ class CreateWorkOrder extends Component
             'status' => $this->initial_status,
             'checklist' => $checklist,
             'labor_cost' => $finalLaborCost,
+            'shipping_cost' => $finalShippingCost,
+            'estimated_cost' => $finalEstimatedCost,
             'down_payment' => $finalDownPayment,
             'payment_method' => $this->payment_method,
             'signature_path' => $signatureName,
             'terms_accepted' => $this->terms_accepted,
             'estimated_delivery' => $this->estimated_delivery,
         ]);
+
+        // Guardar servicios de mano de obra asignados
+        if ($this->budget_type !== 'pending' && !empty($this->selected_services) && \Illuminate\Support\Facades\Schema::hasTable('work_order_services')) {
+            foreach ($this->selected_services as $srv) {
+                $workOrder->services()->create([
+                    'service_id' => $srv['service_id'] ?? null,
+                    'name' => $srv['name'],
+                    'price' => (float)($srv['price'] ?? 0),
+                ]);
+            }
+        }
 
         // Registrar componentes de PC si existen
         if (in_array($this->device_type, ['desktop', 'notebook', 'other']) && !empty($this->components)) {
@@ -837,17 +889,17 @@ class CreateWorkOrder extends Component
         if ($this->budget_type !== 'pending') {
             foreach ($this->selected_parts as $part) {
                 $workOrder->parts()->attach($part['id'], [
-                    'quantity' => $part['quantity'],
-                    'price_at_time' => $part['sale_price']
+                    'quantity' => (int)($part['quantity'] ?? 1),
+                    'price_at_time' => (float)($part['sale_price'] ?? 0)
                 ]);
 
-                // Descontar del stock de inventario
+                // Descontar del stock de inventario solo si tiene stock físico y no es repuesto por encargo
                 $inv = Inventory::find($part['id']);
-                if ($inv) {
-                    $inv->decrement('stock', (int)$part['quantity']);
+                if ($inv && $inv->category !== 'Repuesto por Encargo' && $inv->stock > 0) {
+                    $inv->decrement('stock', min($inv->stock, (int)($part['quantity'] ?? 1)));
 
                     // Alerta de stock bajo al Administrador
-                    if ($inv->stock <= $inv->min_stock) {
+                    if ($inv->stock <= $inv->min_stock && $inv->min_stock > 0) {
                         $settings = \App\Models\Setting::find(1);
                         $adminEmail = $settings?->support_email ?: auth()->user()->email;
                         if ((!$settings || $settings->notify_on_low_stock) && $adminEmail) {

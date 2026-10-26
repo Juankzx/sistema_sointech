@@ -172,21 +172,21 @@
     <table class="kpi-table">
         <tr>
             <td class="kpi-card" style="width: 25%;">
-                <div class="kpi-title">1. IVA Débito (Ventas)</div>
-                <div class="kpi-value text-blue">${{ number_format($ivaDebitFiscal, 0, ',', '.') }}</div>
+                <div class="kpi-title">Utilidad Mano de Obra + POS</div>
+                <div class="kpi-value text-green">${{ number_format($grossIncome, 0, ',', '.') }}</div>
             </td>
             <td class="kpi-card" style="width: 25%;">
-                <div class="kpi-title">2. IVA Crédito (Compras)</div>
-                <div class="kpi-value text-red">${{ number_format($ivaCreditFiscal, 0, ',', '.') }}</div>
+                <div class="kpi-title">Repuestos + Envíos (Cliente)</div>
+                <div class="kpi-value text-orange">${{ number_format($otThirdPartyTotal ?? 0, 0, ',', '.') }}</div>
             </td>
             <td class="kpi-card" style="width: 25%;">
-                <div class="kpi-title">3. Estima IVA a Pagar</div>
-                <div class="kpi-value {{ $ivaToPay >= 0 ? 'text-green' : 'text-blue' }}">
+                <div class="kpi-title">Estima IVA a Pagar</div>
+                <div class="kpi-value {{ $ivaToPay >= 0 ? 'text-blue' : 'text-green' }}">
                     ${{ number_format(max(0, $ivaToPay), 0, ',', '.') }}
                 </div>
             </td>
             <td class="kpi-card" style="width: 25%;">
-                <div class="kpi-title">Utilidad Neta Periodo</div>
+                <div class="kpi-title">Utilidad Neta Final</div>
                 <div class="kpi-value {{ $netProfit >= 0 ? 'text-green' : 'text-red' }}">
                     ${{ number_format($netProfit, 0, ',', '.') }}
                 </div>
@@ -194,8 +194,8 @@
         </tr>
     </table>
 
-    <!-- RESUMEN DE IVA -->
-    <div class="section-title">1. Resumen de Liquidación de IVA (19%)</div>
+    <!-- RESUMEN DE IVA Y DESGLOSE DE INGRESOS -->
+    <div class="section-title">1. Resumen Contable de Ingresos Reales (Mano de Obra) e IVA (19%)</div>
     <table class="data-table">
         <thead>
             <tr>
@@ -207,10 +207,22 @@
         </thead>
         <tbody>
             <tr>
-                <td><strong>Ventas POS Realizadas (Débito Fiscal)</strong></td>
-                <td class="text-right">${{ number_format($salesNetTotal, 0, ',', '.') }}</td>
-                <td class="text-right text-blue">${{ number_format($salesTaxTotal, 0, ',', '.') }}</td>
+                <td><strong>Ingresos por Mano de Obra OT (Utilidad Servicio Técnico)</strong></td>
+                <td class="text-right">${{ number_format($otLaborNet ?? 0, 0, ',', '.') }}</td>
+                <td class="text-right text-blue">${{ number_format($otLaborTax ?? 0, 0, ',', '.') }}</td>
+                <td class="text-right text-green"><strong>${{ number_format($otLaborIncome ?? 0, 0, ',', '.') }}</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Ventas Directas POS (Mostrador)</strong></td>
+                <td class="text-right">${{ number_format($posNetTotal ?? 0, 0, ',', '.') }}</td>
+                <td class="text-right text-blue">${{ number_format($posTaxTotal ?? 0, 0, ',', '.') }}</td>
                 <td class="text-right">${{ number_format($totalSales, 0, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <td><em>Reembolso Repuestos y Envíos de Clientes (Costo Terceros - No es Utilidad)</em></td>
+                <td class="text-right">-</td>
+                <td class="text-right">-</td>
+                <td class="text-right text-orange">${{ number_format($otThirdPartyTotal ?? 0, 0, ',', '.') }} (Rep: ${{ number_format($otPartsTotal ?? 0, 0, ',', '.') }} | Env: ${{ number_format($otShippingTotal ?? 0, 0, ',', '.') }})</td>
             </tr>
             <tr>
                 <td><strong>Compras & Gastos con Factura (Crédito Fiscal)</strong></td>
@@ -219,7 +231,7 @@
                 <td class="text-right">${{ number_format($totalExpenses, 0, ',', '.') }}</td>
             </tr>
             <tr style="background-color: #f1f5f9; font-weight: bold;">
-                <td>LIQUIDACIÓN ESTIMADA DE IVA A PAGAR AL FISCO</td>
+                <td>LIQUIDACIÓN ESTIMADA DE IVA A PAGAR AL FISCO (Solo M. Obra + POS - Gastos)</td>
                 <td class="text-right">-</td>
                 <td class="text-right {{ $ivaToPay >= 0 ? 'text-green' : 'text-blue' }}">
                     ${{ number_format($ivaToPay, 0, ',', '.') }}
@@ -229,8 +241,50 @@
         </tbody>
     </table>
 
+    <!-- DESGLOSE DE ÓRDENES DE TRABAJO -->
+    <div class="section-title">2. Desglose de Órdenes de Trabajo (Mano de Obra vs Repuestos de Clientes)</div>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Fecha / OT</th>
+                <th>Cliente / Equipo</th>
+                <th>Estado</th>
+                <th class="text-right">Repuesto ($)</th>
+                <th class="text-right">Envío ($)</th>
+                <th class="text-right">M. Obra (Utilidad)</th>
+                <th class="text-right">Total Cliente</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($workOrders ?? [] as $wo)
+            <tr>
+                <td>#{{ substr($wo->uuid, 0, 8) }} ({{ $wo->created_at->format('d/m/Y') }})</td>
+                <td>{{ $wo->client->full_name ?? 'Cliente N/A' }} - {{ $wo->brand_model }}</td>
+                <td>{{ $wo->status }}</td>
+                <td class="text-right">${{ number_format($wo->parts_total, 0, ',', '.') }}</td>
+                <td class="text-right">${{ number_format($wo->shipping_cost ?? 0, 0, ',', '.') }}</td>
+                <td class="text-right text-green"><strong>${{ number_format($wo->effective_labor_cost, 0, ',', '.') }}</strong></td>
+                <td class="text-right">${{ number_format($wo->calculated_total, 0, ',', '.') }}</td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="7" class="text-center">No hay órdenes de trabajo en el período.</td>
+            </tr>
+            @endforelse
+            @if(isset($workOrders) && count($workOrders) > 0)
+            <tr style="background-color: #f1f5f9; font-weight: bold;">
+                <td colspan="3" class="text-right">TOTALES ÓRDENES ACTIVAS</td>
+                <td class="text-right text-orange">${{ number_format($otPartsTotal ?? 0, 0, ',', '.') }}</td>
+                <td class="text-right text-orange">${{ number_format($otShippingTotal ?? 0, 0, ',', '.') }}</td>
+                <td class="text-right text-green">${{ number_format($otLaborIncome ?? 0, 0, ',', '.') }}</td>
+                <td class="text-right">${{ number_format(($otThirdPartyTotal ?? 0) + ($otLaborIncome ?? 0), 0, ',', '.') }}</td>
+            </tr>
+            @endif
+        </tbody>
+    </table>
+
     <!-- 🧾 DETALLE DE VENTAS DE IVA PARA CONTADOR -->
-    <div class="section-title">2. Libro Detallado de Ventas POS (Detalle para Contador)</div>
+    <div class="section-title">3. Libro Detallado de Ventas Directas POS (Mostrador)</div>
     <table class="data-table">
         <thead>
             <tr>
@@ -258,14 +312,14 @@
             </tr>
             @empty
             <tr>
-                <td colspan="6" class="text-center">No hay ventas registradas en el período.</td>
+                <td colspan="6" class="text-center">No hay ventas POS registradas en el período.</td>
             </tr>
             @endforelse
             @if(count($sales) > 0)
             <tr style="background-color: #f1f5f9; font-weight: bold;">
-                <td colspan="3" class="text-right">TOTALES VENTAS</td>
-                <td class="text-right">${{ number_format($salesNetTotal, 0, ',', '.') }}</td>
-                <td class="text-right text-blue">${{ number_format($salesTaxTotal, 0, ',', '.') }}</td>
+                <td colspan="3" class="text-right">TOTALES VENTAS POS</td>
+                <td class="text-right">${{ number_format($posNetTotal ?? $salesNetTotal, 0, ',', '.') }}</td>
+                <td class="text-right text-blue">${{ number_format($posTaxTotal ?? $salesTaxTotal, 0, ',', '.') }}</td>
                 <td class="text-right">${{ number_format($totalSales, 0, ',', '.') }}</td>
             </tr>
             @endif

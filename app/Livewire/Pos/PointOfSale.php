@@ -70,14 +70,9 @@ class PointOfSale extends Component
 
         // Si se recibe una OT por URL, cargarla en el carrito
         if ($this->ot_id) {
-            $ot = WorkOrder::with('client')->find($this->ot_id);
+            $ot = WorkOrder::with(['client', 'parts', 'payments'])->find($this->ot_id);
             if ($ot) {
-                // Calcular saldo pendiente
-                $partsCost = $ot->parts()->get()->sum(function($p) {
-                    return $p->pivot->price_at_time * $p->pivot->quantity;
-                });
-                $totalCost = (float)$ot->labor_cost + $partsCost;
-                $balanceDue = $totalCost - (float)$ot->down_payment;
+                $balanceDue = $ot->pending_balance;
 
                 if ($balanceDue > 0) {
                     $this->cart[] = [
@@ -313,6 +308,9 @@ class PointOfSale extends Component
 
         DB::beginTransaction();
         try {
+            $firstOtItem = collect($this->cart)->first(fn($i) => !empty($i['is_ot']) && !empty($i['ot_id']));
+            $workOrderId = $firstOtItem ? $firstOtItem['ot_id'] : null;
+
             $sale = Sale::create([
                 'document_type' => $this->documentType,
                 'client_name' => $this->clientName ?: 'Cliente Genérico',
@@ -328,22 +326,17 @@ class PointOfSale extends Component
                 'payment_method' => $this->paymentMethod,
                 'user_id' => auth()->id(),
                 'cash_register_id' => $activeRegister->id,
+                'work_order_id' => $workOrderId,
                 'sii_status' => $this->documentType !== 'ticket' ? 'pending' : null,
             ]);
-
-            $workOrderId = null;
 
             foreach ($this->cart as $item) {
                 if (isset($item['is_ot']) && $item['is_ot']) {
                     // Es un pago / abono de OT
-                    $ot = WorkOrder::find($item['ot_id']);
+                    $ot = WorkOrder::with(['parts', 'payments'])->find($item['ot_id']);
                     if ($ot) {
                         $workOrderId = $ot->id;
                         $itemPaidAmount = (float)($item['price'] * ($item['quantity'] ?? 1));
-
-                        // Actualizar abono acumulado en la Orden de Trabajo
-                        $ot->down_payment += $itemPaidAmount;
-                        $ot->save();
 
                         // Registrar log en la OT
                         $ot->logs()->create([
@@ -399,20 +392,24 @@ class PointOfSale extends Component
                 'work_order_id' => $workOrderId, // Vinculamos el pago a la OT si existe
             ]);
 
-            // Si hay OT vinculada, verificamos si su saldo quedó en 0 para entregarla
+            // Si hay OT vinculada, sincronizamos su abono acumulado y verificamos si su saldo quedó en 0
             if ($workOrderId) {
-                $ot = WorkOrder::find($workOrderId);
+                $ot = WorkOrder::with(['parts', 'payments'])->find($workOrderId);
                 if ($ot) {
-                    $partsCost = $ot->parts()->get()->sum(function($p) {
-                        return $p->pivot->price_at_time * $p->pivot->quantity;
-                    });
-                    $totalCost = (float)$ot->labor_cost + $partsCost;
-                    
-                    // Sumar todos los pagos incluyendo el recién creado
-                    $totalPaid = $ot->payments()->where('type', 'income')->sum('amount') + (float)$ot->down_payment;
-                    $balanceDue = $totalCost - $totalPaid;
+                    $otItemPaid = collect($this->cart)
+                        ->filter(fn($i) => !empty($i['is_ot']) && ($i['ot_id'] ?? null) == $workOrderId)
+                        ->sum(fn($i) => (float)($i['price'] * ($i['quantity'] ?? 1)));
 
-                    if ($balanceDue <= 0 && !in_array($ot->status, ['Entregado', 'Rechazado'])) {
+                    $paymentsSum = (float) $ot->payments()->where('type', 'income')->sum('amount');
+                    $newDownPayment = max((float) $ot->down_payment + $otItemPaid, $paymentsSum);
+                    // Si los pagos registrados en tabla cubren todo el flujo, usar la suma exacta
+                    if ($paymentsSum >= (float) $ot->down_payment) {
+                        $newDownPayment = $paymentsSum;
+                    }
+                    $ot->update(['down_payment' => $newDownPayment]);
+                    $ot->refresh();
+
+                    if ($ot->pending_balance <= 0 && !in_array($ot->status, ['Entregado', 'Rechazado'])) {
                         $ot->update([
                             'status' => 'Entregado',
                             'delivered_at' => Carbon::now()

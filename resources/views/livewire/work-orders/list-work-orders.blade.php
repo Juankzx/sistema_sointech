@@ -565,11 +565,10 @@
         @if($managingOrder)
         <div wire:key="managing-order-{{ $managingOrder->id }}">
             @php
-                $partsCost = $managingOrder->parts->sum(function($p) {
-                    return $p->pivot->price_at_time * $p->pivot->quantity;
-                });
-                $totalCost = (float)$managingOrder->labor_cost + $partsCost;
-                $balanceDue = $totalCost - (float)$managingOrder->down_payment;
+                $partsCost = $managingOrder->parts_total;
+                $shippingCost = (float)($managingOrder->shipping_cost ?? 0);
+                $totalCost = $managingOrder->calculated_total;
+                $balanceDue = $managingOrder->pending_balance;
             @endphp
             <div x-data="{ previewImage: null, zoomLevel: 1, mobileMenuOpen: false }" 
                  x-init="
@@ -836,16 +835,22 @@
                                 
                                 <div class="space-y-2.5 text-xs">
                                     <div class="flex justify-between">
-                                        <span class="text-gray-500">Mano de Obra</span>
-                                        <span class="text-white font-semibold">${{ number_format($managingOrder->labor_cost, 0, ',', '.') }}</span>
+                                        <span class="text-emerald-400/90 font-medium">🛠️ Mano de Obra (Tu Utilidad)</span>
+                                        <span class="text-emerald-400 font-bold">${{ number_format($managingOrder->effective_labor_cost, 0, ',', '.') }}</span>
                                     </div>
                                     <div class="flex justify-between">
-                                        <span class="text-gray-500">Repuestos</span>
-                                        <span class="text-white font-semibold">${{ number_format($partsCost, 0, ',', '.') }}</span>
+                                        <span class="text-amber-400/80">📦 Repuestos (Costo Cliente)</span>
+                                        <span class="text-amber-300 font-semibold">${{ number_format($partsCost, 0, ',', '.') }}</span>
                                     </div>
+                                    @if($shippingCost > 0)
+                                        <div class="flex justify-between">
+                                            <span class="text-amber-400/80">🚚 Envío Repuesto (Cliente)</span>
+                                            <span class="text-amber-300 font-semibold">${{ number_format($shippingCost, 0, ',', '.') }}</span>
+                                        </div>
+                                    @endif
                                     @if($totalCost > 0)
                                         <div class="flex justify-between border-t border-gray-800/50 pt-2 font-bold">
-                                            <span class="text-gray-300">Costo Total</span>
+                                            <span class="text-gray-300">Total a Cobrar Cliente</span>
                                             <span class="text-white">${{ number_format($totalCost, 0, ',', '.') }}</span>
                                         </div>
                                     @endif
@@ -1145,12 +1150,12 @@
                                                 @error('editingDiagnosticNotes') <span class="text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
                                             </div>
 
-                                            <!-- PASO 3: Parts Search and Catalog -->
+                                            <!-- PASO 3: Parts Search, Custom Part at Cost, and Shipping -->
                                             @if(!$isLocked)
-                                            <div class="space-y-1.5 p-4 rounded-2xl relative" style="background:#111827; border:1.5px solid #1f2937;">
+                                            <div class="space-y-3 p-4 rounded-2xl relative" style="background:#111827; border:1.5px solid #1f2937;">
                                                 <label class="block text-xs font-black text-teal-400 uppercase tracking-widest flex items-center gap-1.5 mb-1">
                                                     <span class="w-5 h-5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 flex items-center justify-center text-[10px]">3</span>
-                                                    Añadir Repuestos del Inventario
+                                                    Repuestos (Costo Cliente) y Envío
                                                 </label>
                                                 <div class="relative">
                                                     <input 
@@ -1158,7 +1163,7 @@
                                                         wire:model.live.debounce.150ms="editingSearchPart" 
                                                         class="w-full rounded-xl py-2.5 px-3.5 text-white placeholder-gray-600 focus:outline-none transition text-xs font-medium"
                                                         style="background:#0d1117; border:1px solid #1f2937;"
-                                                        placeholder="Buscar repuesto por nombre o categoría..."
+                                                        placeholder="Buscar repuesto en catálogo por nombre o categoría..."
                                                         autocomplete="off"
                                                         onfocus="this.style.borderColor='#00C6B6';"
                                                         onblur="this.style.borderColor='#1f2937';"
@@ -1200,7 +1205,7 @@
                                                                                 <span>{{ $part->category }}</span>
                                                                                 <span>•</span>
                                                                                 @if($part->stock <= 0)
-                                                                                    <span class="text-red-400 font-bold">Sin Stock</span>
+                                                                                    <span class="text-amber-400 font-bold">A pedido (Sin Stock Físico)</span>
                                                                                 @elseif($part->stock < 5)
                                                                                     <span class="text-amber-400 font-bold">Stock Bajo: {{ $part->stock }}</span>
                                                                                 @else
@@ -1211,7 +1216,7 @@
                                                                     </div>
                                                                     <div class="flex items-center gap-2 shrink-0">
                                                                         <span class="font-mono font-bold text-emerald-400 text-xs">
-                                                                            ${{ number_format($part->sale_price, 0, ',', '.') }}
+                                                                            ${{ number_format($part->cost > 0 ? $part->cost : $part->sale_price, 0, ',', '.') }}
                                                                         </span>
                                                                         <span class="text-[9.5px] font-bold px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity"
                                                                             style="background:rgba(0,198,182,.1); color:#2dd4bf; border:1px solid rgba(0,198,182,.2);">
@@ -1223,26 +1228,76 @@
                                                         </ul>
                                                     </div>
                                                 @endif
+
+                                                <!-- Ingreso directo de Repuesto a Pedido (Sin Stock Físico / Precio Costo Cliente) -->
+                                                <div class="p-3 bg-gray-900/80 border border-amber-500/30 rounded-xl space-y-2">
+                                                    <div class="flex items-center justify-between">
+                                                        <span class="text-[11px] font-bold text-amber-400 uppercase tracking-wider">📦 + Repuesto a Pedido (A Precio Costo Cliente)</span>
+                                                        <span class="text-[10px] text-gray-500">Sin stock físico</span>
+                                                    </div>
+                                                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+                                                        <div class="sm:col-span-6">
+                                                            <input type="text" wire:model="editingCustomPartName" placeholder="Nombre del repuesto (Ej: Pantalla iPhone 13)..."
+                                                                class="w-full bg-gray-950 border border-gray-700 rounded-lg p-2 text-xs text-white">
+                                                        </div>
+                                                        <div class="sm:col-span-4">
+                                                            <input type="number" wire:model="editingCustomPartCost" placeholder="Costo ($)..."
+                                                                class="w-full bg-gray-950 border border-gray-700 rounded-lg p-2 text-xs font-bold text-amber-300 text-right">
+                                                        </div>
+                                                        <div class="sm:col-span-2">
+                                                            <button type="button" wire:click="addEditingCustomPart"
+                                                                class="w-full h-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-2 rounded-lg text-xs transition cursor-pointer">
+                                                                + Añadir
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Costo de Envío del Repuesto -->
+                                                <div class="p-3 bg-gray-900/80 border border-gray-800 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                                                    <div>
+                                                        <span class="text-[11px] font-bold text-gray-300 uppercase tracking-wider block">🚚 Costo de Envío del Repuesto (Cliente)</span>
+                                                        <span class="text-[10px] text-gray-500">Se cobra al cliente junto al repuesto (no suma como utilidad ni IVA)</span>
+                                                    </div>
+                                                    <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                                                        <button type="button" wire:click="setEditingQuickShipping(10000)"
+                                                            class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold border transition cursor-pointer {{ (float)$editingShippingCost == 10000 ? 'bg-amber-500/20 border-amber-500 text-amber-300' : 'bg-gray-800 border-gray-700 text-gray-300 hover:border-amber-500/50' }}">
+                                                            +$10.000
+                                                        </button>
+                                                        @if((float)$editingShippingCost > 0)
+                                                            <button type="button" wire:click="setEditingQuickShipping(0)"
+                                                                class="px-2 py-1.5 rounded-lg text-[11px] font-bold bg-gray-800 border border-gray-700 text-gray-400 hover:text-red-400 transition cursor-pointer">
+                                                                $0
+                                                            </button>
+                                                        @endif
+                                                        <input type="number" wire:model.live="editingShippingCost" min="0" step="500"
+                                                            class="w-28 bg-gray-950 border border-gray-700 rounded-lg py-1.5 px-2.5 text-xs font-bold text-amber-300 text-right">
+                                                    </div>
+                                                </div>
                                             </div>
                                             @endif
 
                                             <!-- Added Parts Grid/List -->
                                             @if(count($editingSelectedParts) > 0)
                                                 <div class="bg-gray-900/50 p-4 rounded-2xl border border-gray-800 space-y-2.5">
-                                                    <h5 class="text-xs font-black text-white uppercase tracking-widest mb-2 border-b border-gray-800 pb-1.5">Repuestos Cargados al Servicio</h5>
+                                                    <h5 class="text-xs font-black text-amber-400 uppercase tracking-widest mb-2 border-b border-gray-800 pb-1.5">Repuestos Asignados al Servicio (Costo Cliente)</h5>
                                                     <div class="space-y-2 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
                                                         @foreach($editingSelectedParts as $index => $part)
-                                                            <div class="flex justify-between items-center text-xs py-1.5 border-b border-gray-800/60 last:border-0">
-                                                                <div class="flex flex-col">
-                                                                    <span class="text-white font-semibold">{{ $part['name'] }}</span>
+                                                            <div class="flex justify-between items-center text-xs py-1.5 border-b border-gray-800/60 last:border-0 gap-2">
+                                                                <div class="flex flex-col flex-1 min-w-0">
+                                                                    <span class="text-white font-semibold truncate">{{ $part['name'] }}</span>
                                                                     <span class="text-[10px] text-gray-500">Cantidad: {{ $part['quantity'] }}</span>
                                                                 </div>
-                                                                <div class="flex items-center gap-3">
-                                                                    <span class="text-gray-300 font-bold">${{ number_format($part['sale_price'], 0, ',', '.') }}</span>
+                                                                <div class="flex items-center gap-2">
                                                                     @if(!$isLocked)
-                                                                    <button type="button" wire:click="removeEditingPart({{ $index }})" class="text-red-400 hover:text-red-300 transition cursor-pointer p-1 hover:bg-red-950/20 rounded-lg border border-transparent hover:border-red-500/10">
-                                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                                                    </button>
+                                                                        <span class="text-[10px] text-gray-500">Costo:</span>
+                                                                        <input type="number" wire:model.live="editingSelectedParts.{{ $index }}.sale_price"
+                                                                            class="w-24 bg-gray-950 border border-gray-700 rounded-lg py-1 px-2 text-xs font-bold text-amber-300 text-right">
+                                                                        <button type="button" wire:click="removeEditingPart({{ $index }})" class="text-red-400 hover:text-red-300 transition cursor-pointer p-1 hover:bg-red-950/20 rounded-lg border border-transparent hover:border-red-500/10">
+                                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                                        </button>
+                                                                    @else
+                                                                        <span class="text-amber-300 font-bold">${{ number_format($part['sale_price'], 0, ',', '.') }}</span>
                                                                     @endif
                                                                 </div>
                                                             </div>
@@ -1366,7 +1421,7 @@
                                              <div class="space-y-2 p-4 rounded-2xl relative" style="background:#111827; border:1.5px solid #1f2937;">
                                                  <label class="block text-xs font-black text-indigo-400 uppercase tracking-widest flex items-center gap-1.5 mb-1">
                                                      <span class="w-5 h-5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 flex items-center justify-center text-[10px]">3.5</span>
-                                                     Añadir Servicios del Catálogo (Mano de Obra)
+                                                     Añadir Servicios del Catálogo (Mano de Obra / Tu Utilidad)
                                                  </label>
                                                  
                                                  <!-- Buscador Predictivo de Servicios -->
@@ -1460,12 +1515,12 @@
                                             <div class="p-4 rounded-2xl space-y-3" style="background:#111827; border:1.5px solid #1f2937;">
                                                 <label class="block text-xs font-black text-teal-400 uppercase tracking-widest flex items-center gap-1.5">
                                                     <span class="w-5 h-5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 flex items-center justify-center text-[10px]">4</span>
-                                                    Mano de Obra y Presupuesto Final
+                                                    Mano de Obra (Tu Utilidad) y Presupuesto Final
                                                 </label>
 
                                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
                                                     <div class="space-y-1.5">
-                                                        <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider">Costo Mano de Obra ($) *</label>
+                                                        <label class="block text-[11px] font-bold text-emerald-400 uppercase tracking-wider">Mano de Obra / Tu Utilidad ($) *</label>
                                                         <input 
                                                             type="number" 
                                                             wire:model.live="editingLaborCost" 
@@ -1492,13 +1547,14 @@
                                                     <!-- Instant Estimated Total display -->
                                                     @php
                                                         $tempPartsCost = collect($editingSelectedParts)->sum(function($p) {
-                                                            return $p['sale_price'] * $p['quantity'];
+                                                            return (float)($p['sale_price'] ?? 0) * (int)($p['quantity'] ?? 1);
                                                         });
-                                                        $tempTotal = (float)$editingLaborCost + $tempPartsCost;
+                                                        $tempShippingCost = (float)($editingShippingCost ?? 0);
+                                                        $tempTotal = (float)$editingLaborCost + $tempPartsCost + $tempShippingCost;
                                                     @endphp
                                                     <div class="rounded-xl p-3 flex flex-col justify-between h-[64px]"
                                                         style="background:rgba(0,198,182,.08); border:1px solid rgba(0,198,182,.2);">
-                                                        <span class="text-[9px] font-black uppercase tracking-widest text-teal-400">Total Presupuestado</span>
+                                                        <span class="text-[9px] font-black uppercase tracking-widest text-teal-400">Total a Cobrar Cliente</span>
                                                         <span class="text-lg font-black text-emerald-400 mt-1">${{ number_format($tempTotal, 0, ',', '.') }}</span>
                                                     </div>
                                                 </div>
@@ -2059,6 +2115,11 @@
                                              <button type="button" @click="setAmount(maxBalance)" class="px-2.5 py-1 bg-emerald-950/60 hover:bg-emerald-900/80 border border-emerald-500/40 text-emerald-300 rounded-lg text-[10px] font-bold transition flex items-center gap-1 cursor-pointer active:scale-95">
                                                  💰 Todo (${{ number_format($balanceDue, 0, ',', '.') }})
                                              </button>
+                                             @if($thirdPartyTotal > 0 && $paidSoFar < $thirdPartyTotal && ($thirdPartyTotal - $paidSoFar) <= $balanceDue)
+                                                 <button type="button" @click="setAmount({{ round($thirdPartyTotal - $paidSoFar) }}); $wire.set('newPaymentDescription', 'Pago Repuesto y Envío')" class="px-2.5 py-1 bg-amber-950/60 hover:bg-amber-900/80 border border-amber-500/40 text-amber-300 rounded-lg text-[10px] font-bold transition flex items-center gap-1 cursor-pointer active:scale-95">
+                                                     📦 Repuesto + Envío (${{ number_format($thirdPartyTotal - $paidSoFar, 0, ',', '.') }})
+                                                 </button>
+                                             @endif
                                              @if($balanceDue > 1000)
                                                  <button type="button" @click="setAmount(Math.round(maxBalance / 2))" class="px-2.5 py-1 bg-blue-950/60 hover:bg-blue-900/80 border border-blue-500/40 text-blue-300 rounded-lg text-[10px] font-bold transition flex items-center gap-1 cursor-pointer active:scale-95">
                                                      🌓 50% (${{ number_format(round($balanceDue / 2), 0, ',', '.') }})
@@ -2261,7 +2322,7 @@
                 <div style="font-size: 0.75rem; text-align: left; width: 100%; border-top: 1px dashed black; padding-top: 0.5rem; margin-bottom: 0.5rem; line-height: 1.3;">
                     <div style="display: flex; justify-content: space-between;">
                         <span>Total:</span>
-                        <strong>${{ number_format((float)$managingOrder->labor_cost + $partsCost, 0, ',', '.') }}</strong>
+                        <strong>${{ number_format($totalCost, 0, ',', '.') }}</strong>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
                         <span>Abonos:</span>

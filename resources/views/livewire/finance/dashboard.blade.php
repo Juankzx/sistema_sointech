@@ -26,37 +26,37 @@
     <!-- Main Metric Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         
-        <!-- Total Sales (Net) -->
+        <!-- Total Ingresos Reales (Mano de Obra + POS) -->
         <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 relative overflow-hidden group hover:border-emerald-500/50 transition-all duration-300 shadow-lg shadow-black/20">
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl group-hover:bg-emerald-500/20 transition-all duration-500"></div>
             <div class="flex items-center justify-between mb-4 relative z-10">
                 <div>
-                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Ingresos (Neto)</h3>
+                    <h3 class="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">Ingresos Reales (M. Obra + POS)</h3>
                 </div>
                 <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                 </div>
             </div>
             <div class="relative z-10">
-                <span class="text-3xl font-black text-white tracking-tight">${{ number_format($totalSalesNet, 0, ',', '.') }}</span>
-                <div class="text-xs font-semibold text-gray-500 mt-2">Bruto: ${{ number_format($totalSales, 0, ',', '.') }}</div>
+                <span class="text-3xl font-black text-white tracking-tight">${{ number_format($totalSales, 0, ',', '.') }}</span>
+                <div class="text-xs font-semibold text-gray-400 mt-2">Neto sin IVA: ${{ number_format($totalSalesNet, 0, ',', '.') }} (Excluye repuestos clientes)</div>
             </div>
         </div>
 
-        <!-- Total Expenses (Net) -->
+        <!-- Total Expenses -->
         <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 relative overflow-hidden group hover:border-red-500/50 transition-all duration-300 shadow-lg shadow-black/20">
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-red-500/10 rounded-full blur-xl group-hover:bg-red-500/20 transition-all duration-500"></div>
             <div class="flex items-center justify-between mb-4 relative z-10">
                 <div>
-                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Egresos (Neto)</h3>
+                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Egresos / Gastos</h3>
                 </div>
                 <div class="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
                 </div>
             </div>
             <div class="relative z-10">
-                <span class="text-3xl font-black text-white tracking-tight">${{ number_format($totalExpensesNet, 0, ',', '.') }}</span>
-                <div class="text-xs font-semibold text-gray-500 mt-2">Bruto: ${{ number_format($totalExpenses, 0, ',', '.') }}</div>
+                <span class="text-3xl font-black text-white tracking-tight">${{ number_format($totalExpenses, 0, ',', '.') }}</span>
+                <div class="text-xs font-semibold text-gray-500 mt-2">Neto: ${{ number_format($totalExpensesNet, 0, ',', '.') }}</div>
             </div>
         </div>
 
@@ -65,7 +65,7 @@
             <div class="absolute -right-4 -top-4 w-24 h-24 {{ $netProfit >= 0 ? 'bg-blue-500/10 group-hover:bg-blue-500/20' : 'bg-orange-500/10 group-hover:bg-orange-500/20' }} rounded-full blur-xl transition-all duration-500"></div>
             <div class="flex items-center justify-between mb-4 relative z-10">
                 <div>
-                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Utilidad Neta</h3>
+                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Utilidad Neta Final</h3>
                 </div>
                 <div class="w-10 h-10 rounded-xl {{ $netProfit >= 0 ? 'bg-blue-500/10 border-blue-500/20 text-blue-400' : 'bg-orange-500/10 border-orange-500/20 text-orange-400' }} border flex items-center justify-center">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
@@ -73,7 +73,7 @@
             </div>
             <div class="relative z-10">
                 <span class="text-3xl font-black tracking-tight {{ $netProfit >= 0 ? 'text-blue-400' : 'text-orange-400' }}">${{ number_format($netProfit, 0, ',', '.') }}</span>
-                <div class="text-xs font-semibold text-gray-500 mt-2">Antes de impuestos</div>
+                <div class="text-xs font-semibold text-gray-500 mt-2">Mano de Obra + POS menos Gastos</div>
             </div>
         </div>
     </div>
@@ -81,36 +81,38 @@
     <!-- Breakdown Section: Servicios vs Repuestos -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <!-- Servicios / Mano de Obra (Utilidad Directa) -->
-        <div class="bg-gray-800/90 border border-orange-500/30 rounded-2xl p-6 relative overflow-hidden shadow-lg shadow-black/20">
+        <div class="bg-gray-800/90 border border-emerald-500/30 rounded-2xl p-6 relative overflow-hidden shadow-lg shadow-black/20">
             <div class="flex items-center justify-between mb-3">
                 <div>
-                    <h3 class="text-xs font-black text-orange-400 uppercase tracking-widest">🛠️ Servicios / Mano de Obra (Utilidad Real)</h3>
-                    <p class="text-[11px] text-gray-400">Ganancia neta generada por trabajo técnico en taller</p>
+                    <h3 class="text-xs font-black text-emerald-400 uppercase tracking-widest">🛠️ Mano de Obra OT (Tu Utilidad Real)</h3>
+                    <p class="text-[11px] text-gray-400">Plata que realmente te entra como ganancia por tus reparaciones</p>
                 </div>
-                <div class="w-9 h-9 rounded-xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-orange-400">
+                <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
                 </div>
             </div>
             <div class="mt-2">
                 <span class="text-3xl font-black text-white">${{ number_format($servicesIncome, 0, ',', '.') }}</span>
-                <span class="text-xs font-semibold text-orange-400 ml-2">Ganancia neta del taller</span>
+                <span class="text-xs font-semibold text-emerald-400 ml-2">Ganancia directa del taller</span>
             </div>
         </div>
 
-        <!-- Repuestos / Componentes (Recuperación de costo) -->
-        <div class="bg-gray-800/90 border border-blue-500/30 rounded-2xl p-6 relative overflow-hidden shadow-lg shadow-black/20">
+        <!-- Repuestos / Componentes + Envío (Plata del Cliente) -->
+        <div class="bg-gray-800/90 border border-amber-500/30 rounded-2xl p-6 relative overflow-hidden shadow-lg shadow-black/20">
             <div class="flex items-center justify-between mb-3">
                 <div>
-                    <h3 class="text-xs font-black text-blue-400 uppercase tracking-widest">📦 Repuestos / Hardware (Recuperación de Costo)</h3>
-                    <p class="text-[11px] text-gray-400">Venta de repuestos y componentes a pedido</p>
+                    <h3 class="text-xs font-black text-amber-400 uppercase tracking-widest">📦 Repuestos y Envíos (Plata del Cliente)</h3>
+                    <p class="text-[11px] text-gray-400">Cobrado a precio costo al cliente (No suma a tu utilidad)</p>
                 </div>
-                <div class="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
                 </div>
             </div>
-            <div class="mt-2">
+            <div class="mt-2 flex flex-wrap items-baseline gap-2">
                 <span class="text-3xl font-black text-white">${{ number_format($productsIncome, 0, ',', '.') }}</span>
-                <span class="text-xs font-semibold text-blue-400 ml-2">Recuperación de stock/compras</span>
+                <span class="text-xs font-semibold text-amber-400">
+                    Repuestos: ${{ number_format($otPartsTotal ?? 0, 0, ',', '.') }} | Envíos: ${{ number_format($otShippingTotal ?? 0, 0, ',', '.') }}
+                </span>
             </div>
         </div>
     </div>

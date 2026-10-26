@@ -84,13 +84,71 @@ class WorkOrder extends Model
     }
 
     /**
-     * Calcula el valor total de la orden considerando estimated_cost, mano de obra y repuestos.
+     * Total de repuestos cargados en la orden.
+     */
+    public function getPartsTotalAttribute(): float
+    {
+        return (float)$this->parts->sum(fn($p) => $p->pivot->price_at_time * $p->pivot->quantity);
+    }
+
+    /**
+     * Costo de terceros (Repuestos a costo + Envío) que paga el cliente.
+     */
+    public function getThirdPartyCostAttribute(): float
+    {
+        return $this->parts_total + (float)($this->shipping_cost ?? 0);
+    }
+
+    /**
+     * Mano de obra efectiva (tu utilidad real por el servicio).
+     */
+    public function getEffectiveLaborCostAttribute(): float
+    {
+        if ((float)$this->labor_cost > 0) {
+            return (float)$this->labor_cost;
+        }
+        return max(0, (float)$this->estimated_cost - $this->third_party_cost);
+    }
+
+    /**
+     * Calcula el valor total de la orden considerando estimated_cost, mano de obra, repuestos y envío.
      */
     public function getCalculatedTotalAttribute(): float
     {
-        $partsCost = (float)$this->parts->sum(fn($p) => $p->pivot->price_at_time * $p->pivot->quantity);
-        $sumDetail = (float)$this->labor_cost + $partsCost;
+        $sumDetail = (float)$this->labor_cost + $this->third_party_cost;
         return max((float)$this->estimated_cost, $sumDetail);
+    }
+
+    /**
+     * Monto total abonado/pagado por el cliente hasta el momento.
+     */
+    public function getPaidAmountAttribute(): float
+    {
+        $totalPaid = (float)$this->payments->sum('amount');
+        $downPayment = (float)$this->down_payment;
+        return max($totalPaid, $downPayment);
+    }
+
+    /**
+     * Utilidad de Mano de Obra efectivamente recaudada (después de cubrir repuesto + envío).
+     */
+    public function getRealizedLaborRevenueAttribute(): float
+    {
+        if ($this->status === 'Rechazado') {
+            return 0;
+        }
+        return max(0, min($this->effective_labor_cost, $this->paid_amount - $this->third_party_cost));
+    }
+
+    /**
+     * Monto recaudado correspondiente a reembolso de repuestos y envío del cliente.
+     */
+    public function getRealizedThirdPartyAttribute(): float
+    {
+        if ($this->status === 'Rechazado') {
+            return 0;
+        }
+        return max(0, min($this->third_party_cost, $this->paid_amount));
     }
 
     /**
@@ -98,10 +156,7 @@ class WorkOrder extends Model
      */
     public function getPendingBalanceAttribute(): float
     {
-        $totalPaid = (float)$this->payments->sum('amount');
-        $downPayment = (float)$this->down_payment;
-        $paid = max($totalPaid, $downPayment);
-        return max(0, $this->calculated_total - $paid);
+        return max(0, $this->calculated_total - $this->paid_amount);
     }
 
     /**

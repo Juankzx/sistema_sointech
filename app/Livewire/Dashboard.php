@@ -238,12 +238,11 @@ class Dashboard extends Component
         $enRevision = WorkOrder::where('status', 'En Revisión')->count();
         $presupuestadas = WorkOrder::where('status', 'Presupuestado')->count();
 
-        // Finanzas
+        // Finanzas: Mostrar únicamente la Mano de Obra (Utilidad Real del Taller, sin sumar el costo de repuestos/envíos del cliente)
         $totalRevenue = 0;
         if (auth()->user()->isAdmin()) {
-            $downPayments = WorkOrder::sum('down_payment');
-            $laborRevenue = WorkOrder::where('status', 'Entregado')->sum('labor_cost');
-            $totalRevenue = $downPayments + $laborRevenue;
+            $validOrders = WorkOrder::with('parts')->whereNotIn('status', ['Rechazado', 'Cancelado'])->get();
+            $totalRevenue = (float) $validOrders->sum(fn($wo) => $wo->effective_labor_cost);
         }
 
         // Recientes (últimas 6 órdenes)

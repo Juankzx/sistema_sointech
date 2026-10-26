@@ -97,11 +97,11 @@
             <!-- IVA Débito -->
             <div class="bg-slate-900/60 p-4 rounded-2xl border border-blue-500/30">
                 <div class="flex items-center justify-between text-blue-400 mb-1">
-                    <span class="text-xs font-bold uppercase">1. IVA Débito (Ventas)</span>
+                    <span class="text-xs font-bold uppercase">1. IVA Débito (M. Obra + POS)</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"></path></svg>
                 </div>
                 <p class="text-2xl font-black text-white">${{ number_format($ivaDebitFiscal, 0, ',', '.') }}</p>
-                <p class="text-[11px] text-slate-400 mt-1">Base Neta: ${{ number_format($salesNetTotal, 0, ',', '.') }}</p>
+                <p class="text-[11px] text-slate-400 mt-1">Base Neta: ${{ number_format($salesNetTotal, 0, ',', '.') }} (Excluye repuestos clientes)</p>
             </div>
 
             <!-- IVA Crédito -->
@@ -130,17 +130,31 @@
 
     <!-- 1. CARDS DE KPIS PRINCIPALES -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <!-- Ingresos Brutos -->
-        <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-5 shadow-sm relative overflow-hidden group">
+        <!-- Ingresos Reales / Utilidad Bruta (Solo Mano de Obra + POS) -->
+        <div class="bg-white dark:bg-slate-900 border border-emerald-500/40 dark:border-emerald-500/30 rounded-3xl p-5 shadow-sm relative overflow-hidden group">
             <div class="flex items-center justify-between mb-3">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ingresos Brutos</span>
-                <div class="p-2.5 bg-blue-500/10 text-blue-500 rounded-2xl">
+                <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Ingresos Reales (Tu Utilidad)</span>
+                <div class="p-2.5 bg-emerald-500/10 text-emerald-500 rounded-2xl">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
             </div>
             <p class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">${{ number_format($grossIncome, 0, ',', '.') }}</p>
             <div class="mt-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
-                Ventas POS: <strong class="text-blue-500">${{ number_format($totalSales, 0, ',', '.') }}</strong> | OT: <strong class="text-indigo-500">${{ number_format($otTotalRecaudado, 0, ',', '.') }}</strong>
+                Mano de Obra OT: <strong class="text-emerald-500">${{ number_format($otLaborIncome, 0, ',', '.') }}</strong> | POS: <strong class="text-blue-500">${{ number_format($totalSales, 0, ',', '.') }}</strong>
+            </div>
+        </div>
+
+        <!-- Plata de Clientes para Repuestos y Envíos (No es utilidad) -->
+        <div class="bg-white dark:bg-slate-900 border border-amber-500/30 dark:border-amber-500/20 rounded-3xl p-5 shadow-sm relative overflow-hidden group">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Repuestos y Envíos (Cliente)</span>
+                <div class="p-2.5 bg-amber-500/10 text-amber-500 rounded-2xl">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                </div>
+            </div>
+            <p class="text-2xl sm:text-3xl font-black text-amber-500">${{ number_format($otThirdPartyTotal, 0, ',', '.') }}</p>
+            <div class="mt-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
+                Repuestos: <strong>${{ number_format($otPartsTotal, 0, ',', '.') }}</strong> | Envíos: <strong>${{ number_format($otShippingTotal, 0, ',', '.') }}</strong>
             </div>
         </div>
 
@@ -158,10 +172,10 @@
             </div>
         </div>
 
-        <!-- Utilidad Neta -->
+        <!-- Utilidad Neta Final -->
         <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-5 shadow-sm relative overflow-hidden group">
             <div class="flex items-center justify-between mb-3">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Utilidad Neta</span>
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Utilidad Neta Final</span>
                 <div class="p-2.5 {{ $netProfit >= 0 ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500' }} rounded-2xl">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 </div>
@@ -170,21 +184,7 @@
                 ${{ number_format($netProfit, 0, ',', '.') }}
             </p>
             <div class="mt-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
-                Balance Ingresos vs Egresos
-            </div>
-        </div>
-
-        <!-- Ticket Promedio & Operaciones -->
-        <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-5 shadow-sm relative overflow-hidden group">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ticket Promedio</span>
-                <div class="p-2.5 bg-orange-500/10 text-orange-500 rounded-2xl">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                </div>
-            </div>
-            <p class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">${{ number_format($averageTicket, 0, ',', '.') }}</p>
-            <div class="mt-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
-                {{ $salesCount + $otCount }} operaciones totales
+                M. Obra Cobrada: <strong class="text-emerald-500">${{ number_format($otLaborRealized, 0, ',', '.') }}</strong> | Caja OT: ${{ number_format($otTotalRecaudado, 0, ',', '.') }}
             </div>
         </div>
     </div>
@@ -196,9 +196,9 @@
             <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
                 <div class="flex items-center gap-2">
                     <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
-                    <h3 class="text-base font-bold text-slate-900 dark:text-white">Tendencia de Ingresos vs Egresos</h3>
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white">Tendencia de Utilidad (Mano de Obra + POS) vs Egresos</h3>
                 </div>
-                <span class="text-xs font-semibold text-slate-400">Variación Diaria</span>
+                <span class="text-xs font-semibold text-slate-400">Excluye costo de repuestos de clientes</span>
             </div>
 
             <div class="h-64 sm:h-80 relative"
@@ -230,14 +230,14 @@
                                      labels: labels,
                                      datasets: [
                                          {
-                                             label: 'Ingresos ($)',
+                                             label: 'Utilidad Mano de Obra + POS ($)',
                                              data: salesData,
-                                             borderColor: '#3b82f6',
-                                             backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                                             borderColor: '#10b981',
+                                             backgroundColor: 'rgba(16, 185, 129, 0.15)',
                                              fill: true,
                                              tension: 0.35,
                                              borderWidth: 3,
-                                             pointBackgroundColor: '#3b82f6'
+                                             pointBackgroundColor: '#10b981'
                                          },
                                          {
                                              label: 'Egresos ($)',
@@ -330,14 +330,89 @@
         </div>
     </div>
 
-    <!-- 🧾 TABLA DETALLE DE VENTAS CON IVA (SOLICITUD DEL CLIENTE) -->
+    <!-- 🛠️ TABLA DESGLOSE DE UTILIDAD POR ORDEN DE TRABAJO (MANO DE OBRA VS REPUESTOS Y ENVÍO DE CLIENTES) -->
+    <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
+            <div>
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white">Desglose de Órdenes de Trabajo: Tu Mano de Obra vs Repuestos de Clientes</h3>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">El costo del repuesto y envío lo paga el cliente; lo que entra como utilidad para ti es únicamente la Mano de Obra.</p>
+            </div>
+            <span class="text-xs font-bold text-emerald-500 bg-emerald-500/10 px-3 py-1.5 rounded-xl border border-emerald-500/20">
+                Utilidad Mano de Obra: ${{ number_format($otLaborIncome, 0, ',', '.') }}
+            </span>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-black text-slate-400 uppercase tracking-wider">
+                        <th class="py-3 px-4">Fecha / OT</th>
+                        <th class="py-3 px-4">Cliente / Equipo</th>
+                        <th class="py-3 px-4">Estado</th>
+                        <th class="py-3 px-4 text-right">Repuesto (Cliente)</th>
+                        <th class="py-3 px-4 text-right">Envío (Cliente)</th>
+                        <th class="py-3 px-4 text-right text-emerald-500">Mano de Obra (Tu Utilidad)</th>
+                        <th class="py-3 px-4 text-right">Total Cliente</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
+                    @forelse($workOrders as $wo)
+                    @php
+                        $woParts = $wo->parts_total;
+                        $woShipping = (float) ($wo->shipping_cost ?? 0);
+                        $woLabor = $wo->effective_labor_cost;
+                        $woTotal = $wo->calculated_total;
+                        $isRejected = in_array($wo->status, ['Rechazado', 'Cancelado']);
+                    @endphp
+                    <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition {{ $isRejected ? 'opacity-50 line-through' : '' }}">
+                        <td class="py-3 px-4">
+                            <span class="font-mono font-bold text-orange-500 block">#{{ substr($wo->uuid, 0, 8) }}</span>
+                            <span class="text-[10px] text-slate-400">{{ $wo->created_at->format('d/m/Y H:i') }}</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="font-bold text-slate-900 dark:text-white block">{{ $wo->client->full_name ?? 'Cliente N/A' }}</span>
+                            <span class="text-[10px] text-slate-400">{{ $wo->brand_model }}</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-[10px] font-bold text-slate-600 dark:text-slate-300">
+                                {{ $wo->status }}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 text-right font-medium text-amber-500">${{ number_format($woParts, 0, ',', '.') }}</td>
+                        <td class="py-3 px-4 text-right font-medium text-amber-400">${{ number_format($woShipping, 0, ',', '.') }}</td>
+                        <td class="py-3 px-4 text-right font-black text-emerald-500 bg-emerald-500/5">${{ number_format($woLabor, 0, ',', '.') }}</td>
+                        <td class="py-3 px-4 text-right font-bold text-slate-900 dark:text-white">${{ number_format($woTotal, 0, ',', '.') }}</td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="7" class="py-8 text-center text-slate-400 text-xs">No hay órdenes de trabajo en el período seleccionado.</td>
+                    </tr>
+                    @endforelse
+                    @if(count($workOrders) > 0)
+                    <tr class="bg-slate-50 dark:bg-slate-800/60 font-black text-xs border-t-2 border-slate-200 dark:border-slate-700">
+                        <td colspan="3" class="py-3.5 px-4 text-right uppercase text-slate-500 dark:text-slate-400">Totales del Período (Órdenes Activas):</td>
+                        <td class="py-3.5 px-4 text-right text-amber-500">${{ number_format($otPartsTotal, 0, ',', '.') }}</td>
+                        <td class="py-3.5 px-4 text-right text-amber-400">${{ number_format($otShippingTotal, 0, ',', '.') }}</td>
+                        <td class="py-3.5 px-4 text-right text-emerald-500 text-sm bg-emerald-500/10">${{ number_format($otLaborIncome, 0, ',', '.') }}</td>
+                        <td class="py-3.5 px-4 text-right text-slate-900 dark:text-white">${{ number_format($otPartsTotal + $otShippingTotal + $otLaborIncome, 0, ',', '.') }}</td>
+                    </tr>
+                    @endif
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 🧾 TABLA DETALLE DE VENTAS POS CON IVA (SOLICITUD DEL CLIENTE) -->
     <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
             <div class="flex items-center gap-2">
-                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                <h3 class="text-base font-bold text-slate-900 dark:text-white">Libro Detallado de Ventas (Detalle de IVA para Contador)</h3>
+                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <h3 class="text-base font-bold text-slate-900 dark:text-white">Libro Detallado de Ventas Directas POS</h3>
             </div>
-            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">{{ $salesCount }} ventas en el período</span>
+            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">{{ $salesCount }} ventas POS en el período</span>
         </div>
 
         <div class="overflow-x-auto">
@@ -372,7 +447,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="py-8 text-center text-slate-400 text-xs">No hay ventas registradas en el período seleccionado.</td>
+                        <td colspan="6" class="py-8 text-center text-slate-400 text-xs">No hay ventas POS registradas en el período seleccionado.</td>
                     </tr>
                     @endforelse
                 </tbody>

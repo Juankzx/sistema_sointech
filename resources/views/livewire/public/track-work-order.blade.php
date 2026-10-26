@@ -304,6 +304,8 @@
                         $partsTotal = $workOrder->parts->sum(function($part) {
                             return $part->pivot->price_at_time * $part->pivot->quantity;
                         });
+                        $shippingCost = (float) ($workOrder->shipping_cost ?? 0);
+                        $grandTotal = (float) $workOrder->labor_cost + $partsTotal + $shippingCost;
                     @endphp
                     @if($partsTotal > 0)
                         <div class="flex justify-between text-gray-400">
@@ -321,6 +323,13 @@
                         </div>
                     @endif
 
+                    @if($shippingCost > 0)
+                        <div class="flex justify-between text-gray-400">
+                            <span>Costo de Envío (Repuestos)</span>
+                            <span class="font-bold text-white">${{ number_format($shippingCost, 0, ',', '.') }}</span>
+                        </div>
+                    @endif
+
                     @if($workOrder->down_payment > 0)
                         <div class="flex justify-between text-gray-400">
                             <span>Abonado Previamente</span>
@@ -332,11 +341,11 @@
                     <div class="border-t border-gray-800 pt-4 flex flex-col gap-1">
                         <div class="flex justify-between text-base font-bold text-white">
                             <span>Total del Presupuesto</span>
-                            <span>${{ number_format($workOrder->labor_cost + $partsTotal, 0, ',', '.') }}</span>
+                            <span>${{ number_format($grandTotal, 0, ',', '.') }}</span>
                         </div>
                         <div class="flex justify-between text-xs text-gray-500">
                             <span>Saldo Restante a Pagar al Retirar</span>
-                            <span>${{ number_format(($workOrder->labor_cost + $partsTotal) - $workOrder->down_payment, 0, ',', '.') }}</span>
+                            <span>${{ number_format(max(0, $grandTotal - $workOrder->down_payment), 0, ',', '.') }}</span>
                         </div>
                     </div>
                 </div>

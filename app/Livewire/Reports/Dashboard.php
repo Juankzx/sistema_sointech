@@ -95,9 +95,26 @@ class Dashboard extends Component
         $start = Carbon::parse($this->startDate)->startOfDay();
         $end = Carbon::parse($this->endDate)->endOfDay();
 
-        // 1. Órdenes de Trabajo
-        $workOrders = WorkOrder::whereBetween('created_at', [$start, $end])->get();
-        $otTotalRecaudado = Payment::whereBetween('created_at', [$start, $end])->sum('amount');
+        // 1. Órdenes de Trabajo y Separación de Mano de Obra (Utilidad) vs Repuestos/Envíos (Costo Cliente)
+        $workOrders = WorkOrder::with(['client', 'parts', 'payments'])
+            ->whereBetween('created_at', [$start, $end])
+            ->latest()
+            ->get();
+
+        $validWorkOrders = $workOrders->whereNotIn('status', ['Rechazado', 'Cancelado']);
+
+        // Mano de Obra = La verdadera utilidad / ingreso que le queda al taller
+        $otLaborIncome = (float) $validWorkOrders->sum(fn($wo) => $wo->effective_labor_cost);
+        $otLaborRealized = (float) $validWorkOrders->sum(fn($wo) => $wo->status === 'Entregado' ? $wo->effective_labor_cost : $wo->realized_labor_revenue);
+
+        // Repuestos + Envíos = Plata del cliente (reembolso a precio costo, NO es utilidad del taller)
+        $otPartsTotal = (float) $validWorkOrders->sum(fn($wo) => $wo->parts_total);
+        $otShippingTotal = (float) $validWorkOrders->sum(fn($wo) => (float) ($wo->shipping_cost ?? 0));
+        $otThirdPartyTotal = $otPartsTotal + $otShippingTotal;
+
+        // Total general cobrado / recaudado en caja por OTs (incluyendo repuestos + envío + mano de obra)
+        $otTotalRecaudado = (float) $validWorkOrders->sum(fn($wo) => $wo->status === 'Entregado' ? $wo->calculated_total : $wo->paid_amount);
+
         $otStatuses = $workOrders->groupBy('status')->map->count();
         $otCount = $workOrders->count();
 
@@ -109,23 +126,37 @@ class Dashboard extends Component
             ->with('technician')
             ->get();
 
-        // 2. Ventas POS & Cálculos de IVA Débito
-        $sales = Sale::whereBetween('created_at', [$start, $end])->latest()->get();
-        $totalSales = $sales->sum('total');
+        // 2. Ventas POS Directas (Excluyendo ventas espejo de OTs para no duplicar ni sumar repuestos de clientes)
+        $sales = Sale::whereNull('work_order_id')
+            ->where('status', '!=', 'voided')
+            ->whereBetween('created_at', [$start, $end])
+            ->latest()
+            ->get();
+        $totalSales = (float) $sales->sum('total');
         $salesCount = $sales->count();
-        $salesByMethod = $sales->groupBy('payment_method')->map->sum('total');
 
-        // IVA Débito en Ventas (Subtotal, Tax, Total)
-        $salesNetTotal = $sales->sum('subtotal');
-        $salesTaxTotal = $sales->sum('tax_amount');
-
-        // If subtotal/tax_amount wasn't populated on some legacy sales, estimate using 19% IVA (Chile standard)
-        if ($salesTaxTotal <= 0 && $totalSales > 0) {
-            $salesNetTotal = $totalSales / 1.19;
-            $salesTaxTotal = $totalSales - $salesNetTotal;
+        // Métodos de pago combinados (Ventas POS + Pagos OT)
+        $otPaymentsInPeriod = Payment::whereBetween('created_at', [$start, $end])->where('type', 'income')->get();
+        $salesByMethod = $otPaymentsInPeriod->groupBy('payment_method')->map->sum('amount');
+        if ($salesByMethod->isEmpty() && $sales->isNotEmpty()) {
+            $salesByMethod = $sales->groupBy('payment_method')->map->sum('total');
         }
 
-        // Top 5 Productos/Repuestos más vendidos
+        // IVA Débito Fiscal: Calculado SOLO sobre Ventas POS + Mano de Obra OT (NUNCA sobre el repuesto/envío del cliente)
+        $posNetTotal = (float) $sales->sum('subtotal');
+        $posTaxTotal = (float) $sales->sum('tax_amount');
+        if ($posTaxTotal <= 0 && $totalSales > 0) {
+            $posNetTotal = $totalSales / 1.19;
+            $posTaxTotal = $totalSales - $posNetTotal;
+        }
+
+        $otLaborNet = $otLaborIncome > 0 ? ($otLaborIncome / 1.19) : 0;
+        $otLaborTax = $otLaborIncome - $otLaborNet;
+
+        $salesNetTotal = $posNetTotal + $otLaborNet;
+        $salesTaxTotal = $posTaxTotal + $otLaborTax;
+
+        // Top 5 Productos/Repuestos más vendidos en POS
         $topProducts = SaleItem::select('name', DB::raw('SUM(quantity) as total_qty'), DB::raw('SUM(subtotal) as total_amount'))
             ->whereBetween('created_at', [$start, $end])
             ->groupBy('name')
@@ -157,9 +188,9 @@ class Dashboard extends Component
 
         // 3. Egresos / Compras & Cálculos de IVA Crédito
         $expenses = Expense::whereBetween('date', [$start->format('Y-m-d'), $end->format('Y-m-d')])->latest()->get();
-        $totalExpenses = $expenses->sum('total_amount');
-        $expensesNetTotal = $expenses->sum('net_amount');
-        $expensesTaxTotal = $expenses->sum('tax_amount');
+        $totalExpenses = (float) $expenses->sum('total_amount');
+        $expensesNetTotal = (float) $expenses->sum('net_amount');
+        $expensesTaxTotal = (float) $expenses->sum('tax_amount');
 
         if ($expensesTaxTotal <= 0 && $totalExpenses > 0) {
             $expensesNetTotal = $totalExpenses / 1.19;
@@ -171,18 +202,18 @@ class Dashboard extends Component
         $ivaCreditFiscal = $expensesTaxTotal;
         $ivaToPay = $ivaDebitFiscal - $ivaCreditFiscal;
 
-        // Finanzas
-        $grossIncome = $totalSales + $otTotalRecaudado;
+        // Finanzas Reales del Taller: Solo cuenta la Mano de Obra OT + Ventas POS como ingreso propio
+        $grossIncome = $totalSales + $otLaborIncome;
         $netProfit = $grossIncome - $totalExpenses;
-        $averageTicket = ($salesCount + $otCount) > 0 ? $grossIncome / ($salesCount + $otCount) : 0;
+        $averageTicket = ($salesCount + $validWorkOrders->count()) > 0 ? $grossIncome / ($salesCount + $validWorkOrders->count()) : 0;
 
         // 4. Inventario Snapshot
         $inventoryItems = Inventory::all();
-        $inventoryValue = $inventoryItems->sum(fn($item) => $item->stock * $item->cost);
-        $inventorySaleValue = $inventoryItems->sum(fn($item) => $item->stock * $item->price);
-        $lowStockCount = $inventoryItems->where('stock', '<=', 5)->count();
+        $inventoryValue = $inventoryItems->sum(fn($item) => max(0, $item->stock) * $item->cost);
+        $inventorySaleValue = $inventoryItems->sum(fn($item) => max(0, $item->stock) * $item->price);
+        $lowStockCount = $inventoryItems->where('category', '!=', 'Repuesto por Encargo')->where('stock', '<=', 5)->count();
 
-        // 5. Tendencias para Gráficos
+        // 5. Tendencias para Gráficos (Mostrando Ingreso Real: Mano de Obra OT + Ventas POS)
         $chartLabels = [];
         $chartSalesData = [];
         $chartExpensesData = [];
@@ -197,10 +228,10 @@ class Dashboard extends Component
                 $chartLabels[] = $date->format('d/m');
                 
                 $daySales = $sales->filter(fn($s) => $s->created_at->format('Y-m-d') === $dayStr)->sum('total');
-                $dayOt = Payment::whereDate('created_at', $dayStr)->sum('amount');
+                $dayOtLabor = $validWorkOrders->filter(fn($o) => $o->created_at->format('Y-m-d') === $dayStr)->sum(fn($o) => $o->effective_labor_cost);
                 $dayExpenses = $expenses->filter(fn($e) => Carbon::parse($e->date)->format('Y-m-d') === $dayStr)->sum('total_amount');
 
-                $chartSalesData[] = (float) ($daySales + $dayOt);
+                $chartSalesData[] = (float) ($daySales + $dayOtLabor);
                 $chartExpensesData[] = (float) $dayExpenses;
                 $chartOtData[] = (int) $workOrders->filter(fn($o) => $o->created_at->format('Y-m-d') === $dayStr)->count();
             }
@@ -211,10 +242,10 @@ class Dashboard extends Component
                 $chartLabels[] = $curr->format('M Y');
 
                 $mSales = $sales->filter(fn($s) => $s->created_at->format('Y-m') === $monthStr)->sum('total');
-                $mOt = Payment::whereBetween('created_at', [$curr->copy()->startOfMonth(), $curr->copy()->endOfMonth()])->sum('amount');
+                $mOtLabor = $validWorkOrders->filter(fn($o) => $o->created_at->format('Y-m') === $monthStr)->sum(fn($o) => $o->effective_labor_cost);
                 $mExpenses = $expenses->filter(fn($e) => Carbon::parse($e->date)->format('Y-m') === $monthStr)->sum('total_amount');
 
-                $chartSalesData[] = (float) ($mSales + $mOt);
+                $chartSalesData[] = (float) ($mSales + $mOtLabor);
                 $chartExpensesData[] = (float) $mExpenses;
                 $chartOtData[] = (int) $workOrders->filter(fn($o) => $o->created_at->format('Y-m') === $monthStr)->count();
 
@@ -229,7 +260,13 @@ class Dashboard extends Component
         $this->otStatusesMap = $otStatuses->toArray();
 
         return view('livewire.reports.dashboard', [
+            'workOrders' => $workOrders,
             'otCount' => $otCount,
+            'otLaborIncome' => $otLaborIncome,
+            'otLaborRealized' => $otLaborRealized,
+            'otPartsTotal' => $otPartsTotal,
+            'otShippingTotal' => $otShippingTotal,
+            'otThirdPartyTotal' => $otThirdPartyTotal,
             'otTotalRecaudado' => $otTotalRecaudado,
             'otStatuses' => $otStatuses,
             'workOrdersByTech' => $workOrdersByTech,

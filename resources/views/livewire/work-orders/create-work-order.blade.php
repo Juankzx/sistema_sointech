@@ -1022,21 +1022,46 @@
                         </div>
 
 
+                        <!-- Ingreso directo de Repuesto a Pedido (Sin Stock Físico / Precio Costo Cliente) -->
+                        <div class="p-3.5 bg-gray-900/90 border border-amber-500/30 rounded-2xl space-y-2.5">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                                    📦 Repuesto a Pedido / Precio Costo (Pagado por el Cliente)
+                                </span>
+                                <span class="text-[10px] text-gray-400">No requiere stock físico</span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
+                                <div class="sm:col-span-6">
+                                    <input type="text" wire:model="customPartName" placeholder="Ej: Pantalla Original Samsung A54..."
+                                        class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 focus:ring-1 focus:ring-amber-500">
+                                </div>
+                                <div class="sm:col-span-3">
+                                    <input type="number" wire:model="customPartCost" placeholder="Costo ($)..."
+                                        class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-xs font-bold text-amber-300 placeholder-gray-500 text-right focus:ring-1 focus:ring-amber-500">
+                                </div>
+                                <div class="sm:col-span-3">
+                                    <button type="button" wire:click="addCustomPart"
+                                        class="w-full h-full bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs px-3 py-2 rounded-xl transition cursor-pointer">
+                                        + Añadir Repuesto
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Lista de repuestos seleccionados -->
                         @if(count($selected_parts) > 0)
                             <div class="bg-gray-900 border border-gray-700 rounded-2xl p-4 space-y-2 animate-fade-in">
-                                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest px-1 mb-2">Repuestos
-                                    Añadidos</h4>
-                                <ul class="space-y-1.5">
+                                <h4 class="text-xs font-bold text-amber-400 uppercase tracking-widest px-1 mb-2">Repuestos Asignados (Costo Cliente)</h4>
+                                <ul class="space-y-2">
                                     @foreach($selected_parts as $index => $part)
-                                        <li
-                                            class="flex justify-between items-center py-2 px-3 bg-gray-800/40 rounded-xl border border-gray-700 text-xs">
-                                            <span class="font-bold text-gray-200">{{ $part['name'] }}</span>
-                                            <div class="flex items-center space-x-4">
-                                                <span
-                                                    class="font-semibold text-green-400">${{ number_format($part['sale_price'], 0, ',', '.') }}</span>
+                                        <li class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 py-2 px-3 bg-gray-800/60 rounded-xl border border-gray-700 text-xs">
+                                            <span class="font-bold text-gray-200 flex-1">{{ $part['name'] }}</span>
+                                            <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
+                                                <span class="text-[10px] text-gray-400">Costo ($):</span>
+                                                <input type="number" wire:model.live="selected_parts.{{ $index }}.sale_price"
+                                                    class="w-28 bg-gray-900 border border-gray-700 rounded-lg px-2 py-1 text-xs font-bold text-amber-400 text-right">
                                                 <button type="button" wire:click="removePart({{ $index }})"
-                                                    class="text-gray-500 hover:text-red-400 p-1 rounded transition"
+                                                    class="text-gray-500 hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition cursor-pointer"
                                                     title="Remover repuesto">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -1051,9 +1076,34 @@
                             </div>
                         @endif
 
+                        <!-- Costo de Envío del Repuesto (Pagado por el Cliente) -->
+                        <div class="p-3.5 bg-gray-900/90 border border-gray-700/80 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider">🚚 Costo de Envío del Repuesto (Opcional)</label>
+                                <span class="text-[10px] text-gray-500">Se suma al total del cliente como costo de encargo (no afecta tu utilidad ni IVA)</span>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
+                                <button type="button" wire:click="setQuickShipping(10000)"
+                                    class="px-3 py-1.5 rounded-xl text-xs font-bold border transition cursor-pointer {{ (float)$shipping_cost == 10000 ? 'bg-amber-500/20 border-amber-500 text-amber-300' : 'bg-gray-800 border-gray-700 text-gray-300 hover:border-amber-500/50' }}">
+                                    +$10.000 Envío
+                                </button>
+                                @if((float)$shipping_cost > 0)
+                                    <button type="button" wire:click="setQuickShipping(0)"
+                                        class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-gray-800 border border-gray-700 text-gray-400 hover:text-red-400 transition cursor-pointer">
+                                        Quitar ($0)
+                                    </button>
+                                @endif
+                                <div class="relative w-32">
+                                    <input type="number" wire:model.live="shipping_cost" min="0" step="500"
+                                        class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-1.5 text-xs font-bold text-amber-300 text-right focus:ring-1 focus:ring-amber-500"
+                                        placeholder="0">
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Búsqueda y Selección de Servicios del Catálogo -->
                         <div class="relative">
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Agregar Servicios (Mano de Obra) del Catálogo</label>
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Agregar Servicios (Mano de Obra / Tu Utilidad) del Catálogo</label>
                             <div class="relative">
                                 <input type="text" wire:model.live.debounce.150ms="searchService"
                                     class="w-full rounded-2xl px-4 py-3 text-sm font-medium text-white placeholder-gray-600 transition-all duration-200 focus:outline-none focus:ring-2"
@@ -1147,18 +1197,27 @@
                             </div>
                         </div>
 
+                        @php
+                            $partsSum = collect($selected_parts)->sum(fn($p) => (float)($p['sale_price'] ?? 0) * (int)($p['quantity'] ?? 1));
+                            $thirdPartySum = $partsSum + (float)$this->shipping_cost;
+                        @endphp
+
                         <!-- Resumen y Presupuesto Estimado -->
                         <div class="bg-gradient-to-r from-blue-950/40 to-indigo-950/40 border border-blue-500/30 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
                             <div class="space-y-1">
                                 <span class="text-xs font-bold text-blue-300 uppercase tracking-widest block">Resumen del Presupuesto</span>
-                                <div class="text-xs text-gray-300 flex items-center gap-3">
-                                    <span>🛠️ Mano de Obra: <strong class="text-emerald-400 font-bold">${{ number_format($this->labor_cost, 0, ',', '.') }}</strong></span>
+                                <div class="text-xs text-gray-300 flex flex-wrap items-center gap-x-3 gap-y-1">
+                                    <span>🛠️ Mano de Obra (Tu Utilidad): <strong class="text-emerald-400 font-bold">${{ number_format((float)$this->labor_cost, 0, ',', '.') }}</strong></span>
                                     <span>•</span>
-                                    <span>📦 Repuestos: <strong class="text-emerald-400 font-bold">${{ number_format(collect($selected_parts)->sum(fn($p) => $p['sale_price'] * $p['quantity']), 0, ',', '.') }}</strong></span>
+                                    <span>📦 Repuestos (Cliente): <strong class="text-amber-400 font-bold">${{ number_format($partsSum, 0, ',', '.') }}</strong></span>
+                                    @if((float)$this->shipping_cost > 0)
+                                        <span>•</span>
+                                        <span>🚚 Envío: <strong class="text-amber-400 font-bold">${{ number_format((float)$this->shipping_cost, 0, ',', '.') }}</strong></span>
+                                    @endif
                                 </div>
                             </div>
                             <div class="flex items-center gap-3 self-end sm:self-auto">
-                                <span class="text-xs font-black text-blue-200 uppercase tracking-wider">TOTAL ESTIMADO:</span>
+                                <span class="text-xs font-black text-blue-200 uppercase tracking-wider">TOTAL CLIENTE:</span>
                                 <span class="text-2xl font-black text-white bg-blue-600/30 px-3.5 py-1 rounded-xl border border-blue-400/30">${{ number_format($this->total, 0, ',', '.') }}</span>
                             </div>
                         </div>
@@ -1228,8 +1287,15 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                             <div>
-                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Abono
-                                    Inicial (Dejar en 0 si no paga nada hoy)</label>
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest">Abono Inicial (Dejar en 0 si no paga nada hoy)</label>
+                                    @if($thirdPartySum > 0)
+                                        <button type="button" wire:click="$set('down_payment', {{ $thirdPartySum }})"
+                                            class="text-[10px] font-bold text-amber-400 hover:text-amber-300 bg-amber-950/50 border border-amber-500/30 px-2 py-0.5 rounded-lg transition cursor-pointer">
+                                            ⚡ Abonar Repuesto+Envío (${{ number_format($thirdPartySum, 0, ',', '.') }})
+                                        </button>
+                                    @endif
+                                </div>
                                 <input type="number" wire:model.live="down_payment"
                                     class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             </div>

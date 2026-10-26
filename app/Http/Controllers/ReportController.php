@@ -94,8 +94,21 @@ class ReportController extends Controller
         }
 
         // Metrics Query
-        $workOrders = WorkOrder::whereBetween('created_at', [$start, $end])->get();
-        $otTotalRecaudado = Payment::whereBetween('created_at', [$start, $end])->sum('amount');
+        $workOrders = WorkOrder::with(['client', 'parts', 'payments'])
+            ->whereBetween('created_at', [$start, $end])
+            ->latest()
+            ->get();
+
+        $validWorkOrders = $workOrders->whereNotIn('status', ['Rechazado', 'Cancelado']);
+
+        // Mano de Obra (Utilidad Real del Taller) vs Repuestos/Envíos (Costo Cliente)
+        $otLaborIncome = (float) $validWorkOrders->sum(fn($wo) => $wo->effective_labor_cost);
+        $otLaborRealized = (float) $validWorkOrders->sum(fn($wo) => $wo->status === 'Entregado' ? $wo->effective_labor_cost : $wo->realized_labor_revenue);
+        $otPartsTotal = (float) $validWorkOrders->sum(fn($wo) => $wo->parts_total);
+        $otShippingTotal = (float) $validWorkOrders->sum(fn($wo) => (float) ($wo->shipping_cost ?? 0));
+        $otThirdPartyTotal = $otPartsTotal + $otShippingTotal;
+        $otTotalRecaudado = (float) $validWorkOrders->sum(fn($wo) => $wo->status === 'Entregado' ? $wo->calculated_total : $wo->paid_amount);
+
         $otStatuses = $workOrders->groupBy('status')->map->count();
         $otCount = $workOrders->count();
 
@@ -107,24 +120,34 @@ class ReportController extends Controller
             ->with('technician')
             ->get();
 
-        // POS Sales
-        $sales = Sale::whereBetween('created_at', [$start, $end])->latest()->get();
-        $totalSales = $sales->sum('total');
+        // POS Direct Sales
+        $sales = Sale::whereNull('work_order_id')
+            ->where('status', '!=', 'voided')
+            ->whereBetween('created_at', [$start, $end])
+            ->latest()
+            ->get();
+        $totalSales = (float) $sales->sum('total');
         $salesCount = $sales->count();
         $salesByMethod = $sales->groupBy('payment_method')->map->sum('total');
 
-        $salesNetTotal = $sales->sum('subtotal');
-        $salesTaxTotal = $sales->sum('tax_amount');
-        if ($salesTaxTotal <= 0 && $totalSales > 0) {
-            $salesNetTotal = $totalSales / 1.19;
-            $salesTaxTotal = $totalSales - $salesNetTotal;
+        $posNetTotal = (float) $sales->sum('subtotal');
+        $posTaxTotal = (float) $sales->sum('tax_amount');
+        if ($posTaxTotal <= 0 && $totalSales > 0) {
+            $posNetTotal = $totalSales / 1.19;
+            $posTaxTotal = $totalSales - $posNetTotal;
         }
+
+        $otLaborNet = $otLaborIncome > 0 ? ($otLaborIncome / 1.19) : 0;
+        $otLaborTax = $otLaborIncome - $otLaborNet;
+
+        $salesNetTotal = $posNetTotal + $otLaborNet;
+        $salesTaxTotal = $posTaxTotal + $otLaborTax;
 
         // Expenses
         $expenses = Expense::whereBetween('date', [$start->format('Y-m-d'), $end->format('Y-m-d')])->latest()->get();
-        $totalExpenses = $expenses->sum('total_amount');
-        $expensesNetTotal = $expenses->sum('net_amount');
-        $expensesTaxTotal = $expenses->sum('tax_amount');
+        $totalExpenses = (float) $expenses->sum('total_amount');
+        $expensesNetTotal = (float) $expenses->sum('net_amount');
+        $expensesTaxTotal = (float) $expenses->sum('tax_amount');
         if ($expensesTaxTotal <= 0 && $totalExpenses > 0) {
             $expensesNetTotal = $totalExpenses / 1.19;
             $expensesTaxTotal = $totalExpenses - $expensesNetTotal;
@@ -135,15 +158,15 @@ class ReportController extends Controller
         $ivaCreditFiscal = $expensesTaxTotal;
         $ivaToPay = $ivaDebitFiscal - $ivaCreditFiscal;
 
-        // Financial Totals
-        $grossIncome = $totalSales + $otTotalRecaudado;
+        // Financial Totals (Only Mano de Obra OT + POS Sales count as business gross income)
+        $grossIncome = $totalSales + $otLaborIncome;
         $netProfit = $grossIncome - $totalExpenses;
 
         // Inventory
         $inventoryItems = Inventory::all();
-        $inventoryValue = $inventoryItems->sum(fn($i) => $i->stock * $i->cost);
-        $inventorySaleValue = $inventoryItems->sum(fn($i) => $i->stock * $i->price);
-        $lowStockCount = $inventoryItems->where('stock', '<=', 5)->count();
+        $inventoryValue = $inventoryItems->sum(fn($i) => max(0, $i->stock) * $i->cost);
+        $inventorySaleValue = $inventoryItems->sum(fn($i) => max(0, $i->stock) * $i->price);
+        $lowStockCount = $inventoryItems->where('category', '!=', 'Repuesto por Encargo')->where('stock', '<=', 5)->count();
 
         $settings = Setting::find(1);
         $logos = $this->getLogoBase64($settings);
@@ -152,13 +175,23 @@ class ReportController extends Controller
             'periodLabel' => $periodLabel,
             'start' => $start,
             'end' => $end,
+            'workOrders' => $workOrders,
             'otCount' => $otCount,
+            'otLaborIncome' => $otLaborIncome,
+            'otLaborRealized' => $otLaborRealized,
+            'otLaborNet' => $otLaborNet,
+            'otLaborTax' => $otLaborTax,
+            'otPartsTotal' => $otPartsTotal,
+            'otShippingTotal' => $otShippingTotal,
+            'otThirdPartyTotal' => $otThirdPartyTotal,
             'otTotalRecaudado' => $otTotalRecaudado,
             'otStatuses' => $otStatuses,
             'workOrdersByTech' => $workOrdersByTech,
             'sales' => $sales,
             'salesCount' => $salesCount,
             'totalSales' => $totalSales,
+            'posNetTotal' => $posNetTotal,
+            'posTaxTotal' => $posTaxTotal,
             'salesNetTotal' => $salesNetTotal,
             'salesTaxTotal' => $salesTaxTotal,
             'salesByMethod' => $salesByMethod,

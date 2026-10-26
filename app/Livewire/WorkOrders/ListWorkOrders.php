@@ -88,6 +88,7 @@ class ListWorkOrders extends Component
         $this->editingOrderId = $order->id;
         $this->editingOrderCode = substr($order->uuid, 0, 8);
         $this->editingLaborCost = round($order->labor_cost);
+        $this->editingShippingCost = round($order->shipping_cost ?? 0);
         if ($order->estimated_delivery) {
             try {
                 $this->editingEstimatedDelivery = \Carbon\Carbon::parse($order->estimated_delivery)->format('Y-m-d');
@@ -159,6 +160,8 @@ class ListWorkOrders extends Component
 
         $this->editingSearchPart = '';
         $this->editingFoundParts = [];
+        $this->editingCustomPartName = '';
+        $this->editingCustomPartCost = '';
         
         $this->loadCurrentImages();
         
@@ -502,11 +505,14 @@ class ListWorkOrders extends Component
     public $editingOrderId = null;
     public $editingOrderCode = '';
     public $editingLaborCost = 0;
+    public $editingShippingCost = 0;
     public $editingDiagnosticNotes = '';
     public $editingEstimatedDelivery = '';
     public $editingSelectedParts = []; // array of ['id', 'name', 'sale_price', 'quantity']
     public $editingSearchPart = '';
     public $editingFoundParts = [];
+    public $editingCustomPartName = '';
+    public $editingCustomPartCost = '';
     public $forceEditBudget = false;
 
     // Service Selection Properties
@@ -617,16 +623,48 @@ class ListWorkOrders extends Component
     public function addEditingPart($id)
     {
         $part = \App\Models\Inventory::find($id);
-        if($part && $part->stock > 0) {
+        if ($part) {
+            $price = (float)($part->cost > 0 ? $part->cost : $part->sale_price);
             $this->editingSelectedParts[] = [
                 'id' => $part->id,
                 'name' => $part->name,
-                'sale_price' => $part->sale_price,
+                'sale_price' => $price,
                 'quantity' => 1
             ];
             $this->editingSearchPart = '';
             $this->editingFoundParts = [];
         }
+    }
+
+    public function addEditingCustomPart()
+    {
+        if (trim($this->editingCustomPartName) !== '') {
+            $cost = is_numeric($this->editingCustomPartCost) ? (float)$this->editingCustomPartCost : 0;
+            $externalPart = \App\Models\Inventory::firstOrCreate(
+                ['name' => trim($this->editingCustomPartName)],
+                [
+                    'category' => 'Repuesto por Encargo',
+                    'cost' => $cost,
+                    'price' => $cost,
+                    'sale_price' => $cost,
+                    'stock' => 0,
+                    'min_stock' => 0,
+                ]
+            );
+            $this->editingSelectedParts[] = [
+                'id' => $externalPart->id,
+                'name' => $externalPart->name,
+                'sale_price' => $cost,
+                'quantity' => 1
+            ];
+            $this->editingCustomPartName = '';
+            $this->editingCustomPartCost = '';
+        }
+    }
+
+    public function setEditingQuickShipping($amount)
+    {
+        $this->editingShippingCost = (float)$amount;
     }
 
     public function removeEditingPart($index)
@@ -644,6 +682,7 @@ class ListWorkOrders extends Component
 
         $this->validate([
             'editingLaborCost' => 'required|numeric|min:0',
+            'editingShippingCost' => 'nullable|numeric|min:0',
             'editingDiagnosticNotes' => 'required|string|min:5',
             'editingEstimatedDelivery' => 'nullable|string|max:255',
         ]);
@@ -656,34 +695,35 @@ class ListWorkOrders extends Component
             return;
         }
         
-        // 1. Devolver stock de repuestos cargados anteriormente para recalcular
+        // 1. Devolver stock de repuestos cargados anteriormente para recalcular (solo los que no son por encargo)
         foreach ($order->parts as $oldPart) {
             $inv = \App\Models\Inventory::find($oldPart->id);
-            if ($inv) {
+            if ($inv && $inv->category !== 'Repuesto por Encargo') {
                 $inv->increment('stock', (int)$oldPart->pivot->quantity);
             }
         }
 
-        // 2. Asociar nuevos repuestos y descontar del inventario
+        // 2. Asociar nuevos repuestos y descontar del inventario (solo si tienen stock físico)
         $syncParts = [];
         foreach ($this->editingSelectedParts as $part) {
             $syncParts[$part['id']] = [
-                'quantity' => $part['quantity'],
-                'price_at_time' => $part['sale_price']
+                'quantity' => (int)($part['quantity'] ?? 1),
+                'price_at_time' => (float)($part['sale_price'] ?? 0)
             ];
 
             $inv = \App\Models\Inventory::find($part['id']);
-            if ($inv) {
-                $inv->decrement('stock', (int)$part['quantity']);
+            if ($inv && $inv->category !== 'Repuesto por Encargo' && $inv->stock > 0) {
+                $inv->decrement('stock', min($inv->stock, (int)($part['quantity'] ?? 1)));
             }
         }
         $order->parts()->sync($syncParts);
 
-        // Calcular costo total de repuestos
+        // Calcular costo total de repuestos y envío
         $partsCost = collect($this->editingSelectedParts)->sum(function($p) {
-            return $p['sale_price'] * $p['quantity'];
+            return (float)($p['sale_price'] ?? 0) * (int)($p['quantity'] ?? 1);
         });
-        $totalBudget = (float)$this->editingLaborCost + $partsCost;
+        $shippingCost = (float)($this->editingShippingCost ?? 0);
+        $totalBudget = (float)$this->editingLaborCost + $partsCost + $shippingCost;
 
         // 3. Guardar servicios asignados a la orden
         $order->services()->delete();
@@ -701,14 +741,17 @@ class ListWorkOrders extends Component
             : 'Presupuestado';
 
         $order->update([
-            'labor_cost' => $this->editingLaborCost,
+            'labor_cost' => (float)$this->editingLaborCost,
+            'shipping_cost' => $shippingCost,
+            'estimated_cost' => $totalBudget,
             'status' => $newStatus,
             'estimated_delivery' => $this->editingEstimatedDelivery ?: $order->estimated_delivery
         ]);
 
         // 5. Registrar o actualizar en la bitácora evitando registros duplicados
         $logTitle = ($newStatus === 'Presupuestado') ? 'Diagnóstico y Presupuesto Listo' : 'Presupuesto Actualizado';
-        $logNotes = "Diagnóstico Técnico: " . $this->editingDiagnosticNotes . "\nPresupuesto establecido: Mano de obra $" . number_format($this->editingLaborCost, 0, ',', '.') . " + Repuestos $" . number_format($partsCost, 0, ',', '.') . " (Total del Presupuesto: $" . number_format($totalBudget, 0, ',', '.') . ").\n" . ($this->editingEstimatedDelivery ? "Tiempo Estimado de Entrega: " . $this->editingEstimatedDelivery . ".\n" : "") . ($newStatus === 'Presupuestado' ? "Esperando aprobación del cliente." : "Orden con estado activo (" . $newStatus . ").");
+        $shippingText = $shippingCost > 0 ? " + Envío $" . number_format($shippingCost, 0, ',', '.') : "";
+        $logNotes = "Diagnóstico Técnico: " . $this->editingDiagnosticNotes . "\nPresupuesto establecido: Mano de obra $" . number_format($this->editingLaborCost, 0, ',', '.') . " + Repuestos $" . number_format($partsCost, 0, ',', '.') . $shippingText . " (Total del Presupuesto: $" . number_format($totalBudget, 0, ',', '.') . ").\n" . ($this->editingEstimatedDelivery ? "Tiempo Estimado de Entrega: " . $this->editingEstimatedDelivery . ".\n" : "") . ($newStatus === 'Presupuestado' ? "Esperando aprobación del cliente." : "Orden con estado activo (" . $newStatus . ").");
 
         $recentLog = $order->logs()
             ->where('created_at', '>=', now()->subSeconds(30))
@@ -822,7 +865,7 @@ class ListWorkOrders extends Component
             $this->deliveryNotes = '';
         }
         
-        $totalCost = $wo->labor_cost + $wo->parts->sum(function($p) { return $p->pivot->price_at_time * $p->pivot->quantity; });
+        $totalCost = $wo->calculated_total;
         $this->deliveryBalanceDue = max(0, $totalCost - $wo->down_payment);
         $this->deliveryPayBalance = false;
         $this->deliveryPaymentMethod = 'Efectivo';
@@ -842,7 +885,7 @@ class ListWorkOrders extends Component
     {
         $wo = WorkOrder::findOrFail($this->deliveringOrderId);
 
-        $totalCost = $wo->labor_cost + $wo->parts->sum(function($p) { return $p->pivot->price_at_time * $p->pivot->quantity; });
+        $totalCost = $wo->calculated_total;
         $balanceDue = max(0, $totalCost - $wo->down_payment);
 
         // 1. Validación por Rol: Si hay saldo pendiente y NO se marca para pagar en caja
@@ -1040,10 +1083,7 @@ class ListWorkOrders extends Component
         $order = WorkOrder::findOrFail($orderId);
 
         // Validar que el monto no exceda el saldo pendiente para evitar errores humanos de digitación
-        $partsCost = $order->parts->sum(function($p) {
-            return $p->pivot->price_at_time * $p->pivot->quantity;
-        });
-        $totalCost = (float)$order->labor_cost + $partsCost;
+        $totalCost = $order->calculated_total;
         $balanceDue = max(0, $totalCost - (float)$order->down_payment);
 
         if ($balanceDue > 0 && $this->newPaymentAmount > $balanceDue) {
@@ -1169,16 +1209,18 @@ class ListWorkOrders extends Component
             });
         }
 
-        $csvData = "Código OT,Cliente,Equipo,Estado,Costo,Abono,Técnico,Fecha\n";
+        $csvData = "Código OT,Cliente,Equipo,Estado,Mano de Obra,Repuestos y Envío,Total Cliente,Abono,Técnico,Fecha\n";
         foreach ($workOrders as $order) {
             $techName = $order->technician ? $order->technician->name : 'No Asignado';
             $csvData .= sprintf(
-                "%s,%s,%s,%s,%s,%s,%s,%s\n",
+                "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
                 substr($order->uuid, 0, 8),
                 '"' . $order->client->full_name . '"',
                 '"' . $order->brand_model . '"',
                 $order->status,
-                $order->labor_cost,
+                $order->effective_labor_cost,
+                $order->third_party_cost,
+                $order->calculated_total,
                 $order->down_payment,
                 '"' . $techName . '"',
                 $order->created_at->format('Y-m-d H:i')
@@ -1234,10 +1276,10 @@ class ListWorkOrders extends Component
 
         $orderCode = substr($order->uuid, 0, 8);
 
-        // 1. Devolver stock de repuestos al inventario
+        // 1. Devolver stock de repuestos al inventario (solo los que no son por encargo)
         foreach ($order->parts as $part) {
             $inv = \App\Models\Inventory::find($part->id);
-            if ($inv) {
+            if ($inv && $inv->category !== 'Repuesto por Encargo') {
                 $inv->increment('stock', (int)$part->pivot->quantity);
             }
         }
@@ -1265,7 +1307,8 @@ class ListWorkOrders extends Component
 
     /**
      * Crea un registro en la tabla 'sales' a partir de un pago de Orden de Trabajo.
-     * Esto vincula el pago a la OT y lo hace visible en el Historial de Ventas.
+     * Solo registra la porción correspondiente a Mano de Obra (utilidad real del servicio),
+     * excluyendo el reembolso de repuestos a costo y envío del cliente.
      */
     private function createSaleFromOTPayment(
         WorkOrder $order,
@@ -1275,6 +1318,22 @@ class ListWorkOrders extends Component
         string $description,
         $activeRegister
     ): void {
+        $order->loadMissing('parts');
+
+        $newPaid = (float)$order->down_payment;
+        $prevPaid = max(0, $newPaid - $amount);
+        $thirdParty = $order->third_party_cost;
+        $effectiveLabor = $order->effective_labor_cost;
+
+        $prevLaborRealized = max(0, min($effectiveLabor, $prevPaid - $thirdParty));
+        $newLaborRealized  = max(0, min($effectiveLabor, $newPaid - $thirdParty));
+        $laborRevenueAmount = max(0, $newLaborRealized - $prevLaborRealized);
+
+        // Si el pago solo cubrió repuesto/envío del cliente, no generar venta afecta de Mano de Obra
+        if ($laborRevenueAmount <= 0) {
+            return;
+        }
+
         // Mapear tipo de documento al formato de sales
         $docTypeMap = [
             'Ticket Interno' => 'ticket',
@@ -1283,10 +1342,10 @@ class ListWorkOrders extends Component
         ];
         $saleDocType = $docTypeMap[$documentType] ?? 'ticket';
 
-        // Para boleta/factura calcular neto e IVA (19% en Chile)
+        // Para boleta/factura calcular neto e IVA (19% en Chile) únicamente sobre la Mano de Obra
         $taxRate = in_array($saleDocType, ['boleta', 'factura']) ? 19 : 0;
-        $subtotal = $taxRate > 0 ? round($amount / (1 + $taxRate / 100), 2) : $amount;
-        $taxAmount = round($amount - $subtotal, 2);
+        $subtotal = $taxRate > 0 ? round($laborRevenueAmount / (1 + $taxRate / 100), 2) : $laborRevenueAmount;
+        $taxAmount = round($laborRevenueAmount - $subtotal, 2);
 
         $saleData = [
             'document_type'          => $saleDocType,
@@ -1297,7 +1356,7 @@ class ListWorkOrders extends Component
             'subtotal'               => $subtotal,
             'tax_rate'               => $taxRate,
             'tax_amount'             => $taxAmount,
-            'total'                  => $amount,
+            'total'                  => $laborRevenueAmount,
             'payment_method'         => $paymentMethod,
             'user_id'                => auth()->id(),
             'cash_register_id'       => $activeRegister->id ?? null,
@@ -1312,61 +1371,19 @@ class ListWorkOrders extends Component
 
         $sale = Sale::create($saleData);
 
-        // Crear detalle de items en la venta:
-        // 1. Si la OT proviene de una cotización con ítems detallados, registrar cada uno individualmente
-        $quotation = \App\Models\Quotation::with('items')->where('work_order_id', $order->id)->first();
-        if ($quotation && $quotation->items->count() > 0) {
-            foreach ($quotation->items as $qItem) {
-                SaleItem::create([
-                    'sale_id'    => $sale->id,
-                    'name'       => $qItem->description,
-                    'quantity'   => $qItem->quantity,
-                    'cost_price' => 0,
-                    'unit_price' => $qItem->unit_price,
-                    'subtotal'   => $qItem->subtotal,
-                ]);
-            }
-        } elseif ($order->parts && $order->parts->count() > 0) {
-            // 2. Si la OT tiene repuestos asignados en inventario
-            foreach ($order->parts as $part) {
-                $qty = $part->pivot->quantity ?? 1;
-                $price = $part->pivot->price_at_time ?? $part->sale_price;
-                SaleItem::create([
-                    'sale_id'      => $sale->id,
-                    'inventory_id' => $part->id,
-                    'name'         => $part->name,
-                    'quantity'     => $qty,
-                    'cost_price'   => $part->cost_price ?? 0,
-                    'unit_price'   => $price,
-                    'subtotal'     => $price * $qty,
-                ]);
-            }
-            if ($order->labor_cost > 0) {
-                SaleItem::create([
-                    'sale_id'    => $sale->id,
-                    'name'       => 'Mano de Obra / Servicio - ' . $order->brand_model,
-                    'quantity'   => 1,
-                    'cost_price' => 0,
-                    'unit_price' => $order->labor_cost,
-                    'subtotal'   => $order->labor_cost,
-                ]);
-            }
-        } else {
-            // 3. Fallback genérico
-            $cleanIssue = $order->reported_issue ?: 'Servicio Técnico';
-            if (mb_strlen($cleanIssue) > 70) {
-                $cleanIssue = mb_substr($cleanIssue, 0, 67) . '...';
-            }
-            $serviceTitle = $cleanIssue . ' - ' . $order->brand_model;
-            SaleItem::create([
-                'sale_id'    => $sale->id,
-                'name'       => $serviceTitle,
-                'quantity'   => 1,
-                'cost_price' => 0,
-                'unit_price' => $amount,
-                'subtotal'   => $amount,
-            ]);
+        $cleanIssue = $order->reported_issue ?: 'Servicio Técnico';
+        if (mb_strlen($cleanIssue) > 70) {
+            $cleanIssue = mb_substr($cleanIssue, 0, 67) . '...';
         }
+        $serviceTitle = 'Mano de Obra: ' . $cleanIssue . ' (' . $order->brand_model . ')';
+        SaleItem::create([
+            'sale_id'    => $sale->id,
+            'name'       => $serviceTitle,
+            'quantity'   => 1,
+            'cost_price' => 0,
+            'unit_price' => $laborRevenueAmount,
+            'subtotal'   => $laborRevenueAmount,
+        ]);
     }
 
     public function updatedSearch($value)
@@ -1443,9 +1460,7 @@ class ListWorkOrders extends Component
         $pendingCount = 0;
 
         foreach ($activeOrdersForStats as $woStat) {
-            $partsCost = $woStat->parts->sum(function($p) { return $p->pivot->price_at_time * $p->pivot->quantity; });
-            $totalCost = $woStat->labor_cost + $partsCost;
-            $balance = max(0, $totalCost - $woStat->down_payment);
+            $balance = max(0, $woStat->calculated_total - $woStat->down_payment);
             
             if ($balance > 0) {
                 $totalPendingReceivables += $balance;
@@ -1466,9 +1481,7 @@ class ListWorkOrders extends Component
         // Filtro de saldos pendientes por cobrar
         if ($this->hasPendingBalanceFilter) {
             $workOrders = $workOrders->filter(function($wo) {
-                $partsCost = $wo->parts->sum(function($p) { return $p->pivot->price_at_time * $p->pivot->quantity; });
-                $totalCost = $wo->labor_cost + $partsCost;
-                return ($totalCost - $wo->down_payment) > 0;
+                return ($wo->calculated_total - $wo->down_payment) > 0;
             });
         }
 

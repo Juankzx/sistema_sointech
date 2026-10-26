@@ -4,7 +4,8 @@
     $totalParts = $order->parts->sum(function($part) {
         return $part->pivot->price_at_time * $part->pivot->quantity;
     });
-    $subtotal = $order->labor_cost + $totalParts;
+    $shippingCost = (float) ($order->shipping_cost ?? 0);
+    $subtotal = $order->labor_cost + $totalParts + $shippingCost;
     // Obtener la configuración general para datos reales y escalables
     $settings = \App\Models\Setting::first() ?? new \App\Models\Setting();
     
@@ -144,6 +145,18 @@
                     <td class="py-3 px-3 text-right font-bold text-gray-900">${{ number_format($part->pivot->price_at_time * $part->pivot->quantity, 0, ',', '.') }}</td>
                 </tr>
                 @endforeach
+
+                @if($shippingCost > 0)
+                <tr class="border-b border-gray-100">
+                    <td class="py-3 px-3 text-gray-900 font-medium text-center">1</td>
+                    <td class="py-3 px-3 text-gray-900">
+                        <div class="font-bold">Costo de Envío / Despacho de Repuesto</div>
+                        <div class="text-[10px] text-gray-500">Logística de encargo de repuestos</div>
+                    </td>
+                    <td class="py-3 px-3 text-right text-gray-700">${{ number_format($shippingCost, 0, ',', '.') }}</td>
+                    <td class="py-3 px-3 text-right font-bold text-gray-900">${{ number_format($shippingCost, 0, ',', '.') }}</td>
+                </tr>
+                @endif
             </tbody>
         </table>
         
