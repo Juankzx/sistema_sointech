@@ -544,7 +544,7 @@
     <!-- UNIFIED WORK ORDER MANAGEMENT MODAL ("Todo en Uno") -->
     @if($isManaging && $loggingOrderId)
         @php
-            $managingOrder = \App\Models\WorkOrder::with(['client', 'parts', 'images', 'logs.user', 'technician', 'receivedBy'])->find($loggingOrderId);
+            $managingOrder = \App\Models\WorkOrder::with(['client', 'parts', 'images', 'logs.user', 'payments.user', 'technician', 'receivedBy'])->find($loggingOrderId);
         @endphp
         
         @if($managingOrder)
@@ -552,6 +552,8 @@
             @php
                 $partsCost = $managingOrder->parts_total;
                 $shippingCost = (float)($managingOrder->shipping_cost ?? 0);
+                $thirdPartyTotal = $managingOrder->third_party_cost;
+                $paidSoFar = $managingOrder->paid_amount;
                 $totalCost = $managingOrder->calculated_total;
                 $balanceDue = $managingOrder->pending_balance;
             @endphp
@@ -1182,7 +1184,7 @@
                                                                     </div>
                                                                     <div class="flex items-center gap-2 shrink-0">
                                                                         <span class="font-mono font-semibold text-emerald-600 dark:text-emerald-400 text-xs">
-                                                                            ${{ number_format($part->cost > 0 ? $part->cost : $part->sale_price, 0, ',', '.') }}
+                                                                            ${{ number_format($part->cost_price > 0 ? $part->cost_price : $part->sale_price, 0, ',', '.') }}
                                                                         </span>
                                                                         <span class="text-[10px] font-medium px-2 py-0.5 rounded bg-brand-50 dark:bg-brand-950/40 text-brand-600 dark:text-brand-400 border border-brand-200 dark:border-brand-800/40 opacity-0 group-hover:opacity-100 transition-opacity">
                                                                             + Añadir
@@ -1932,7 +1934,7 @@
                                         <div class="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-3 flex flex-col justify-between">
                                             <div class="space-y-2">
                                                 <div class="flex items-center gap-2">
-                                                    <x-ui.icon name="message-square" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                                                    <x-ui.icon name="whatsapp" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                                                     <span class="text-xs font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider">Notificación WhatsApp</span>
                                                 </div>
                                                 
@@ -1946,7 +1948,7 @@
                                                 target="_blank"
                                                 class="w-full py-2.5 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium transition flex items-center justify-center gap-2 cursor-pointer shadow-xs"
                                             >
-                                                <x-ui.icon name="share" class="w-4 h-4" />
+                                                <x-ui.icon name="whatsapp" class="w-4 h-4" />
                                                 Notificar por WhatsApp
                                             </a>
                                         </div>

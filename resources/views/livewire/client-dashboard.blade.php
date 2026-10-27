@@ -21,7 +21,7 @@
                 @if($supportPhone)
                     <a href="https://wa.me/{{ $supportPhone }}" target="_blank" 
                        class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 text-xs font-medium hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition">
-                        <x-ui.icon name="message-circle" class="w-4 h-4" />
+                        <x-ui.icon name="whatsapp" class="w-4 h-4" />
                         <span>Soporte WhatsApp</span>
                     </a>
                 @endif

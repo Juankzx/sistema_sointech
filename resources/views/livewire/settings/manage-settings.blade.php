@@ -54,7 +54,7 @@
         <button type="button" @click="activeTab = 'whatsapp'" 
             :class="activeTab === 'whatsapp' ? 'bg-white dark:bg-zinc-800 text-emerald-600 dark:text-emerald-400 shadow-sm border border-zinc-200/80 dark:border-zinc-700/80' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'" 
             class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition cursor-pointer">
-            <x-ui.icon name="message-circle" class="w-4 h-4 text-emerald-500" />
+            <x-ui.icon name="whatsapp" class="w-4 h-4 text-emerald-500" />
             <span>WhatsApp Cloud API</span>
         </button>
     </div>

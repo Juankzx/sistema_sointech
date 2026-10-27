@@ -319,7 +319,7 @@
                                         class="p-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 transition cursor-pointer"
                                         title="Notificar por WhatsApp"
                                     >
-                                        <x-ui.icon name="message-square" class="w-3.5 h-3.5" />
+                                        <x-ui.icon name="whatsapp" class="w-3.5 h-3.5" />
                                     </a>
                                 </div>
                             </td>

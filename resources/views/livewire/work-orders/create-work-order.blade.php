@@ -1063,7 +1063,7 @@
                             :class="signMode === 'absent' ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-100 shadow-xs' : 'bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-750'"
                             class="flex flex-col items-center gap-2 p-3 border rounded-xl transition cursor-pointer text-center">
                             <div class="w-8 h-8 rounded-lg flex items-center justify-center" :class="signMode === 'absent' ? 'bg-white/20 text-white dark:text-zinc-900' : 'bg-zinc-100 dark:bg-zinc-700 text-zinc-500'">
-                                <x-ui.icon name="message-square" class="w-4 h-4" />
+                                <x-ui.icon name="whatsapp" class="w-4 h-4" />
                             </div>
                             <div>
                                 <div class="text-xs font-semibold">Cliente Ausente</div>
@@ -1233,7 +1233,7 @@
                         @if($cleanPhone)
                             <a href="https://wa.me/{{ $cleanPhone }}?text={{ urlencode($waMessage) }}" target="_blank"
                                 class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 px-4 rounded-lg text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-xs">
-                                <x-ui.icon name="message-square" class="w-4 h-4" />
+                                <x-ui.icon name="whatsapp" class="w-4 h-4" />
                                 Enviar Comprobante y Términos por WhatsApp
                             </a>
                         @endif
