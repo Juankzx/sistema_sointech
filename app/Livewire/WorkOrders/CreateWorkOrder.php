@@ -716,6 +716,12 @@ class CreateWorkOrder extends Component
             'components.*.type' => 'required|in:cpu,gpu,ram,storage,psu,case,motherboard,cooler,mouse,keyboard,other',
             'initialPhotos.*' => 'nullable|file|max:30720',
         ], [
+            'full_name.required' => 'El nombre completo del cliente es obligatorio.',
+            'phone.required' => 'El teléfono de contacto es obligatorio.',
+            'device_type.required' => 'Debes indicar el tipo de equipo.',
+            'brand_model.required' => 'La marca y modelo del equipo son obligatorios.',
+            'reported_issue.required' => 'Debes detallar la falla o motivo de ingreso.',
+            'terms_accepted.accepted' => 'El cliente debe aceptar los términos y condiciones antes de registrar el ingreso.',
             'initialPhotos.*.file' => 'Una de las fotos adjuntas no es válida o falló al subirse.',
             'initialPhotos.*.max' => 'Una de las fotos supera el tamaño máximo permitido (30 MB).',
             'initialPhotos.*.uploaded' => 'No se pudo subir una de las fotos. Verifica su formato y tamaño.',
@@ -937,18 +943,29 @@ class CreateWorkOrder extends Component
             ]);
         }
 
-        // Cargar datos para el modal de impresión sin salir de la vista
+        // Cargar datos para la vista de comprobante exitoso
         $this->created_order_uuid = $workOrder->uuid;
         $this->created_order_id = $workOrder->id;
         $this->show_success_modal = true;
 
+        $this->dispatch('order-created');
         session()->flash('message', '¡Orden de trabajo creada exitosamente!');
     }
 
     public function closeSuccessModal()
     {
         $this->show_success_modal = false;
-        return redirect()->to('/');
+        return redirect()->route('dashboard');
+    }
+
+    public function goToDashboard()
+    {
+        return redirect()->route('dashboard');
+    }
+
+    public function resetForm()
+    {
+        return redirect()->route('work-orders.create');
     }
 
     public function getCreatedOrderProperty()
@@ -1028,6 +1045,10 @@ class CreateWorkOrder extends Component
 
     public function render()
     {
-        return view('livewire.work-orders.create-work-order')->layout('layouts.app');
+        return view('livewire.work-orders.create-work-order', [
+            'createdOrder' => $this->createdOrder,
+            'created_order_id' => $this->created_order_id,
+            'kiosk_mode' => $this->kiosk_mode,
+        ])->layout('layouts.app');
     }
 }

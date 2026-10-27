@@ -23,14 +23,8 @@ use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\PrintController;
 use App\Http\Controllers\ReportController;
 
-// Public Landing Page vs Subdomain Routing (taller.sointech.cl)
-if (request()->getHost() && str_starts_with(request()->getHost(), 'taller.')) {
-    Route::get('/', function () {
-        return Auth::check() ? redirect()->route('dashboard') : redirect()->route('login');
-    });
-} else {
-    Route::get('/', LandingPage::class)->name('home');
-}
+// Public Landing Page (Subdomain routing handled safely in LandingPage::mount)
+Route::get('/', LandingPage::class)->name('home');
 
 // Public Client Tracking Routes (Protected against automated scanning)
 Route::middleware('throttle:public-tracking')->group(function () {

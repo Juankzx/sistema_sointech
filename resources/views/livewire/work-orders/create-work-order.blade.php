@@ -1,5 +1,180 @@
-<div class="max-w-4xl mx-auto pb-20">
-    <div class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-xs overflow-hidden">
+<div class="max-w-4xl mx-auto pb-20" x-data x-init="window.scrollTo({ top: 0, behavior: 'instant' }); $wire.on('order-created', () => window.scrollTo({ top: 0, behavior: 'instant' }))">
+
+    @if(!empty($created_order_id) && !empty($createdOrder))
+        <!-- ============================================================== -->
+        <!-- VISTA DEDICADA: CONFIRMACIÓN Y COMPROBANTE DE INGRESO EXITOSO   -->
+        <!-- (Reemplaza el formulario completo: sin modales, sin scroll extra)-->
+        <!-- ============================================================== -->
+        @php
+            $order = $createdOrder;
+            $cleanPhone = preg_replace('/[^0-9]/', '', $order->client?->phone ?? '');
+            if (strlen($cleanPhone) === 9 && str_starts_with($cleanPhone, '9')) {
+                $cleanPhone = '56' . $cleanPhone;
+            }
+            $trackingUrl = url('/seguimiento/' . $order->uuid);
+            $clientNameShort = explode(' ', $order->client?->full_name ?? 'Cliente')[0];
+            $shortUuid = strtoupper(substr($order->uuid, 0, 8));
+            $passText = $order->unlock_password ?: 'Sin Clave';
+            $waMessage = "Hola {$order->client?->full_name}, confirmamos el ingreso formal de tu equipo {$order->brand_model} (OT #{$order->id}). Puedes revisar el informe técnico, presupuesto y los Términos y Condiciones Legales del servicio en este enlace: {$trackingUrl}";
+        @endphp
+
+        <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm overflow-hidden animate-fade-in space-y-6 p-6 sm:p-8">
+
+            <!-- Banner Principal de Éxito -->
+            <div class="text-center space-y-3 pb-6 border-b border-zinc-200 dark:border-zinc-800">
+                <div class="w-16 h-16 rounded-full bg-emerald-500/10 border-2 border-emerald-500/30 flex items-center justify-center mx-auto text-emerald-600 dark:text-emerald-400 shadow-inner">
+                    <x-ui.icon name="check" class="w-8 h-8 stroke-[2.5]" />
+                </div>
+                <div>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        Ingreso Registrado con Éxito
+                    </span>
+                    <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 mt-2">
+                        Orden de Trabajo #{{ $order->id }}
+                    </h1>
+                    <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1 max-w-lg mx-auto">
+                        El equipo ha sido registrado formalmente en el laboratorio. Puedes enviar el comprobante digital al cliente e imprimir las etiquetas.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Botonera de Acción Rápida (Optimizado para móvil y escritorio) -->
+            <div class="space-y-3">
+                <div class="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
+                    <x-ui.icon name="zap" class="w-4 h-4 text-brand-500" />
+                    <span>Acciones Inmediatas de Recepción</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    @if($cleanPhone)
+                        <a href="https://wa.me/{{ $cleanPhone }}?text={{ urlencode($waMessage) }}" target="_blank"
+                            class="sm:col-span-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3.5 px-5 rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2.5 transition shadow-sm cursor-pointer">
+                            <x-ui.icon name="whatsapp" class="w-5 h-5 shrink-0" />
+                            <span>Enviar Comprobante y Términos por WhatsApp</span>
+                        </a>
+                    @endif
+
+                    <button type="button" onclick="window.printContent('receipt-print-template', 'qr-canvas-a4')"
+                        class="bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-white text-white dark:text-zinc-900 font-medium py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-xs">
+                        <x-ui.icon name="printer" class="w-4 h-4 shrink-0" />
+                        <span>Imprimir Recibo (A4 / Carta)</span>
+                    </button>
+
+                    <button type="button" onclick="window.printStickerLabel({{ $order->id }})"
+                        class="bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700 font-medium py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition cursor-pointer">
+                        <x-ui.icon name="tag" class="w-4 h-4 shrink-0" />
+                        <span>Imprimir Etiqueta (Sticker)</span>
+                    </button>
+
+                    <a href="{{ $trackingUrl }}" target="_blank"
+                        class="bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700 font-medium py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition cursor-pointer">
+                        <x-ui.icon name="external-link" class="w-4 h-4 shrink-0" />
+                        <span>Ver Portal de Seguimiento</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Ficha Rápida para Cinta de Enmascarar / Rotulación en Taller -->
+            <div class="bg-amber-50 dark:bg-amber-950/20 border-2 border-dashed border-amber-300 dark:border-amber-700/60 rounded-xl p-4 space-y-2">
+                <div class="flex items-center justify-between text-xs font-semibold text-amber-800 dark:text-amber-300">
+                    <span class="flex items-center gap-1.5 uppercase tracking-wider text-[11px]">
+                        🏷️ Rotulación Rápida (Cinta Adhesiva en Equipo):
+                    </span>
+                    <span class="font-mono bg-amber-200 dark:bg-amber-900/60 px-2 py-0.5 rounded text-[11px]">
+                        OT #{{ $order->id }} ({{ $shortUuid }})
+                    </span>
+                </div>
+                <div class="bg-amber-100 dark:bg-amber-900/40 p-3 rounded-lg text-zinc-900 dark:text-zinc-100 space-y-1 font-mono text-xs">
+                    <div class="flex justify-between items-center font-bold">
+                        <span>OT #{{ $order->id }} • {{ $clientNameShort }}</span>
+                        <span class="text-[11px] text-zinc-600 dark:text-zinc-400 font-normal">{{ now()->format('d/m/Y H:i') }}</span>
+                    </div>
+                    <div class="flex justify-between items-center text-[11px] pt-1">
+                        <span class="truncate max-w-[240px] font-semibold">{{ $order->brand_model }}</span>
+                        <span class="bg-black/10 dark:bg-white/10 px-2 py-0.5 rounded font-bold">{{ $passText }}</span>
+                    </div>
+                    @if($order->reported_issue)
+                        <div class="text-[11px] text-zinc-700 dark:text-zinc-300 pt-1 line-clamp-1 italic">
+                            Falla: {{ $order->reported_issue }}
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Resumen de Datos Clave de la Orden -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                <!-- Tarjeta Cliente -->
+                <div class="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-800 space-y-2">
+                    <span class="text-[10px] font-semibold uppercase tracking-wider text-zinc-500 block">Datos del Cliente</span>
+                    <div class="space-y-1">
+                        <div class="font-semibold text-zinc-900 dark:text-zinc-100 text-sm">{{ $order->client?->full_name }}</div>
+                        <div class="text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
+                            <span>📞 {{ $order->client?->phone ?: 'Sin teléfono' }}</span>
+                            @if($order->client?->rut_dni)
+                                <span>• RUT: {{ $order->client->rut_dni }}</span>
+                            @endif
+                        </div>
+                        @if($order->client?->email)
+                            <div class="text-zinc-500">✉️ {{ $order->client->email }}</div>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Tarjeta Equipo & Presupuesto -->
+                <div class="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-800 space-y-2">
+                    <span class="text-[10px] font-semibold uppercase tracking-wider text-zinc-500 block">Detalles del Equipo</span>
+                    <div class="space-y-1">
+                        <div class="font-semibold text-zinc-900 dark:text-zinc-100 text-sm">{{ $order->brand_model }}</div>
+                        <div class="text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
+                            <span class="capitalize">Tipo: {{ $order->device_type }}</span>
+                            @if($order->imei_serial)
+                                <span>• S/N: {{ $order->imei_serial }}</span>
+                            @endif
+                        </div>
+                        <div class="text-zinc-500">
+                            Estado: <span class="font-semibold text-emerald-600 dark:text-emerald-400">{{ $order->status }}</span>
+                            @if($order->total_estimated > 0)
+                                • Total: <span class="font-bold text-zinc-900 dark:text-zinc-100">${{ number_format($order->total_estimated, 0, ',', '.') }}</span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navegación y Flujo de Trabajo (Dashboard, Nueva OT, Lista) -->
+            <div class="pt-4 border-t border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <button type="button" wire:click="goToDashboard"
+                    class="w-full sm:w-auto bg-brand-500 hover:bg-brand-600 text-white font-semibold py-3 px-6 rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 transition shadow-sm cursor-pointer">
+                    <x-ui.icon name="layout" class="w-4 h-4 shrink-0" />
+                    <span>Ir al Panel de Control (Dashboard)</span>
+                </button>
+
+                <div class="flex items-center gap-2.5 w-full sm:w-auto">
+                    <button type="button" wire:click="resetForm"
+                        class="w-full sm:w-auto bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 font-medium py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-1.5 transition cursor-pointer">
+                        <x-ui.icon name="plus" class="w-3.5 h-3.5 shrink-0" />
+                        <span>Ingresar Otra Orden</span>
+                    </button>
+
+                    <a href="{{ route('work-orders.index') }}"
+                        class="w-full sm:w-auto bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 font-medium py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-1.5 transition cursor-pointer text-center">
+                        <x-ui.icon name="list" class="w-3.5 h-3.5 shrink-0" />
+                        <span>Ver Todas</span>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- PLANTILLAS DE IMPRESIÓN OCULTAS EN EL DOM -->
+        <div style="display: none;">
+            @include('components.print.work-order-a4', ['templateId' => 'receipt-print-template', 'order' => $order, 'qrCanvasId' => 'qr-canvas-a4'])
+            @include('components.print.work-order-thermal', ['templateId' => 'thermal-label-print-template', 'order' => $order, 'qrCanvasId' => 'qr-canvas-thermal'])
+        </div>
+
+    @else
+        <div class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-xs overflow-hidden">
 
         <!-- Header -->
         <div class="px-6 py-5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
@@ -1173,6 +1348,20 @@
                     </label>
                 </div>
 
+                @if ($errors->any())
+                    <div class="p-3 bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs rounded-lg space-y-1">
+                        <div class="font-semibold flex items-center gap-1.5">
+                            <x-ui.icon name="alert-triangle" class="w-4 h-4 shrink-0" />
+                            <span>Por favor corrige los siguientes campos antes de guardar:</span>
+                        </div>
+                        <ul class="list-disc list-inside space-y-0.5 text-[11px] pl-1">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 <button type="submit" @click="savePad"
                     class="w-full font-medium py-3 px-6 rounded-lg text-sm transition duration-150 flex justify-center items-center gap-2 cursor-pointer bg-brand-500 hover:bg-brand-600 text-white shadow-xs">
                     <svg wire:loading wire:target="save" class="animate-spin h-4 w-4 text-white"
@@ -1188,96 +1377,6 @@
 
         </form>
     </div>
-
-    <!-- MODAL POST-CREACIÓN DE IMPRESIÓN Y QR -->
-    @if($show_success_modal)
-        <div class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-zinc-950/60 backdrop-blur-xs animate-fade-in">
-            <div class="bg-white dark:bg-zinc-900 rounded-xl max-w-md w-full border border-zinc-200 dark:border-zinc-800 shadow-xl p-6 text-center space-y-5">
-
-                <div class="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto text-emerald-600 dark:text-emerald-400">
-                    <x-ui.icon name="check" class="w-6 h-6" />
-                </div>
-
-                <div>
-                    <h3 class="text-base font-semibold text-zinc-900 dark:text-zinc-100">¡Orden de Trabajo Creada!</h3>
-                    <p class="text-xs text-zinc-500 mt-1">La orden de servicio <strong>#{{ $created_order_id }}</strong> ha sido ingresada en el sistema. Puedes proceder a imprimir los comprobantes.</p>
-                    @if($this->createdOrder && $this->createdOrder->images && $this->createdOrder->images->count() > 0)
-                        <div class="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 text-xs font-medium rounded-md border border-zinc-200 dark:border-zinc-700">
-                            <x-ui.icon name="camera" class="w-3.5 h-3.5 text-zinc-500" />
-                            <span>{{ $this->createdOrder->images->count() }} foto(s) de check-in respaldada(s)</span>
-                        </div>
-                    @endif
-                </div>
-
-                <!-- FICHA RÁPIDA PARA CINTA DE ENMASCARAR (SIN IMPRESORA) -->
-                @if($this->createdOrder)
-                    @php
-                        $shortUuid = strtoupper(substr($this->createdOrder->uuid, 0, 8));
-                        $clientNameShort = explode(' ', $this->createdOrder->client?->full_name ?? '')[0];
-                        $passText = $this->createdOrder->unlock_password ?: 'Sin Clave';
-                    @endphp
-                    <div class="bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 p-3.5 rounded-lg text-left space-y-2">
-                        <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">Para Cinta Adhesiva en Equipo:</span>
-                            <span class="text-[10px] font-mono font-semibold text-zinc-400">#{{ $this->createdOrder->id }} ({{ $shortUuid }})</span>
-                        </div>
-                        <div class="bg-amber-100 border border-amber-300 p-2.5 rounded text-zinc-900 space-y-1">
-                            <div class="flex items-center justify-between text-xs font-semibold">
-                                <span class="font-bold">OT #{{ $this->createdOrder->id }} • {{ $clientNameShort }}</span>
-                                <span class="font-mono text-[10px] text-zinc-600">{{ now()->format('d/m/y') }}</span>
-                            </div>
-                            <div class="flex items-center justify-between text-xs font-medium pt-0.5">
-                                <span class="truncate max-w-[210px]">{{ $this->createdOrder->brand_model }}</span>
-                                <span class="shrink-0 bg-black/10 px-1.5 py-0.5 rounded text-[10px] font-mono">{{ $passText }}</span>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
-                <!-- Botones de Acción de Impresión -->
-                <div class="grid grid-cols-1 gap-2">
-                    @if($this->created_order)
-                        @php
-                            $cleanPhone = preg_replace('/[^0-9]/', '', $this->created_order->client?->phone ?? '');
-                            $trackingUrl = url('/seguimiento/' . $this->created_order->uuid);
-                            $waMessage = "Hola " . ($this->created_order->client?->full_name ?? 'Cliente') . ", confirmamos el ingreso de tu equipo " . $this->created_order->brand_model . ". Puedes revisar la recepción, presupuesto y los Términos y Condiciones Legales del servicio en este enlace: " . $trackingUrl;
-                        @endphp
-                        @if($cleanPhone)
-                            <a href="https://wa.me/{{ $cleanPhone }}?text={{ urlencode($waMessage) }}" target="_blank"
-                                class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 px-4 rounded-lg text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-xs">
-                                <x-ui.icon name="whatsapp" class="w-4 h-4" />
-                                Enviar Comprobante y Términos por WhatsApp
-                            </a>
-                        @endif
-                    @endif
-
-                    <button type="button" onclick="window.printContent('receipt-print-template', 'qr-canvas-a4')"
-                        class="bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-white text-white dark:text-zinc-900 font-medium py-2.5 px-4 rounded-lg text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-xs">
-                        <x-ui.icon name="printer" class="w-4 h-4" />
-                        Imprimir Recibo Cliente (A4 / Carta)
-                    </button>
-
-                    <button type="button" onclick="window.printStickerLabel({{ $created_order_id }})"
-                        class="bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700 font-medium py-2.5 px-4 rounded-lg text-xs flex items-center justify-center gap-2 transition cursor-pointer">
-                        <x-ui.icon name="tag" class="w-4 h-4" />
-                        Imprimir Etiqueta Adhesiva (Sticker)
-                    </button>
-
-                    <button type="button" wire:click="closeSuccessModal"
-                        class="text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 font-medium py-2 px-4 rounded-lg text-xs cursor-pointer transition">
-                        Ir al Panel de Control
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- PLANTILLAS DE IMPRESIÓN OCULTAS EN EL DOM -->
-        <div style="display: none;">
-            @if($this->createdOrder)
-                @include('components.print.work-order-a4', ['templateId' => 'receipt-print-template', 'order' => $this->createdOrder, 'qrCanvasId' => 'qr-canvas-a4'])
-                @include('components.print.work-order-thermal', ['templateId' => 'thermal-label-print-template', 'order' => $this->createdOrder, 'qrCanvasId' => 'qr-canvas-thermal'])
-            @endif
-        </div>
     @endif
 
     <!-- MODAL CLIENTE KIOSCO (FIRMA EN PANTALLA) -->

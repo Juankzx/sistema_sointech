@@ -35,6 +35,13 @@ class LandingPage extends Component
         'issue_description.min'      => 'La descripción debe tener al menos 10 caracteres.',
     ];
 
+    public function mount()
+    {
+        if (request()->getHost() && str_starts_with(request()->getHost(), 'taller.')) {
+            return auth()->check() ? redirect()->route('dashboard') : redirect()->route('login');
+        }
+    }
+
     public static function defaultInstagramPosts(): array
     {
         return [
