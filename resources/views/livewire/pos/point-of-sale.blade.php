@@ -2,127 +2,126 @@
 
     <!-- Flash Messages -->
     @if (session()->has('message'))
-        <div class="bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 p-4 rounded-2xl text-sm font-semibold flex items-center gap-2 animate-fade-in shadow-sm">
-            <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-            {{ session('message') }}
+        <div class="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 p-3.5 rounded-lg text-xs font-medium flex items-center gap-2 animate-fade-in shadow-xs">
+            <x-ui.icon name="check" class="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <span>{{ session('message') }}</span>
         </div>
     @endif
     @if (session()->has('error'))
-        <div class="bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 p-4 rounded-2xl text-sm font-semibold flex items-center gap-2 animate-fade-in shadow-sm">
-            <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            {{ session('error') }}
+        <div class="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 p-3.5 rounded-lg text-xs font-medium flex items-center gap-2 animate-fade-in shadow-xs">
+            <x-ui.icon name="alert-triangle" class="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" />
+            <span>{{ session('error') }}</span>
         </div>
     @endif
 
-    {{-- ════════════════════════════════════════════════════════════ --}}
-    {{-- ESTADO 1: CAJA CERRADA                                      --}}
-    {{-- ════════════════════════════════════════════════════════════ --}}
+    {{-- ESTADO 1: CAJA CERRADA --}}
     @if(!$activeRegister)
         <div class="space-y-6 animate-fade-in">
             <!-- Header -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Punto de Venta</h1>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">Ventas y cobranzas rápidas del taller.</p>
+                    <h1 class="text-xl sm:text-2xl font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight">Punto de Venta</h1>
+                    <p class="text-xs text-zinc-500 mt-0.5 font-medium">Ventas y cobranzas rápidas del taller.</p>
                 </div>
             </div>
 
             <!-- Caja Cerrada Banner -->
-            <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm text-center space-y-4 max-w-2xl mx-auto">
-                <div class="w-20 h-20 bg-amber-500/10 rounded-full mx-auto flex items-center justify-center border border-amber-500/20 text-amber-600">
-                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+            <div class="bg-white dark:bg-zinc-900 p-8 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-xs text-center space-y-4 max-w-xl mx-auto">
+                <div class="w-12 h-12 bg-amber-500/10 rounded-full mx-auto flex items-center justify-center border border-amber-500/20 text-amber-600 dark:text-amber-400">
+                    <x-ui.icon name="lock" class="w-6 h-6" />
                 </div>
-                <h2 class="text-xl font-black text-slate-900 dark:text-white">La Caja Diaria está Cerrada</h2>
-                <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">Para poder vender o registrar abonos de Órdenes de Trabajo, primero debes abrir la caja del día.</p>
-                <a href="/caja" class="inline-block bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-white font-bold py-3 px-6 rounded-xl shadow-md shadow-orange-500/20 transition mt-2">
-                    Ir a Apertura de Caja
-                </a>
+                <div>
+                    <h2 class="text-base font-semibold text-zinc-900 dark:text-zinc-100">La Caja Diaria está Cerrada</h2>
+                    <p class="text-xs text-zinc-500 mt-1 max-w-md mx-auto">Para poder vender o registrar abonos de Órdenes de Trabajo, primero debes abrir la caja del día.</p>
+                </div>
+                <div>
+                    <a href="{{ route('cash-registers.index') }}" class="inline-flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white font-medium text-xs py-2.5 px-5 rounded-lg transition shadow-xs">
+                        <x-ui.icon name="external-link" class="w-4 h-4" />
+                        <span>Ir a Apertura de Caja</span>
+                    </a>
+                </div>
             </div>
         </div>
 
-    {{-- ════════════════════════════════════════════════════════════ --}}
-    {{-- ESTADO 2: CAJA ABIERTA → POS COMPLETO                      --}}
-    {{-- ════════════════════════════════════════════════════════════ --}}
+    {{-- ESTADO 2: CAJA ABIERTA → POS COMPLETO --}}
     @else
         <!-- Header + Register Status Bar -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-700">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-zinc-900 p-4 px-5 rounded-xl shadow-xs border border-zinc-200 dark:border-zinc-800">
             <div>
-                <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+                <h1 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight flex items-center gap-2.5">
                     <span>Punto de Venta</span>
-                    <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-orange-500/10 text-orange-600 dark:bg-orange-500/20 dark:text-orange-300 border border-orange-500/20">
+                    <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-500/20 uppercase tracking-wider">
                         Caja & Cobranzas
                     </span>
                 </h1>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">Búsqueda rápida de productos y cobro directo de repuestos u Órdenes de Trabajo.</p>
+                <p class="text-xs text-zinc-500 mt-0.5">Búsqueda rápida de productos y cobro directo de repuestos u Órdenes de Trabajo.</p>
             </div>
             <div class="flex items-center gap-3">
-                <div class="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 px-4 py-2 rounded-xl flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="text-xs font-bold">Caja Abierta</span>
+                <div class="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 px-3 py-1.5 rounded-lg flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="text-xs font-medium">Caja Abierta</span>
                 </div>
             </div>
         </div>
 
-        {{-- ═══ VENDER ═══ --}}
+        {{-- VENDER --}}
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1">
             <!-- LEFT COLUMN: Search and Products -->
-            <div class="lg:col-span-7 xl:col-span-8 flex flex-col gap-6">
+            <div class="lg:col-span-7 xl:col-span-8 flex flex-col gap-4">
                 <!-- Search Input -->
-                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-3">
+                <div class="bg-white dark:bg-zinc-900 p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-xs">
                     <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                            </svg>
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-400">
+                            <x-ui.icon name="search" class="w-4 h-4" />
                         </div>
                         <input wire:model.live.debounce.150ms="search" type="text" 
-                            class="w-full text-slate-900 dark:text-white text-xs rounded-xl focus:ring-2 focus:ring-orange-500 outline-none block pl-11 pr-10 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 placeholder-slate-400 font-medium transition" 
+                            class="w-full text-zinc-900 dark:text-zinc-100 text-xs rounded-lg focus:ring-1 focus:ring-brand-500 outline-none block pl-9 pr-9 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 placeholder-zinc-400 transition" 
                             placeholder="Buscar por nombre de producto, repuesto o código...">
                         
                         @if(strlen($search) > 0)
-                            <button wire:click="$set('search', '')" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 transition">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            <button wire:click="$set('search', '')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition">
+                                <x-ui.icon name="x" class="w-4 h-4" />
                             </button>
                         @endif
                     </div>
                 </div>
 
                 <!-- Products Grid -->
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex-1 flex flex-col">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest flex items-center gap-2">
-                            <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-                            {{ strlen($search) >= 1 ? 'Resultados para "' . $search . '"' : 'Catálogo de Inventario' }}
+                <div class="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-xs flex-1 flex flex-col">
+                    <div class="flex items-center justify-between mb-3 pb-2.5 border-b border-zinc-100 dark:border-zinc-800">
+                        <h3 class="text-xs font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider flex items-center gap-1.5">
+                            <x-ui.icon name="package" class="w-4 h-4 text-zinc-500" />
+                            <span>{{ strlen($search) >= 1 ? 'Resultados para "' . $search . '"' : 'Catálogo de Inventario' }}</span>
                         </h3>
-                        <span class="text-[10px] font-bold text-slate-500 bg-slate-100 dark:bg-slate-700 px-2.5 py-1 rounded-xl">
+                        <span class="text-[10px] font-medium text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded">
                             {{ count($foundProducts) }} productos
                         </span>
                     </div>
 
                     @if(count($foundProducts) > 0)
-                        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3.5 overflow-y-auto max-h-[580px] theme-scrollbar pr-1">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 overflow-y-auto max-h-[580px] pr-1">
                             @foreach($foundProducts as $product)
                                 <div wire:click="addToCart({{ $product['id'] }})" 
-                                    class="p-4 rounded-2xl text-left transition-all duration-200 group flex flex-col justify-between h-full cursor-pointer bg-slate-50 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700/80 hover:border-orange-500/50 hover:shadow-md hover:-translate-y-0.5">
+                                    class="p-3.5 rounded-lg text-left transition duration-150 group flex flex-col justify-between h-full cursor-pointer bg-white dark:bg-zinc-850 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 shadow-xs">
                                     <div>
-                                        <div class="flex items-center justify-between mb-2">
-                                            <span class="text-[10px] font-bold text-orange-600 dark:text-orange-300 uppercase tracking-wider bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded-md">
+                                        <div class="flex items-center justify-between mb-1.5">
+                                            <span class="text-[10px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">
                                                 {{ $product['category'] ?? 'General' }}
                                             </span>
-                                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-md border {{ $product['stock'] > 5 ? 'text-emerald-700 bg-emerald-50 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300' : 'text-amber-700 bg-amber-50 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300' }}">
+                                            <span class="text-[10px] font-medium px-1.5 py-0.5 rounded border {{ $product['stock'] > 5 ? 'text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800' : 'text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800' }}">
                                                 Stock: {{ $product['stock'] }}
                                             </span>
                                         </div>
-                                        <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-orange-600 transition line-clamp-2 leading-snug">
+                                        <h4 class="text-xs font-medium text-zinc-900 dark:text-zinc-100 group-hover:text-brand-600 transition line-clamp-2 leading-snug">
                                             {{ $product['name'] }}
                                         </h4>
                                     </div>
 
-                                    <div class="mt-4 pt-3 border-t border-slate-200/60 dark:border-slate-800 flex justify-between items-center">
-                                        <span class="text-slate-900 dark:text-white font-black text-base">
+                                    <div class="mt-3 pt-2.5 border-t border-zinc-100 dark:border-zinc-800 flex justify-between items-center">
+                                        <span class="text-zinc-900 dark:text-zinc-100 font-semibold font-mono text-sm">
                                             ${{ number_format($product['sale_price'], 0, ',', '.') }}
                                         </span>
-                                        <span class="text-[11px] font-bold text-white bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 px-3 py-1.5 rounded-xl shadow-sm transition flex items-center gap-1">
+                                        <span class="text-[11px] font-medium text-zinc-700 dark:text-zinc-200 bg-zinc-100 dark:bg-zinc-800 group-hover:bg-brand-500 group-hover:text-white px-2.5 py-1 rounded transition flex items-center gap-1">
                                             + Añadir
                                         </span>
                                     </div>
@@ -130,146 +129,152 @@
                             @endforeach
                         </div>
                     @else
-                        <div class="text-center py-16 opacity-60">
-                            <svg class="w-12 h-12 text-slate-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            <p class="text-slate-500 font-medium text-xs">No se encontraron productos con stock para "{{ $search }}".</p>
+                        <div class="text-center py-16 text-zinc-400">
+                            <x-ui.icon name="package" class="w-8 h-8 mx-auto mb-2 text-zinc-300 dark:text-zinc-600" />
+                            <p class="font-medium text-xs text-zinc-500">No se encontraron productos con stock para "{{ $search }}".</p>
                         </div>
                     @endif
                 </div>
             </div>
 
             <!-- RIGHT COLUMN: Cart & Checkout -->
-            <div class="lg:col-span-5 xl:col-span-4 flex flex-col gap-6">
-                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-md overflow-hidden flex flex-col h-full">
+            <div class="lg:col-span-5 xl:col-span-4 flex flex-col gap-4">
+                <div class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-xs overflow-hidden flex flex-col h-full">
                     <!-- Cart Header -->
-                    <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/60">
-                        <h2 class="text-xs font-black text-slate-800 dark:text-white uppercase tracking-widest flex items-center gap-2">
-                            <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    <div class="p-3.5 border-b border-zinc-100 dark:border-zinc-800 flex justify-between items-center bg-zinc-50 dark:bg-zinc-900/60">
+                        <h2 class="text-xs font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider flex items-center gap-2">
+                            <x-ui.icon name="shopping-bag" class="w-4 h-4 text-zinc-500" />
                             Carrito de Cobro
                         </h2>
-                        <span class="bg-orange-500/10 text-orange-600 dark:bg-orange-500/20 dark:text-orange-300 text-[11px] font-bold px-2.5 py-1 rounded-xl border border-orange-500/20">
+                        <span class="bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 text-[10px] font-medium px-2 py-0.5 rounded border border-zinc-200 dark:border-zinc-700">
                             {{ count($cart) }} {{ count($cart) === 1 ? 'Ítem' : 'Ítems' }}
                         </span>
                     </div>
 
                     <!-- Cart Items List -->
-                    <div class="flex-1 overflow-y-auto p-4 space-y-3 theme-scrollbar max-h-[380px]">
+                    <div class="flex-1 overflow-y-auto p-3.5 space-y-2.5 max-h-[380px]">
                         @forelse($cart as $index => $item)
-                            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700 space-y-2.5">
+                            <div class="p-3 rounded-lg bg-zinc-50 dark:bg-zinc-850 border border-zinc-200 dark:border-zinc-800 space-y-2">
                                 <div class="flex justify-between items-start gap-2">
                                     <div class="flex-1">
                                         @if(!empty($item['is_ot']))
-                                            <span class="inline-block text-[9px] font-bold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800 px-2 py-0.5 rounded-md uppercase tracking-wider mb-1">
-                                                🛠️ ORDEN DE TRABAJO
+                                            <span class="inline-block text-[9px] font-semibold text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-800 px-1.5 py-0.5 rounded uppercase tracking-wider mb-1">
+                                                Orden de Trabajo
                                             </span>
                                         @endif
-                                        <h4 class="text-xs font-bold text-slate-900 dark:text-white leading-snug">
+                                        <h4 class="text-xs font-medium text-zinc-900 dark:text-zinc-100 leading-snug">
                                             {{ $item['name'] }}
                                         </h4>
                                     </div>
 
-                                    <button wire:click="removeFromCart({{ $index }})" class="text-slate-400 hover:text-red-500 transition cursor-pointer p-1" title="Eliminar ítem">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    <button wire:click="removeFromCart({{ $index }})" class="text-zinc-400 hover:text-red-500 transition cursor-pointer p-0.5" title="Eliminar ítem">
+                                        <x-ui.icon name="trash" class="w-3.5 h-3.5" />
                                     </button>
                                 </div>
 
                                 @if(!empty($item['is_ot']))
-                                    <div class="space-y-1 pt-1 border-t border-slate-200 dark:border-slate-800">
-                                        <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Monto a Abonar / Cobrar ($):</label>
+                                    <div class="space-y-1 pt-1.5 border-t border-zinc-200 dark:border-zinc-800">
+                                        <label class="block text-[10px] font-medium text-zinc-500 uppercase tracking-wider">Monto a Abonar / Cobrar ($):</label>
                                         <div class="relative w-full">
-                                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-orange-600 font-bold text-xs">$</span>
+                                            <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center text-zinc-500 font-mono text-xs">$</span>
                                             <input wire:model.live.debounce.300ms="cart.{{ $index }}.price" type="number" step="1" min="1" max="{{ $item['price'] }}" 
-                                                class="w-full text-slate-900 dark:text-white text-sm font-bold rounded-xl py-2 pl-7 pr-3 focus:ring-2 focus:ring-orange-500 bg-white dark:bg-slate-800 border border-orange-500/40 outline-none">
+                                                class="w-full text-zinc-900 dark:text-zinc-100 text-xs font-mono font-semibold rounded-lg py-1.5 pl-6 pr-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:ring-1 focus:ring-brand-500 outline-none">
                                         </div>
                                     </div>
                                 @else
-                                    <div class="flex justify-between items-center pt-2 border-t border-slate-200/60 dark:border-slate-800">
-                                        <div class="text-slate-900 dark:text-white font-bold text-xs">
-                                            ${{ number_format($item['price'], 0, ',', '.') }} <span class="text-[10px] text-slate-400 font-normal">c/u</span>
+                                    <div class="flex justify-between items-center pt-2 border-t border-zinc-200/80 dark:border-zinc-800">
+                                        <div class="text-zinc-900 dark:text-zinc-100 font-mono font-medium text-xs">
+                                            ${{ number_format($item['price'], 0, ',', '.') }} <span class="text-[10px] text-zinc-400 font-sans">c/u</span>
                                         </div>
-                                        <div class="flex items-center rounded-xl p-0.5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
-                                            <button wire:click="updateQuantity({{ $index }}, 'decrease')" class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-slate-500 transition cursor-pointer">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+                                        <div class="flex items-center rounded-lg p-0.5 border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800">
+                                            <button wire:click="updateQuantity({{ $index }}, 'decrease')" class="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded text-zinc-500 transition cursor-pointer">
+                                                <x-ui.icon name="minus" class="w-3 h-3" />
                                             </button>
-                                            <span class="w-7 text-center text-xs font-bold text-slate-900 dark:text-white">{{ $item['quantity'] }}</span>
-                                            <button wire:click="updateQuantity({{ $index }}, 'increase')" class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-slate-500 transition cursor-pointer">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                            <span class="w-6 text-center text-xs font-medium text-zinc-900 dark:text-zinc-100">{{ $item['quantity'] }}</span>
+                                            <button wire:click="updateQuantity({{ $index }}, 'increase')" class="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded text-zinc-500 transition cursor-pointer">
+                                                <x-ui.icon name="plus" class="w-3 h-3" />
                                             </button>
                                         </div>
                                     </div>
                                 @endif
                             </div>
                         @empty
-                            <div class="text-center py-10 opacity-60 space-y-2">
-                                <svg class="w-10 h-10 text-slate-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                                <p class="text-xs text-slate-500 font-medium">El carrito está vacío</p>
+                            <div class="text-center py-10 opacity-60 space-y-1.5">
+                                <x-ui.icon name="shopping-bag" class="w-8 h-8 text-zinc-400 mx-auto" />
+                                <p class="text-xs text-zinc-500 font-medium">El carrito está vacío</p>
                             </div>
                         @endforelse
                     </div>
 
                     <!-- Checkout Controls Section -->
-                    <div class="p-4 border-t border-slate-100 dark:border-slate-700 space-y-4 bg-slate-50/50 dark:bg-slate-900/40">
-                        <!-- 1. Tipo de Documento Cards -->
+                    <div class="p-3.5 border-t border-zinc-100 dark:border-zinc-800 space-y-3.5 bg-zinc-50/50 dark:bg-zinc-900/40">
+                        <!-- 1. Tipo de Documento -->
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">1. Tipo de Documento</label>
-                            <div class="grid grid-cols-3 gap-2">
+                            <label class="block text-[10px] font-medium text-zinc-500 uppercase tracking-wider mb-1">1. Tipo de Comprobante</label>
+                            <div class="grid grid-cols-3 gap-1.5">
                                 <button type="button" wire:click="$set('documentType', 'ticket')" 
-                                    class="py-2 px-2 rounded-xl text-xs font-bold text-center border transition flex items-center justify-center gap-1 cursor-pointer
-                                        {{ $documentType === 'ticket' ? 'bg-orange-500/10 text-orange-600 border-orange-500 shadow-sm' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:text-slate-900' }}">
-                                    <span>📄 Ticket</span>
+                                    class="py-1.5 px-2 rounded-lg text-xs font-medium text-center border transition flex items-center justify-center gap-1 cursor-pointer
+                                        {{ $documentType === 'ticket' ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-100 shadow-xs' : 'bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-750' }}">
+                                    <x-ui.icon name="file-text" class="w-3.5 h-3.5" />
+                                    <span>Ticket</span>
                                 </button>
                                 <button type="button" wire:click="$set('documentType', 'boleta')" 
-                                    class="py-2 px-2 rounded-xl text-xs font-bold text-center border transition flex items-center justify-center gap-1 cursor-pointer
-                                        {{ $documentType === 'boleta' ? 'bg-orange-500/10 text-orange-600 border-orange-500 shadow-sm' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:text-slate-900' }}">
-                                    <span>🧾 Boleta</span>
+                                    class="py-1.5 px-2 rounded-lg text-xs font-medium text-center border transition flex items-center justify-center gap-1 cursor-pointer
+                                        {{ $documentType === 'boleta' ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-100 shadow-xs' : 'bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-750' }}">
+                                    <x-ui.icon name="receipt" class="w-3.5 h-3.5" />
+                                    <span>Boleta</span>
                                 </button>
                                 <button type="button" wire:click="$set('documentType', 'factura')" 
-                                    class="py-2 px-2 rounded-xl text-xs font-bold text-center border transition flex items-center justify-center gap-1 cursor-pointer
-                                        {{ $documentType === 'factura' ? 'bg-orange-500/10 text-orange-600 border-orange-500 shadow-sm' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:text-slate-900' }}">
-                                    <span>🏢 Factura</span>
+                                    class="py-1.5 px-2 rounded-lg text-xs font-medium text-center border transition flex items-center justify-center gap-1 cursor-pointer
+                                        {{ $documentType === 'factura' ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-100 shadow-xs' : 'bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-750' }}">
+                                    <x-ui.icon name="building" class="w-3.5 h-3.5" />
+                                    <span>Factura</span>
                                 </button>
                             </div>
                         </div>
 
-                        <!-- 2. Método de Pago Pills -->
+                        <!-- 2. Método de Pago -->
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">2. Método de Pago</label>
-                            <div class="grid grid-cols-3 gap-2">
+                            <label class="block text-[10px] font-medium text-zinc-500 uppercase tracking-wider mb-1">2. Método de Pago</label>
+                            <div class="grid grid-cols-3 gap-1.5">
                                 <button type="button" wire:click="$set('paymentMethod', 'Efectivo')" 
-                                    class="py-2 px-1.5 rounded-xl text-xs font-bold text-center border transition flex items-center justify-center gap-1 cursor-pointer
-                                        {{ $paymentMethod === 'Efectivo' ? 'bg-emerald-50 text-emerald-700 border-emerald-400 shadow-sm' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:text-slate-900' }}">
-                                    <span>💵 Efectivo</span>
+                                    class="py-1.5 px-1.5 rounded-lg text-xs font-medium text-center border transition flex items-center justify-center gap-1 cursor-pointer
+                                        {{ $paymentMethod === 'Efectivo' ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-100 shadow-xs' : 'bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-750' }}">
+                                    <x-ui.icon name="banknote" class="w-3.5 h-3.5" />
+                                    <span>Efectivo</span>
                                 </button>
                                 <button type="button" wire:click="$set('paymentMethod', 'Transferencia')" 
-                                    class="py-2 px-1.5 rounded-xl text-xs font-bold text-center border transition flex items-center justify-center gap-1 cursor-pointer
-                                        {{ $paymentMethod === 'Transferencia' ? 'bg-blue-50 text-blue-700 border-blue-400 shadow-sm' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:text-slate-900' }}">
-                                    <span>🏦 Transfer.</span>
+                                    class="py-1.5 px-1.5 rounded-lg text-xs font-medium text-center border transition flex items-center justify-center gap-1 cursor-pointer
+                                        {{ $paymentMethod === 'Transferencia' ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-100 shadow-xs' : 'bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-750' }}">
+                                    <x-ui.icon name="arrow-right-left" class="w-3.5 h-3.5" />
+                                    <span>Transfer.</span>
                                 </button>
                                 <button type="button" wire:click="$set('paymentMethod', 'Tarjeta')" 
-                                    class="py-2 px-1.5 rounded-xl text-xs font-bold text-center border transition flex items-center justify-center gap-1 cursor-pointer
-                                        {{ $paymentMethod === 'Tarjeta' ? 'bg-purple-50 text-purple-700 border-purple-400 shadow-sm' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:text-slate-900' }}">
-                                    <span>💳 Tarjeta</span>
+                                    class="py-1.5 px-1.5 rounded-lg text-xs font-medium text-center border transition flex items-center justify-center gap-1 cursor-pointer
+                                        {{ $paymentMethod === 'Tarjeta' ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-100 shadow-xs' : 'bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-750' }}">
+                                    <x-ui.icon name="credit-card" class="w-3.5 h-3.5" />
+                                    <span>Tarjeta</span>
                                 </button>
                             </div>
                         </div>
 
                         <!-- 3. Cliente Segmented Selector -->
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">3. Datos del Cliente</label>
-                            <div class="grid grid-cols-3 gap-1.5 p-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 mb-2.5">
+                            <label class="block text-[10px] font-medium text-zinc-500 uppercase tracking-wider mb-1">3. Datos del Cliente</label>
+                            <div class="grid grid-cols-3 gap-1 p-0.5 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 mb-2">
                                 <button type="button" wire:click="$set('clientMode', 'generic')" 
-                                    class="text-[10px] font-bold uppercase py-1.5 px-1 rounded-lg transition cursor-pointer
-                                        {{ $clientMode === 'generic' ? 'bg-orange-600 text-white font-black' : 'text-slate-500 hover:text-slate-900' }}">
+                                    class="text-[10px] font-medium uppercase py-1 px-1 rounded transition cursor-pointer
+                                        {{ $clientMode === 'generic' ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-semibold' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200' }}">
                                     Genérico
                                 </button>
                                 <button type="button" wire:click="$set('clientMode', 'registered')" 
-                                    class="text-[10px] font-bold uppercase py-1.5 px-1 rounded-lg transition cursor-pointer
-                                        {{ $clientMode === 'registered' ? 'bg-orange-600 text-white font-black' : 'text-slate-500 hover:text-slate-900' }}">
+                                    class="text-[10px] font-medium uppercase py-1 px-1 rounded transition cursor-pointer
+                                        {{ $clientMode === 'registered' ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-semibold' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200' }}">
                                     Buscar
                                 </button>
                                 <button type="button" wire:click="$set('clientMode', 'new')" 
-                                    class="text-[10px] font-bold uppercase py-1.5 px-1 rounded-lg transition cursor-pointer
-                                        {{ $clientMode === 'new' ? 'bg-orange-600 text-white font-black' : 'text-slate-500 hover:text-slate-900' }}">
+                                    class="text-[10px] font-medium uppercase py-1 px-1 rounded transition cursor-pointer
+                                        {{ $clientMode === 'new' ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-semibold' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200' }}">
                                     Nuevo
                                 </button>
                             </div>
@@ -277,95 +282,95 @@
                             @if($clientMode === 'generic')
                                 <div class="grid grid-cols-2 gap-2">
                                     <div>
-                                        <input wire:model="clientName" type="text" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl p-2.5 focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Nombre (Opcional)">
+                                        <input wire:model="clientName" type="text" class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 text-xs rounded-lg p-2 focus:ring-1 focus:ring-brand-500 outline-none" placeholder="Nombre (Opcional)">
                                     </div>
                                     <div>
-                                        <input wire:model="clientPhone" type="text" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl p-2.5 focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Teléfono (Opcional)">
+                                        <input wire:model="clientPhone" type="text" class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 text-xs rounded-lg p-2 focus:ring-1 focus:ring-brand-500 outline-none" placeholder="Teléfono (Opcional)">
                                     </div>
                                 </div>
                             @elseif($clientMode === 'registered')
-                                <div class="space-y-2">
+                                <div class="space-y-1.5">
                                     @if(!$selectedClientId)
                                         <div class="relative">
-                                            <input wire:model.live.debounce.150ms="searchClient" type="text" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl p-2.5 pl-8 focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Buscar por Nombre, RUT o Teléfono...">
-                                            <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
-                                                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                            <input wire:model.live.debounce.150ms="searchClient" type="text" class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 text-xs rounded-lg p-2 pl-7 focus:ring-1 focus:ring-brand-500 outline-none" placeholder="Buscar por Nombre, RUT o Teléfono...">
+                                            <div class="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none text-zinc-400">
+                                                <x-ui.icon name="search" class="w-3.5 h-3.5" />
                                             </div>
                                         </div>
                                         @if(count($foundClients) > 0)
-                                            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden max-h-32 overflow-y-auto theme-scrollbar shadow-lg">
+                                            <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg overflow-hidden max-h-32 overflow-y-auto shadow-md">
                                                 @foreach($foundClients as $fclient)
-                                                    <div wire:click="selectClient({{ $fclient['id'] }})" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer border-b border-slate-100 dark:border-slate-800 last:border-0">
-                                                        <div class="text-xs font-bold text-slate-900 dark:text-white">{{ $fclient['full_name'] }}</div>
-                                                        <div class="text-[10px] text-slate-500">{{ $fclient['rut_dni'] ?? 'Sin RUT' }} | {{ $fclient['phone'] }}</div>
+                                                    <div wire:click="selectClient({{ $fclient['id'] }})" class="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-800 cursor-pointer border-b border-zinc-100 dark:border-zinc-800 last:border-0">
+                                                        <div class="text-xs font-medium text-zinc-900 dark:text-zinc-100">{{ $fclient['full_name'] }}</div>
+                                                        <div class="text-[10px] text-zinc-500">{{ $fclient['rut_dni'] ?? 'Sin RUT' }} | {{ $fclient['phone'] }}</div>
                                                     </div>
                                                 @endforeach
                                             </div>
                                         @endif
                                     @else
-                                        <div class="p-3 rounded-xl flex justify-between items-center border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-200">
+                                        <div class="p-2.5 rounded-lg flex justify-between items-center border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/40 text-zinc-800 dark:text-zinc-200">
                                             <div>
-                                                <div class="text-[9px] font-bold uppercase tracking-widest mb-0.5">Cliente Seleccionado</div>
-                                                <div class="text-xs font-bold">{{ $clientName }}</div>
-                                                <div class="text-[10px] text-slate-500">{{ $clientRut ?? 'Sin RUT' }} | {{ $clientPhone }}</div>
+                                                <div class="text-[9px] font-medium uppercase tracking-wider text-zinc-500">Cliente Seleccionado</div>
+                                                <div class="text-xs font-semibold">{{ $clientName }}</div>
+                                                <div class="text-[10px] text-zinc-500">{{ $clientRut ?? 'Sin RUT' }} | {{ $clientPhone }}</div>
                                             </div>
-                                            <button wire:click="$set('selectedClientId', null)" class="text-slate-400 hover:text-red-500 transition cursor-pointer p-1" title="Cambiar Cliente">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                            <button wire:click="$set('selectedClientId', null)" class="text-zinc-400 hover:text-red-500 transition cursor-pointer p-1" title="Cambiar Cliente">
+                                                <x-ui.icon name="x" class="w-4 h-4" />
                                             </button>
                                         </div>
                                     @endif
                                 </div>
                             @elseif($clientMode === 'new')
                                 <div class="grid grid-cols-2 gap-2">
-                                    <div><input wire:model="clientName" type="text" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl p-2 focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Nombre *"></div>
-                                    <div><input wire:model="clientPhone" type="text" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl p-2 focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Teléfono *"></div>
-                                    <div><input wire:model="clientRut" type="text" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl p-2 focus:ring-2 focus:ring-orange-500 outline-none" placeholder="RUT (Opc.)"></div>
-                                    <div><input wire:model="clientEmail" type="email" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl p-2 focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Email (Opc.)"></div>
+                                    <div><input wire:model="clientName" type="text" class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 text-xs rounded-lg p-1.5 focus:ring-1 focus:ring-brand-500 outline-none" placeholder="Nombre *"></div>
+                                    <div><input wire:model="clientPhone" type="text" class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 text-xs rounded-lg p-1.5 focus:ring-1 focus:ring-brand-500 outline-none" placeholder="Teléfono *"></div>
+                                    <div><input wire:model="clientRut" type="text" class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 text-xs rounded-lg p-1.5 focus:ring-1 focus:ring-brand-500 outline-none" placeholder="RUT (Opc.)"></div>
+                                    <div><input wire:model="clientEmail" type="email" class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 text-xs rounded-lg p-1.5 focus:ring-1 focus:ring-brand-500 outline-none" placeholder="Email (Opc.)"></div>
                                 </div>
                             @endif
 
                             @if($documentType === 'factura')
-                                <div class="mt-3 p-3 rounded-xl border border-orange-200 bg-orange-50/50 dark:bg-orange-950/20 space-y-2">
-                                    <h4 class="text-[10px] font-bold text-orange-600 dark:text-orange-300 uppercase tracking-widest">Datos Facturación SII</h4>
+                                <div class="mt-2.5 p-2.5 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/40 space-y-2">
+                                    <h4 class="text-[10px] font-semibold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">Datos Facturación SII</h4>
                                     <div class="grid grid-cols-2 gap-2">
-                                        <input wire:model="clientRut" type="text" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-lg p-2" placeholder="RUT Empresa *">
-                                        <input wire:model="clientName" type="text" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-lg p-2" placeholder="Razón Social *">
+                                        <input wire:model="clientRut" type="text" class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 text-xs rounded p-1.5" placeholder="RUT Empresa *">
+                                        <input wire:model="clientName" type="text" class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 text-xs rounded p-1.5" placeholder="Razón Social *">
                                     </div>
-                                    <input wire:model="clientGiro" type="text" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-lg p-2" placeholder="Giro Comercial *">
+                                    <input wire:model="clientGiro" type="text" class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 text-xs rounded p-1.5" placeholder="Giro Comercial *">
                                     <div class="grid grid-cols-2 gap-2">
-                                        <input wire:model="clientAddress" type="text" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-lg p-2" placeholder="Dirección *">
-                                        <input wire:model="clientCity" type="text" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-lg p-2" placeholder="Comuna *">
+                                        <input wire:model="clientAddress" type="text" class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 text-xs rounded p-1.5" placeholder="Dirección *">
+                                        <input wire:model="clientCity" type="text" class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 text-xs rounded p-1.5" placeholder="Comuna *">
                                     </div>
                                 </div>
                             @endif
                         </div>
 
                         <!-- Totals Breakdown -->
-                        <div class="space-y-1.5 pt-3 border-t border-slate-200/80 dark:border-slate-700">
-                            <div class="flex justify-between text-xs text-slate-500 font-semibold">
+                        <div class="space-y-1 pt-2.5 border-t border-zinc-200 dark:border-zinc-800">
+                            <div class="flex justify-between text-xs text-zinc-500">
                                 <span>Subtotal (Neto)</span>
-                                <span>${{ number_format($this->subtotal, 0, ',', '.') }}</span>
+                                <span class="font-mono">${{ number_format($this->subtotal, 0, ',', '.') }}</span>
                             </div>
-                            <div class="flex justify-between text-xs text-slate-500 font-semibold">
+                            <div class="flex justify-between text-xs text-zinc-500">
                                 <span>IVA ({{ $taxRate }}%)</span>
-                                <span>${{ number_format($this->taxAmount, 0, ',', '.') }}</span>
+                                <span class="font-mono">${{ number_format($this->taxAmount, 0, ',', '.') }}</span>
                             </div>
-                            <div class="flex justify-between text-lg text-slate-900 dark:text-white font-black pt-2 border-t border-slate-200 dark:border-slate-700 mt-2">
+                            <div class="flex justify-between text-base text-zinc-900 dark:text-zinc-100 font-semibold pt-1.5 border-t border-zinc-200 dark:border-zinc-800 mt-1">
                                 <span>TOTAL</span>
-                                <span class="text-orange-600 font-black">${{ number_format($this->total, 0, ',', '.') }}</span>
+                                <span class="font-mono font-semibold">${{ number_format($this->total, 0, ',', '.') }}</span>
                             </div>
                         </div>
 
                         <!-- Process Sale Button -->
                         <button wire:click="processSale" wire:loading.attr="disabled" 
-                            class="w-full bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-white font-black text-sm py-4 px-4 rounded-2xl shadow-lg shadow-orange-500/25 transition-all duration-200 flex justify-center items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.99]">
-                            <span wire:loading.remove wire:target="processSale" class="flex items-center gap-2">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                                COMPLETAR COBRO (${{ number_format($this->total, 0, ',', '.') }})
+                            class="w-full bg-brand-500 hover:bg-brand-600 text-white font-medium text-xs py-3 px-4 rounded-lg shadow-xs transition duration-150 flex justify-center items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span wire:loading.remove wire:target="processSale" class="flex items-center gap-1.5">
+                                <x-ui.icon name="check" class="w-4 h-4" />
+                                <span>Completar Cobro (${{ number_format($this->total, 0, ',', '.') }})</span>
                             </span>
-                            <span wire:loading wire:target="processSale" class="flex items-center gap-2">
-                                <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                                Procesando Cobro...
+                            <span wire:loading wire:target="processSale" class="flex items-center gap-1.5">
+                                <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                <span>Procesando Cobro...</span>
                             </span>
                         </button>
                     </div>
@@ -374,21 +379,25 @@
         </div>
     @endif
 
-    {{-- ═══ RECEIPT MODAL ═══ --}}
+    {{-- RECEIPT MODAL --}}
     @if($showReceiptModal && $completedSale)
-        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-fade-in flex flex-col">
-                <div class="p-6 text-center border-b border-slate-100 dark:border-slate-700 bg-emerald-50 dark:bg-emerald-950/20">
-                    <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-200 font-bold"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></div>
-                    <h3 class="text-xl font-black text-slate-900 dark:text-white">¡Venta Exitosa!</h3>
-                    <p class="text-xs text-slate-500 mt-1 font-medium">El pago fue registrado correctamente y la caja actualizada.</p>
+        <div class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl w-full max-w-md overflow-hidden shadow-xl animate-fade-in flex flex-col">
+                <div class="p-5 text-center border-b border-zinc-100 dark:border-zinc-800">
+                    <div class="w-12 h-12 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-3 border border-emerald-500/20">
+                        <x-ui.icon name="check" class="w-6 h-6" />
+                    </div>
+                    <h3 class="text-base font-semibold text-zinc-900 dark:text-zinc-100">¡Venta Exitosa!</h3>
+                    <p class="text-xs text-zinc-500 mt-0.5">El pago fue registrado correctamente y la caja actualizada.</p>
                 </div>
-                <div class="p-6 flex flex-col gap-4">
-                    <button onclick="window.printContent('pos-thermal-receipt', 'pos-canvas')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-4 rounded-xl transition-all flex justify-center items-center gap-2 cursor-pointer shadow-md">
-                        <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                        Imprimir Ticket Térmico
+                <div class="p-5 flex flex-col gap-2.5">
+                    <button onclick="window.printContent('pos-thermal-receipt', 'pos-canvas')" class="w-full bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-white text-white dark:text-zinc-900 font-medium py-2.5 px-4 rounded-lg text-xs transition flex justify-center items-center gap-2 cursor-pointer shadow-xs">
+                        <x-ui.icon name="printer" class="w-4 h-4" />
+                        <span>Imprimir Ticket Térmico</span>
                     </button>
-                    <button wire:click="$set('showReceiptModal', false)" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-4 rounded-xl transition-all cursor-pointer">Cerrar y Nueva Venta</button>
+                    <button wire:click="$set('showReceiptModal', false)" class="w-full bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 font-medium py-2 px-4 rounded-lg text-xs transition cursor-pointer">
+                        Cerrar y Nueva Venta
+                    </button>
                 </div>
                 <!-- Hidden Thermal Template -->
                 <div class="hidden">

@@ -1,207 +1,201 @@
-<div class="space-y-6 animate-fade-in">
+<div class="space-y-6 pb-16 md:pb-6">
 
     <!-- Top Header & Action Buttons -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Módulo de Informes & KPIs</h1>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Monitoreo funcional, servicio técnico, finanzas y cálculo de IVA para contador.</p>
+            <h1 class="text-xl sm:text-2xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight flex items-center gap-2.5">
+                <span class="p-2 rounded-lg bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-900/50">
+                    <x-ui.icon name="bar-chart-2" class="w-5 h-5" />
+                </span>
+                Módulo de Informes & KPIs
+            </h1>
+            <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1">Monitoreo funcional, servicio técnico, finanzas y cálculo de IVA para contador.</p>
         </div>
 
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 self-start sm:self-auto">
             <a href="{{ route('reports.pdf', ['range' => $dateRange, 'start_date' => $startDate, 'end_date' => $endDate]) }}" 
                target="_blank" 
-               class="inline-flex items-center gap-2 px-4 py-2.5 bg-orange-600 hover:bg-orange-500 text-white font-semibold text-sm rounded-xl shadow-lg shadow-orange-500/20 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+               class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-orange-600 hover:bg-orange-700 text-white text-xs font-semibold rounded-lg shadow-xs transition duration-150 cursor-pointer">
+                <x-ui.icon name="download" class="w-4 h-4" />
                 Exportar Reporte PDF (Contador)
             </a>
         </div>
     </div>
 
-    <!-- Barra de Filtros Intuitiva con Presets de Fechas (Pills) -->
-    <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+    <!-- Barra de Filtros con Presets de Fechas -->
+    <div class="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-2">
-                <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Período de Análisis</span>
+                <x-ui.icon name="calendar" class="w-4 h-4 text-orange-500" />
+                <span class="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Período de Análisis</span>
             </div>
 
-            <div wire:loading wire:target="selectPreset, dateRange, startDate, endDate" class="text-xs font-semibold text-orange-500 animate-pulse flex items-center gap-1.5">
-                <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            <div wire:loading wire:target="selectPreset, dateRange, startDate, endDate" class="text-xs font-medium text-orange-600 dark:text-orange-400 flex items-center gap-1.5">
+                <span class="w-3.5 h-3.5 border-2 border-orange-500/20 border-t-orange-500 rounded-full animate-spin"></span>
                 Actualizando métricas...
             </div>
         </div>
 
         <!-- Presets Buttons -->
-        <div class="flex flex-wrap items-center gap-2">
-            <button wire:click="selectPreset('today')" 
-                    class="px-3.5 py-2 text-xs font-bold rounded-xl transition-all {{ $dateRange === 'today' ? 'bg-orange-500 text-white shadow-md shadow-orange-500/30 ring-2 ring-orange-500/20' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700' }}">
-                Hoy
-            </button>
-            <button wire:click="selectPreset('yesterday')" 
-                    class="px-3.5 py-2 text-xs font-bold rounded-xl transition-all {{ $dateRange === 'yesterday' ? 'bg-orange-500 text-white shadow-md shadow-orange-500/30 ring-2 ring-orange-500/20' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700' }}">
-                Ayer
-            </button>
-            <button wire:click="selectPreset('week')" 
-                    class="px-3.5 py-2 text-xs font-bold rounded-xl transition-all {{ $dateRange === 'week' ? 'bg-orange-500 text-white shadow-md shadow-orange-500/30 ring-2 ring-orange-500/20' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700' }}">
-                Esta Semana
-            </button>
-            <button wire:click="selectPreset('month')" 
-                    class="px-3.5 py-2 text-xs font-bold rounded-xl transition-all {{ $dateRange === 'month' ? 'bg-orange-500 text-white shadow-md shadow-orange-500/30 ring-2 ring-orange-500/20' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700' }}">
-                Este Mes
-            </button>
-            <button wire:click="selectPreset('last_month')" 
-                    class="px-3.5 py-2 text-xs font-bold rounded-xl transition-all {{ $dateRange === 'last_month' ? 'bg-orange-500 text-white shadow-md shadow-orange-500/30 ring-2 ring-orange-500/20' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700' }}">
-                Mes Anterior
-            </button>
-            <button wire:click="selectPreset('year')" 
-                    class="px-3.5 py-2 text-xs font-bold rounded-xl transition-all {{ $dateRange === 'year' ? 'bg-orange-500 text-white shadow-md shadow-orange-500/30 ring-2 ring-orange-500/20' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700' }}">
-                Este Año
-            </button>
-            <button wire:click="selectPreset('custom')" 
-                    class="px-3.5 py-2 text-xs font-bold rounded-xl transition-all {{ $dateRange === 'custom' ? 'bg-orange-500 text-white shadow-md shadow-orange-500/30 ring-2 ring-orange-500/20' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700' }}">
-                📅 Personalizado
-            </button>
+        <div class="flex flex-wrap items-center gap-1.5">
+            @php
+                $presets = [
+                    'today' => 'Hoy',
+                    'yesterday' => 'Ayer',
+                    'week' => 'Esta Semana',
+                    'month' => 'Este Mes',
+                    'last_month' => 'Mes Anterior',
+                    'year' => 'Este Año',
+                    'custom' => 'Personalizado',
+                ];
+            @endphp
+            @foreach($presets as $key => $label)
+                <button wire:click="selectPreset('{{ $key }}')" 
+                        class="px-3 py-1.5 text-xs font-medium rounded-lg transition duration-150 cursor-pointer {{ $dateRange === $key ? 'bg-orange-600 text-white shadow-xs' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700' }}">
+                    {{ $label }}
+                </button>
+            @endforeach
         </div>
 
         <!-- Custom Date Range Selectors -->
         @if($dateRange === 'custom')
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-100 dark:border-slate-800">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-zinc-100 dark:border-zinc-800">
             <div>
-                <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Desde</label>
-                <input wire:model.live="startDate" type="date" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-orange-500 transition">
+                <label class="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1">Desde</label>
+                <input wire:model.live="startDate" type="date" class="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700/80 rounded-lg py-1.5 px-3 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-orange-500 transition">
             </div>
             <div>
-                <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Hasta</label>
-                <input wire:model.live="endDate" type="date" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-orange-500 transition">
+                <label class="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1">Hasta</label>
+                <input wire:model.live="endDate" type="date" class="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700/80 rounded-lg py-1.5 px-3 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-orange-500 transition">
             </div>
         </div>
         @endif
     </div>
 
-    <!-- 🏛️ MÓDULO RESUMEN DE IVA PARA EL CONTADOR -->
-    <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white border border-indigo-500/30 rounded-3xl p-6 shadow-xl relative overflow-hidden">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-indigo-500/20">
+    <!-- MÓDULO RESUMEN DE IVA PARA EL CONTADOR -->
+    <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-xs">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-zinc-100 dark:border-zinc-800">
             <div>
-                <span class="text-xs font-black text-indigo-400 uppercase tracking-widest">Información Impuesto al Valor Agregado (IVA 19%)</span>
-                <h2 class="text-xl sm:text-2xl font-black mt-1">Estimación de IVA a Pagar - Contador</h2>
+                <span class="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Impuesto al Valor Agregado (IVA 19%)</span>
+                <h2 class="text-base font-bold text-zinc-900 dark:text-zinc-100 mt-0.5">Estimación de IVA a Pagar — Contador</h2>
             </div>
-            <div class="px-4 py-2 bg-indigo-500/20 rounded-2xl border border-indigo-500/30 text-right">
-                <span class="text-[10px] text-indigo-300 font-bold uppercase block">Resultado del Período</span>
-                <span class="text-xl font-black {{ $ivaToPay >= 0 ? 'text-emerald-400' : 'text-cyan-400' }}">
+            <div class="px-3 py-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 text-right self-start sm:self-auto">
+                <span class="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium uppercase block">Resultado del Período</span>
+                <span class="text-sm font-bold {{ $ivaToPay >= 0 ? 'text-zinc-900 dark:text-zinc-100' : 'text-emerald-600 dark:text-emerald-400' }}">
                     {{ $ivaToPay >= 0 ? '$ ' . number_format($ivaToPay, 0, ',', '.') : '+$ ' . number_format(abs($ivaToPay), 0, ',', '.') . ' (Favor)' }}
                 </span>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
             <!-- IVA Débito -->
-            <div class="bg-slate-900/60 p-4 rounded-2xl border border-blue-500/30">
-                <div class="flex items-center justify-between text-blue-400 mb-1">
-                    <span class="text-xs font-bold uppercase">1. IVA Débito (M. Obra + POS)</span>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"></path></svg>
+            <div class="bg-zinc-50 dark:bg-zinc-850 p-3.5 rounded-lg border border-zinc-200/80 dark:border-zinc-800">
+                <div class="flex items-center justify-between text-zinc-700 dark:text-zinc-300 mb-1">
+                    <span class="text-xs font-semibold">1. IVA Débito (M. Obra + POS)</span>
+                    <x-ui.icon name="trending-up" class="w-3.5 h-3.5 text-blue-500" />
                 </div>
-                <p class="text-2xl font-black text-white">${{ number_format($ivaDebitFiscal, 0, ',', '.') }}</p>
-                <p class="text-[11px] text-slate-400 mt-1">Base Neta: ${{ number_format($salesNetTotal, 0, ',', '.') }} (Excluye repuestos clientes)</p>
+                <p class="text-xl font-bold text-zinc-900 dark:text-zinc-100">${{ number_format($ivaDebitFiscal, 0, ',', '.') }}</p>
+                <p class="text-[11px] text-zinc-400 dark:text-zinc-500 mt-0.5">Base Neta: ${{ number_format($salesNetTotal, 0, ',', '.') }} (Excluye repuestos)</p>
             </div>
 
             <!-- IVA Crédito -->
-            <div class="bg-slate-900/60 p-4 rounded-2xl border border-red-500/30">
-                <div class="flex items-center justify-between text-red-400 mb-1">
-                    <span class="text-xs font-bold uppercase">2. IVA Crédito (Compras/Gastos)</span>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6"></path></svg>
+            <div class="bg-zinc-50 dark:bg-zinc-850 p-3.5 rounded-lg border border-zinc-200/80 dark:border-zinc-800">
+                <div class="flex items-center justify-between text-zinc-700 dark:text-zinc-300 mb-1">
+                    <span class="text-xs font-semibold">2. IVA Crédito (Compras/Gastos)</span>
+                    <x-ui.icon name="trending-down" class="w-3.5 h-3.5 text-red-500" />
                 </div>
-                <p class="text-2xl font-black text-white">${{ number_format($ivaCreditFiscal, 0, ',', '.') }}</p>
-                <p class="text-[11px] text-slate-400 mt-1">Base Neta: ${{ number_format($expensesNetTotal, 0, ',', '.') }}</p>
+                <p class="text-xl font-bold text-zinc-900 dark:text-zinc-100">${{ number_format($ivaCreditFiscal, 0, ',', '.') }}</p>
+                <p class="text-[11px] text-zinc-400 dark:text-zinc-500 mt-0.5">Base Neta: ${{ number_format($expensesNetTotal, 0, ',', '.') }}</p>
             </div>
 
             <!-- Estima a Pagar -->
-            <div class="bg-slate-900/60 p-4 rounded-2xl border border-emerald-500/30">
-                <div class="flex items-center justify-between text-emerald-400 mb-1">
-                    <span class="text-xs font-bold uppercase">3. Total Impuesto a Pagar</span>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div class="bg-zinc-50 dark:bg-zinc-850 p-3.5 rounded-lg border border-zinc-200/80 dark:border-zinc-800">
+                <div class="flex items-center justify-between text-zinc-700 dark:text-zinc-300 mb-1">
+                    <span class="text-xs font-semibold">3. Total Impuesto a Pagar</span>
+                    <x-ui.icon name="dollar-sign" class="w-3.5 h-3.5 text-emerald-500" />
                 </div>
-                <p class="text-2xl font-black {{ $ivaToPay >= 0 ? 'text-emerald-400' : 'text-cyan-400' }}">
+                <p class="text-xl font-bold {{ $ivaToPay >= 0 ? 'text-zinc-900 dark:text-zinc-100' : 'text-emerald-600 dark:text-emerald-400' }}">
                     ${{ number_format(max(0, $ivaToPay), 0, ',', '.') }}
                 </p>
-                <p class="text-[11px] text-slate-400 mt-1">Diferencia (Débito - Crédito)</p>
+                <p class="text-[11px] text-zinc-400 dark:text-zinc-500 mt-0.5">Diferencia (Débito - Crédito)</p>
             </div>
         </div>
     </div>
 
     <!-- 1. CARDS DE KPIS PRINCIPALES -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <!-- Ingresos Reales / Utilidad Bruta (Solo Mano de Obra + POS) -->
-        <div class="bg-white dark:bg-slate-900 border border-emerald-500/40 dark:border-emerald-500/30 rounded-3xl p-5 shadow-sm relative overflow-hidden group">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Ingresos Reales (Tu Utilidad)</span>
-                <div class="p-2.5 bg-emerald-500/10 text-emerald-500 rounded-2xl">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Ingresos Reales / Utilidad Bruta -->
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-xs">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-medium text-zinc-500 dark:text-zinc-400">Ingresos Reales (Tu Utilidad)</span>
+                <span class="p-1.5 rounded-md bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
+                    <x-ui.icon name="trending-up" class="w-4 h-4" />
+                </span>
             </div>
-            <p class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">${{ number_format($grossIncome, 0, ',', '.') }}</p>
-            <div class="mt-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
-                Mano de Obra OT: <strong class="text-emerald-500">${{ number_format($otLaborIncome, 0, ',', '.') }}</strong> | POS: <strong class="text-blue-500">${{ number_format($totalSales, 0, ',', '.') }}</strong>
+            <p class="text-2xl font-bold text-zinc-900 dark:text-zinc-100">${{ number_format($grossIncome, 0, ',', '.') }}</p>
+            <div class="mt-2 text-[11px] text-zinc-400 dark:text-zinc-500">
+                M. Obra OT: <strong class="text-emerald-600 dark:text-emerald-400 font-semibold">${{ number_format($otLaborIncome, 0, ',', '.') }}</strong> • POS: <strong class="text-zinc-700 dark:text-zinc-300 font-semibold">${{ number_format($totalSales, 0, ',', '.') }}</strong>
             </div>
         </div>
 
-        <!-- Plata de Clientes para Repuestos y Envíos (No es utilidad) -->
-        <div class="bg-white dark:bg-slate-900 border border-amber-500/30 dark:border-amber-500/20 rounded-3xl p-5 shadow-sm relative overflow-hidden group">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Repuestos y Envíos (Cliente)</span>
-                <div class="p-2.5 bg-amber-500/10 text-amber-500 rounded-2xl">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-                </div>
+        <!-- Plata de Clientes para Repuestos y Envíos -->
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-xs">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-medium text-zinc-500 dark:text-zinc-400">Repuestos y Envíos (Cliente)</span>
+                <span class="p-1.5 rounded-md bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400">
+                    <x-ui.icon name="package" class="w-4 h-4" />
+                </span>
             </div>
-            <p class="text-2xl sm:text-3xl font-black text-amber-500">${{ number_format($otThirdPartyTotal, 0, ',', '.') }}</p>
-            <div class="mt-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
-                Repuestos: <strong>${{ number_format($otPartsTotal, 0, ',', '.') }}</strong> | Envíos: <strong>${{ number_format($otShippingTotal, 0, ',', '.') }}</strong>
+            <p class="text-2xl font-bold text-amber-600 dark:text-amber-400">${{ number_format($otThirdPartyTotal, 0, ',', '.') }}</p>
+            <div class="mt-2 text-[11px] text-zinc-400 dark:text-zinc-500">
+                Repuestos: <strong>${{ number_format($otPartsTotal, 0, ',', '.') }}</strong> • Envíos: <strong>${{ number_format($otShippingTotal, 0, ',', '.') }}</strong>
             </div>
         </div>
 
         <!-- Egresos Totales -->
-        <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-5 shadow-sm relative overflow-hidden group">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Egresos Totales</span>
-                <div class="p-2.5 bg-red-500/10 text-red-500 rounded-2xl">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path></svg>
-                </div>
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-xs">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-medium text-zinc-500 dark:text-zinc-400">Egresos Totales</span>
+                <span class="p-1.5 rounded-md bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400">
+                    <x-ui.icon name="trending-down" class="w-4 h-4" />
+                </span>
             </div>
-            <p class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">${{ number_format($totalExpenses, 0, ',', '.') }}</p>
-            <div class="mt-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
+            <p class="text-2xl font-bold text-zinc-900 dark:text-zinc-100">${{ number_format($totalExpenses, 0, ',', '.') }}</p>
+            <div class="mt-2 text-[11px] text-zinc-400 dark:text-zinc-500">
                 Gastos y Compras del período
             </div>
         </div>
 
         <!-- Utilidad Neta Final -->
-        <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-5 shadow-sm relative overflow-hidden group">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Utilidad Neta Final</span>
-                <div class="p-2.5 {{ $netProfit >= 0 ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500' }} rounded-2xl">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                </div>
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-xs border-l-4 {{ $netProfit >= 0 ? 'border-l-emerald-500' : 'border-l-red-500' }}">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-medium text-zinc-500 dark:text-zinc-400">Utilidad Neta Final</span>
+                <span class="p-1.5 rounded-md {{ $netProfit >= 0 ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400' : 'bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400' }}">
+                    <x-ui.icon name="dollar-sign" class="w-4 h-4" />
+                </span>
             </div>
-            <p class="text-2xl sm:text-3xl font-black {{ $netProfit >= 0 ? 'text-emerald-500' : 'text-red-500' }}">
+            <p class="text-2xl font-bold {{ $netProfit >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400' }}">
                 ${{ number_format($netProfit, 0, ',', '.') }}
             </p>
-            <div class="mt-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
-                M. Obra Cobrada: <strong class="text-emerald-500">${{ number_format($otLaborRealized, 0, ',', '.') }}</strong> | Caja OT: ${{ number_format($otTotalRecaudado, 0, ',', '.') }}
+            <div class="mt-2 text-[11px] text-zinc-400 dark:text-zinc-500">
+                M. Obra Cobrada: <strong class="text-emerald-600 dark:text-emerald-400 font-semibold">${{ number_format($otLaborRealized, 0, ',', '.') }}</strong>
             </div>
         </div>
     </div>
 
     <!-- 2. NIVEL DE GRÁFICOS INTERACTIVOS (Chart.js) -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <!-- Gráfico 1: Evolución Diaria (2 cols) -->
-        <div class="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
-            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
+        <div class="lg:col-span-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-xs">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-zinc-100 dark:border-zinc-800">
                 <div class="flex items-center gap-2">
-                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
-                    <h3 class="text-base font-bold text-slate-900 dark:text-white">Tendencia de Utilidad (Mano de Obra + POS) vs Egresos</h3>
+                    <x-ui.icon name="bar-chart-2" class="w-4 h-4 text-orange-500" />
+                    <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Tendencia de Utilidad (Mano de Obra + POS) vs Egresos</h3>
                 </div>
-                <span class="text-xs font-semibold text-slate-400">Excluye costo de repuestos de clientes</span>
+                <span class="text-[11px] text-zinc-400">Excluye repuestos clientes</span>
             </div>
 
-            <div class="h-64 sm:h-80 relative"
+            <div class="h-64 sm:h-72 relative"
                  wire:ignore
                  x-data="{
                      chart: null,
@@ -233,19 +227,19 @@
                                              label: 'Utilidad Mano de Obra + POS ($)',
                                              data: salesData,
                                              borderColor: '#10b981',
-                                             backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                                             backgroundColor: 'rgba(16, 185, 129, 0.1)',
                                              fill: true,
-                                             tension: 0.35,
-                                             borderWidth: 3,
+                                             tension: 0.3,
+                                             borderWidth: 2,
                                              pointBackgroundColor: '#10b981'
                                          },
                                          {
                                              label: 'Egresos ($)',
                                              data: expensesData,
                                              borderColor: '#ef4444',
-                                             backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                                             backgroundColor: 'rgba(239, 68, 68, 0.05)',
                                              fill: true,
-                                             tension: 0.35,
+                                             tension: 0.3,
                                              borderWidth: 2,
                                              borderDash: [4, 4],
                                              pointBackgroundColor: '#ef4444'
@@ -256,11 +250,11 @@
                                      responsive: true,
                                      maintainAspectRatio: false,
                                      plugins: {
-                                         legend: { labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', weight: '600' } } }
+                                         legend: { labels: { color: '#71717a', font: { family: 'Plus Jakarta Sans', weight: '500', size: 11 } } }
                                      },
                                      scales: {
-                                         x: { grid: { display: false }, ticks: { color: '#64748b' } },
-                                         y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } }
+                                         x: { grid: { display: false }, ticks: { color: '#a1a1aa', font: { size: 10 } } },
+                                         y: { grid: { color: 'rgba(161, 161, 170, 0.1)' }, ticks: { color: '#a1a1aa', font: { size: 10 } } }
                                      }
                                  }
                              });
@@ -272,16 +266,16 @@
         </div>
 
         <!-- Gráfico 2: Distribución de Órdenes por Estado (1 col) -->
-        <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
-            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-xs">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-zinc-100 dark:border-zinc-800">
                 <div class="flex items-center gap-2">
-                    <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 30a10 10 0 100-20 10 10 0 000 20zM11 4a8 8 0 110 16 8 8 0 010-16z"></path></svg>
-                    <h3 class="text-base font-bold text-slate-900 dark:text-white">Órdenes por Estado</h3>
+                    <x-ui.icon name="pie-chart" class="w-4 h-4 text-orange-500" />
+                    <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Órdenes por Estado</h3>
                 </div>
-                <span class="text-xs font-extrabold text-orange-500 bg-orange-500/10 px-2.5 py-1 rounded-lg">{{ $otCount }} Total</span>
+                <x-ui.badge variant="neutral" size="xs">{{ $otCount }} Total</x-ui.badge>
             </div>
 
-            <div class="h-64 relative flex items-center justify-center"
+            <div class="h-64 sm:h-72 relative flex items-center justify-center"
                  wire:ignore
                  x-data="{
                      chart: null,
@@ -309,7 +303,7 @@
                                      labels: statusLabels,
                                      datasets: [{
                                          data: statusValues,
-                                         backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'],
+                                         backgroundColor: ['#f97316', '#10b981', '#3b82f6', '#ef4444', '#8b5cf6', '#06b6d4'],
                                          borderWidth: 0
                                      }]
                                  },
@@ -317,7 +311,7 @@
                                      responsive: true,
                                      maintainAspectRatio: false,
                                      plugins: {
-                                         legend: { position: 'bottom', labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', weight: '600' } } }
+                                         legend: { position: 'bottom', labels: { color: '#71717a', font: { family: 'Plus Jakarta Sans', weight: '500', size: 11 } } }
                                      },
                                      cutout: '70%'
                                  }
@@ -330,35 +324,37 @@
         </div>
     </div>
 
-    <!-- 🛠️ TABLA DESGLOSE DE UTILIDAD POR ORDEN DE TRABAJO (MANO DE OBRA VS REPUESTOS Y ENVÍO DE CLIENTES) -->
-    <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
+    <!-- TABLA DESGLOSE DE UTILIDAD POR ORDEN DE TRABAJO -->
+    <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-xs">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-zinc-100 dark:border-zinc-800">
             <div>
                 <div class="flex items-center gap-2">
-                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
-                    <h3 class="text-base font-bold text-slate-900 dark:text-white">Desglose de Órdenes de Trabajo: Tu Mano de Obra vs Repuestos de Clientes</h3>
+                    <x-ui.icon name="wrench" class="w-4 h-4 text-emerald-500" />
+                    <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Desglose de Órdenes de Trabajo: Mano de Obra vs Repuestos</h3>
                 </div>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">El costo del repuesto y envío lo paga el cliente; lo que entra como utilidad para ti es únicamente la Mano de Obra.</p>
+                <p class="text-[11px] text-zinc-400 dark:text-zinc-500 mt-0.5">El costo de repuesto y envío lo paga el cliente; lo que entra como utilidad es la Mano de Obra.</p>
             </div>
-            <span class="text-xs font-bold text-emerald-500 bg-emerald-500/10 px-3 py-1.5 rounded-xl border border-emerald-500/20">
-                Utilidad Mano de Obra: ${{ number_format($otLaborIncome, 0, ',', '.') }}
-            </span>
+            <div class="self-start sm:self-auto">
+                <x-ui.badge variant="success" size="sm">
+                    Utilidad Mano de Obra: ${{ number_format($otLaborIncome, 0, ',', '.') }}
+                </x-ui.badge>
+            </div>
         </div>
 
         <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
+            <table class="w-full text-left text-xs whitespace-nowrap">
                 <thead>
-                    <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-black text-slate-400 uppercase tracking-wider">
-                        <th class="py-3 px-4">Fecha / OT</th>
-                        <th class="py-3 px-4">Cliente / Equipo</th>
-                        <th class="py-3 px-4">Estado</th>
-                        <th class="py-3 px-4 text-right">Repuesto (Cliente)</th>
-                        <th class="py-3 px-4 text-right">Envío (Cliente)</th>
-                        <th class="py-3 px-4 text-right text-emerald-500">Mano de Obra (Tu Utilidad)</th>
-                        <th class="py-3 px-4 text-right">Total Cliente</th>
+                    <tr class="bg-zinc-50/80 dark:bg-zinc-850/60 border-b border-zinc-200 dark:border-zinc-800 text-[10px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                        <th class="py-2.5 px-3">Fecha / OT</th>
+                        <th class="py-2.5 px-3">Cliente / Equipo</th>
+                        <th class="py-2.5 px-3">Estado</th>
+                        <th class="py-2.5 px-3 text-right">Repuesto (Cliente)</th>
+                        <th class="py-2.5 px-3 text-right">Envío (Cliente)</th>
+                        <th class="py-2.5 px-3 text-right">Mano de Obra (Utilidad)</th>
+                        <th class="py-2.5 px-3 text-right">Total Cliente</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
+                <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800/60">
                     @forelse($workOrders as $wo)
                     @php
                         $woParts = $wo->parts_total;
@@ -367,37 +363,37 @@
                         $woTotal = $wo->calculated_total;
                         $isRejected = in_array($wo->status, ['Rechazado', 'Cancelado']);
                     @endphp
-                    <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition {{ $isRejected ? 'opacity-50 line-through' : '' }}">
-                        <td class="py-3 px-4">
-                            <span class="font-mono font-bold text-orange-500 block">#{{ substr($wo->uuid, 0, 8) }}</span>
-                            <span class="text-[10px] text-slate-400">{{ $wo->created_at->format('d/m/Y H:i') }}</span>
+                    <tr class="hover:bg-zinc-50/70 dark:hover:bg-zinc-800/40 transition {{ $isRejected ? 'opacity-50 line-through' : '' }}">
+                        <td class="py-2.5 px-3">
+                            <span class="font-mono font-semibold text-orange-600 dark:text-orange-400 block">#{{ substr($wo->uuid, 0, 8) }}</span>
+                            <span class="text-[10px] text-zinc-400">{{ $wo->created_at->format('d/m/Y H:i') }}</span>
                         </td>
-                        <td class="py-3 px-4">
-                            <span class="font-bold text-slate-900 dark:text-white block">{{ $wo->client->full_name ?? 'Cliente N/A' }}</span>
-                            <span class="text-[10px] text-slate-400">{{ $wo->brand_model }}</span>
+                        <td class="py-2.5 px-3">
+                            <span class="font-medium text-zinc-800 dark:text-zinc-200 block">{{ $wo->client->full_name ?? 'Cliente N/A' }}</span>
+                            <span class="text-[10px] text-zinc-400">{{ $wo->brand_model }}</span>
                         </td>
-                        <td class="py-3 px-4">
-                            <span class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-[10px] font-bold text-slate-600 dark:text-slate-300">
+                        <td class="py-2.5 px-3">
+                            <x-ui.badge variant="neutral" size="xs">
                                 {{ $wo->status }}
-                            </span>
+                            </x-ui.badge>
                         </td>
-                        <td class="py-3 px-4 text-right font-medium text-amber-500">${{ number_format($woParts, 0, ',', '.') }}</td>
-                        <td class="py-3 px-4 text-right font-medium text-amber-400">${{ number_format($woShipping, 0, ',', '.') }}</td>
-                        <td class="py-3 px-4 text-right font-black text-emerald-500 bg-emerald-500/5">${{ number_format($woLabor, 0, ',', '.') }}</td>
-                        <td class="py-3 px-4 text-right font-bold text-slate-900 dark:text-white">${{ number_format($woTotal, 0, ',', '.') }}</td>
+                        <td class="py-2.5 px-3 text-right font-medium text-amber-600 dark:text-amber-400">${{ number_format($woParts, 0, ',', '.') }}</td>
+                        <td class="py-2.5 px-3 text-right font-medium text-zinc-500 dark:text-zinc-400">${{ number_format($woShipping, 0, ',', '.') }}</td>
+                        <td class="py-2.5 px-3 text-right font-bold text-emerald-600 dark:text-emerald-400">${{ number_format($woLabor, 0, ',', '.') }}</td>
+                        <td class="py-2.5 px-3 text-right font-bold text-zinc-900 dark:text-zinc-100">${{ number_format($woTotal, 0, ',', '.') }}</td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="py-8 text-center text-slate-400 text-xs">No hay órdenes de trabajo en el período seleccionado.</td>
+                        <td colspan="7" class="py-8 text-center text-zinc-400 text-xs">No hay órdenes de trabajo en el período seleccionado.</td>
                     </tr>
                     @endforelse
                     @if(count($workOrders) > 0)
-                    <tr class="bg-slate-50 dark:bg-slate-800/60 font-black text-xs border-t-2 border-slate-200 dark:border-slate-700">
-                        <td colspan="3" class="py-3.5 px-4 text-right uppercase text-slate-500 dark:text-slate-400">Totales del Período (Órdenes Activas):</td>
-                        <td class="py-3.5 px-4 text-right text-amber-500">${{ number_format($otPartsTotal, 0, ',', '.') }}</td>
-                        <td class="py-3.5 px-4 text-right text-amber-400">${{ number_format($otShippingTotal, 0, ',', '.') }}</td>
-                        <td class="py-3.5 px-4 text-right text-emerald-500 text-sm bg-emerald-500/10">${{ number_format($otLaborIncome, 0, ',', '.') }}</td>
-                        <td class="py-3.5 px-4 text-right text-slate-900 dark:text-white">${{ number_format($otPartsTotal + $otShippingTotal + $otLaborIncome, 0, ',', '.') }}</td>
+                    <tr class="bg-zinc-50 dark:bg-zinc-850 font-bold text-xs border-t border-zinc-200 dark:border-zinc-700">
+                        <td colspan="3" class="py-3 px-3 text-right uppercase text-zinc-500 dark:text-zinc-400">Totales del Período:</td>
+                        <td class="py-3 px-3 text-right text-amber-600 dark:text-amber-400">${{ number_format($otPartsTotal, 0, ',', '.') }}</td>
+                        <td class="py-3 px-3 text-right text-zinc-500 dark:text-zinc-400">${{ number_format($otShippingTotal, 0, ',', '.') }}</td>
+                        <td class="py-3 px-3 text-right text-emerald-600 dark:text-emerald-400">${{ number_format($otLaborIncome, 0, ',', '.') }}</td>
+                        <td class="py-3 px-3 text-right text-zinc-900 dark:text-zinc-100">${{ number_format($otPartsTotal + $otShippingTotal + $otLaborIncome, 0, ',', '.') }}</td>
                     </tr>
                     @endif
                 </tbody>
@@ -405,49 +401,49 @@
         </div>
     </div>
 
-    <!-- 🧾 TABLA DETALLE DE VENTAS POS CON IVA (SOLICITUD DEL CLIENTE) -->
-    <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
+    <!-- TABLA DETALLE DE VENTAS POS CON IVA -->
+    <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-xs">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-zinc-100 dark:border-zinc-800">
             <div class="flex items-center gap-2">
-                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                <h3 class="text-base font-bold text-slate-900 dark:text-white">Libro Detallado de Ventas Directas POS</h3>
+                <x-ui.icon name="receipt" class="w-4 h-4 text-orange-500" />
+                <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Libro Detallado de Ventas Directas POS</h3>
             </div>
-            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">{{ $salesCount }} ventas POS en el período</span>
+            <span class="text-xs text-zinc-500 dark:text-zinc-400">{{ $salesCount }} ventas POS en el período</span>
         </div>
 
         <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
+            <table class="w-full text-left text-xs whitespace-nowrap">
                 <thead>
-                    <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-black text-slate-400 uppercase tracking-wider">
-                        <th class="py-3 px-4">Fecha</th>
-                        <th class="py-3 px-4">Cliente</th>
-                        <th class="py-3 px-4">Método</th>
-                        <th class="py-3 px-4 text-right">Monto Neto ($)</th>
-                        <th class="py-3 px-4 text-right">IVA 19% ($)</th>
-                        <th class="py-3 px-4 text-right">Total ($)</th>
+                    <tr class="bg-zinc-50/80 dark:bg-zinc-850/60 border-b border-zinc-200 dark:border-zinc-800 text-[10px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                        <th class="py-2.5 px-3">Fecha</th>
+                        <th class="py-2.5 px-3">Cliente</th>
+                        <th class="py-2.5 px-3">Método</th>
+                        <th class="py-2.5 px-3 text-right">Monto Neto ($)</th>
+                        <th class="py-2.5 px-3 text-right">IVA 19% ($)</th>
+                        <th class="py-2.5 px-3 text-right">Total ($)</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
+                <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800/60">
                     @forelse($sales as $sale)
                     @php
                         $sub = $sale->subtotal > 0 ? $sale->subtotal : ($sale->total / 1.19);
                         $tax = $sale->tax_amount > 0 ? $sale->tax_amount : ($sale->total - $sub);
                     @endphp
-                    <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition">
-                        <td class="py-3 px-4 font-semibold text-slate-600 dark:text-slate-300">{{ $sale->created_at->format('d/m/Y H:i') }}</td>
-                        <td class="py-3 px-4 font-bold text-slate-900 dark:text-white">{{ $sale->client_name ?? 'Cliente Genérico' }}</td>
-                        <td class="py-3 px-4">
-                            <span class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-[11px] font-semibold text-slate-600 dark:text-slate-300">
+                    <tr class="hover:bg-zinc-50/70 dark:hover:bg-zinc-800/40 transition">
+                        <td class="py-2.5 px-3 font-mono text-zinc-500 dark:text-zinc-400">{{ $sale->created_at->format('d/m/Y H:i') }}</td>
+                        <td class="py-2.5 px-3 font-medium text-zinc-800 dark:text-zinc-200">{{ $sale->client_name ?? 'Cliente Genérico' }}</td>
+                        <td class="py-2.5 px-3">
+                            <x-ui.badge variant="neutral" size="xs">
                                 {{ $sale->payment_method }}
-                            </span>
+                            </x-ui.badge>
                         </td>
-                        <td class="py-3 px-4 text-right font-medium text-slate-600 dark:text-slate-400">${{ number_format($sub, 0, ',', '.') }}</td>
-                        <td class="py-3 px-4 text-right font-bold text-blue-500">${{ number_format($tax, 0, ',', '.') }}</td>
-                        <td class="py-3 px-4 text-right font-black text-slate-900 dark:text-white">${{ number_format($sale->total, 0, ',', '.') }}</td>
+                        <td class="py-2.5 px-3 text-right font-medium text-zinc-500 dark:text-zinc-400">${{ number_format($sub, 0, ',', '.') }}</td>
+                        <td class="py-2.5 px-3 text-right font-medium text-zinc-500 dark:text-zinc-400">${{ number_format($tax, 0, ',', '.') }}</td>
+                        <td class="py-2.5 px-3 text-right font-bold text-zinc-900 dark:text-zinc-100">${{ number_format($sale->total, 0, ',', '.') }}</td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="py-8 text-center text-slate-400 text-xs">No hay ventas POS registradas en el período seleccionado.</td>
+                        <td colspan="6" class="py-8 text-center text-zinc-400 text-xs">No hay ventas POS registradas en el período seleccionado.</td>
                     </tr>
                     @endforelse
                 </tbody>
@@ -456,109 +452,109 @@
     </div>
 
     <!-- 3. NIVEL DE DESGLOSE Y PRODUCTIVIDAD -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         <!-- Desempeño por Técnico -->
-        <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
-            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
-                <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-xs">
+            <div class="flex items-center justify-between mb-3 pb-2 border-b border-zinc-100 dark:border-zinc-800">
+                <h3 class="text-xs font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
+                    <x-ui.icon name="user" class="w-3.5 h-3.5 text-orange-500" />
                     Técnicos Asignados
                 </h3>
             </div>
 
-            <div class="space-y-3">
+            <div class="space-y-2">
                 @forelse($workOrdersByTech as $techItem)
-                <div class="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200/60 dark:border-slate-800">
-                    <span class="text-sm font-semibold text-slate-800 dark:text-slate-200">
+                <div class="flex items-center justify-between p-2 bg-zinc-50 dark:bg-zinc-850 rounded-lg border border-zinc-200/60 dark:border-zinc-800 text-xs">
+                    <span class="font-medium text-zinc-800 dark:text-zinc-200">
                         {{ $techItem->technician->name ?? 'Sin Asignar' }}
                     </span>
-                    <span class="px-3 py-1 bg-emerald-500/10 text-emerald-500 rounded-xl text-xs font-bold border border-emerald-500/20">
-                        {{ $techItem->total }} órdenes
-                    </span>
+                    <x-ui.badge variant="neutral" size="xs">
+                        {{ $techItem->total }} OT
+                    </x-ui.badge>
                 </div>
                 @empty
-                <p class="text-xs text-slate-400 text-center py-6">No hay registros de asignaciones a técnicos.</p>
+                <p class="text-[11px] text-zinc-400 text-center py-4">No hay asignaciones registradas.</p>
                 @endforelse
             </div>
         </div>
 
         <!-- Métodos de Pago POS -->
-        <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
-            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
-                <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                    Métodos de Pago (Ventas)
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-xs">
+            <div class="flex items-center justify-between mb-3 pb-2 border-b border-zinc-100 dark:border-zinc-800">
+                <h3 class="text-xs font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
+                    <x-ui.icon name="credit-card" class="w-3.5 h-3.5 text-orange-500" />
+                    Métodos de Pago
                 </h3>
             </div>
 
-            <div class="space-y-3">
+            <div class="space-y-2">
                 @forelse($salesByMethod as $method => $amount)
-                <div class="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200/60 dark:border-slate-800">
-                    <span class="text-sm font-semibold text-slate-800 dark:text-slate-200 uppercase">
+                <div class="flex items-center justify-between p-2 bg-zinc-50 dark:bg-zinc-850 rounded-lg border border-zinc-200/60 dark:border-zinc-800 text-xs">
+                    <span class="font-medium text-zinc-800 dark:text-zinc-200 uppercase">
                         {{ $method ?: 'Efectivo' }}
                     </span>
-                    <span class="text-sm font-black text-slate-900 dark:text-white">
+                    <span class="font-bold text-zinc-900 dark:text-zinc-100">
                         ${{ number_format($amount, 0, ',', '.') }}
                     </span>
                 </div>
                 @empty
-                <p class="text-xs text-slate-400 text-center py-6">No hay ventas registradas en el período.</p>
+                <p class="text-[11px] text-zinc-400 text-center py-4">No hay ventas registradas.</p>
                 @endforelse
             </div>
         </div>
 
         <!-- Top 5 Productos / Repuestos Vendidos -->
-        <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
-            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
-                <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-xs">
+            <div class="flex items-center justify-between mb-3 pb-2 border-b border-zinc-100 dark:border-zinc-800">
+                <h3 class="text-xs font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
+                    <x-ui.icon name="package" class="w-3.5 h-3.5 text-orange-500" />
                     Top Repuestos POS
                 </h3>
             </div>
 
-            <div class="space-y-3">
+            <div class="space-y-2">
                 @forelse($topProducts as $prod)
-                <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200/60 dark:border-slate-800">
-                    <div class="truncate max-w-[160px]">
-                        <p class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">{{ $prod->name }}</p>
-                        <span class="text-[10px] text-slate-400">{{ $prod->total_qty }} uds vendidas</span>
+                <div class="flex items-center justify-between p-2 bg-zinc-50 dark:bg-zinc-850 rounded-lg border border-zinc-200/60 dark:border-zinc-800 text-xs">
+                    <div class="truncate max-w-[120px]">
+                        <p class="font-medium text-zinc-800 dark:text-zinc-200 truncate">{{ $prod->name }}</p>
+                        <span class="text-[10px] text-zinc-400">{{ $prod->total_qty }} uds</span>
                     </div>
-                    <span class="text-xs font-black text-orange-500">
+                    <span class="font-bold text-zinc-900 dark:text-zinc-100">
                         ${{ number_format($prod->total_amount, 0, ',', '.') }}
                     </span>
                 </div>
                 @empty
-                <p class="text-xs text-slate-400 text-center py-6">No hay productos vendidos en este período.</p>
+                <p class="text-[11px] text-zinc-400 text-center py-4">No hay productos vendidos.</p>
                 @endforelse
             </div>
         </div>
 
         <!-- Top Servicios (Mano de Obra) más solicitados -->
-        <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
-            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
-                <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-xs">
+            <div class="flex items-center justify-between mb-3 pb-2 border-b border-zinc-100 dark:border-zinc-800">
+                <h3 class="text-xs font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
+                    <x-ui.icon name="wrench" class="w-3.5 h-3.5 text-orange-500" />
                     Top Servicios
                 </h3>
-                <span class="text-[10px] font-black text-indigo-500 bg-indigo-500/10 px-2 py-0.5 rounded-lg">
+                <span class="text-[10px] font-bold text-zinc-500">
                     ${{ number_format($servicesTotalRevenue, 0, ',', '.') }}
                 </span>
             </div>
 
-            <div class="space-y-3">
+            <div class="space-y-2">
                 @forelse($topServices as $srv)
-                <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200/60 dark:border-slate-800">
-                    <div class="truncate max-w-[170px]">
-                        <p class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">{{ $srv->name }}</p>
-                        <span class="text-[10px] text-slate-400">{{ $srv->total_qty }} realizado(s) • Prom. ${{ number_format($srv->avg_price, 0, ',', '.') }}</span>
+                <div class="flex items-center justify-between p-2 bg-zinc-50 dark:bg-zinc-850 rounded-lg border border-zinc-200/60 dark:border-zinc-800 text-xs">
+                    <div class="truncate max-w-[120px]">
+                        <p class="font-medium text-zinc-800 dark:text-zinc-200 truncate">{{ $srv->name }}</p>
+                        <span class="text-[10px] text-zinc-400">{{ $srv->total_qty }} serv.</span>
                     </div>
-                    <span class="text-xs font-black text-indigo-400">
+                    <span class="font-bold text-zinc-900 dark:text-zinc-100">
                         ${{ number_format($srv->total_amount, 0, ',', '.') }}
                     </span>
                 </div>
                 @empty
-                <p class="text-xs text-slate-400 text-center py-6">No hay servicios catalogados en este período.</p>
+                <p class="text-[11px] text-zinc-400 text-center py-4">No hay servicios catalogados.</p>
                 @endforelse
             </div>
         </div>
@@ -566,29 +562,29 @@
     </div>
 
     <!-- 4. SNAPSHOT DE INVENTARIO ACTUAL -->
-    <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
-        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
+    <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-xs">
+        <div class="flex items-center justify-between mb-3 pb-2 border-b border-zinc-100 dark:border-zinc-800">
             <div class="flex items-center gap-2">
-                <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-                <h3 class="text-base font-bold text-slate-900 dark:text-white">Estado Global del Inventario</h3>
+                <x-ui.icon name="package" class="w-4 h-4 text-orange-500" />
+                <h3 class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Estado Global del Inventario</h3>
             </div>
-            <a href="{{ route('inventory.index') }}" class="text-xs font-semibold text-orange-500 hover:underline">Gestionar Inventario →</a>
+            <a href="{{ route('inventory.index') }}" class="text-xs font-medium text-orange-600 dark:text-orange-400 hover:underline">Gestionar Inventario →</a>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="bg-slate-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-800">
-                <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Costo Invertido en Stock</span>
-                <span class="text-xl font-black text-slate-900 dark:text-white mt-1 block">${{ number_format($inventoryValue, 0, ',', '.') }}</span>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="bg-zinc-50 dark:bg-zinc-850 p-3 rounded-lg border border-zinc-200/60 dark:border-zinc-800">
+                <span class="block text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">Costo Invertido en Stock</span>
+                <span class="text-lg font-bold text-zinc-900 dark:text-zinc-100 mt-1 block">${{ number_format($inventoryValue, 0, ',', '.') }}</span>
             </div>
             
-            <div class="bg-slate-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-800">
-                <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Venta Potencial Total</span>
-                <span class="text-xl font-black text-emerald-500 mt-1 block">${{ number_format($inventorySaleValue, 0, ',', '.') }}</span>
+            <div class="bg-zinc-50 dark:bg-zinc-850 p-3 rounded-lg border border-zinc-200/60 dark:border-zinc-800">
+                <span class="block text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">Venta Potencial Total</span>
+                <span class="text-lg font-bold text-emerald-600 dark:text-emerald-400 mt-1 block">${{ number_format($inventorySaleValue, 0, ',', '.') }}</span>
             </div>
 
-            <div class="bg-red-500/10 p-4 rounded-2xl border border-red-500/20">
-                <span class="block text-[10px] font-black text-red-500 uppercase tracking-widest">Productos con Stock Crítico (≤ 5)</span>
-                <span class="text-xl font-black text-red-500 mt-1 block">{{ $lowStockCount }} Ítems</span>
+            <div class="bg-red-50/50 dark:bg-red-950/20 p-3 rounded-lg border border-red-200 dark:border-red-900/40">
+                <span class="block text-[10px] font-semibold text-red-600 dark:text-red-400 uppercase tracking-wider">Stock Crítico (≤ 5)</span>
+                <span class="text-lg font-bold text-red-600 dark:text-red-400 mt-1 block">{{ $lowStockCount }} Ítems</span>
             </div>
         </div>
     </div>

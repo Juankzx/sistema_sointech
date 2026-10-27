@@ -1,85 +1,91 @@
-<div class="px-2">
+<div class="space-y-6 pb-16 md:pb-6">
     <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h2 class="text-2xl font-black text-white tracking-tight flex items-center gap-3">
-                <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            <h1 class="text-xl sm:text-2xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight flex items-center gap-2.5">
+                <span class="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/50">
+                    <x-ui.icon name="file-text" class="w-5 h-5" />
+                </span>
                 Libro de Ventas
-            </h2>
-            <p class="text-sm text-gray-400 mt-1 font-medium">Revisa las ventas y exporta la información tributaria.</p>
+            </h1>
+            <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1">Revisa las ventas y exporta la información tributaria.</p>
         </div>
         
-        <div class="flex items-center gap-3 bg-gray-800/80 p-1.5 rounded-xl border border-gray-700/50">
-            <select wire:model.live="currentMonth" class="bg-gray-900 border-none text-white text-sm font-semibold rounded-lg focus:ring-emerald-500 block py-2 px-3">
-                @for($m=1; $m<=12; $m++)
-                    <option value="{{ $m }}">{{ \Carbon\Carbon::create(2000, $m, 1)->locale('es')->monthName }}</option>
-                @endfor
-            </select>
-            <select wire:model.live="currentYear" class="bg-gray-900 border-none text-white text-sm font-semibold rounded-lg focus:ring-emerald-500 block py-2 px-3">
-                @for($y=date('Y'); $y>=date('Y')-2; $y--)
-                    <option value="{{ $y }}">{{ $y }}</option>
-                @endfor
-            </select>
+        <div class="flex items-center gap-3 self-start sm:self-auto">
+            <div class="flex items-center gap-2 bg-white dark:bg-zinc-900 p-1 rounded-lg border border-zinc-200 dark:border-zinc-800 shadow-xs">
+                <select wire:model.live="currentMonth" class="bg-transparent text-zinc-800 dark:text-zinc-200 text-xs font-medium rounded-md border-0 py-1.5 pl-2.5 pr-7 focus:ring-1 focus:ring-orange-500">
+                    @for($m=1; $m<=12; $m++)
+                        <option value="{{ $m }}">{{ ucfirst(\Carbon\Carbon::create(2000, $m, 1)->locale('es')->monthName) }}</option>
+                    @endfor
+                </select>
+                <div class="w-px h-4 bg-zinc-200 dark:bg-zinc-700"></div>
+                <select wire:model.live="currentYear" class="bg-transparent text-zinc-800 dark:text-zinc-200 text-xs font-medium rounded-md border-0 py-1.5 pl-2.5 pr-7 focus:ring-1 focus:ring-orange-500">
+                    @for($y=date('Y'); $y>=date('Y')-2; $y--)
+                        <option value="{{ $y }}">{{ $y }}</option>
+                    @endfor
+                </select>
+            </div>
+
+            <button wire:click="exportCsv" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow-xs transition duration-150 cursor-pointer">
+                <x-ui.icon name="download" class="w-4 h-4" />
+                Exportar CSV
+            </button>
         </div>
     </div>
 
-    <!-- Export Button -->
-    <div class="flex justify-end mb-4">
-        <button wire:click="exportCsv" class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white text-sm font-bold rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all hover:-translate-y-0.5">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-            Exportar a Excel (CSV)
-        </button>
-    </div>
-
-    <!-- Table -->
-    <div class="bg-gray-800 border border-gray-700 rounded-2xl overflow-hidden shadow-lg shadow-black/20">
-        <div class="overflow-x-auto theme-scrollbar">
-            <table class="w-full text-left text-sm text-gray-300">
-                <thead class="bg-gray-900/50 border-b border-gray-700 text-[10px] uppercase text-gray-500 tracking-wider">
-                    <tr>
-                        <th class="px-6 py-4 font-black">Fecha</th>
-                        <th class="px-6 py-4 font-black">Documento</th>
-                        <th class="px-6 py-4 font-black">OT / Referencia</th>
-                        <th class="px-6 py-4 font-black">Folio (SII)</th>
-                        <th class="px-6 py-4 font-black">Cliente / RUT</th>
-                        <th class="px-6 py-4 font-black text-right">Neto</th>
-                        <th class="px-6 py-4 font-black text-right">IVA</th>
-                        <th class="px-6 py-4 font-black text-right">Total</th>
+    <!-- Table Container -->
+    <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden shadow-xs">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs whitespace-nowrap">
+                <thead>
+                    <tr class="bg-zinc-50/80 dark:bg-zinc-850/60 border-b border-zinc-200 dark:border-zinc-800 text-[10px] uppercase text-zinc-500 dark:text-zinc-400 font-semibold tracking-wider">
+                        <th class="px-4 py-3">Fecha</th>
+                        <th class="px-4 py-3">Documento</th>
+                        <th class="px-4 py-3">OT / Referencia</th>
+                        <th class="px-4 py-3">Folio (SII)</th>
+                        <th class="px-4 py-3">Cliente / RUT</th>
+                        <th class="px-4 py-3 text-right">Neto</th>
+                        <th class="px-4 py-3 text-right">IVA</th>
+                        <th class="px-4 py-3 text-right">Total</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-700/50">
+                <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800/60">
                     @forelse($sales as $sale)
-                        <tr class="hover:bg-gray-700/30 transition-colors">
-                            <td class="px-6 py-4 font-semibold text-white whitespace-nowrap">{{ $sale->created_at->format('d/m/Y H:i') }}</td>
-                            <td class="px-6 py-4">
-                                <span class="px-2.5 py-1 text-[10px] font-bold rounded-lg border 
-                                    {{ $sale->document_type === 'factura' ? 'bg-orange-500/10 text-orange-400 border-orange-500/20' : 
-                                      ($sale->document_type === 'boleta' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-gray-700 text-gray-300 border-gray-600') }}">
+                        <tr class="hover:bg-zinc-50/70 dark:hover:bg-zinc-800/40 transition-colors">
+                            <td class="px-4 py-3 font-mono text-zinc-500 dark:text-zinc-400 text-xs">{{ $sale->created_at->format('d/m/Y H:i') }}</td>
+                            <td class="px-4 py-3">
+                                @php
+                                    $badgeVariant = match($sale->document_type) {
+                                        'factura' => 'warning',
+                                        'boleta' => 'info',
+                                        default => 'neutral'
+                                    };
+                                @endphp
+                                <x-ui.badge :variant="$badgeVariant" size="xs">
                                     {{ ucfirst($sale->document_type) }}
-                                </span>
+                                </x-ui.badge>
                             </td>
                             {{-- Columna OT / Referencia --}}
-                            <td class="px-6 py-4">
+                            <td class="px-4 py-3">
                                 @if($sale->work_order_id)
-                                    <a href="/ordenes-trabajo" class="inline-flex items-center gap-1 text-xs font-bold text-blue-400 hover:text-blue-300 transition">
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                    <a href="/ordenes-trabajo" class="inline-flex items-center gap-1 text-xs font-semibold text-orange-600 dark:text-orange-400 hover:underline font-mono transition">
                                         OT #{{ substr($sale->workOrder->uuid ?? '', 0, 8) }}
                                     </a>
                                 @else
-                                    <span class="text-xs text-gray-500">Venta POS</span>
+                                    <span class="text-xs text-zinc-400">Venta POS</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 font-medium text-gray-400">
+                            <td class="px-4 py-3 font-medium text-zinc-500 dark:text-zinc-400">
                                 @if($sale->document_type !== 'ticket')
-                                    <div class="flex flex-col gap-1">
-                                        <span class="text-white">{{ $sale->sii_document_number ?? 'Pendiente' }}</span>
-                                        <div class="flex items-center gap-1 text-[10px] uppercase font-bold 
-                                            {{ $sale->sii_status === 'accepted' ? 'text-emerald-400' : ($sale->sii_status === 'pending' ? 'text-amber-400' : 'text-gray-500') }}">
+                                    <div class="flex flex-col gap-0.5">
+                                        <span class="text-zinc-800 dark:text-zinc-200 font-mono text-xs">{{ $sale->sii_document_number ?? 'Pendiente' }}</span>
+                                        <div class="flex items-center gap-1 text-[10px] font-semibold 
+                                            {{ $sale->sii_status === 'accepted' ? 'text-emerald-600 dark:text-emerald-400' : ($sale->sii_status === 'pending' ? 'text-amber-600 dark:text-amber-400' : 'text-zinc-400') }}">
                                             @if($sale->sii_status === 'accepted')
-                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                                <x-ui.icon name="check-circle" class="w-3 h-3" />
                                                 Aceptado SII
                                             @elseif($sale->sii_status === 'pending')
-                                                <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                                <span class="w-3 h-3 border border-amber-500 border-t-transparent rounded-full animate-spin"></span>
                                                 Pendiente
                                             @else
                                                 N/A
@@ -87,31 +93,31 @@
                                         </div>
                                     </div>
                                 @else
-                                    <span class="text-gray-600">N/A</span>
+                                    <span class="text-zinc-400">N/A</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4">
-                                <div class="font-bold text-white">{{ $sale->client_name ?? 'Genérico' }}</div>
+                            <td class="px-4 py-3">
+                                <div class="font-medium text-zinc-800 dark:text-zinc-200 text-xs">{{ $sale->client_name ?? 'Genérico' }}</div>
                                 @if($sale->client_rut)
-                                    <div class="text-[10px] text-gray-400">{{ $sale->client_rut }}</div>
+                                    <div class="text-[10px] font-mono text-zinc-400">{{ $sale->client_rut }}</div>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 text-right font-medium text-gray-400">
+                            <td class="px-4 py-3 text-right font-medium text-zinc-500 dark:text-zinc-400">
                                 ${{ number_format($sale->subtotal, 0, ',', '.') }}
                             </td>
-                            <td class="px-6 py-4 text-right font-medium text-gray-400">
+                            <td class="px-4 py-3 text-right font-medium text-zinc-500 dark:text-zinc-400">
                                 ${{ number_format($sale->tax_amount, 0, ',', '.') }}
                             </td>
-                            <td class="px-6 py-4 text-right font-black text-emerald-400">
+                            <td class="px-4 py-3 text-right font-bold text-zinc-900 dark:text-zinc-100">
                                 ${{ number_format($sale->total, 0, ',', '.') }}
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-6 py-12 text-center text-gray-500">
-                                <div class="flex flex-col items-center justify-center">
-                                    <svg class="w-12 h-12 text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                                    <p class="font-semibold text-gray-400">No hay ventas registradas en este mes.</p>
+                            <td colspan="8" class="px-6 py-12 text-center text-zinc-400 dark:text-zinc-500 text-xs">
+                                <div class="flex flex-col items-center justify-center gap-2">
+                                    <x-ui.icon name="file-text" class="w-8 h-8 text-zinc-300 dark:text-zinc-600" />
+                                    <span>No hay ventas registradas en este mes.</span>
                                 </div>
                             </td>
                         </tr>

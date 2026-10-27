@@ -1,128 +1,78 @@
-<div class="min-h-screen flex flex-col md:flex-row bg-gray-950 overflow-x-hidden">
-    
-    <!-- LEFT SIDE: Stunning Tech workbench image (50% width on md+, hidden on mobile) -->
-    <div class="hidden md:flex md:w-1/2 relative bg-gray-900 overflow-hidden select-none">
-        <!-- Background Image -->
-        <img src="/images/login-banner.png" alt="Sointech Workspace" class="absolute inset-0 w-full h-full object-cover opacity-60">
-        
-        <!-- Premium dark neon overlay -->
-        <div class="absolute inset-0 bg-gradient-to-tr from-gray-950 via-gray-950/70 to-transparent"></div>
-        <div class="absolute inset-0 bg-gradient-to-b from-blue-500/10 via-transparent to-purple-500/10"></div>
-        
-        <!-- Content Overlay -->
-        <div class="relative z-10 flex flex-col justify-between p-12 w-full h-full">
-            <!-- Branding Header -->
-            <div class="flex items-center gap-3">
-                <img src="/images/logo-dark.png" class="h-10 w-auto object-contain" alt="Sointech Logo">
+<div class="min-h-screen flex flex-col md:flex-row bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <!-- Left Hero Column -->
+    <div class="hidden md:flex md:w-1/2 relative bg-zinc-900 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex-col justify-between p-12 select-none overflow-hidden">
+        <img src="/images/login-banner.png" alt="Sointech Workspace" class="absolute inset-0 w-full h-full object-cover opacity-20">
+        <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/70 to-zinc-900/40"></div>
+
+        <div class="relative z-10 flex items-center gap-3">
+            <img src="{{ asset('images/logo-dark.png') }}" class="h-9 w-auto object-contain" alt="Sointech Logo">
+        </div>
+
+        <div class="relative z-10 max-w-md space-y-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-semibold">
+                <span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>
+                <span>Seguridad y Privacidad</span>
             </div>
-            
-            <!-- Mid Quote / Feature Showcase -->
-            <div class="max-w-md">
-                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/25 text-blue-400 text-xs font-semibold mb-6">
-                    <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
-                    Seguridad y Privacidad
-                </div>
-                <h1 class="text-4xl font-extrabold text-white tracking-tight leading-tight mb-4">
-                    Tu información está protegida con nosotros.
-                </h1>
-                <p class="text-gray-400 text-base leading-relaxed">
-                    Configura tu contraseña por primera vez de forma privada, o recupérala de forma totalmente segura a través de tu correo electrónico registrado.
-                </p>
-            </div>
-            
-            <!-- Footer text -->
-            <div class="flex items-center justify-between text-xs text-gray-500">
-                <span>© {{ date('Y') }} Sointech. Todos los derechos reservados.</span>
-                <span class="flex items-center gap-1.5">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    Conexión Segura SSL
-                </span>
-            </div>
+            <h1 class="text-3xl lg:text-4xl font-bold tracking-tight text-white leading-tight">
+                Recuperación segura de credenciales.
+            </h1>
+            <p class="text-sm text-zinc-400 leading-relaxed">
+                Ingresa tu dirección de correo electrónico registrada para restablecer tu contraseña mediante un enlace seguro.
+            </p>
+        </div>
+
+        <div class="relative z-10 flex items-center justify-between text-xs text-zinc-500 border-t border-zinc-800/80 pt-4">
+            <span>© {{ date('Y') }} Sointech. Todos los derechos reservados.</span>
+            <span class="flex items-center gap-1.5 text-zinc-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Conexión Segura SSL
+            </span>
         </div>
     </div>
 
-    <!-- RIGHT SIDE: Elegant Password Recovery form (50% width on md+, 100% on mobile) -->
-    <div class="w-full md:w-1/2 flex flex-col justify-center items-center px-6 py-12 md:px-16 bg-gray-955/90 relative">
-        <!-- Tech detail circles -->
-        <div class="absolute top-20 right-20 w-72 h-72 bg-blue-600/5 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute bottom-20 left-20 w-72 h-72 bg-purple-600/5 rounded-full blur-3xl pointer-events-none"></div>
-        
-        <div class="w-full max-w-md bg-gray-900/60 backdrop-blur-xl border border-gray-800 rounded-3xl p-8 md:p-10 shadow-2xl relative overflow-hidden transition-all duration-300 hover:border-blue-500/30">
-            
-            <!-- Form Header with animated logo on mobile -->
-            <div class="flex flex-col items-center mb-8 relative">
-                <!-- Logo shown on mobile layout -->
+    <!-- Right Form Column -->
+    <div class="w-full md:w-1/2 flex flex-col justify-center items-center px-6 py-12 sm:px-12 relative">
+        <div class="w-full max-w-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 sm:p-10 shadow-sm">
+            <div class="flex flex-col items-center mb-8">
                 <div class="md:hidden mb-4">
-                    <img src="/images/logo-dark.png" class="h-12 w-auto object-contain" alt="Sointech Logo">
+                    <img src="{{ asset('images/logo-dark.png') }}" class="h-10 w-auto object-contain" alt="Sointech Logo">
                 </div>
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight text-center">Configurar Contraseña</h2>
-                <p class="text-xs sm:text-sm text-gray-400 mt-2 text-center">Ingresa tu correo para configurar por primera vez o restablecer tu cuenta</p>
+                <h2 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">Restablecer Contraseña</h2>
+                <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1 text-center">Te enviaremos un enlace de recuperación a tu casilla</p>
             </div>
 
-            <!-- Success Status Message -->
             @if (session()->has('status'))
-                <div class="mb-6 bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 p-4 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-inner">
-                    <div class="flex items-start gap-2.5">
-                        <svg class="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span>{{ session('status') }}</span>
-                    </div>
+                <div class="mb-4 p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-xs flex items-center gap-2.5">
+                    <x-ui.icon name="check-circle" class="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                    <span>{{ session('status') }}</span>
                 </div>
             @endif
 
-            <!-- Form -->
-            <form wire:submit.prevent="sendResetLink" class="space-y-6 relative">
-                
-                <!-- Email Field -->
+            <form wire:submit.prevent="sendResetLink" class="space-y-4">
                 <div>
-                    <label for="email" class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Correo Electrónico Registrado</label>
-                    <div class="relative group">
-                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-500 group-focus-within:text-blue-500 transition-colors duration-200">
-                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                            </svg>
-                        </span>
+                    <label for="email" class="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Correo Electrónico Registrado</label>
+                    <div class="relative">
+                        <x-ui.icon name="mail" class="w-4 h-4 text-zinc-400 absolute left-3 top-2.5" />
                         <input wire:model="email" id="email" type="email" placeholder="ejemplo@sointech.cl" 
-                            class="w-full bg-gray-950/80 border border-gray-800 rounded-2xl py-3.5 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition duration-200 shadow-inner">
+                            class="w-full pl-9 pr-3.5 py-2 text-xs rounded-xl border border-zinc-300 dark:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition">
                     </div>
                     @error('email') 
-                        <div class="mt-3 bg-red-950/40 border border-red-500/20 text-red-300 p-3 rounded-xl text-xs leading-relaxed">
-                            <div class="flex items-start gap-2">
-                                <svg class="w-4 h-4 text-red-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                                </svg>
-                                <span>{{ $message }}</span>
-                            </div>
-                        </div>
+                        <p class="mt-1 text-xs text-red-500 font-medium">{{ $message }}</p> 
                     @enderror
                 </div>
 
-                <!-- Submit Button -->
                 <div class="pt-2">
-                    <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3.5 px-4 rounded-2xl shadow-xl shadow-blue-500/10 hover:shadow-blue-500/20 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer">
-                        <span wire:loading.remove wire:target="sendResetLink" class="flex items-center gap-2">
-                            Enviar Enlace de Configuración
-                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                            </svg>
-                        </span>
+                    <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-medium text-white bg-brand-500 hover:bg-brand-600 shadow-sm transition cursor-pointer">
+                        <span wire:loading.remove wire:target="sendResetLink">Enviar Enlace de Recuperación</span>
                         <span wire:loading wire:target="sendResetLink" class="flex items-center gap-2">
-                            <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Enviando enlace...
+                            <x-ui.icon name="loader" class="w-4 h-4 animate-spin" />
+                            Enviando...
                         </span>
                     </button>
                 </div>
 
-                <!-- Volver al Login -->
-                <div class="text-center pt-2">
-                    <a href="{{ route('login') }}" class="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition duration-200">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                        </svg>
+                <div class="pt-3 text-center">
+                    <a href="{{ route('login') }}" class="text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200 transition">
                         Volver al inicio de sesión
                     </a>
                 </div>

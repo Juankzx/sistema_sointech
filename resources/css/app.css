@@ -5,523 +5,104 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+/* Enable class-based dark mode in Tailwind v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    
+    --color-brand-50: #fff7ed;
+    --color-brand-100: #ffedd5;
+    --color-brand-200: #fed7aa;
+    --color-brand-300: #fdba74;
+    --color-brand-400: #fb923c;
+    --color-brand-500: #f97316;
+    --color-brand-600: #ea580c;
+    --color-brand-700: #c2410c;
+    --color-brand-800: #9a3412;
+    --color-brand-900: #7c2d12;
 }
 
-/* Hide scrollbars but keep functionality */
+/* ==========================================
+   BASE & SMOOTH TRANSITIONS
+   ========================================== */
+html {
+    color-scheme: light dark;
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Hide scrollbars when desired */
 .no-scrollbar::-webkit-scrollbar {
     display: none;
 }
 .no-scrollbar {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
-/* Custom styled theme scrollbar (ultra thin, modern, and matching dark-blue theme) */
+/* Clean, modern scrollbars for both themes */
 .theme-scrollbar::-webkit-scrollbar,
 .custom-scrollbar::-webkit-scrollbar {
-    height: 6px; /* Thin horizontal scrollbar */
-    width: 6px;  /* Thin vertical scrollbar */
+    width: 6px;
+    height: 6px;
 }
+
 .theme-scrollbar::-webkit-scrollbar-track,
 .custom-scrollbar::-webkit-scrollbar-track {
-    background: rgba(15, 23, 42, 0.6); /* Transparent dark slate/blue */
-    border-radius: 9999px;
+    background: transparent;
 }
+
 .theme-scrollbar::-webkit-scrollbar-thumb,
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(59, 130, 246, 0.45); /* Elegant translucent blue */
+    background-color: rgba(148, 163, 184, 0.4); /* slate-400 */
     border-radius: 9999px;
-    border: 1px solid rgba(30, 41, 59, 0.5);
-    transition: background 0.2s ease;
 }
+
 .theme-scrollbar::-webkit-scrollbar-thumb:hover,
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(59, 130, 246, 0.85); /* Vibrant blue on hover */
+    background-color: rgba(100, 116, 139, 0.7); /* slate-500 */
 }
-/* Firefox support */
+
+.dark .theme-scrollbar::-webkit-scrollbar-thumb,
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(71, 85, 105, 0.5); /* slate-600 */
+}
+
+.dark .theme-scrollbar::-webkit-scrollbar-thumb:hover,
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(148, 163, 184, 0.6); /* slate-400 */
+}
+
+/* Firefox scrollbar */
 .theme-scrollbar,
 .custom-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: rgba(59, 130, 246, 0.45) rgba(15, 23, 42, 0.6);
+    scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+}
+
+.dark .theme-scrollbar,
+.dark .custom-scrollbar {
+    scrollbar-color: rgba(71, 85, 105, 0.5) transparent;
 }
 
 /* ==========================================
-   LIGHT THEME SYSTEM OVERRIDES (Sointech Light)
-   Professional, clean, and polished
+   MOBILE SAFE AREAS & INTERACTIONS
    ========================================== */
-
-/* --- Base --- */
-html:not(.dark) body {
-    background-color: #e2e8f0 !important; /* Más oscuro (slate-200) para contrastar con las tarjetas */
-    color: #1e293b !important;
-}
-
-/* --- Sidebar (Desktop & Mobile Drawer) --- */
-html:not(.dark) aside {
-    background-color: #0f172a !important; /* Fondo oscuro (slate-900) para crear contraste radical */
-    border-color: #1e293b !important;
-    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1) !important;
-}
-
-html:not(.dark) aside .border-b {
-    border-color: #1e293b !important;
-}
-
-html:not(.dark) aside .border-t {
-    border-color: #1e293b !important;
-}
-
-/* Sidebar section titles */
-html:not(.dark) aside .text-gray-500 {
-    color: #64748b !important;
-}
-
-/* Sidebar nav links (inactive) */
-html:not(.dark) aside nav a:not(.bg-gradient-to-r) {
-    color: #94a3b8 !important;
-}
-
-html:not(.dark) aside nav a:not(.bg-gradient-to-r):hover {
-    color: #ffffff !important;
-    background-color: #1e293b !important;
-}
-
-/* Sidebar nav links (active - keep gradients visible, ensure white text) */
-html:not(.dark) aside nav a.bg-gradient-to-r {
-    color: #ffffff !important;
-}
-html:not(.dark) aside nav a.bg-gradient-to-r svg {
-    color: #ffffff !important;
-}
-
-/* Sidebar user footer card */
-html:not(.dark) aside .bg-gray-900\/60 {
-    background-color: #1e293b !important;
-    border-color: #334155 !important;
-}
-
-html:not(.dark) aside .text-white {
-    color: #f8fafc !important;
-}
-
-/* Keep gradient text on sidebar header */
-html:not(.dark) aside .text-transparent {
-    color: transparent !important;
-}
-
-/* Keep avatar circle white text */
-html:not(.dark) aside .bg-gradient-to-tr .text-white,
-html:not(.dark) aside div[class*="bg-gradient-to-tr"] {
-    color: #ffffff !important;
-}
-
-/* Theme toggle button in light mode (since sidebar is dark, icon should be light) */
-html:not(.dark) aside button[title="Cambiar Tema"] {
-    color: #94a3b8 !important;
-}
-html:not(.dark) aside button[title="Cambiar Tema"]:hover {
-    background-color: #1e293b !important;
-    color: #ffffff !important;
-}
-
-/* --- Mobile Header --- */
-html:not(.dark) header {
-    background-color: #f8fafc !important;
-    border-color: #cbd5e1 !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) !important;
-}
-
-html:not(.dark) header .text-white,
-html:not(.dark) header span.text-white {
-    color: #0f172a !important;
-}
-
-/* Keep gradient text in mobile header */
-html:not(.dark) header .text-transparent {
-    color: transparent !important;
-}
-
-/* --- Mobile Bottom Nav --- */
-html:not(.dark) nav.fixed.bottom-0 {
-    background-color: #f8fafc !important;
-    border-color: #cbd5e1 !important;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04) !important;
-}
-
-/* --- Mobile Drawer --- */
-html:not(.dark) .fixed.inset-y-0 div[class*="bg-gray-950"] {
-    background-color: #f8fafc !important;
-    border-color: #cbd5e1 !important;
-}
-
-/* --- Cards & Content Containers --- */
-html:not(.dark) .bg-gray-850 {
-    background-color: #ffffff !important;
-    border-color: #cbd5e1 !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04), 0 4px 6px rgba(0, 0, 0, 0.02) !important;
-}
-
-html:not(.dark) .bg-gray-900 {
-    background-color: #f8fafc !important;
-    border-color: #cbd5e1 !important;
-}
-
-html:not(.dark) .bg-gray-900\/30,
-html:not(.dark) .bg-gray-900\/40,
-html:not(.dark) .bg-gray-900\/50,
-html:not(.dark) .bg-gray-900\/60 {
-    background-color: #f8fafc !important;
-    border-color: #cbd5e1 !important;
-}
-
-html:not(.dark) .bg-gray-900\/10 {
-    background-color: #f8fafc !important;
-    border-color: #cbd5e1 !important;
-}
-
-html:not(.dark) .bg-gray-950 {
-    background-color: #ffffff !important;
-    border-color: #cbd5e1 !important;
-}
-
-html:not(.dark) .bg-gray-950\/80 {
-    background-color: rgba(15, 23, 42, 0.45) !important;
-}
-
-html:not(.dark) .bg-gray-955 {
-    background-color: #f1f5f9 !important;
-    border-color: #cbd5e1 !important;
-}
-
-html:not(.dark) .bg-gray-800 {
-    background-color: #ffffff !important;
-    border-color: #cbd5e1 !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04) !important;
-}
-
-html:not(.dark) .bg-gray-800\/30,
-html:not(.dark) .bg-gray-800\/40,
-html:not(.dark) .bg-gray-800\/50 {
-    background-color: #f8fafc !important;
-    border-color: #cbd5e1 !important;
-}
-
-html:not(.dark) .bg-gray-750,
-html:not(.dark) .bg-gray-750\/30 {
-    background-color: #f8fafc !important;
-    border-color: #cbd5e1 !important;
-}
-
-html:not(.dark) .bg-gray-700 {
-    background-color: #f1f5f9 !important;
-    border-color: #94a3b8 !important;
-}
-
-/* --- Borders --- */
-html:not(.dark) .border-gray-800,
-html:not(.dark) .border-gray-800\/50,
-html:not(.dark) .border-gray-800\/80 {
-    border-color: #e2e8f0 !important;
-}
-
-html:not(.dark) .border-gray-700,
-html:not(.dark) .border-gray-700\/80,
-html:not(.dark) .border-gray-700\/50 {
-    border-color: #e2e8f0 !important;
-}
-
-html:not(.dark) .border-gray-850,
-html:not(.dark) .border-gray-855 {
-    border-color: #e2e8f0 !important;
-}
-
-html:not(.dark) .border-gray-600 {
-    border-color: #cbd5e1 !important;
-}
-
-html:not(.dark) .border-gray-650 {
-    border-color: #94a3b8 !important;
-}
-
-/* --- Typography --- */
-html:not(.dark) .text-white {
-    color: #0f172a !important;
-}
-
-html:not(.dark) .text-gray-100,
-html:not(.dark) .text-gray-200 {
-    color: #1e293b !important;
-}
-
-html:not(.dark) .text-gray-300 {
-    color: #334155 !important;
-}
-
-html:not(.dark) .text-gray-400 {
-    color: #64748b !important;
-}
-
-html:not(.dark) .text-gray-500 {
-    color: #94a3b8 !important;
-}
-
-/* IMPORTANT: Preserve white text inside gradient backgrounds (buttons, badges, active nav) */
-html:not(.dark) .bg-gradient-to-r .text-white,
-html:not(.dark) .bg-gradient-to-r.text-white,
-html:not(.dark) a.bg-gradient-to-r,
-html:not(.dark) a.bg-gradient-to-r span,
-html:not(.dark) a.bg-gradient-to-r svg,
-html:not(.dark) button.bg-gradient-to-r,
-html:not(.dark) [class*="from-orange-"] .text-white,
-html:not(.dark) [class*="from-blue-"] .text-white,
-html:not(.dark) [class*="from-emerald-"] .text-white,
-html:not(.dark) [class*="from-purple-"] .text-white,
-html:not(.dark) [class*="from-red-"] .text-white,
-html:not(.dark) [class*="from-indigo-"] .text-white {
-    color: #ffffff !important;
-}
-
-/* Preserve gradient text (clip-text) */
-html:not(.dark) .text-transparent {
-    color: transparent !important;
-}
-
-/* Keep colored text for accent colors */
-html:not(.dark) .text-orange-500 {
-    color: #f97316 !important;
-}
-
-/* --- Color Badges & Status Indicators --- */
-html:not(.dark) .bg-emerald-950\/40,
-html:not(.dark) .bg-emerald-950\/50,
-html:not(.dark) .bg-emerald-500\/10 {
-    background-color: #ecfdf5 !important;
-    border-color: #a7f3d0 !important;
-}
-html:not(.dark) .text-emerald-400 {
-    color: #059669 !important;
-}
-
-html:not(.dark) .bg-red-950\/40,
-html:not(.dark) .bg-red-950\/50,
-html:not(.dark) .bg-red-500\/10,
-html:not(.dark) .bg-red-900\/10 {
-    background-color: #fef2f2 !important;
-    border-color: #fecaca !important;
-}
-html:not(.dark) .text-red-400 {
-    color: #dc2626 !important;
-}
-html:not(.dark) .text-red-500 {
-    color: #ef4444 !important;
-}
-
-html:not(.dark) .bg-blue-950\/20,
-html:not(.dark) .bg-blue-950\/30,
-html:not(.dark) .bg-blue-900\/30,
-html:not(.dark) .bg-blue-800\/30,
-html:not(.dark) .bg-blue-950\/40,
-html:not(.dark) .bg-blue-950\/50,
-html:not(.dark) .bg-blue-500\/10 {
-    background-color: #eff6ff !important;
-    border-color: #bfdbfe !important;
-}
-html:not(.dark) .text-blue-300,
-html:not(.dark) .text-blue-400 {
-    color: #2563eb !important;
-}
-
-html:not(.dark) .bg-indigo-950\/40,
-html:not(.dark) .bg-indigo-950\/50,
-html:not(.dark) .bg-indigo-500\/10 {
-    background-color: #eef2ff !important;
-    border-color: #c7d2fe !important;
-}
-html:not(.dark) .text-indigo-400 {
-    color: #4f46e5 !important;
-}
-
-html:not(.dark) .bg-amber-950\/40,
-html:not(.dark) .bg-amber-950\/50,
-html:not(.dark) .bg-amber-500\/10 {
-    background-color: #fffbeb !important;
-    border-color: #fde68a !important;
-}
-html:not(.dark) .text-amber-400 {
-    color: #d97706 !important;
-}
-
-html:not(.dark) .bg-purple-950\/40,
-html:not(.dark) .bg-purple-950\/50,
-html:not(.dark) .bg-purple-500\/10 {
-    background-color: #faf5ff !important;
-    border-color: #e9d5ff !important;
-}
-html:not(.dark) .text-purple-400 {
-    color: #9333ea !important;
-}
-
-html:not(.dark) .bg-orange-500\/10,
-html:not(.dark) .bg-orange-950\/40,
-html:not(.dark) .bg-orange-950\/50 {
-    background-color: #fff7ed !important;
-    border-color: #fed7aa !important;
-}
-html:not(.dark) .text-orange-400 {
-    color: #ea580c !important;
-}
-
-html:not(.dark) .bg-green-950\/50 {
-    background-color: #f0fdf4 !important;
-    border-color: #bbf7d0 !important;
-}
-html:not(.dark) .text-green-300,
-html:not(.dark) .text-green-400 {
-    color: #16a34a !important;
-}
-
-/* --- Forms --- */
-html:not(.dark) input,
-html:not(.dark) textarea,
-html:not(.dark) select {
-    background-color: #ffffff !important;
-    color: #1e293b !important;
-    border-color: #cbd5e1 !important;
-}
-
-html:not(.dark) input:focus,
-html:not(.dark) textarea:focus,
-html:not(.dark) select:focus {
-    border-color: #3b82f6 !important;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
-}
-
-html:not(.dark) input::placeholder,
-html:not(.dark) textarea::placeholder {
-    color: #94a3b8 !important;
-}
-
-html:not(.dark) select option {
-    background-color: #ffffff !important;
-    color: #1e293b !important;
-}
-
-/* --- Tables --- */
-html:not(.dark) table th {
-    color: #475569 !important;
-    border-color: #e2e8f0 !important;
-    background-color: #f8fafc !important;
-    font-weight: 600 !important;
-}
-
-html:not(.dark) table td {
-    border-color: #f1f5f9 !important;
-    color: #334155 !important;
-}
-
-html:not(.dark) table tbody tr {
-    border-color: #f1f5f9 !important;
-}
-
-html:not(.dark) table tbody tr:hover {
-    background-color: #f8fafc !important;
-}
-
-/* --- Session/Alert Messages --- */
-html:not(.dark) .bg-green-950\/50 {
-    background-color: #f0fdf4 !important;
-    border-color: #86efac !important;
-}
-
-/* --- Scrollbar Light Theme --- */
-html:not(.dark) .theme-scrollbar::-webkit-scrollbar-track,
-html:not(.dark) .custom-scrollbar::-webkit-scrollbar-track {
-    background: #f1f5f9;
-}
-html:not(.dark) .theme-scrollbar::-webkit-scrollbar-thumb,
-html:not(.dark) .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border: 1px solid #f1f5f9;
-}
-html:not(.dark) .theme-scrollbar::-webkit-scrollbar-thumb:hover,
-html:not(.dark) .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
-}
-html:not(.dark) .theme-scrollbar,
-html:not(.dark) .custom-scrollbar {
-    scrollbar-color: #cbd5e1 #f1f5f9;
-}
-
-/* --- Reports Dashboard light overrides --- */
-html:not(.dark) .bg-blue-500\/10 {
-    background-color: #eff6ff !important;
-}
-html:not(.dark) .border-blue-500\/20 {
-    border-color: #bfdbfe !important;
-}
-html:not(.dark) .bg-red-500\/10 {
-    background-color: #fef2f2 !important;
-}
-html:not(.dark) .border-red-500\/20,
-html:not(.dark) .border-red-900\/30 {
-    border-color: #fecaca !important;
-}
-html:not(.dark) .bg-emerald-500\/10 {
-    background-color: #ecfdf5 !important;
-}
-html:not(.dark) .border-emerald-500\/20 {
-    border-color: #a7f3d0 !important;
-}
-html:not(.dark) .bg-purple-500\/10 {
-    background-color: #faf5ff !important;
-}
-html:not(.dark) .border-purple-500\/20 {
-    border-color: #e9d5ff !important;
-}
-
-/* Hide glow/blur decorations in light mode */
-html:not(.dark) .blur-2xl {
-    display: none !important;
-}
-
-/* --- Shadows for cards in light mode --- */
-html:not(.dark) .shadow-xl {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04) !important;
-}
-
-html:not(.dark) .shadow-md {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) !important;
-}
-
-html:not(.dark) .shadow-2xl {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
-}
-
-/* --- Keep avatar/badge text white inside colored circles --- */
-html:not(.dark) .bg-gradient-to-tr .text-white,
-html:not(.dark) .bg-gradient-to-tr.text-white,
-html:not(.dark) div.bg-gradient-to-tr,
-html:not(.dark) .rounded-full.bg-gradient-to-tr {
-    color: #ffffff !important;
-}
-
-/* ==========================================
-   MOBILE OPTIMIZATIONS
-   ========================================== */
-
-/* iPhone safe area padding for bottom nav bar */
 .safe-area-bottom {
-    padding-bottom: env(safe-area-inset-bottom, 0);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Smooth press feedback for touch targets */
+.safe-area-top {
+    padding-top: env(safe-area-inset-top, 0px);
+}
+
 @media (hover: none) and (pointer: coarse) {
-    .active\:scale-95:active {
-        transform: scale(0.95);
+    .active\:scale-98:active {
+        transform: scale(0.98);
         transition: transform 0.1s ease;
     }
 }
-

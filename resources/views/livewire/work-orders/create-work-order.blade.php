@@ -1,338 +1,215 @@
-<div class="max-w-3xl mx-auto pb-20">
-    <div class="rounded-3xl shadow-2xl overflow-hidden border border-white/5" style="background: #0D1117;">
+<div class="max-w-4xl mx-auto pb-20">
+    <div class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-xs overflow-hidden">
 
-        <!-- Header Premium con gradiente teal -->
-        <div class="relative overflow-hidden px-6 py-6 border-b border-white/5"
-            style="background: linear-gradient(135deg, #0a1628 0%, #0d2137 40%, #083d35 100%);">
-            <!-- Patrón de fondo sutil -->
-            <div class="absolute inset-0 opacity-5"
-                style="background-image: radial-gradient(circle at 1px 1px, rgba(0,198,182,0.6) 1px, transparent 0); background-size: 24px 24px;">
-            </div>
-            <!-- Glow orbs -->
-            <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full pointer-events-none"
-                style="background: radial-gradient(circle, rgba(0,198,182,0.12) 0%, transparent 70%);"></div>
-            <div class="absolute -bottom-6 -left-6 w-32 h-32 rounded-full pointer-events-none"
-                style="background: radial-gradient(circle, rgba(0,150,255,0.08) 0%, transparent 70%);"></div>
-
-            <div class="relative flex items-start justify-between gap-4">
+        <!-- Header -->
+        <div class="px-6 py-5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
+            <div class="flex items-start justify-between gap-4">
                 <div>
-                    <div class="inline-flex items-center gap-2 mb-2">
-                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest border"
-                            style="background: rgba(0,198,182,0.1); color: #00C6B6; border-color: rgba(0,198,182,0.25);">Sointech
-                            • Taller</span>
+                    <div class="inline-flex items-center gap-2 mb-1.5">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-500/20">
+                            Sointech • Taller
+                        </span>
                     </div>
-                    <h2 class="text-2xl font-black tracking-tight" style="color: #f0fffe;">Nueva Orden de Trabajo</h2>
-                    <p class="text-xs mt-1" style="color: rgba(180,210,205,0.7);">Registra el ingreso formal de un
-                        equipo y protege tu taller ante reclamos.</p>
+                    <h2 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">Nueva Orden de Trabajo</h2>
+                    <p class="text-xs text-zinc-500 mt-0.5">Registra el ingreso formal de un equipo y respalda el estado de recepción.</p>
                 </div>
-                <div class="shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg"
-                    style="background: rgba(0,198,182,0.12); border: 1px solid rgba(0,198,182,0.2);">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: #00C6B6;">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                    </svg>
+                <div class="shrink-0 w-10 h-10 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-zinc-600 dark:text-zinc-400">
+                    <x-ui.icon name="clipboard" class="w-5 h-5" />
                 </div>
             </div>
         </div>
 
         @if(session()->has('error'))
-            <div class="m-6 mb-0 p-4 rounded-xl text-sm font-bold animate-fade-in flex items-center gap-2"
-                style="background: rgba(239,68,68,0.1); border-left: 3px solid #ef4444; color: #fca5a5;">
-                ⚠️ {{ session('error') }}
+            <div class="m-6 mb-0 p-3.5 rounded-lg text-xs font-medium flex items-center gap-2 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300">
+                <x-ui.icon name="alert-triangle" class="w-4 h-4 shrink-0 text-red-500" />
+                <span>{{ session('error') }}</span>
             </div>
         @endif
 
         @if($from_quote_number)
-            <div class="m-6 mb-0 p-4 rounded-2xl text-xs font-bold animate-fade-in flex items-center justify-between gap-3 bg-purple-950/40 border border-purple-500/30 text-purple-200 shadow-lg">
+            <div class="m-6 mb-0 p-3.5 rounded-lg text-xs font-medium flex items-center justify-between gap-3 bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300">
                 <div class="flex items-center gap-2">
-                    <span class="text-base">📋</span>
-                    <span>Convirtiendo Cotización <strong>#{{ $from_quote_number }}</strong> a Orden de Trabajo. Los datos del cliente, equipo y repuestos han sido cargados. Adjunta las fotos de ingreso y checklist para finalizar el respaldo.</span>
+                    <x-ui.icon name="file-text" class="w-4 h-4 text-brand-500 shrink-0" />
+                    <span>Convirtiendo Cotización <strong class="text-zinc-900 dark:text-zinc-100">#{{ $from_quote_number }}</strong> a Orden de Trabajo. Los datos del cliente, equipo y repuestos han sido cargados.</span>
                 </div>
-                <span class="px-2.5 py-1 bg-purple-900/60 border border-purple-400/30 rounded-xl text-[10px] uppercase font-black shrink-0">Cotización Vinculada</span>
+                <span class="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-700 border border-zinc-200 dark:border-zinc-600 rounded text-[10px] uppercase font-semibold text-zinc-600 dark:text-zinc-300 shrink-0">Cotización Vinculada</span>
             </div>
         @endif
 
-        <form wire:submit.prevent="save" class="p-6 space-y-8 text-gray-300">
+        <form wire:submit.prevent="save" class="p-6 space-y-8">
 
             <!-- SECCIÓN 1: DATOS DEL CLIENTE -->
             <div class="space-y-4">
-                <div class="flex items-center gap-3 pb-2.5" style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                    <div class="flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center"
-                        style="background: rgba(0,198,182,0.1); border: 1px solid rgba(0,198,182,0.2);">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                            style="color: #00C6B6;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
+                <div class="flex items-center gap-3 pb-3 border-b border-zinc-200 dark:border-zinc-800">
+                    <div class="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-zinc-700 dark:text-zinc-300 shrink-0">
+                        <x-ui.icon name="user" class="w-4 h-4" />
                     </div>
                     <div>
-                        <h3 class="text-sm font-black tracking-tight" style="color: #00C6B6;">Datos del Cliente</h3>
-                        <p class="text-[10px]" style="color: rgba(156,163,175,0.7);">Busca uno existente o ingresa nuevo
-                            cliente en caliente</p>
+                        <h3 class="text-xs font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider">Datos del Cliente</h3>
+                        <p class="text-[11px] text-zinc-500">Busca uno existente o ingresa uno nuevo en caliente</p>
                     </div>
                 </div>
 
                 @if(!$client_selected)
-                    {{-- Campo de búsqueda limpio, sin icono --}}
+                    {{-- Campo de búsqueda --}}
                     <div class="relative">
                         <input type="text" wire:model.live.debounce.150ms="searchClient"
-                            class="w-full rounded-2xl px-4 py-3.5 text-sm font-medium text-white placeholder-gray-600 transition-all duration-200 focus:outline-none focus:ring-2"
-                            style="background:#111827; border:1.5px solid #1f2937; focus-ring-color:#00C6B6;"
+                            class="w-full rounded-lg px-3.5 py-2.5 text-xs text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition"
                             placeholder="Buscar cliente por nombre, teléfono o RUT..."
-                            autocomplete="off"
-                            onfocus="this.style.borderColor='#00C6B6'; this.style.boxShadow='0 0 0 3px rgba(0,198,182,.12)';"
-                            onblur="this.style.borderColor='#1f2937'; this.style.boxShadow='none';">
+                            autocomplete="off">
 
-                        {{-- Indicador de búsqueda activa --}}
                         @if(strlen($searchClient) > 0 && count($foundClients) === 0)
-                            <div class="absolute right-3.5 top-1/2 -translate-y-1/2">
-                                <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24" style="color:#4b5563;">
+                            <div class="absolute right-3 top-1/2 -translate-y-1/2">
+                                <svg class="w-4 h-4 animate-spin text-zinc-400" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                                 </svg>
                             </div>
                         @endif
 
-                        {{-- Dropdown de resultados --}}
                         @if(count($foundClients) > 0)
-                            <div class="absolute z-20 w-full mt-1.5 overflow-hidden rounded-2xl shadow-2xl"
-                                style="background:#0d1117; border:1.5px solid #1f2937;">
-                                {{-- Header del dropdown --}}
-                                <div class="px-4 py-2 flex items-center justify-between"
-                                    style="border-bottom:1px solid #1f2937;">
-                                    <span class="text-[10px] font-black uppercase tracking-widest" style="color:#4b5563;">
-                                        {{ count($foundClients) }} resultado{{ count($foundClients) > 1 ? 's' : '' }} encontrado{{ count($foundClients) > 1 ? 's' : '' }}
-                                    </span>
-                                    <span class="text-[10px]" style="color:#374151;">↵ para seleccionar</span>
+                            <div class="absolute z-20 w-full mt-1 overflow-hidden rounded-lg shadow-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+                                <div class="px-3 py-1.5 bg-zinc-50 dark:bg-zinc-800/50 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between text-[10px] font-medium text-zinc-500">
+                                    <span>{{ count($foundClients) }} resultado{{ count($foundClients) > 1 ? 's' : '' }} encontrado{{ count($foundClients) > 1 ? 's' : '' }}</span>
+                                    <span>Clic para seleccionar</span>
                                 </div>
-                                <ul>
+                                <ul class="max-h-60 overflow-y-auto">
                                     @foreach($foundClients as $fc)
                                         <li wire:click="selectClient({{ $fc->id }})"
-                                            class="flex items-center gap-3 px-4 py-3 cursor-pointer transition-all duration-150 border-b last:border-0 group"
-                                            style="border-color:#1f2937;"
-                                            onmouseover="this.style.background='#111827';"
-                                            onmouseout="this.style.background='transparent';">
-
-                                            {{-- Ícono SVG de usuario (sin iniciales) --}}
-                                            <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
-                                                style="background:rgba(0,198,182,.08); border:1px solid rgba(0,198,182,.15);">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color:#2dd4bf;">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                                                        d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
-                                                </svg>
+                                            class="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer transition hover:bg-zinc-50 dark:hover:bg-zinc-800/60 border-b border-zinc-100 dark:border-zinc-800/50 last:border-0 group">
+                                            <div class="w-7 h-7 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-zinc-600 dark:text-zinc-400 shrink-0">
+                                                <x-ui.icon name="user" class="w-3.5 h-3.5" />
                                             </div>
-
-                                            {{-- Info --}}
                                             <div class="flex-1 min-w-0">
-                                                <div class="font-bold text-white text-sm leading-tight truncate">{{ $fc->full_name }}</div>
-                                                <div class="flex items-center gap-2.5 mt-0.5 text-[11px]" style="color:#6b7280;">
+                                                <div class="font-medium text-zinc-900 dark:text-zinc-100 text-xs truncate">{{ $fc->full_name }}</div>
+                                                <div class="flex items-center gap-2 mt-0.5 text-[10px] text-zinc-500">
                                                     @if($fc->phone)
                                                         <span class="flex items-center gap-1">
-                                                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                                    d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 8.25h3m-3 3h3m-3 3h3"/>
-                                                            </svg>
+                                                            <x-ui.icon name="phone" class="w-3 h-3 text-zinc-400" />
                                                             {{ $fc->phone }}
                                                         </span>
                                                     @endif
                                                     @if($fc->rut_dni)
-                                                        <span class="flex items-center gap-1">
-                                                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                                    d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
-                                                            </svg>
-                                                            {{ $fc->rut_dni }}
-                                                        </span>
+                                                        <span>• {{ $fc->rut_dni }}</span>
                                                     @endif
                                                 </div>
                                             </div>
-
-                                            {{-- CTA: ícono flecha, sin texto --}}
-                                            <div class="shrink-0 w-7 h-7 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-150"
-                                                style="background:rgba(0,198,182,.12); border:1px solid rgba(0,198,182,.25); color:#2dd4bf;">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
-                                                </svg>
-                                            </div>
+                                            <x-ui.icon name="arrow-right" class="w-3.5 h-3.5 text-zinc-400 opacity-0 group-hover:opacity-100 transition shrink-0" />
                                         </li>
                                     @endforeach
                                 </ul>
                             </div>
                         @endif
-
                     </div>
 
-
                     <!-- Alerta de Cliente Nuevo -->
-                    <div
-                        class="bg-blue-950/20 border border-blue-800/30 px-4 py-3.5 rounded-2xl flex items-center gap-2.5 text-blue-300 text-xs">
-                        <svg class="w-4.5 h-4.5 text-blue-400 shrink-0" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <span><strong>✨ Registro Automático:</strong> Si completas los campos a continuación, el cliente se
-                            creará en caliente al guardar la orden.</span>
+                    <div class="bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-800 px-3.5 py-2.5 rounded-lg flex items-center gap-2.5 text-zinc-600 dark:text-zinc-400 text-xs">
+                        <x-ui.icon name="info" class="w-4 h-4 text-zinc-500 shrink-0" />
+                        <span><strong>Registro Automático:</strong> Si completas los campos a continuación, el cliente se creará en caliente al guardar la orden.</span>
                     </div>
 
                     <!-- Campos de Entrada -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-in">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Nombre
-                                Completo *</label>
+                            <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1">Nombre Completo *</label>
                             <input type="text" wire:model="full_name"
-                                class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-2.5 text-zinc-900 dark:text-zinc-100 text-xs focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none transition"
                                 required>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Teléfono /
-                                WhatsApp *</label>
+                            <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1">Teléfono / WhatsApp *</label>
                             <input type="text" wire:model="phone"
-                                class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-2.5 text-zinc-900 dark:text-zinc-100 text-xs focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none transition"
                                 placeholder="Ej: +56912345678" required>
                         </div>
                         <div x-data>
-                            <div class="flex items-center justify-between mb-1.5">
-                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest">RUT / DNI</label>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">RUT / DNI</label>
                                 <template x-if="$wire.rut_dni && $wire.rut_dni.length >= 8">
-                                    <span x-text="window.validateRut($wire.rut_dni) ? '✓ RUT Válido' : '✗ RUT Inválido'"
+                                    <span x-text="window.validateRut($wire.rut_dni) ? 'RUT Válido' : 'RUT Inválido'"
                                         :class="window.validateRut($wire.rut_dni)
-                                            ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30'
-                                            : 'text-amber-400 bg-amber-500/10 border-amber-500/30'"
-                                        class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider border"></span>
+                                            ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800'
+                                            : 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800'"
+                                        class="px-1.5 py-0.5 rounded text-[10px] font-medium border"></span>
                                 </template>
                             </div>
                             <input type="text" wire:model.live="rut_dni"
                                 x-on:input="$el.value = window.formatRut($el.value); $dispatch('input', $el.value)"
-                                class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-2.5 text-zinc-900 dark:text-zinc-100 text-xs focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none transition">
                         </div>
-
                         <div>
-                            <label
-                                class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Email</label>
+                            <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1">Email</label>
                             <input type="email" wire:model="email"
-                                class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-2.5 text-zinc-900 dark:text-zinc-100 text-xs focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none transition">
                         </div>
                     </div>
                 @else
-                    {{-- Tarjeta de Cliente Seleccionado — sin iniciales, íconos SVG profesionales --}}
-                    <div class="rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 animate-fade-in"
-                        style="background:#0d1117; border:1.5px solid #1f2937;">
-                        <div class="flex items-center gap-3.5 min-w-0">
-                            {{-- Ícono de usuario SVG (sin iniciales) --}}
-                            <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                                style="background:rgba(0,198,182,.1); border:1.5px solid rgba(0,198,182,.2);">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color:#2dd4bf;">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                                        d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
-                                </svg>
+                    {{-- Tarjeta de Cliente Seleccionado --}}
+                    <div class="rounded-xl p-3.5 bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-9 h-9 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-zinc-700 dark:text-zinc-300 shrink-0">
+                                <x-ui.icon name="user" class="w-4 h-4" />
                             </div>
-                            {{-- Info del cliente --}}
                             <div class="min-w-0">
-                                <h4 class="font-black text-white text-sm leading-tight truncate">{{ $full_name }}</h4>
-                                <div class="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1 text-[11.5px]" style="color:#6b7280;">
-                                    {{-- Teléfono --}}
+                                <h4 class="font-semibold text-zinc-900 dark:text-zinc-100 text-xs truncate">{{ $full_name }}</h4>
+                                <div class="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-0.5 text-[11px] text-zinc-500">
                                     <span class="flex items-center gap-1">
-                                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M2.25 6.338c0 5.594 2.418 10.62 6.278 14.089l.059.055a2.25 2.25 0 003.097-.099l1.016-1.015a2.25 2.25 0 00.144-3.027L11.55 14.4a2.25 2.25 0 00-2.677-.583l-.24.1A13.47 13.47 0 016.166 11.3l.1-.24a2.25 2.25 0 00-.583-2.677L3.74 6.641a2.25 2.25 0 00-3.027.144L0.7 7.8A2.25 2.25 0 00.6 10.9"/>
-                                        </svg>
+                                        <x-ui.icon name="phone" class="w-3 h-3 text-zinc-400" />
                                         {{ $phone }}
                                     </span>
                                     @if($rut_dni)
-                                        <span class="flex items-center gap-1">
-                                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z"/>
-                                            </svg>
-                                            {{ $rut_dni }}
-                                        </span>
+                                        <span>• {{ $rut_dni }}</span>
                                     @endif
                                     @if($email)
-                                        <span class="flex items-center gap-1 truncate max-w-[160px]">
-                                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
-                                            </svg>
-                                            <span class="truncate">{{ $email }}</span>
-                                        </span>
+                                        <span class="truncate max-w-[160px]">• {{ $email }}</span>
                                     @endif
                                 </div>
                             </div>
                         </div>
 
-                        {{-- Botones de acción — solo íconos SVG, sin emojis ni texto de iniciales --}}
                         <div class="flex gap-2 shrink-0">
-                            {{-- Botón Editar --}}
                             <button type="button" wire:click="toggleClientEditing"
                                 title="{{ $client_editing ? 'Cerrar edición' : 'Editar datos del cliente' }}"
-                                class="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-150 cursor-pointer"
-                                style="{{ $client_editing
-                                    ? 'background:rgba(16,185,129,.15); border:1.5px solid rgba(16,185,129,.3); color:#34d399;'
-                                    : 'background:#1f2937; border:1.5px solid #374151; color:#9ca3af;' }}"
-                                onmouseover="if(!{{ $client_editing ? 'true' : 'false' }}) { this.style.background='#374151'; this.style.color='#e5e7eb'; }"
-                                onmouseout="if(!{{ $client_editing ? 'true' : 'false' }}) { this.style.background='#1f2937'; this.style.color='#9ca3af'; }">
+                                class="p-2 rounded-lg border text-xs font-medium transition cursor-pointer {{ $client_editing ? 'bg-zinc-200 dark:bg-zinc-700 border-zinc-300 dark:border-zinc-600 text-zinc-900 dark:text-zinc-100' : 'bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-750' }}">
                                 @if($client_editing)
-                                    {{-- Check / Cerrar --}}
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                    </svg>
+                                    <x-ui.icon name="check" class="w-4 h-4" />
                                 @else
-                                    {{-- Lápiz --}}
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/>
-                                    </svg>
+                                    <x-ui.icon name="edit" class="w-4 h-4" />
                                 @endif
                             </button>
 
-                            {{-- Botón Cambiar cliente --}}
                             <button type="button" wire:click="clearClientSelection"
                                 title="Cambiar cliente"
-                                class="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-150 cursor-pointer"
-                                style="background:rgba(239,68,68,.08); border:1.5px solid rgba(239,68,68,.2); color:#f87171;"
-                                onmouseover="this.style.background='rgba(239,68,68,.18)';"
-                                onmouseout="this.style.background='rgba(239,68,68,.08)';">
-                                {{-- Flechas de cambio (arrow-path) --}}
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/>
-                                </svg>
+                                class="p-2 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-500 hover:text-red-600 dark:hover:text-red-400 transition cursor-pointer">
+                                <x-ui.icon name="refresh-cw" class="w-4 h-4" />
                             </button>
                         </div>
                     </div>
 
-
-                    <!-- Campos Editables in-situ si se activa -->
                     @if($client_editing)
-                        <div
-                            class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-900/40 p-5 rounded-3xl border border-gray-750 animate-fade-in">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-zinc-50 dark:bg-zinc-800/40 p-4 rounded-xl border border-zinc-200 dark:border-zinc-700">
                             <div>
-                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Nombre
-                                    Completo *</label>
+                                <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1">Nombre Completo *</label>
                                 <input type="text" wire:model="full_name"
-                                    class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-2.5 text-zinc-900 dark:text-zinc-100 text-xs focus:ring-1 focus:ring-brand-500 outline-none"
                                     required>
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Teléfono /
-                                    WhatsApp *</label>
+                                <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1">Teléfono / WhatsApp *</label>
                                 <input type="text" wire:model="phone"
-                                    class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-2.5 text-zinc-900 dark:text-zinc-100 text-xs focus:ring-1 focus:ring-brand-500 outline-none"
                                     required>
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">RUT /
-                                    DNI</label>
+                                <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1">RUT / DNI</label>
                                 <input type="text" wire:model="rut_dni" x-data
                                     x-on:input="$el.value = window.formatRut($el.value); $dispatch('input', $el.value)"
-                                    class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-2.5 text-zinc-900 dark:text-zinc-100 text-xs focus:ring-1 focus:ring-brand-500 outline-none">
                             </div>
                             <div>
-                                <label
-                                    class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Email</label>
+                                <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1">Email</label>
                                 <input type="email" wire:model="email"
-                                    class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-2.5 text-zinc-900 dark:text-zinc-100 text-xs focus:ring-1 focus:ring-brand-500 outline-none">
                             </div>
                         </div>
                     @endif
@@ -341,75 +218,57 @@
 
             <!-- SECCIÓN 2: DATOS DEL EQUIPO -->
             <div class="space-y-4">
-                <div class="flex items-center gap-3 pb-2.5" style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                    <div class="flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center"
-                        style="background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.2);">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                            style="color: #818cf8;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                        </svg>
+                <div class="flex items-center gap-3 pb-3 border-b border-zinc-200 dark:border-zinc-800">
+                    <div class="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-zinc-700 dark:text-zinc-300 shrink-0">
+                        <x-ui.icon name="smartphone" class="w-4 h-4" />
                     </div>
                     <div>
-                        <h3 class="text-sm font-black tracking-tight" style="color: #818cf8;">Datos del Equipo</h3>
-                        <p class="text-[10px]" style="color: rgba(156,163,175,0.7);">Tipo, modelo, IMEI y falla
-                            reportada</p>
+                        <h3 class="text-xs font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider">Datos del Dispositivo</h3>
+                        <p class="text-[11px] text-zinc-500">Tipo, modelo, número de serie / IMEI y falla reportada</p>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Tipo de
-                            Equipo *</label>
+                        <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1">Tipo de Equipo *</label>
                         <select wire:model.live="device_type"
-                            class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-2.5 text-zinc-900 dark:text-zinc-100 text-xs focus:ring-1 focus:ring-brand-500 outline-none transition"
                             required>
-                            <option value="smartphone">📱 Smartphone / Celular</option>
-                            <option value="smartwatch">⌚ Smartwatch / Reloj Inteligente</option>
-                            <option value="allinone">🖥️ PC All-in-One / iMac</option>
-                            <option value="notebook">💻 Notebook / Laptop</option>
-                            <option value="desktop">🖥️ PC de Escritorio (Torre)</option>
-                            <option value="tablet">📟 Tablet / iPad</option>
-                            <option value="console">🎮 Consola de Videojuegos</option>
-                            <option value="other">⚙️ Otro Equipo / Especializado</option>
+                            <option value="smartphone">Smartphone / Celular</option>
+                            <option value="smartwatch">Smartwatch / Reloj Inteligente</option>
+                            <option value="allinone">PC All-in-One / iMac</option>
+                            <option value="notebook">Notebook / Laptop</option>
+                            <option value="desktop">PC de Escritorio (Torre)</option>
+                            <option value="tablet">Tablet / iPad</option>
+                            <option value="console">Consola de Videojuegos</option>
+                            <option value="other">Otro Equipo / Especializado</option>
                         </select>
                     </div>
 
                     <!-- Marca y Modelo con Predictivo -->
                     <div class="relative">
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Marca y
-                            Modelo *</label>
+                        <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1">Marca y Modelo *</label>
                         <input type="text" wire:model.live="brand_model"
-                            class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-2.5 text-zinc-900 dark:text-zinc-100 text-xs focus:ring-1 focus:ring-brand-500 outline-none transition"
                             placeholder="Ej: iPhone 15 Pro, Galaxy Watch 6, iMac 24" autocomplete="off" required>
 
                         <!-- Sugerencias del Catálogo Predictivo -->
                         @if(count($foundDevices) > 0)
-                            <div
-                                class="absolute z-20 w-full mt-1.5 bg-gray-900 border border-gray-750 rounded-2xl shadow-2xl overflow-hidden backdrop-blur-xl">
-                                <div class="px-3.5 py-1.5 bg-gray-800/80 border-b border-gray-700 flex items-center justify-between text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                            <div class="absolute z-20 w-full mt-1 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-lg overflow-hidden">
+                                <div class="px-3 py-1.5 bg-zinc-50 dark:bg-zinc-800/50 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between text-[10px] text-zinc-500 font-medium">
                                     <span>Catálogo Predictivo</span>
                                     <span>Sugerencias en tiempo real</span>
                                 </div>
-                                <ul>
+                                <ul class="max-h-60 overflow-y-auto">
                                     @foreach($foundDevices as $device)
                                         <li wire:click="selectDevice('{{ addslashes($device->brand) }}', '{{ addslashes($device->model) }}', '{{ $device->device_type }}')"
-                                            class="px-4 py-3 hover:bg-gray-800 cursor-pointer border-b border-gray-800 last:border-0 flex items-center justify-between text-xs transition duration-150 group">
+                                            class="px-3.5 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-800/60 cursor-pointer border-b border-zinc-100 dark:border-zinc-800/50 last:border-0 flex items-center justify-between text-xs transition group">
                                             <div class="flex items-center gap-2">
-                                                <span class="font-black text-white group-hover:text-blue-400 transition">{{ $device->brand }}</span>
-                                                <span class="font-semibold text-gray-300">{{ $device->model }}</span>
+                                                <span class="font-medium text-zinc-900 dark:text-zinc-100">{{ $device->brand }}</span>
+                                                <span class="text-zinc-500">{{ $device->model }}</span>
                                             </div>
-                                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border transition {{ $device->device_type === $device_type ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'bg-blue-500/10 text-blue-400 border-blue-500/30' }}">
-                                                @switch($device->device_type)
-                                                    @case('smartphone') 📱 Smartphone @break
-                                                    @case('smartwatch') ⌚ Reloj @break
-                                                    @case('allinone') 🖥️ All-in-One @break
-                                                    @case('notebook') 💻 Notebook @break
-                                                    @case('desktop') 🖥️ PC @break
-                                                    @case('tablet') 📟 Tablet @break
-                                                    @case('console') 🎮 Consola @break
-                                                    @default ⚙️ {{ ucfirst($device->device_type) }}
-                                                @endswitch
+                                            <span class="text-[10px] font-medium px-2 py-0.5 rounded border {{ $device->device_type === $device_type ? 'bg-brand-500/10 text-brand-600 dark:text-brand-400 border-brand-500/20' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 border-zinc-200 dark:border-zinc-700' }}">
+                                                {{ ucfirst($device->device_type) }}
                                             </span>
                                         </li>
                                     @endforeach
@@ -419,106 +278,70 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">IMEI /
-                            Número de Serie</label>
+                        <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1">IMEI / Número de Serie</label>
                         <input type="text" wire:model="imei_serial"
-                            class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-2.5 text-zinc-900 dark:text-zinc-100 text-xs focus:ring-1 focus:ring-brand-500 outline-none transition"
                             placeholder="Nº Serie físico para identificación">
                     </div>
                     <div x-data="{ showPatternDrawer: false }">
-                        <div class="flex justify-between items-center mb-1.5">
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest">Clave / PIN
-                                de Desbloqueo</label>
-                            <!-- Pattern Toggle Button -->
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">Clave / PIN de Desbloqueo</label>
                             <button type="button" @click="showPatternDrawer = !showPatternDrawer"
-                                class="text-[10px] text-blue-400 hover:text-blue-300 font-black flex items-center gap-1 transition focus:outline-none">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
-                                    </path>
-                                </svg>
+                                class="text-[11px] text-brand-600 dark:text-brand-400 hover:underline font-medium flex items-center gap-1 transition">
+                                <x-ui.icon name="lock" class="w-3.5 h-3.5" />
                                 <span x-text="showPatternDrawer ? 'Ocultar Patrón' : 'Dibujar Patrón'"></span>
                             </button>
                         </div>
                         <input type="text" wire:model="unlock_password" id="unlock_password"
-                            class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-2.5 text-zinc-900 dark:text-zinc-100 text-xs focus:ring-1 focus:ring-brand-500 outline-none transition"
                             placeholder="Ej: Patrón de Z o 1234">
 
-                        <!-- Interactive Pattern Lock Drawer -->
-                        <div x-show="showPatternDrawer" x-transition:enter="transition ease-out duration-300"
-                            x-transition:enter-start="opacity-0 -translate-y-4"
-                            x-transition:enter-end="opacity-100 translate-y-0"
-                            x-transition:leave="transition ease-in duration-200"
-                            x-transition:leave-start="opacity-100 translate-y-0"
-                            x-transition:leave-end="opacity-0 -translate-y-4"
-                            class="bg-gray-900 border border-gray-700 rounded-3xl p-5 mt-3 space-y-4 relative overflow-hidden"
-                            x-data="patternLock()">
-                            <!-- Glowing details -->
-                            <div
-                                class="absolute -top-10 -right-10 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl pointer-events-none">
-                            </div>
-
-                            <div class="flex justify-between items-center border-b border-gray-800 pb-2">
-                                <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Dibujador
-                                    de Patrón Interactivo</span>
+                        <!-- Pattern Drawer -->
+                        <div x-show="showPatternDrawer" x-transition
+                            class="mt-3 bg-zinc-50 dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-4">
+                            <div class="flex justify-between items-center border-b border-zinc-200 dark:border-zinc-800 pb-2">
+                                <span class="text-[11px] font-medium text-zinc-500 uppercase tracking-wider">Dibujador de Patrón Interactivo</span>
                                 <div class="flex gap-2">
                                     <button type="button" @click="clearPattern"
-                                        class="px-2.5 py-1 bg-gray-800 hover:bg-gray-750 text-gray-300 rounded-lg text-[10px] font-bold border border-gray-700 transition">
+                                        class="px-2.5 py-1 bg-white hover:bg-zinc-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-md text-xs font-medium border border-zinc-200 dark:border-zinc-700 transition cursor-pointer">
                                         Borrar
                                     </button>
                                     <button type="button" @click="applyPattern"
-                                        class="px-2.5 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-[10px] font-bold transition">
+                                        class="px-2.5 py-1 bg-brand-500 hover:bg-brand-600 text-white rounded-md text-xs font-medium transition cursor-pointer">
                                         Aplicar Patrón
                                     </button>
                                 </div>
                             </div>
 
-                            <div class="flex flex-col items-center justify-center gap-6 py-2">
-                                <!-- 3x3 interactive dot matrix (Bulletproof Inline-sized CSS Grid) -->
-                                <div class="relative bg-gray-950/90 rounded-3xl border border-gray-800 grid grid-cols-3 grid-rows-3 gap-3 p-4 select-none touch-none"
+                            <div class="flex flex-col items-center justify-center gap-4 py-2">
+                                <div class="relative bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 grid grid-cols-3 grid-rows-3 gap-3 p-4 select-none touch-none shadow-xs"
                                     style="width: 220px; height: 220px; min-width: 220px; min-height: 220px;"
                                     @mousedown="startDrawing" @mousemove="draw" @mouseup="stopDrawing"
                                     @mouseleave="stopDrawing" @touchstart="startDrawing" @touchmove="draw"
                                     @touchend="stopDrawing" id="pattern-matrix">
 
-                                    <!-- Dynamic Lines Canvas -->
                                     <canvas id="pattern-canvas"
                                         class="absolute inset-0 w-full h-full pointer-events-none z-10"></canvas>
 
-                                    <!-- 9 Dots -->
                                     <template x-for="i in 9" :key="i">
                                         <div class="flex items-center justify-center relative cursor-pointer z-20"
                                             style="width: 100%; height: 100%;" :data-index="i">
-                                            <!-- Android Style Dot Container -->
-                                            <div class="w-12 h-12 flex items-center justify-center rounded-full transition-all duration-150"
-                                                :class="isDotSelected(i) ? 'bg-orange-500/20 ring-2 ring-orange-500/40 scale-110 shadow-lg shadow-orange-500/10' : 'hover:bg-gray-800/40 scale-100'">
-                                                <!-- Inner Core Dot -->
-                                                <div class="w-3.5 h-3.5 rounded-full transition-all duration-150"
-                                                    :class="isDotSelected(i) ? 'bg-orange-500 shadow-lg shadow-orange-500/80 scale-110' : 'bg-gray-600 scale-100'">
+                                            <div class="w-10 h-10 flex items-center justify-center rounded-full transition-all duration-150"
+                                                :class="isDotSelected(i) ? 'bg-brand-500/20 ring-2 ring-brand-500/40 scale-105' : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 scale-100'">
+                                                <div class="w-3 h-3 rounded-full transition-all duration-150"
+                                                    :class="isDotSelected(i) ? 'bg-brand-500' : 'bg-zinc-400 dark:bg-zinc-600'">
                                                 </div>
                                             </div>
-
-                                            <!-- Tiny Index number watermark -->
-                                            <span
-                                                class="absolute text-[8px] text-gray-700/60 font-mono font-bold select-none pointer-events-none"
-                                                style="transform: translateY(18px);" x-text="i"></span>
+                                            <span class="absolute text-[8px] text-zinc-400 font-mono font-medium pointer-events-none"
+                                                style="transform: translateY(16px);" x-text="i"></span>
                                         </div>
                                     </template>
                                 </div>
 
-                                <!-- Live visual preview of sequence -->
-                                <div
-                                    class="flex flex-col items-center space-y-3.5 text-center shrink-0 w-full border-t border-gray-800/65 pt-4">
-                                    <div>
-                                        <div class="text-[10px] font-black text-gray-500 uppercase tracking-widest">
-                                            Secuencia del Patrón</div>
-                                        <div class="text-sm font-black text-orange-500 font-mono tracking-wide mt-1 min-h-[20px]"
-                                            x-text="getPatternText()"></div>
-                                    </div>
-                                    <div class="text-[10px] text-gray-400 max-w-[220px] leading-relaxed">
-                                        Arrastra tu ratón o dedo conectando los puntos para trazar el patrón de
-                                        desbloqueo del equipo.
-                                    </div>
+                                <div class="flex flex-col items-center space-y-1.5 text-center shrink-0 w-full border-t border-zinc-200 dark:border-zinc-800 pt-3">
+                                    <div class="text-[10px] font-medium text-zinc-500 uppercase tracking-wider">Secuencia del Patrón</div>
+                                    <div class="text-xs font-semibold text-brand-600 dark:text-brand-400 font-mono min-h-[18px]" x-text="getPatternText()"></div>
+                                    <div class="text-[11px] text-zinc-400 max-w-[240px]">Conecta los puntos para registrar el patrón de desbloqueo.</div>
                                 </div>
                             </div>
                         </div>
@@ -526,141 +349,84 @@
                 </div>
 
                 <div>
-                    <div class="flex justify-between items-center mb-1.5">
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest">Falla Reportada por el Cliente *</label>
-                        <span class="text-[10px] text-teal-400 font-bold">⚡ Clic para añadir falla frecuente</span>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">Falla Reportada por el Cliente *</label>
+                        <span class="text-[11px] text-zinc-500">Selecciona fallas frecuentes para añadir rápido</span>
                     </div>
 
-                    <!-- Quick Tags Sugeridos según Tipo de Equipo -->
                     @if(count($this->quickTags) > 0)
-                        <div class="flex flex-wrap gap-1.5 mb-2.5">
+                        <div class="flex flex-wrap gap-1.5 mb-2">
                             @foreach($this->quickTags as $tag)
                                 <button type="button" wire:click="addQuickTag('{{ $tag }}')"
-                                    class="px-2.5 py-1 rounded-xl text-xs font-semibold bg-gray-800 hover:bg-teal-950/60 text-gray-300 hover:text-teal-300 border border-gray-700 hover:border-teal-500/40 transition duration-150 cursor-pointer flex items-center gap-1 active:scale-95">
+                                    class="px-2.5 py-1 rounded-lg text-xs font-medium bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 transition cursor-pointer flex items-center gap-1 active:scale-95">
                                     <span>{{ $tag }}</span>
-                                    <span class="text-[10px] text-teal-400 font-bold">+</span>
+                                    <span class="text-zinc-400">+</span>
                                 </button>
                             @endforeach
                         </div>
                     @endif
 
                     <textarea wire:model="reported_issue"
-                        class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3.5 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-2.5 text-zinc-900 dark:text-zinc-100 text-xs focus:ring-1 focus:ring-brand-500 outline-none transition"
                         rows="2.5" placeholder="Describe los síntomas o selecciona de las fallas frecuentes arriba..." required></textarea>
-                    @error('reported_issue') <span class="text-red-400 text-xs font-bold mt-1 block">{{ $message }}</span> @enderror
+                    @error('reported_issue') <span class="text-red-500 text-xs font-medium mt-1 block">{{ $message }}</span> @enderror
                 </div>
 
+                <!-- Estado Inicial Selector (4 Segmented Cards) -->
                 <div>
-                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Estado de Ingreso Inicial *</label>
-
-                    {{-- 4 botones horizontales con icono, color, nombre y descripción --}}
+                    <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-2">Estado de Ingreso Inicial *</label>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-
-                        {{-- ── Ingresado ── --}}
+                        <!-- Ingresado -->
                         <button type="button" wire:click="$set('initial_status', 'Ingresado')"
-                            class="group relative flex flex-col items-center gap-2 py-4 px-2 rounded-2xl border-2 transition-all duration-200 focus:outline-none cursor-pointer text-center
-                                {{ $initial_status === 'Ingresado'
-                                    ? 'border-sky-500 bg-sky-500/10 shadow-lg shadow-sky-500/10'
-                                    : 'border-gray-700/60 bg-gray-800/40 hover:border-sky-600/40 hover:bg-sky-900/10' }}">
-                            {{-- Indicador activo --}}
-                            @if($initial_status === 'Ingresado')
-                                <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-sky-400 animate-pulse"></span>
-                            @endif
-                            {{-- Icono --}}
-                            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xl transition-transform group-hover:scale-110
-                                {{ $initial_status === 'Ingresado' ? 'bg-sky-500/20' : 'bg-gray-700/60' }}">
-                                ⏳
+                            class="flex flex-col items-center gap-1.5 py-3 px-2 rounded-lg border text-center transition cursor-pointer {{ $initial_status === 'Ingresado' ? 'border-brand-500 bg-brand-500/5 text-brand-600 dark:text-brand-400' : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-850 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400' }}">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center {{ $initial_status === 'Ingresado' ? 'bg-brand-500/10 text-brand-600 dark:text-brand-400' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500' }}">
+                                <x-ui.icon name="clock" class="w-4 h-4" />
                             </div>
                             <div>
-                                <div class="text-[12px] font-black leading-tight {{ $initial_status === 'Ingresado' ? 'text-sky-300' : 'text-gray-300' }}">
-                                    Ingresado
-                                </div>
-                                <div class="text-[10px] leading-snug mt-0.5 {{ $initial_status === 'Ingresado' ? 'text-sky-400/70' : 'text-gray-600' }}">
-                                    Cola de espera
-                                </div>
+                                <div class="text-xs font-semibold leading-tight">Ingresado</div>
+                                <div class="text-[10px] text-zinc-500 mt-0.5">Cola de espera</div>
                             </div>
                         </button>
 
-                        {{-- ── En Revisión ── --}}
+                        <!-- En Revisión -->
                         <button type="button" wire:click="$set('initial_status', 'En Revisión')"
-                            class="group relative flex flex-col items-center gap-2 py-4 px-2 rounded-2xl border-2 transition-all duration-200 focus:outline-none cursor-pointer text-center
-                                {{ $initial_status === 'En Revisión'
-                                    ? 'border-amber-500 bg-amber-500/10 shadow-lg shadow-amber-500/10'
-                                    : 'border-gray-700/60 bg-gray-800/40 hover:border-amber-600/40 hover:bg-amber-900/10' }}">
-                            @if($initial_status === 'En Revisión')
-                                <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-                            @endif
-                            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xl transition-transform group-hover:scale-110
-                                {{ $initial_status === 'En Revisión' ? 'bg-amber-500/20' : 'bg-gray-700/60' }}">
-                                🔍
+                            class="flex flex-col items-center gap-1.5 py-3 px-2 rounded-lg border text-center transition cursor-pointer {{ $initial_status === 'En Revisión' ? 'border-brand-500 bg-brand-500/5 text-brand-600 dark:text-brand-400' : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-850 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400' }}">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center {{ $initial_status === 'En Revisión' ? 'bg-brand-500/10 text-brand-600 dark:text-brand-400' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500' }}">
+                                <x-ui.icon name="search" class="w-4 h-4" />
                             </div>
                             <div>
-                                <div class="text-[12px] font-black leading-tight {{ $initial_status === 'En Revisión' ? 'text-amber-300' : 'text-gray-300' }}">
-                                    En Revisión
-                                </div>
-                                <div class="text-[10px] leading-snug mt-0.5 {{ $initial_status === 'En Revisión' ? 'text-amber-400/70' : 'text-gray-600' }}">
-                                    Diagnóstico directo
-                                </div>
+                                <div class="text-xs font-semibold leading-tight">En Revisión</div>
+                                <div class="text-[10px] text-zinc-500 mt-0.5">Diagnóstico directo</div>
                             </div>
                         </button>
 
-                        {{-- ── Aprobado ── --}}
+                        <!-- Aprobado -->
                         <button type="button" wire:click="$set('initial_status', 'Aprobado')"
-                            class="group relative flex flex-col items-center gap-2 py-4 px-2 rounded-2xl border-2 transition-all duration-200 focus:outline-none cursor-pointer text-center
-                                {{ $initial_status === 'Aprobado'
-                                    ? 'border-emerald-500 bg-emerald-500/10 shadow-lg shadow-emerald-500/10'
-                                    : 'border-gray-700/60 bg-gray-800/40 hover:border-emerald-600/40 hover:bg-emerald-900/10' }}">
-                            @if($initial_status === 'Aprobado')
-                                <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                            @endif
-                            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xl transition-transform group-hover:scale-110
-                                {{ $initial_status === 'Aprobado' ? 'bg-emerald-500/20' : 'bg-gray-700/60' }}">
-                                ✅
+                            class="flex flex-col items-center gap-1.5 py-3 px-2 rounded-lg border text-center transition cursor-pointer {{ $initial_status === 'Aprobado' ? 'border-brand-500 bg-brand-500/5 text-brand-600 dark:text-brand-400' : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-850 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400' }}">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center {{ $initial_status === 'Aprobado' ? 'bg-brand-500/10 text-brand-600 dark:text-brand-400' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500' }}">
+                                <x-ui.icon name="check-circle" class="w-4 h-4" />
                             </div>
                             <div>
-                                <div class="text-[12px] font-black leading-tight {{ $initial_status === 'Aprobado' ? 'text-emerald-300' : 'text-gray-300' }}">
-                                    Aprobado
-                                </div>
-                                <div class="text-[10px] leading-snug mt-0.5 {{ $initial_status === 'Aprobado' ? 'text-emerald-400/70' : 'text-gray-600' }}">
-                                    Pasa a reparación
-                                </div>
+                                <div class="text-xs font-semibold leading-tight">Aprobado</div>
+                                <div class="text-[10px] text-zinc-500 mt-0.5">Pasa a reparación</div>
                             </div>
                         </button>
 
-                        {{-- ── Garantía ── --}}
+                        <!-- Garantía -->
                         <button type="button" wire:click="$set('initial_status', 'Garantía')"
-                            class="group relative flex flex-col items-center gap-2 py-4 px-2 rounded-2xl border-2 transition-all duration-200 focus:outline-none cursor-pointer text-center
-                                {{ $initial_status === 'Garantía'
-                                    ? 'border-violet-500 bg-violet-500/10 shadow-lg shadow-violet-500/10'
-                                    : 'border-gray-700/60 bg-gray-800/40 hover:border-violet-600/40 hover:bg-violet-900/10' }}">
-                            @if($initial_status === 'Garantía')
-                                <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-violet-400 animate-pulse"></span>
-                            @endif
-                            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xl transition-transform group-hover:scale-110
-                                {{ $initial_status === 'Garantía' ? 'bg-violet-500/20' : 'bg-gray-700/60' }}">
-                                🛡️
+                            class="flex flex-col items-center gap-1.5 py-3 px-2 rounded-lg border text-center transition cursor-pointer {{ $initial_status === 'Garantía' ? 'border-brand-500 bg-brand-500/5 text-brand-600 dark:text-brand-400' : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-850 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400' }}">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center {{ $initial_status === 'Garantía' ? 'bg-brand-500/10 text-brand-600 dark:text-brand-400' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500' }}">
+                                <x-ui.icon name="shield" class="w-4 h-4" />
                             </div>
                             <div>
-                                <div class="text-[12px] font-black leading-tight {{ $initial_status === 'Garantía' ? 'text-violet-300' : 'text-gray-300' }}">
-                                    Garantía
-                                </div>
-                                <div class="text-[10px] leading-snug mt-0.5 {{ $initial_status === 'Garantía' ? 'text-violet-400/70' : 'text-gray-600' }}">
-                                    Reingreso revisión
-                                </div>
+                                <div class="text-xs font-semibold leading-tight">Garantía</div>
+                                <div class="text-[10px] text-zinc-500 mt-0.5">Reingreso revisión</div>
                             </div>
                         </button>
-
                     </div>
 
-                    {{-- Nota dinámica de bitácora según estado seleccionado --}}
-                    <p class="mt-2.5 text-[10.5px] flex items-center gap-1.5
-                        {{ $initial_status === 'Ingresado' ? 'text-sky-400/80' : '' }}
-                        {{ $initial_status === 'En Revisión' ? 'text-amber-400/80' : '' }}
-                        {{ $initial_status === 'Aprobado' ? 'text-emerald-400/80' : '' }}
-                        {{ $initial_status === 'Garantía' ? 'text-violet-400/80' : '' }}">
-                        <svg class="w-3 h-3 shrink-0 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                        </svg>
+                    <p class="mt-2 text-[11px] text-zinc-500 flex items-center gap-1.5">
+                        <x-ui.icon name="info" class="w-3.5 h-3.5 shrink-0" />
                         <span>
                             @if($initial_status === 'Ingresado') Bitácora: Equipo en cola de espera para diagnóstico técnico.
                             @elseif($initial_status === 'En Revisión') Bitácora: Pasa directo a revisión y diagnóstico inmediato.
@@ -671,31 +437,27 @@
                     </p>
                 </div>
 
-
-
                 <!-- SUB-SECTION: COMPONENTES PC (Conditional) -->
                 <div x-show="['desktop', 'notebook', 'other'].includes($wire.device_type)" x-transition
-                    class="mt-6 p-5 rounded-2xl bg-gray-900/50 border border-gray-700/50">
-                    <div class="flex items-center justify-between mb-4">
+                    class="mt-4 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 space-y-3">
+                    <div class="flex items-center justify-between">
                         <div>
-                            <h4 class="text-sm font-bold text-blue-400">Componentes de Hardware</h4>
-                            <p class="text-[10px] text-gray-500">Registra CPU, GPU, RAM, Discos, etc. para evitar
-                                reclamos.</p>
+                            <h4 class="text-xs font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider">Componentes de Hardware</h4>
+                            <p class="text-[11px] text-zinc-500">Registra CPU, GPU, RAM, Discos, etc. para evitar reclamos.</p>
                         </div>
                         <button type="button" wire:click="addComponent"
-                            class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-[10px] font-bold transition">
+                            class="px-2.5 py-1 bg-white hover:bg-zinc-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 rounded-lg text-xs font-medium transition cursor-pointer">
                             + Agregar Componente
                         </button>
                     </div>
 
                     @if(count($components) > 0)
-                        <div class="space-y-3">
+                        <div class="space-y-2">
                             @foreach($components as $index => $comp)
-                                <div
-                                    class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center bg-gray-800/40 p-2 rounded-xl border border-gray-700/80">
+                                <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center bg-white dark:bg-zinc-900 p-2.5 rounded-lg border border-zinc-200 dark:border-zinc-800">
                                     <div class="sm:col-span-3">
                                         <select wire:model="components.{{ $index }}.type"
-                                            class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2 text-white text-xs focus:ring-1 focus:ring-blue-500">
+                                            class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-1.5 text-zinc-900 dark:text-zinc-100 text-xs focus:ring-1 focus:ring-brand-500 outline-none">
                                             <option value="cpu">CPU / Procesador</option>
                                             <option value="gpu">Tarjeta de Video (GPU)</option>
                                             <option value="ram">Memoria RAM</option>
@@ -712,57 +474,45 @@
                                     <div class="sm:col-span-3">
                                         <input type="text" wire:model="components.{{ $index }}.brand"
                                             placeholder="Marca (Ej: Intel)"
-                                            class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2 text-white text-xs focus:ring-1 focus:ring-blue-500">
+                                            class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-1.5 text-zinc-900 dark:text-zinc-100 text-xs focus:ring-1 focus:ring-brand-500 outline-none">
                                     </div>
                                     <div class="sm:col-span-3">
                                         <input type="text" wire:model="components.{{ $index }}.model"
                                             placeholder="Modelo o Capacidad"
-                                            class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2 text-white text-xs focus:ring-1 focus:ring-blue-500">
+                                            class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-1.5 text-zinc-900 dark:text-zinc-100 text-xs focus:ring-1 focus:ring-brand-500 outline-none">
                                     </div>
                                     <div class="sm:col-span-2">
                                         <input type="text" wire:model="components.{{ $index }}.serial_number"
                                             placeholder="Nº Serie"
-                                            class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2 text-white text-xs focus:ring-1 focus:ring-blue-500">
+                                            class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-1.5 text-zinc-900 dark:text-zinc-100 text-xs focus:ring-1 focus:ring-brand-500 outline-none">
                                     </div>
                                     <div class="sm:col-span-1 flex justify-end">
                                         <button type="button" wire:click="removeComponent({{ $index }})"
-                                            class="p-1.5 text-gray-500 hover:text-red-400 hover:bg-gray-700 rounded-lg transition"
+                                            class="p-1 text-zinc-400 hover:text-red-500 transition"
                                             title="Eliminar componente">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                                </path>
-                                            </svg>
+                                            <x-ui.icon name="trash" class="w-4 h-4" />
                                         </button>
                                     </div>
                                 </div>
                             @endforeach
                         </div>
                     @else
-                        <div class="text-center p-4 border border-dashed border-gray-700 rounded-xl">
-                            <span class="text-gray-500 text-xs">No se han registrado componentes adicionales.</span>
+                        <div class="text-center p-3 border border-dashed border-zinc-200 dark:border-zinc-800 rounded-lg">
+                            <span class="text-zinc-400 text-xs">No se han registrado componentes adicionales.</span>
                         </div>
                     @endif
                 </div>
             </div>
 
             <!-- SECCIÓN 3: CHECKLIST DE INGRESO PARAMETRIZABLE -->
-            <div class="p-5 rounded-2xl"
-                style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);">
-                <div class="flex items-center gap-3 pb-3 mb-4" style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                    <div class="flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center"
-                        style="background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2);">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                            style="color: #fbbf24;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+            <div class="p-5 rounded-xl bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800">
+                <div class="flex items-center gap-3 pb-3 mb-4 border-b border-zinc-200 dark:border-zinc-800">
+                    <div class="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-zinc-700 dark:text-zinc-300 shrink-0">
+                        <x-ui.icon name="check-square" class="w-4 h-4" />
                     </div>
                     <div>
-                        <h3 class="text-sm font-black tracking-tight" style="color: #fbbf24;">Checklist y Estado Inicial
-                        </h3>
-                        <p class="text-[10px]" style="color: rgba(156,163,175,0.7);">Condición física y funcional del
-                            equipo al recibirlo</p>
+                        <h3 class="text-xs font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider">Checklist y Estado Inicial</h3>
+                        <p class="text-[11px] text-zinc-500">Condición física y funcional del equipo al recibirlo</p>
                     </div>
                 </div>
 
@@ -770,15 +520,14 @@
                     <div class="flex items-center">
                         <label class="flex items-center space-x-2.5 cursor-pointer">
                             <input type="checkbox" wire:model="turns_on"
-                                class="w-5 h-5 text-blue-500 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 cursor-pointer">
-                            <span class="text-sm font-semibold text-gray-200">¿El equipo enciende al recibirlo?</span>
+                                class="w-4 h-4 text-brand-500 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 rounded focus:ring-brand-500 cursor-pointer">
+                            <span class="text-xs font-medium text-zinc-800 dark:text-zinc-200">¿El equipo enciende al recibirlo?</span>
                         </label>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">¿Tiene
-                            sospecha de contacto con líquido?</label>
+                        <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1">¿Tiene sospecha de contacto con líquido?</label>
                         <select wire:model="liquid_contact"
-                            class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-2.5 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-2 text-zinc-900 dark:text-zinc-100 text-xs focus:ring-1 focus:ring-brand-500 outline-none">
                             <option>No</option>
                             <option>Sí</option>
                             <option>No sabe / Mojado anteriormente</option>
@@ -789,48 +538,33 @@
                 <!-- checklist_values cargados dinámicamente desde BD de configuraciones -->
                 @if(count($checklist_values) > 0)
                     <div class="space-y-2 mb-4">
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2.5 px-1">
+                        <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-2 px-1">
                             Pruebas Funcionales Realizadas (Desmarca las que fallan)
                         </label>
-                        <div class="grid grid-cols-1 min-[440px]:grid-cols-2 sm:grid-cols-3 gap-2.5" wire:key="chk-grid-{{ $device_type }}">
+                        <div class="grid grid-cols-1 min-[440px]:grid-cols-2 sm:grid-cols-3 gap-2" wire:key="chk-grid-{{ $device_type }}">
                             @foreach($checklist_values as $item => $checked)
                                 @php
-                                    $icon = '<svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+                                    $iconName = 'check-circle';
                                     $i = strtolower($item);
-                                    if (str_contains($i, 'enciende'))
-                                        $icon = '⚡';
-                                    elseif (str_contains($i, 'face id') || str_contains($i, 'touch id'))
-                                        $icon = '👁️';
-                                    elseif (str_contains($i, 'líquido'))
-                                        $icon = '💧';
-                                    elseif (str_contains($i, 'cámara'))
-                                        $icon = '📷';
-                                    elseif (str_contains($i, 'micrófono'))
-                                        $icon = '🎤';
-                                    elseif (str_contains($i, 'parlante') || str_contains($i, 'auricular'))
-                                        $icon = '🔊';
-                                    elseif (str_contains($i, 'wi-fi') || str_contains($i, 'bluetooth') || str_contains($i, 'red'))
-                                        $icon = '📶';
-                                    elseif (str_contains($i, 'botones'))
-                                        $icon = '🔘';
-                                    elseif (str_contains($i, 'carga') || str_contains($i, 'batería'))
-                                        $icon = '🔋';
-                                    elseif (str_contains($i, 'teclado'))
-                                        $icon = '⌨️';
-                                    elseif (str_contains($i, 'mouse') || str_contains($i, 'touchpad'))
-                                        $icon = '🖱️';
-                                    elseif (str_contains($i, 'táctil') || str_contains($i, 'pantalla') || str_contains($i, 'display'))
-                                        $icon = '🖥️';
+                                    if (str_contains($i, 'enciende')) $iconName = 'zap';
+                                    elseif (str_contains($i, 'face id') || str_contains($i, 'touch id')) $iconName = 'shield';
+                                    elseif (str_contains($i, 'líquido')) $iconName = 'alert-triangle';
+                                    elseif (str_contains($i, 'cámara')) $iconName = 'camera';
+                                    elseif (str_contains($i, 'micrófono') || str_contains($i, 'parlante') || str_contains($i, 'auricular')) $iconName = 'volume-2';
+                                    elseif (str_contains($i, 'wi-fi') || str_contains($i, 'bluetooth') || str_contains($i, 'red')) $iconName = 'wifi';
+                                    elseif (str_contains($i, 'carga') || str_contains($i, 'batería')) $iconName = 'battery';
+                                    elseif (str_contains($i, 'teclado') || str_contains($i, 'mouse') || str_contains($i, 'touchpad')) $iconName = 'laptop';
+                                    elseif (str_contains($i, 'táctil') || str_contains($i, 'pantalla') || str_contains($i, 'display')) $iconName = 'monitor';
                                 @endphp
                                 <label wire:key="chk-item-{{ $device_type }}-{{ \Illuminate\Support\Str::slug($item) }}"
-                                    class="flex items-center gap-3 cursor-pointer p-3 sm:p-3.5 rounded-2xl border transition-all duration-150 select-none
-                                    {{ $checked 
-                                        ? 'bg-blue-950/40 border-blue-500/50 shadow-sm shadow-blue-500/10 text-white' 
-                                        : 'bg-gray-800/40 border-gray-700 hover:border-gray-650 hover:bg-gray-800/80 text-gray-300' }}">
+                                    class="flex items-center gap-2.5 cursor-pointer p-2.5 rounded-lg border transition duration-150 select-none
+                                    {{ $checked
+                                        ? 'bg-brand-500/5 border-brand-500/30 text-zinc-900 dark:text-zinc-100'
+                                        : 'bg-white dark:bg-zinc-800/40 border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 text-zinc-600 dark:text-zinc-400' }}">
                                     <input type="checkbox" wire:model.live="checklist_values.{{ $item }}"
-                                        class="w-5 h-5 text-blue-500 bg-gray-700 border-gray-600 rounded-lg focus:ring-blue-500 cursor-pointer shrink-0">
-                                    <span class="text-xs font-bold text-gray-200 leading-snug whitespace-normal break-words flex-1 flex items-center gap-2 min-w-0">
-                                        <span class="text-base shrink-0">{!! $icon !!}</span>
+                                        class="w-4 h-4 text-brand-500 bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 rounded focus:ring-brand-500 cursor-pointer shrink-0">
+                                    <span class="text-xs font-medium leading-snug whitespace-normal break-words flex-1 flex items-center gap-1.5 min-w-0">
+                                        <x-ui.icon :name="$iconName" class="w-3.5 h-3.5 text-zinc-400 shrink-0" />
                                         <span class="break-words leading-tight">{{ $item }}</span>
                                     </span>
                                 </label>
@@ -840,36 +574,27 @@
                 @endif
 
                 <div class="mb-4">
-                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">📸 Fotos del
-                        Estado Inicial (Opcional, máx 3)</label>
-                    <div class="flex items-center gap-4">
+                    <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Fotos del Estado Inicial (Opcional, máx 3)</label>
+                    <div class="flex items-center gap-3">
                         <label
-                            class="flex-shrink-0 cursor-pointer bg-gray-800 border border-gray-700 hover:border-blue-500 text-blue-400 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition duration-200 w-32 h-24">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z">
-                                </path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            </svg>
-                            <span class="text-xs font-bold">Subir Fotos</span>
+                            class="flex-shrink-0 cursor-pointer bg-white dark:bg-zinc-800 border border-dashed border-zinc-300 dark:border-zinc-700 hover:border-brand-500 text-zinc-600 dark:text-zinc-400 p-3 rounded-lg flex flex-col items-center justify-center gap-1 transition duration-150 w-28 h-20">
+                            <x-ui.icon name="camera" class="w-5 h-5 text-zinc-400" />
+                            <span class="text-[11px] font-medium">Subir Fotos</span>
                             <input type="file" @change="compressAndUploadMultiplePhotos($event, 'initialPhotos', $wire)" multiple accept="image/*" class="hidden">
                         </label>
 
                         <!-- Previews -->
-                        <div class="flex flex-wrap gap-3 flex-1">
+                        <div class="flex flex-wrap gap-2 flex-1">
                             @if($initialPhotos)
                                 @foreach($initialPhotos as $index => $photo)
                                     @if(is_object($photo) && method_exists($photo, 'temporaryUrl'))
-                                        <div class="w-24 h-24 rounded-2xl border border-gray-700 overflow-hidden relative group">
+                                        <div class="w-20 h-20 rounded-lg border border-zinc-200 dark:border-zinc-700 overflow-hidden relative group">
                                             <img src="{{ $photo->temporaryUrl() }}" class="w-full h-full object-cover">
-                                            <button type="button" 
-                                                    wire:click="removeInitialPhoto({{ $index }})" 
-                                                    class="absolute top-1.5 right-1.5 bg-red-600/90 hover:bg-red-600 text-white rounded-full p-1 shadow-lg transition duration-150 cursor-pointer flex items-center justify-center"
+                                            <button type="button"
+                                                    wire:click="removeInitialPhoto({{ $index }})"
+                                                    class="absolute top-1 right-1 bg-red-600/90 hover:bg-red-600 text-white rounded p-0.5 shadow transition cursor-pointer flex items-center justify-center"
                                                     title="Quitar foto">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                                </svg>
+                                                <x-ui.icon name="x" class="w-3 h-3" />
                                             </button>
                                         </div>
                                     @endif
@@ -877,88 +602,67 @@
                             @endif
                         </div>
                     </div>
-                    @error('initialPhotos') <span class="text-red-400 text-xs font-bold mt-1 block">{{ $message }}</span> @enderror
-                    @error('initialPhotos.*') <span class="text-red-400 text-xs font-bold mt-1 block">{{ $message }}</span> @enderror
+                    @error('initialPhotos') <span class="text-red-500 text-xs font-medium mt-1 block">{{ $message }}</span> @enderror
+                    @error('initialPhotos.*') <span class="text-red-500 text-xs font-medium mt-1 block">{{ $message }}</span> @enderror
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Daños Físicos
-                        o Notas Estéticas (Importante para proteger el taller)</label>
+                    <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1">Daños Físicos o Notas Estéticas (Importante para proteger el taller)</label>
                     <textarea wire:model="aesthetic_notes"
-                        class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-2.5 text-zinc-900 dark:text-zinc-100 text-xs focus:ring-1 focus:ring-brand-500 outline-none transition"
                         rows="2"
                         placeholder="Ej: Pantalla rayada, bisagra suelta, trizado en parte trasera, falta tornillo inferior izquierdo..."></textarea>
                 </div>
             </div>
 
             <!-- SECCIÓN 4: PRESUPUESTO U OPCIÓN DE REVISIÓN -->
-            <div>
-                <div class="flex items-center gap-3 pb-2.5 mb-4"
-                    style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                    <div class="flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center"
-                        style="background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2);">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                            style="color: #34d399;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+            <div class="space-y-4">
+                <div class="flex items-center gap-3 pb-3 border-b border-zinc-200 dark:border-zinc-800">
+                    <div class="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-zinc-700 dark:text-zinc-300 shrink-0">
+                        <x-ui.icon name="dollar-sign" class="w-4 h-4" />
                     </div>
                     <div>
-                        <h3 class="text-sm font-black tracking-tight" style="color: #34d399;">Presupuesto del Servicio
-                        </h3>
-                        <p class="text-[10px]" style="color: rgba(156,163,175,0.7);">Repuestos, mano de obra y abono
-                            inicial (oculto al cliente)</p>
+                        <h3 class="text-xs font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider">Presupuesto del Servicio</h3>
+                        <p class="text-[11px] text-zinc-500">Repuestos, mano de obra y abono inicial (oculto al cliente)</p>
                     </div>
                 </div>
 
                 <!-- Tabs Tipo de Presupuesto -->
-                <div class="flex gap-2 p-1.5 bg-gray-950 rounded-2xl border border-gray-800 mb-4 w-fit">
+                <div class="flex gap-1.5 p-1 bg-zinc-100 dark:bg-zinc-800/80 rounded-lg border border-zinc-200 dark:border-zinc-700 w-fit">
                     <button type="button" wire:click="$set('budget_type', 'fixed')"
-                        class="px-4 py-2 rounded-xl text-xs font-bold transition duration-150 {{ $budget_type === 'fixed' ? 'bg-blue-600 text-white shadow' : 'text-gray-400 hover:text-white' }}">
-                        💰 Presupuesto Fijo
+                        class="px-3 py-1.5 rounded-md text-xs font-medium transition cursor-pointer {{ $budget_type === 'fixed' ? 'bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 shadow-xs' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100' }}">
+                        Presupuesto Fijo
                     </button>
                     <button type="button" wire:click="$set('budget_type', 'pending')"
-                        class="px-4 py-2 rounded-xl text-xs font-bold transition duration-150 {{ $budget_type === 'pending' ? 'bg-blue-600 text-white shadow' : 'text-gray-400 hover:text-white' }}">
-                        🔍 Por Diagnosticar (Solo Revisión)
+                        class="px-3 py-1.5 rounded-md text-xs font-medium transition cursor-pointer {{ $budget_type === 'pending' ? 'bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 shadow-xs' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100' }}">
+                        Por Diagnosticar (Solo Revisión)
                     </button>
                 </div>
 
                 @if($budget_type === 'pending')
                     <!-- Tarjeta Modo Diagnóstico sin presupuesto -->
-                    <div
-                        class="bg-blue-950/20 border border-blue-800/30 p-5 rounded-3xl flex items-start gap-4 text-blue-300 text-xs animate-fade-in">
-                        <svg class="w-5 h-5 text-blue-400 shrink-0 mt-0.5" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
+                    <div class="bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-800 p-4 rounded-xl flex items-start gap-3 text-zinc-600 dark:text-zinc-400 text-xs">
+                        <x-ui.icon name="info" class="w-4 h-4 text-zinc-500 shrink-0 mt-0.5" />
                         <div>
-                            <strong class="text-sm font-bold text-white block mb-1">💡 Modo Diagnóstico Técnico
-                                Activado</strong>
-                            <p class="leading-relaxed">Se registrará la orden con costos de mano de obra y repuestos en
-                                <strong>$0</strong>. El equipo ingresará bajo un estado de "Por Diagnosticar" y podrás
-                                elaborar y cargar el presupuesto detallado más tarde de forma digital en la bitácora una vez
-                                que el técnico en el taller desarme y evalúe la solución.</p>
+                            <strong class="text-xs font-semibold text-zinc-900 dark:text-zinc-100 block mb-1">Modo Diagnóstico Técnico Activado</strong>
+                            <p class="leading-relaxed">Se registrará la orden con costos de mano de obra y repuestos en <strong>$0</strong>. El equipo ingresará bajo un estado de "Por Diagnosticar" y podrás elaborar y cargar el presupuesto detallado más tarde de forma digital en la bitácora una vez que el técnico en el taller evalúe la solución.</p>
                         </div>
                     </div>
                 @else
                     <!-- Presupuestador normal (Mano de obra, repuestos, etc) -->
-                    <div class="space-y-4 animate-fade-in">
-                        {{-- Búsqueda de Repuestos con diseño limpio --}}
+                    <div class="space-y-4">
+                        {{-- Búsqueda de Repuestos --}}
                         <div class="relative">
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Agregar Repuesto del Inventario</label>
+                            <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1">Agregar Repuesto del Inventario</label>
                             <div class="relative">
                                 <input type="text" wire:model.live.debounce.150ms="searchPart"
-                                    class="w-full rounded-2xl px-4 py-3 text-sm font-medium text-white placeholder-gray-600 transition-all duration-200 focus:outline-none focus:ring-2"
-                                    style="background:#111827; border:1.5px solid #1f2937;"
+                                    class="w-full rounded-lg px-3 py-2 text-xs text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition"
                                     placeholder="Buscar repuestos por nombre o categoría..."
-                                    autocomplete="off"
-                                    onfocus="this.style.borderColor='#00C6B6'; this.style.boxShadow='0 0 0 3px rgba(0,198,182,.12)';"
-                                    onblur="this.style.borderColor='#1f2937'; this.style.boxShadow='none';">
+                                    autocomplete="off">
 
                                 @if(strlen($searchPart) > 0 && count($foundParts) === 0)
-                                    <div class="absolute right-3.5 top-1/2 -translate-y-1/2">
-                                        <svg class="w-4 h-4 animate-spin text-gray-500" fill="none" viewBox="0 0 24 24">
+                                    <div class="absolute right-3 top-1/2 -translate-y-1/2">
+                                        <svg class="w-4 h-4 animate-spin text-zinc-400" fill="none" viewBox="0 0 24 24">
                                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                                         </svg>
@@ -967,53 +671,22 @@
                             </div>
 
                             @if(count($foundParts) > 0)
-                                <div class="absolute z-20 w-full mt-1.5 overflow-hidden rounded-2xl shadow-2xl"
-                                    style="background:#0d1117; border:1.5px solid #1f2937;">
-                                    <div class="px-4 py-2 flex items-center justify-between" style="border-bottom:1px solid #1f2937;">
-                                        <span class="text-[10px] font-black uppercase tracking-widest text-gray-500">
-                                            {{ count($foundParts) }} repuesto{{ count($foundParts) > 1 ? 's' : '' }} encontrado{{ count($foundParts) > 1 ? 's' : '' }}
-                                        </span>
-                                        <span class="text-[10px] text-gray-600">Clic para añadir</span>
+                                <div class="absolute z-20 w-full mt-1 overflow-hidden rounded-lg shadow-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+                                    <div class="px-3 py-1.5 bg-zinc-50 dark:bg-zinc-800/50 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between text-[10px] text-zinc-500 font-medium">
+                                        <span>{{ count($foundParts) }} repuesto{{ count($foundParts) > 1 ? 's' : '' }} encontrado{{ count($foundParts) > 1 ? 's' : '' }}</span>
+                                        <span>Clic para añadir</span>
                                     </div>
-                                    <ul>
+                                    <ul class="max-h-56 overflow-y-auto">
                                         @foreach($foundParts as $fp)
                                             <li wire:click="addPart({{ $fp->id }})"
-                                                class="flex items-center justify-between gap-3 px-4 py-3 cursor-pointer transition-all duration-150 border-b last:border-0 group"
-                                                style="border-color:#1f2937;"
-                                                onmouseover="this.style.background='#111827';"
-                                                onmouseout="this.style.background='transparent';">
-                                                <div class="flex items-center gap-3 min-w-0">
-                                                    <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
-                                                        style="background:rgba(0,198,182,.08); border:1px solid rgba(0,198,182,.15);">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color:#2dd4bf;">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/>
-                                                        </svg>
-                                                    </div>
-                                                    <div class="min-w-0">
-                                                        <div class="font-bold text-white text-sm leading-tight truncate">{{ $fp->name }}</div>
-                                                        <div class="flex items-center gap-2 mt-0.5 text-[11px] text-gray-500">
-                                                            <span>{{ $fp->category }}</span>
-                                                            <span>•</span>
-                                                            @if($fp->stock <= 0)
-                                                                <span class="text-red-400 font-bold">Sin Stock</span>
-                                                            @elseif($fp->stock < 5)
-                                                                <span class="text-amber-400 font-bold">Stock Bajo: {{ $fp->stock }}</span>
-                                                            @else
-                                                                <span>Stock: {{ $fp->stock }}</span>
-                                                            @endif
-                                                        </div>
-                                                    </div>
+                                                class="flex items-center justify-between px-3.5 py-2 cursor-pointer transition hover:bg-zinc-50 dark:hover:bg-zinc-800/60 border-b border-zinc-100 dark:border-zinc-800/50 last:border-0 group">
+                                                <div class="min-w-0">
+                                                    <span class="font-medium text-xs text-zinc-900 dark:text-zinc-100 truncate block">{{ $fp->name }}</span>
+                                                    <span class="text-[10px] text-zinc-500">Stock: {{ $fp->stock }} • Ref: ${{ number_format($fp->cost_price ?? $fp->sale_price, 0, ',', '.') }}</span>
                                                 </div>
-
-                                                <div class="flex items-center gap-2 shrink-0">
-                                                    <span class="font-mono font-bold text-emerald-400 text-sm">
-                                                        ${{ number_format($fp->sale_price, 0, ',', '.') }}
-                                                    </span>
-                                                    <span class="text-[10px] font-bold px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                                                        style="background:rgba(0,198,182,.1); color:#2dd4bf; border:1px solid rgba(0,198,182,.2);">
-                                                        + Añadir
-                                                    </span>
-                                                </div>
+                                                <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 group-hover:border-brand-500/50 group-hover:text-brand-600 transition">
+                                                    + Añadir
+                                                </span>
                                             </li>
                                         @endforeach
                                     </ul>
@@ -1021,27 +694,27 @@
                             @endif
                         </div>
 
-
-                        <!-- Ingreso directo de Repuesto a Pedido (Sin Stock Físico / Precio Costo Cliente) -->
-                        <div class="p-3.5 bg-gray-900/90 border border-amber-500/30 rounded-2xl space-y-2.5">
+                        <!-- Ingreso directo de Repuesto a Pedido -->
+                        <div class="p-3 bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-800 rounded-xl space-y-2">
                             <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
-                                    📦 Repuesto a Pedido / Precio Costo (Pagado por el Cliente)
+                                <span class="text-xs font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider flex items-center gap-1.5">
+                                    <x-ui.icon name="package" class="w-3.5 h-3.5 text-zinc-500" />
+                                    Repuesto a Pedido / Precio Costo (Pagado por el Cliente)
                                 </span>
-                                <span class="text-[10px] text-gray-400">No requiere stock físico</span>
+                                <span class="text-[10px] text-zinc-500">No requiere stock físico</span>
                             </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
+                            <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
                                 <div class="sm:col-span-6">
                                     <input type="text" wire:model="customPartName" placeholder="Ej: Pantalla Original Samsung A54..."
-                                        class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 focus:ring-1 focus:ring-amber-500">
+                                        class="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:ring-1 focus:ring-brand-500 outline-none">
                                 </div>
                                 <div class="sm:col-span-3">
                                     <input type="number" wire:model="customPartCost" placeholder="Costo ($)..."
-                                        class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-xs font-bold text-amber-300 placeholder-gray-500 text-right focus:ring-1 focus:ring-amber-500">
+                                        class="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs font-mono font-semibold text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 text-right focus:ring-1 focus:ring-brand-500 outline-none">
                                 </div>
                                 <div class="sm:col-span-3">
                                     <button type="button" wire:click="addCustomPart"
-                                        class="w-full h-full bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs px-3 py-2 rounded-xl transition cursor-pointer">
+                                        class="w-full bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-white text-white dark:text-zinc-900 font-medium text-xs px-3 py-1.5 rounded-lg transition cursor-pointer">
                                         + Añadir Repuesto
                                     </button>
                                 </div>
@@ -1050,24 +723,20 @@
 
                         <!-- Lista de repuestos seleccionados -->
                         @if(count($selected_parts) > 0)
-                            <div class="bg-gray-900 border border-gray-700 rounded-2xl p-4 space-y-2 animate-fade-in">
-                                <h4 class="text-xs font-bold text-amber-400 uppercase tracking-widest px-1 mb-2">Repuestos Asignados (Costo Cliente)</h4>
-                                <ul class="space-y-2">
+                            <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3.5 space-y-2">
+                                <h4 class="text-xs font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider mb-1">Repuestos Asignados (Costo Cliente)</h4>
+                                <ul class="space-y-1.5">
                                     @foreach($selected_parts as $index => $part)
-                                        <li class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 py-2 px-3 bg-gray-800/60 rounded-xl border border-gray-700 text-xs">
-                                            <span class="font-bold text-gray-200 flex-1">{{ $part['name'] }}</span>
+                                        <li class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 py-1.5 px-2.5 bg-zinc-50 dark:bg-zinc-800/40 rounded-lg border border-zinc-200 dark:border-zinc-700 text-xs">
+                                            <span class="font-medium text-zinc-900 dark:text-zinc-100 flex-1">{{ $part['name'] }}</span>
                                             <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
-                                                <span class="text-[10px] text-gray-400">Costo ($):</span>
+                                                <span class="text-[11px] text-zinc-500">Costo ($):</span>
                                                 <input type="number" wire:model.live="selected_parts.{{ $index }}.sale_price"
-                                                    class="w-28 bg-gray-900 border border-gray-700 rounded-lg px-2 py-1 text-xs font-bold text-amber-400 text-right">
+                                                    class="w-24 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded px-2 py-0.5 text-xs font-mono font-semibold text-zinc-900 dark:text-zinc-100 text-right focus:ring-1 focus:ring-brand-500 outline-none">
                                                 <button type="button" wire:click="removePart({{ $index }})"
-                                                    class="text-gray-500 hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition cursor-pointer"
+                                                    class="text-zinc-400 hover:text-red-500 transition cursor-pointer p-0.5"
                                                     title="Remover repuesto">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                                        </path>
-                                                    </svg>
+                                                    <x-ui.icon name="trash" class="w-3.5 h-3.5" />
                                                 </button>
                                             </div>
                                         </li>
@@ -1077,43 +746,47 @@
                         @endif
 
                         <!-- Costo de Envío del Repuesto (Pagado por el Cliente) -->
-                        <div class="p-3.5 bg-gray-900/90 border border-gray-700/80 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                        <div class="p-3 bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-800 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                             <div>
-                                <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider">🚚 Costo de Envío del Repuesto (Opcional)</label>
-                                <span class="text-[10px] text-gray-500">Se suma al total del cliente como costo de encargo (no afecta tu utilidad ni IVA)</span>
+                                <label class="block text-xs font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider flex items-center gap-1.5">
+                                    <x-ui.icon name="truck" class="w-3.5 h-3.5 text-zinc-500" />
+                                    Costo de Envío del Repuesto (Opcional)
+                                </label>
+                                <span class="text-[11px] text-zinc-500">Se suma al total del cliente como costo de encargo (no afecta tu utilidad ni IVA)</span>
                             </div>
                             <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
                                 <button type="button" wire:click="setQuickShipping(10000)"
-                                    class="px-3 py-1.5 rounded-xl text-xs font-bold border transition cursor-pointer {{ (float)$shipping_cost == 10000 ? 'bg-amber-500/20 border-amber-500 text-amber-300' : 'bg-gray-800 border-gray-700 text-gray-300 hover:border-amber-500/50' }}">
+                                    class="px-2.5 py-1 rounded-lg text-xs font-medium border transition cursor-pointer {{ (float)$shipping_cost == 10000 ? 'bg-brand-500/10 border-brand-500 text-brand-600 dark:text-brand-400' : 'bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-750' }}">
                                     +$10.000 Envío
                                 </button>
                                 @if((float)$shipping_cost > 0)
                                     <button type="button" wire:click="setQuickShipping(0)"
-                                        class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-gray-800 border border-gray-700 text-gray-400 hover:text-red-400 transition cursor-pointer">
+                                        class="px-2 py-1 rounded-lg text-xs font-medium bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-500 hover:text-red-500 transition cursor-pointer">
                                         Quitar ($0)
                                     </button>
                                 @endif
-                                <div class="relative w-32">
+                                <div class="relative w-28">
                                     <input type="number" wire:model.live="shipping_cost" min="0" step="500"
-                                        class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-1.5 text-xs font-bold text-amber-300 text-right focus:ring-1 focus:ring-amber-500"
+                                        class="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg px-2.5 py-1 text-xs font-mono font-semibold text-zinc-900 dark:text-zinc-100 text-right focus:ring-1 focus:ring-brand-500 outline-none"
                                         placeholder="0">
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Búsqueda y Selección de Servicios del Catálogo -->
+                        <!-- Selector del Catálogo de Servicios / Mano de Obra -->
                         <div class="relative">
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Agregar Servicios (Mano de Obra / Tu Utilidad) del Catálogo</label>
+                            <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1">
+                                Mano de Obra / Servicios desde Catálogo (Tu Utilidad)
+                            </label>
                             <div class="relative">
                                 <input type="text" wire:model.live.debounce.150ms="searchService"
-                                    class="w-full rounded-2xl px-4 py-3 text-sm font-medium text-white placeholder-gray-600 transition-all duration-200 focus:outline-none focus:ring-2"
-                                    style="background:#111827; border:1.5px solid #1f2937;"
-                                    placeholder="Escribe para buscar servicio (Ej: Cambio de pantalla, Limpieza...)..."
+                                    class="w-full rounded-lg px-3 py-2 text-xs text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition"
+                                    placeholder="Buscar servicios técnicos por nombre..."
                                     autocomplete="off">
 
                                 @if(strlen($searchService) > 0 && count($foundServices) === 0)
-                                    <div class="absolute right-3.5 top-1/2 -translate-y-1/2">
-                                        <svg class="w-4 h-4 animate-spin text-gray-500" fill="none" viewBox="0 0 24 24">
+                                    <div class="absolute right-3 top-1/2 -translate-y-1/2">
+                                        <svg class="w-4 h-4 animate-spin text-zinc-400" fill="none" viewBox="0 0 24 24">
                                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                                         </svg>
@@ -1122,31 +795,22 @@
                             </div>
 
                             @if(count($foundServices) > 0)
-                                <div class="absolute z-20 w-full mt-1.5 overflow-hidden rounded-2xl shadow-2xl"
-                                    style="background:#0d1117; border:1.5px solid #1f2937;">
-                                    <div class="px-4 py-2 flex items-center justify-between" style="border-bottom:1px solid #1f2937;">
-                                        <span class="text-[10px] font-black uppercase tracking-widest text-gray-500">
-                                            {{ count($foundServices) }} servicio(s) encontrado(s)
-                                        </span>
-                                        <span class="text-[10px] text-gray-600">Clic para añadir</span>
+                                <div class="absolute z-20 w-full mt-1 overflow-hidden rounded-lg shadow-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+                                    <div class="px-3 py-1.5 bg-zinc-50 dark:bg-zinc-800/50 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between text-[10px] text-zinc-500 font-medium">
+                                        <span>{{ count($foundServices) }} servicio{{ count($foundServices) > 1 ? 's' : '' }} en catálogo</span>
+                                        <span>Clic para añadir</span>
                                     </div>
-                                    <ul>
+                                    <ul class="max-h-56 overflow-y-auto">
                                         @foreach($foundServices as $fs)
-                                            <li wire:click="addServiceFromCatalog({{ $fs->id }})"
-                                                class="flex items-center justify-between gap-3 px-4 py-3 cursor-pointer transition-all duration-150 border-b last:border-0 hover:bg-gray-800/60"
-                                                style="border-color:#1f2937;">
+                                            <li wire:click="addSelectedService({{ $fs->id }})"
+                                                class="flex items-center justify-between px-3.5 py-2 cursor-pointer transition hover:bg-zinc-50 dark:hover:bg-zinc-800/60 border-b border-zinc-100 dark:border-zinc-800/50 last:border-0 group">
                                                 <div class="min-w-0">
-                                                    <div class="font-bold text-white text-sm leading-tight truncate">{{ $fs->name }}</div>
-                                                    <div class="text-[11px] text-gray-400 mt-0.5">{{ $fs->category_label }}</div>
+                                                    <span class="font-medium text-xs text-zinc-900 dark:text-zinc-100 truncate block">{{ $fs->name }}</span>
+                                                    <span class="text-[10px] text-zinc-500">Mano de Obra Sugerida: ${{ number_format($fs->price, 0, ',', '.') }}</span>
                                                 </div>
-                                                <div class="flex items-center gap-2 shrink-0">
-                                                    <span class="font-mono font-bold text-indigo-400 text-sm">
-                                                        ${{ number_format($fs->default_price, 0, ',', '.') }}
-                                                    </span>
-                                                    <span class="text-[10px] font-bold px-2 py-1 rounded-lg bg-indigo-950/60 text-indigo-300 border border-indigo-500/30">
-                                                        + Añadir
-                                                    </span>
-                                                </div>
+                                                <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 group-hover:border-brand-500/50 group-hover:text-brand-600 transition">
+                                                    + Añadir
+                                                </span>
                                             </li>
                                         @endforeach
                                     </ul>
@@ -1156,17 +820,17 @@
 
                         <!-- Lista de servicios seleccionados con precios editables -->
                         @if(count($selected_services) > 0)
-                            <div class="bg-gray-900 border border-gray-700 rounded-2xl p-4 space-y-2 animate-fade-in">
-                                <h4 class="text-xs font-bold text-indigo-400 uppercase tracking-widest px-1 mb-2">Servicios Asignados a esta OT</h4>
-                                <div class="space-y-2">
+                            <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3.5 space-y-2">
+                                <h4 class="text-xs font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider mb-1">Servicios Asignados a esta OT</h4>
+                                <div class="space-y-1.5">
                                     @foreach($selected_services as $index => $srv)
-                                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3 bg-gray-800/60 rounded-xl border border-gray-700">
-                                            <span class="text-xs font-bold text-white flex-1">{{ $srv['name'] }}</span>
-                                            <div class="flex items-center gap-2 w-full sm:w-auto">
-                                                <span class="text-[10px] text-gray-400">Precio ($):</span>
-                                                <input type="number" wire:model.live="selected_services.{{ $index }}.price" class="w-28 bg-gray-900 border border-gray-700 rounded-lg px-2 py-1 text-xs font-bold text-emerald-400 text-right">
-                                                <button type="button" wire:click="removeSelectedService({{ $index }})" class="text-gray-500 hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition cursor-pointer">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-2 bg-zinc-50 dark:bg-zinc-800/40 rounded-lg border border-zinc-200 dark:border-zinc-700">
+                                            <span class="text-xs font-medium text-zinc-900 dark:text-zinc-100 flex-1">{{ $srv['name'] }}</span>
+                                            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                                                <span class="text-[11px] text-zinc-500">Precio ($):</span>
+                                                <input type="number" wire:model.live="selected_services.{{ $index }}.price" class="w-24 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded px-2 py-0.5 text-xs font-mono font-semibold text-zinc-900 dark:text-zinc-100 text-right focus:ring-1 focus:ring-brand-500 outline-none">
+                                                <button type="button" wire:click="removeSelectedService({{ $index }})" class="text-zinc-400 hover:text-red-500 transition cursor-pointer p-0.5">
+                                                    <x-ui.icon name="trash" class="w-3.5 h-3.5" />
                                                 </button>
                                             </div>
                                         </div>
@@ -1176,22 +840,22 @@
                         @endif
 
                         <!-- Formulario para Servicio Personalizado / Extra -->
-                        <div x-data="{ openCustom: false }" class="mt-2">
-                            <button type="button" @click="openCustom = !openCustom" class="text-xs font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-1.5 transition cursor-pointer">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                                <span>+ ¿Servicio o labor personalizada no catalogada?</span>
+                        <div x-data="{ openCustom: false }" class="mt-1">
+                            <button type="button" @click="openCustom = !openCustom" class="text-xs font-medium text-brand-600 dark:text-brand-400 hover:underline flex items-center gap-1.5 transition cursor-pointer">
+                                <x-ui.icon name="plus" class="w-3.5 h-3.5" />
+                                <span>¿Servicio o labor personalizada no catalogada?</span>
                             </button>
 
-                            <div x-show="openCustom" x-collapse x-cloak class="mt-2.5 p-3.5 bg-gray-900 border border-gray-700 rounded-xl space-y-3">
-                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                            <div x-show="openCustom" x-collapse x-cloak class="mt-2 p-3 bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700 rounded-lg space-y-2">
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                                     <div class="sm:col-span-2">
-                                        <input type="text" wire:model="customServiceName" placeholder="Nombre de la labor técnica..." class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white placeholder-gray-500 focus:ring-1 focus:ring-indigo-500">
+                                        <input type="text" wire:model="customServiceName" placeholder="Nombre de la labor técnica..." class="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:ring-1 focus:ring-brand-500 outline-none">
                                     </div>
                                     <div>
-                                        <input type="number" wire:model="customServicePrice" placeholder="Precio ($)..." class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-xs font-bold text-emerald-400 placeholder-gray-500 text-right focus:ring-1 focus:ring-indigo-500">
+                                        <input type="number" wire:model="customServicePrice" placeholder="Precio ($)..." class="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs font-mono font-semibold text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 text-right focus:ring-1 focus:ring-brand-500 outline-none">
                                     </div>
                                 </div>
-                                <button type="button" wire:click="addCustomService" @click="openCustom = false" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg transition cursor-pointer">
+                                <button type="button" wire:click="addCustomService" @click="openCustom = false" class="bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-white text-white dark:text-zinc-900 font-medium text-xs px-3 py-1.5 rounded-lg transition cursor-pointer">
                                     + Agregar Labor al Presupuesto
                                 </button>
                             </div>
@@ -1203,22 +867,22 @@
                         @endphp
 
                         <!-- Resumen y Presupuesto Estimado -->
-                        <div class="bg-gradient-to-r from-blue-950/40 to-indigo-950/40 border border-blue-500/30 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
+                        <div class="bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                             <div class="space-y-1">
-                                <span class="text-xs font-bold text-blue-300 uppercase tracking-widest block">Resumen del Presupuesto</span>
-                                <div class="text-xs text-gray-300 flex flex-wrap items-center gap-x-3 gap-y-1">
-                                    <span>🛠️ Mano de Obra (Tu Utilidad): <strong class="text-emerald-400 font-bold">${{ number_format((float)$this->labor_cost, 0, ',', '.') }}</strong></span>
+                                <span class="text-xs font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider block">Resumen del Presupuesto</span>
+                                <div class="text-xs text-zinc-600 dark:text-zinc-400 flex flex-wrap items-center gap-x-3 gap-y-1">
+                                    <span>Mano de Obra: <strong class="text-zinc-900 dark:text-zinc-100 font-semibold font-mono">${{ number_format((float)$this->labor_cost, 0, ',', '.') }}</strong></span>
                                     <span>•</span>
-                                    <span>📦 Repuestos (Cliente): <strong class="text-amber-400 font-bold">${{ number_format($partsSum, 0, ',', '.') }}</strong></span>
+                                    <span>Repuestos: <strong class="text-zinc-900 dark:text-zinc-100 font-semibold font-mono">${{ number_format($partsSum, 0, ',', '.') }}</strong></span>
                                     @if((float)$this->shipping_cost > 0)
                                         <span>•</span>
-                                        <span>🚚 Envío: <strong class="text-amber-400 font-bold">${{ number_format((float)$this->shipping_cost, 0, ',', '.') }}</strong></span>
+                                        <span>Envío: <strong class="text-zinc-900 dark:text-zinc-100 font-semibold font-mono">${{ number_format((float)$this->shipping_cost, 0, ',', '.') }}</strong></span>
                                     @endif
                                 </div>
                             </div>
                             <div class="flex items-center gap-3 self-end sm:self-auto">
-                                <span class="text-xs font-black text-blue-200 uppercase tracking-wider">TOTAL CLIENTE:</span>
-                                <span class="text-2xl font-black text-white bg-blue-600/30 px-3.5 py-1 rounded-xl border border-blue-400/30">${{ number_format($this->total, 0, ',', '.') }}</span>
+                                <span class="text-xs font-semibold text-zinc-500 uppercase tracking-wider">TOTAL CLIENTE:</span>
+                                <span class="text-xl font-semibold text-zinc-900 dark:text-zinc-100 font-mono">${{ number_format($this->total, 0, ',', '.') }}</span>
                             </div>
                         </div>
 
@@ -1235,125 +899,92 @@
                                     $nextTick(() => $refs.customInput.focus());
                                 }
                             }">
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Tiempo Estimado de Entrega</label>
+                            <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-2">Tiempo Estimado de Entrega</label>
 
-                            {{-- Chips de selección rápida --}}
-                            <div class="flex flex-wrap gap-2 mb-2">
+                            <div class="flex flex-wrap gap-1.5">
                                 <template x-for="opt in options" :key="opt">
-                                    <button type="button" @click="select(opt)"
+                                    <button type="button"
+                                        @click="select(opt)"
                                         :class="!custom && $wire.estimated_delivery === opt
-                                            ? 'bg-teal-600/20 border-teal-500 text-teal-300 shadow shadow-teal-500/10'
-                                            : 'bg-gray-800/60 border-gray-700 text-gray-400 hover:border-gray-500 hover:text-gray-200'"
-                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all duration-150 cursor-pointer">
-                                        <svg class="w-3 h-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                            x-show="!custom && $wire.estimated_delivery === opt">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-                                        </svg>
-                                        <svg class="w-3 h-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                            x-show="custom || $wire.estimated_delivery !== opt">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                        </svg>
+                                            ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-100'
+                                            : 'bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-750'"
+                                        class="px-2.5 py-1 rounded-lg text-xs font-medium border transition cursor-pointer">
                                         <span x-text="opt"></span>
                                     </button>
                                 </template>
-
-                                {{-- Chip personalizado --}}
-                                <button type="button" @click="setCustom()"
-                                    :class="custom
-                                        ? 'bg-blue-600/20 border-blue-500 text-blue-300 shadow shadow-blue-500/10'
-                                        : 'bg-gray-800/60 border-gray-700 text-gray-400 hover:border-gray-500 hover:text-gray-200'"
-                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all duration-150 cursor-pointer">
-                                    <svg class="w-3 h-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                    </svg>
-                                    Escribir...
+                                <button type="button"
+                                    @click="setCustom()"
+                                    :class="custom || !options.includes($wire.estimated_delivery) && $wire.estimated_delivery !== ''
+                                        ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-100'
+                                        : 'bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-750'"
+                                    class="px-2.5 py-1 rounded-lg text-xs font-medium border transition cursor-pointer">
+                                    Personalizado...
                                 </button>
                             </div>
 
-                            {{-- Campo manual (solo visible al pulsar "Escribir...") --}}
-                            <div x-show="custom" x-transition:enter="transition ease-out duration-200"
-                                x-transition:enter-start="opacity-0 -translate-y-1"
-                                x-transition:enter-end="opacity-100 translate-y-0">
+                            <div x-show="custom || (!options.includes($wire.estimated_delivery) && $wire.estimated_delivery !== '')"
+                                x-transition
+                                class="mt-2">
                                 <input type="text" wire:model="estimated_delivery"
                                     x-ref="customInput"
-                                    class="w-full bg-gray-700 border border-blue-500/50 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-2 text-zinc-900 dark:text-zinc-100 text-xs focus:ring-1 focus:ring-brand-500 outline-none"
                                     placeholder="Ej: 48 horas hábiles, 10 días...">
                             </div>
 
-                            <span class="text-[10px] text-gray-500 mt-1.5 block">Aparecerá en el comprobante del cliente.</span>
+                            <span class="text-[10px] text-zinc-500 mt-1 block">Aparecerá en el comprobante del cliente.</span>
                         </div>
-
-
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                             <div>
-                                <div class="flex items-center justify-between mb-1.5">
-                                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest">Abono Inicial (Dejar en 0 si no paga nada hoy)</label>
+                                <div class="flex items-center justify-between mb-1">
+                                    <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">Abono Inicial</label>
                                     @if($thirdPartySum > 0)
                                         <button type="button" wire:click="$set('down_payment', {{ $thirdPartySum }})"
-                                            class="text-[10px] font-bold text-amber-400 hover:text-amber-300 bg-amber-950/50 border border-amber-500/30 px-2 py-0.5 rounded-lg transition cursor-pointer">
-                                            ⚡ Abonar Repuesto+Envío (${{ number_format($thirdPartySum, 0, ',', '.') }})
+                                            class="text-[10px] font-medium text-brand-600 dark:text-brand-400 hover:underline cursor-pointer">
+                                            Abonar Repuesto+Envío (${{ number_format($thirdPartySum, 0, ',', '.') }})
                                         </button>
                                     @endif
                                 </div>
                                 <input type="number" wire:model.live="down_payment"
-                                    class="w-full bg-gray-700 border border-gray-600 rounded-2xl p-3 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-2.5 text-zinc-900 dark:text-zinc-100 text-xs font-mono font-semibold focus:ring-1 focus:ring-brand-500 outline-none">
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Método de Pago *</label>
+                                <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1">Método de Pago *</label>
 
-                                {{-- Botones interactivos de Método de Pago --}}
                                 <div class="grid grid-cols-3 gap-2">
-                                    {{-- Efectivo --}}
                                     <button type="button" wire:click="$set('payment_method', 'Efectivo')"
-                                        class="flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-3 rounded-2xl border transition-all duration-150 cursor-pointer text-xs font-bold
+                                        class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border transition cursor-pointer text-xs font-medium
                                             {{ $payment_method === 'Efectivo'
-                                                ? 'bg-emerald-500/15 border-emerald-500 text-emerald-300 shadow-md shadow-emerald-500/10'
-                                                : 'bg-gray-800/40 border-gray-700 text-gray-400 hover:border-gray-600 hover:text-gray-200' }}">
-                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                            style="{{ $payment_method === 'Efectivo' ? 'color:#34d399;' : '' }}">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                                                d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                        </svg>
+                                                ? 'bg-zinc-900 dark:bg-zinc-100 border-zinc-900 dark:border-zinc-100 text-white dark:text-zinc-900 shadow-xs'
+                                                : 'bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-750' }}">
+                                        <x-ui.icon name="banknote" class="w-3.5 h-3.5 shrink-0" />
                                         <span class="truncate">Efectivo</span>
                                     </button>
 
-                                    {{-- Transferencia --}}
                                     <button type="button" wire:click="$set('payment_method', 'Transferencia')"
-                                        class="flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-3 rounded-2xl border transition-all duration-150 cursor-pointer text-xs font-bold
+                                        class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border transition cursor-pointer text-xs font-medium
                                             {{ $payment_method === 'Transferencia'
-                                                ? 'bg-blue-500/15 border-blue-500 text-blue-300 shadow-md shadow-blue-500/10'
-                                                : 'bg-gray-800/40 border-gray-700 text-gray-400 hover:border-gray-600 hover:text-gray-200' }}">
-                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                            style="{{ $payment_method === 'Transferencia' ? 'color:#60a5fa;' : '' }}">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                                                d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.5h-15V21"/>
-                                        </svg>
+                                                ? 'bg-zinc-900 dark:bg-zinc-100 border-zinc-900 dark:border-zinc-100 text-white dark:text-zinc-900 shadow-xs'
+                                                : 'bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-750' }}">
+                                        <x-ui.icon name="arrow-right-left" class="w-3.5 h-3.5 shrink-0" />
                                         <span class="truncate">Transferencia</span>
                                     </button>
 
-                                    {{-- Débito/Crédito --}}
                                     <button type="button" wire:click="$set('payment_method', 'Débito/Crédito')"
-                                        class="flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-3 rounded-2xl border transition-all duration-150 cursor-pointer text-xs font-bold
+                                        class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border transition cursor-pointer text-xs font-medium
                                             {{ $payment_method === 'Débito/Crédito'
-                                                ? 'bg-purple-500/15 border-purple-500 text-purple-300 shadow-md shadow-purple-500/10'
-                                                : 'bg-gray-800/40 border-gray-700 text-gray-400 hover:border-gray-600 hover:text-gray-200' }}">
-                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                            style="{{ $payment_method === 'Débito/Crédito' ? 'color:#c084fc;' : '' }}">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                                                d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
-                                        </svg>
+                                                ? 'bg-zinc-900 dark:bg-zinc-100 border-zinc-900 dark:border-zinc-100 text-white dark:text-zinc-900 shadow-xs'
+                                                : 'bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-750' }}">
+                                        <x-ui.icon name="credit-card" class="w-3.5 h-3.5 shrink-0" />
                                         <span class="truncate">Tarjeta</span>
                                     </button>
                                 </div>
                             </div>
-
                         </div>
 
-                        <div class="bg-gray-900 border border-gray-700 rounded-2xl p-4 flex justify-between items-center">
-                            <span class="text-sm font-bold text-gray-400">Saldo Pendiente:</span>
-                            <span
-                                class="text-xl font-black {{ $this->balance > 0 ? 'text-yellow-400' : 'text-green-400' }}">
+                        <div class="bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3.5 flex justify-between items-center">
+                            <span class="text-xs font-medium text-zinc-600 dark:text-zinc-400">Saldo Pendiente:</span>
+                            <span class="text-base font-semibold font-mono text-zinc-900 dark:text-zinc-100">
                                 ${{ number_format($this->balance, 0, ',', '.') }}
                             </span>
                         </div>
@@ -1363,115 +994,100 @@
 
             <!-- SECCIÓN 5: FIRMA Y TÉRMINOS LEGALES -->
             <div x-data="{
-                    signMode: @if($signature_token) 'qr' @elseif($signature_base64) 'done' @else null @endif,
-                    setMode(m) { this.signMode = m; }
-                }" class="pt-6 border-t border-gray-700/80 space-y-5" @if($signature_token)
-                wire:poll.keep-alive.2s="checkSignatureStatus" @endif>
-                <div class="flex items-center justify-between">
-                    <h3 class="text-base font-bold text-blue-400 flex items-center gap-2">
-                        <span
-                            class="w-5 h-5 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-xs">5</span>
-                        Firma Legal y Términos
-                    </h3>
-                    <!-- Botón volver si hay modo activo y no hay firma guardada -->
-                    <button type="button" x-show="signMode !== null && signMode !== 'done'"
-                        @click="signMode = null; $wire.cancelSignatureSession()"
-                        class="text-[10px] text-gray-500 hover:text-gray-300 flex items-center gap-1 transition cursor-pointer">
-                        ← Cambiar método
-                    </button>
-                </div>
-
-                @if(session()->has('signature_success'))
-                    <div
-                        class="p-4 bg-emerald-950/40 border-l-4 border-emerald-500 rounded-r-xl text-emerald-300 text-xs font-bold animate-fade-in flex items-center gap-2">
-                        ✨ {{ session('signature_success') }}
+                signMode: 'absent',
+                setMode(m) {
+                    this.signMode = m;
+                    if (m === 'counter') {
+                        $nextTick(() => {
+                            if (window.sigPad) window.sigPad.resize();
+                        });
+                    }
+                }
+            }" class="space-y-4">
+                <div class="flex items-center gap-3 pb-3 border-b border-zinc-200 dark:border-zinc-800">
+                    <div class="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-zinc-700 dark:text-zinc-300 shrink-0">
+                        <x-ui.icon name="edit" class="w-4 h-4" />
                     </div>
-                @endif
-
-                <!-- Condiciones Legales -->
-                <div class="bg-gray-900 border border-gray-700 rounded-2xl p-4 shadow-inner">
-                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center justify-between">
-                        <span>Condiciones Legales de Recepción (Editable en configuración)</span>
-                    </p>
-                    <div class="text-xs font-medium text-gray-300 italic leading-relaxed font-sans whitespace-pre-line overflow-y-auto max-h-60 p-3.5 bg-gray-950/70 rounded-xl border border-gray-800 scrollbar-thin scrollbar-thumb-gray-700">
-{{ \App\Models\Setting::find(1)->warranty_text ?? "• GARANTÍA LIMITADA (90 DÍAS): Cobertura de 90 días aplicable únicamente a la falla reparada y repuestos instalados.\n• EXCLUSIONES: Se anula por humedad, golpes, sellos rotos o manipulación de terceros.\n• DATOS: El cliente es responsable de su respaldo de datos.\n• NOTIFICACIONES Y ABANDONO (LEY 19.496): Notificación formal por WhatsApp/Email. Bodegaje a los 30 días y abandono legal a los 90 días." }}
+                    <div>
+                        <h3 class="text-xs font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider">Firma y Aceptación de Condiciones</h3>
+                        <p class="text-[11px] text-zinc-500">Selecciona el canal para la firma y consentimiento del cliente</p>
                     </div>
                 </div>
 
-                <!-- ══════════════════════════════════════════════ -->
-                <!-- MODO: Selección de Método de Firma             -->
-                <!-- ══════════════════════════════════════════════ -->
-                <div class="space-y-3 animate-fade-in">
-                    <p class="text-xs text-gray-400 font-semibold text-center">¿Cómo deseas capturar la firma del cliente?</p>
+                <!-- Selector de Canal de Firma -->
+                <div>
+                    <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-2">Canal de Firma del Cliente</label>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-                        <!-- Opción 1: QR al celular -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <!-- Opción 1: QR -->
                         <button type="button" @click="setMode('qr'); $wire.generateSignatureToken()"
-                            :class="signMode === 'qr' ? 'bg-blue-950/50 border-blue-500 ring-2 ring-blue-500/30' : 'bg-gray-900/60 border-gray-700 hover:border-blue-500/50'"
-                            class="group flex flex-col items-center gap-3 p-4 border rounded-2xl transition-all duration-200 cursor-pointer text-center">
-                            <span
-                                class="w-10 h-10 rounded-2xl bg-blue-500/10 border border-blue-500/20 group-hover:bg-blue-500/20 flex items-center justify-center text-xl transition">📲</span>
+                            :class="signMode === 'qr' ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-100 shadow-xs' : 'bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-750'"
+                            class="flex flex-col items-center gap-2 p-3 border rounded-xl transition cursor-pointer text-center">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center" :class="signMode === 'qr' ? 'bg-white/20 text-white dark:text-zinc-900' : 'bg-zinc-100 dark:bg-zinc-700 text-zinc-500'">
+                                <x-ui.icon name="qr-code" class="w-4 h-4" />
+                            </div>
                             <div>
-                                <div class="text-xs font-black text-white group-hover:text-blue-300 transition">Enviar por QR</div>
-                                <div class="text-[10px] text-gray-500 mt-0.5 leading-relaxed">El cliente firma desde su celular con QR</div>
+                                <div class="text-xs font-semibold">Código QR</div>
+                                <div class="text-[10px] opacity-75 mt-0.5">Desde su smartphone</div>
                             </div>
                         </button>
 
                         <!-- Opción 2: Kiosco / Tablet -->
                         <button type="button" @click="setMode('kiosk'); $wire.toggleKioskMode()"
-                            :class="signMode === 'kiosk' ? 'bg-indigo-950/50 border-indigo-500 ring-2 ring-indigo-500/30' : 'bg-gray-900/60 border-gray-700 hover:border-indigo-500/50'"
-                            class="group flex flex-col items-center gap-3 p-4 border rounded-2xl transition-all duration-200 cursor-pointer text-center">
-                            <span
-                                class="w-10 h-10 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 group-hover:bg-indigo-500/20 flex items-center justify-center text-xl transition">🖥️</span>
+                            :class="signMode === 'kiosk' ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-100 shadow-xs' : 'bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-750'"
+                            class="flex flex-col items-center gap-2 p-3 border rounded-xl transition cursor-pointer text-center">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center" :class="signMode === 'kiosk' ? 'bg-white/20 text-white dark:text-zinc-900' : 'bg-zinc-100 dark:bg-zinc-700 text-zinc-500'">
+                                <x-ui.icon name="tablet" class="w-4 h-4" />
+                            </div>
                             <div>
-                                <div class="text-xs font-black text-white group-hover:text-indigo-300 transition">Tablet / Kiosco</div>
-                                <div class="text-[10px] text-gray-500 mt-0.5 leading-relaxed">Gira la pantalla para firma presencial</div>
+                                <div class="text-xs font-semibold">Tablet / Kiosco</div>
+                                <div class="text-[10px] opacity-75 mt-0.5">Gira la pantalla</div>
                             </div>
                         </button>
 
                         <!-- Opción 3: Firma en mostrador -->
                         <button type="button" @click="setMode('counter')"
-                            :class="signMode === 'counter' ? 'bg-emerald-950/50 border-emerald-500 ring-2 ring-emerald-500/30' : 'bg-gray-900/60 border-gray-700 hover:border-emerald-500/50'"
-                            class="group flex flex-col items-center gap-3 p-4 border rounded-2xl transition-all duration-200 cursor-pointer text-center">
-                            <span
-                                class="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 group-hover:bg-emerald-500/20 flex items-center justify-center text-xl transition">✍️</span>
+                            :class="signMode === 'counter' ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-100 shadow-xs' : 'bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-750'"
+                            class="flex flex-col items-center gap-2 p-3 border rounded-xl transition cursor-pointer text-center">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center" :class="signMode === 'counter' ? 'bg-white/20 text-white dark:text-zinc-900' : 'bg-zinc-100 dark:bg-zinc-700 text-zinc-500'">
+                                <x-ui.icon name="edit-3" class="w-4 h-4" />
+                            </div>
                             <div>
-                                <div class="text-xs font-black text-white group-hover:text-emerald-300 transition">Firmar aquí</div>
-                                <div class="text-[10px] text-gray-500 mt-0.5 leading-relaxed">Firma directamente en esta pantalla</div>
+                                <div class="text-xs font-semibold">Firmar Aquí</div>
+                                <div class="text-[10px] opacity-75 mt-0.5">Firma en pantalla</div>
                             </div>
                         </button>
 
                         <!-- Opción 4: Cliente Ausente (WhatsApp) -->
                         <button type="button" @click="setMode('absent'); $wire.set('terms_accepted', true)"
-                            :class="signMode === 'absent' ? 'bg-amber-950/50 border-amber-500 ring-2 ring-amber-500/30' : 'bg-gray-900/60 border-gray-700 hover:border-amber-500/50'"
-                            class="group flex flex-col items-center gap-3 p-4 border rounded-2xl transition-all duration-200 cursor-pointer text-center">
-                            <span
-                                class="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 group-hover:bg-amber-500/20 flex items-center justify-center text-xl transition">💬</span>
+                            :class="signMode === 'absent' ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-100 shadow-xs' : 'bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-750'"
+                            class="flex flex-col items-center gap-2 p-3 border rounded-xl transition cursor-pointer text-center">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center" :class="signMode === 'absent' ? 'bg-white/20 text-white dark:text-zinc-900' : 'bg-zinc-100 dark:bg-zinc-700 text-zinc-500'">
+                                <x-ui.icon name="message-square" class="w-4 h-4" />
+                            </div>
                             <div>
-                                <div class="text-xs font-black text-white group-hover:text-amber-300 transition">Cliente Ausente</div>
-                                <div class="text-[10px] text-gray-500 mt-0.5 leading-relaxed">Aceptado por WhatsApp o Teléfono</div>
+                                <div class="text-xs font-semibold">Cliente Ausente</div>
+                                <div class="text-[10px] opacity-75 mt-0.5">WhatsApp / Remoto</div>
                             </div>
                         </button>
                     </div>
                 </div>
 
-                <!-- ════════════════════════════════════════════════════ -->
-                <!-- MODO CLIENTE AUSENTE: Aceptación Remota vía WhatsApp -->
-                <!-- ════════════════════════════════════════════════════ -->
+                <!-- MODO CLIENTE AUSENTE -->
                 <div x-show="signMode === 'absent'"
-                    class="bg-amber-950/20 border border-amber-800/40 p-5 rounded-3xl space-y-4 animate-fade-in">
-                    <div class="flex items-center gap-2 text-xs font-bold text-amber-300">
-                        <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
-                        <span>RECEPCIÓN CON CLIENTE AUSENTE (ACEPTACIÓN POR WHATSAPP/REMOTO)</span>
+                    class="bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-800 p-4 rounded-xl space-y-3">
+                    <div class="flex items-center gap-2 text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+                        <x-ui.icon name="check-circle" class="w-4 h-4 text-emerald-500" />
+                        <span>Recepción con Cliente Ausente (Aceptación por WhatsApp / Remoto)</span>
                     </div>
 
-                    <p class="text-xs text-gray-300 leading-relaxed">
-                        Se registrará el ingreso sin firma presencial. Al guardar la orden, el sistema incluirá el enlace de seguimiento web para que el cliente reciba por WhatsApp y lea los <strong>Términos, Condiciones Legales y Garantías</strong> en su teléfono.
+                    <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                        Se registrará el ingreso sin firma presencial. Al guardar la orden, el sistema incluirá el enlace de seguimiento web para que el cliente reciba por WhatsApp los <strong>Términos, Condiciones Legales y Garantías</strong> en su teléfono.
                     </p>
 
-                    <div class="bg-gray-950/60 p-4 rounded-2xl border border-gray-800 space-y-2">
-                        <span class="text-[10px] font-black uppercase text-amber-400 tracking-wider block">Cláusulas informadas y notificadas al cliente:</span>
-                        <ul class="list-disc pl-4 space-y-1 text-xs text-gray-400 font-medium">
+                    <div class="bg-white dark:bg-zinc-900 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 space-y-1.5">
+                        <span class="text-[10px] font-semibold uppercase text-zinc-500 tracking-wider block">Cláusulas informadas al cliente:</span>
+                        <ul class="list-disc pl-4 space-y-1 text-xs text-zinc-600 dark:text-zinc-400">
                             <li>El cliente asume la responsabilidad de respaldar sus datos personales.</li>
                             <li>El taller no responde por accesorios adicionales no declarados en la orden.</li>
                             <li>Equipos apagados o sulfatados por humedad conllevan riesgo progresivo de placa.</li>
@@ -1481,77 +1097,51 @@
                     </div>
                 </div>
 
-                <!-- ═══════════════════════════════════ -->
-                <!-- MODO QR: Panel de espera con QR     -->
-                <!-- ═══════════════════════════════════ -->
+                <!-- MODO QR -->
                 @if($signature_token)
                     <div x-show="signMode === 'qr'"
-                        class="bg-blue-950/20 border border-blue-800/30 p-6 rounded-3xl space-y-4 animate-fade-in text-center">
-                        <div class="flex items-center justify-center gap-2 text-xs font-bold text-blue-300">
-                            <span class="w-2.5 h-2.5 rounded-full bg-blue-500 animate-ping"></span>
-                            <span>ESPERANDO FIRMA DEL CLIENTE DESDE SU MÓVIL...</span>
+                        class="bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl space-y-3 text-center">
+                        <div class="flex items-center justify-center gap-2 text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                            <span>Esperando firma del cliente desde su móvil...</span>
                         </div>
 
                         <div class="py-2">
                             <canvas id="mobile-signature-qr"
-                                x-init="new QRious({ element: $el, value: '{{ route('client.signature', ['token' => $signature_token]) }}', size: 180 })"
-                                class="mx-auto border-4 border-white rounded-2xl bg-white shadow-xl shadow-blue-500/5"></canvas>
+                                x-init="new QRious({ element: $el, value: '{{ route('client.signature', ['token' => $signature_token]) }}', size: 160 })"
+                                class="mx-auto border border-zinc-200 dark:border-zinc-700 rounded-lg bg-white p-2 shadow-xs"></canvas>
                         </div>
 
-                        <div class="text-[10px] text-gray-400 space-y-2">
-                            <p>Indica al cliente que escanee el código QR con la cámara de su celular para leer los términos
-                                y firmar con su dedo.</p>
-                            <div class="flex gap-2 justify-center flex-wrap">
-                                <button type="button"
-                                    onclick="navigator.clipboard.writeText('{{ route('client.signature', ['token' => $signature_token]) }}'); alert('Enlace de firma copiado!');"
-                                    class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-xl text-white font-bold cursor-pointer border border-gray-700">
-                                    📋 Copiar Enlace
-                                </button>
-                                <button type="button" wire:click="cancelSignatureSession" @click="signMode = null"
-                                    class="px-3 py-1.5 bg-red-950/40 hover:bg-red-900/40 rounded-xl text-red-400 font-bold cursor-pointer border border-red-900/20">
-                                    ❌ Cancelar Sesión
-                                </button>
-                            </div>
-                        </div>
+                        <p class="text-xs text-zinc-500">Pídele al cliente que escanee el código con su cámara para firmar en pantalla.</p>
                     </div>
                 @endif
 
-                <!-- ════════════════════════════════════════ -->
-                <!-- MODO MOSTRADOR: Canvas de firma local    -->
-                <!-- ════════════════════════════════════════ -->
-                <div x-show="signMode === 'counter' && !{{ $signature_base64 ? 'true' : 'false' }}"
-                    x-data="signaturePad()" class="space-y-3 animate-fade-in">
-                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest text-center">Firma del
-                        Cliente — Aquí en Mostrador</label>
-                    <div
-                        class="bg-white rounded-2xl border-2 border-dashed border-gray-300 w-full h-48 relative overflow-hidden touch-none shadow-md">
-                        <canvas id="signature-pad" class="w-full h-full rounded-2xl cursor-crosshair"></canvas>
+                <!-- MODO MOSTRADOR (Firma en esta pantalla) -->
+                <div x-show="signMode === 'counter'" class="space-y-3" x-data="signaturePad()">
+                    <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider text-center">Lienzo de Firma en Mostrador</label>
+                    <div class="bg-white rounded-xl border border-zinc-300 dark:border-zinc-700 w-full h-44 relative overflow-hidden touch-none shadow-xs">
+                        <canvas id="signature-pad" class="w-full h-full cursor-crosshair"></canvas>
                         <button type="button" @click="clearPad"
-                            class="absolute bottom-2.5 right-2.5 bg-gray-900 hover:bg-gray-800 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl border border-gray-700 transition cursor-pointer">
+                            class="absolute bottom-2 right-2 bg-zinc-800 hover:bg-zinc-700 text-white text-[10px] font-medium px-2.5 py-1 rounded border border-zinc-600 transition cursor-pointer">
                             Limpiar Firma
                         </button>
                     </div>
-                    <p class="text-[10px] text-gray-500 text-center">Pídele al cliente que dibuje su firma con el dedo o
-                        el mouse dentro del recuadro blanco.</p>
+                    <p class="text-[11px] text-zinc-500 text-center">Dibuja la firma con el dedo o el mouse dentro del recuadro.</p>
                     <button type="button" @click="savePad(); if($wire.get('signature_base64')) { signMode = 'done'; }"
-                        class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl text-xs transition cursor-pointer">
-                        ✅ Confirmar Firma Capturada
+                        class="w-full py-2 bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-white text-white dark:text-zinc-900 font-medium rounded-lg text-xs transition cursor-pointer">
+                        Confirmar Firma Capturada
                     </button>
                 </div>
 
-                <!-- ══════════════════════════════════════════════════ -->
-                <!-- FIRMA CAPTURADA (cualquier modo): Previsualización -->
-                <!-- ══════════════════════════════════════════════════ -->
+                <!-- FIRMA CAPTURADA: Previsualización -->
                 @if($signature_base64)
-                    <div x-data="signaturePad()" x-show="true" class="space-y-3 animate-fade-in">
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest text-center">✅ Firma
-                            Capturada</label>
-                        <div
-                            class="bg-white rounded-2xl border-2 border-emerald-500 w-full h-44 relative flex items-center justify-center overflow-hidden shadow-lg shadow-emerald-500/5">
+                    <div x-data="signaturePad()" x-show="true" class="space-y-2">
+                        <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider text-center">Firma Registrada</label>
+                        <div class="bg-white rounded-xl border border-zinc-200 dark:border-zinc-700 w-full h-40 relative flex items-center justify-center overflow-hidden shadow-xs">
                             <img src="{{ $signature_base64 }}" class="max-h-full object-contain p-4">
                             <button type="button" @click="clearPad(); signMode = null"
                                 wire:click="$set('signature_base64', '')"
-                                class="absolute bottom-2.5 right-2.5 bg-red-500 hover:bg-red-600 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl transition cursor-pointer">
+                                class="absolute bottom-2 right-2 bg-zinc-800 hover:bg-zinc-700 text-white text-[10px] font-medium px-2.5 py-1 rounded transition cursor-pointer">
                                 Limpiar y Firmar de Nuevo
                             </button>
                         </div>
@@ -1562,59 +1152,47 @@
                 <div class="flex items-start py-2">
                     <div class="flex items-center h-5">
                         <input id="terms" type="checkbox" wire:model="terms_accepted"
-                            class="w-5 h-5 border border-gray-600 rounded bg-gray-700 text-blue-500 focus:ring-blue-500 cursor-pointer"
+                            class="w-4 h-4 border border-zinc-300 dark:border-zinc-700 rounded bg-white dark:bg-zinc-900 text-brand-500 focus:ring-brand-500 cursor-pointer"
                             required>
                     </div>
                     <label for="terms"
-                        class="ml-3 text-xs font-semibold text-gray-300 cursor-pointer select-none leading-normal">
-                        El cliente declara haber leído, comprendido y aceptado todas las condiciones y observaciones
-                        descritas en este ingreso y presupuesto.
+                        class="ml-2.5 text-xs text-zinc-600 dark:text-zinc-400 cursor-pointer select-none leading-normal">
+                        El cliente declara haber leído, comprendido y aceptado todas las condiciones y observaciones descritas en este ingreso y presupuesto.
                     </label>
                 </div>
 
                 <button type="submit" @click="savePad"
-                    class="w-full font-black py-4 px-6 rounded-2xl text-base transition duration-200 flex justify-center items-center gap-2 cursor-pointer shadow-xl"
-                    style="background: linear-gradient(135deg, #00C6B6 0%, #0096db 100%); color: #fff; box-shadow: 0 8px 32px rgba(0,198,182,0.25);"
-                    onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
-                    <svg wire:loading wire:target="save" class="animate-spin h-5 w-5 text-white"
+                    class="w-full font-medium py-3 px-6 rounded-lg text-sm transition duration-150 flex justify-center items-center gap-2 cursor-pointer bg-brand-500 hover:bg-brand-600 text-white shadow-xs">
+                    <svg wire:loading wire:target="save" class="animate-spin h-4 w-4 text-white"
                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-                        </circle>
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                        </path>
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    <span>🛠️ CREAR ORDEN DE TRABAJO</span>
+                    <span>Crear Orden de Trabajo</span>
                 </button>
-                @error('signature_base64') <span
-                class="text-red-400 text-xs mt-2 block text-center font-bold">{{ $message }}</span> @enderror
+                @error('signature_base64') <span class="text-red-500 text-xs mt-1 block text-center font-medium">{{ $message }}</span> @enderror
             </div>
-
 
         </form>
     </div>
 
     <!-- MODAL POST-CREACIÓN DE IMPRESIÓN Y QR -->
     @if($show_success_modal)
-        <div
-            class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-sm animate-fade-in">
-            <div
-                class="bg-gray-800 rounded-3xl max-w-md w-full border border-gray-700 shadow-2xl p-6 text-center space-y-6">
+        <div class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-zinc-950/60 backdrop-blur-xs animate-fade-in">
+            <div class="bg-white dark:bg-zinc-900 rounded-xl max-w-md w-full border border-zinc-200 dark:border-zinc-800 shadow-xl p-6 text-center space-y-5">
 
-                <div
-                    class="w-16 h-16 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center mx-auto text-green-400">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5" d="M5 13l4 4L19 7"></path>
-                    </svg>
+                <div class="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto text-emerald-600 dark:text-emerald-400">
+                    <x-ui.icon name="check" class="w-6 h-6" />
                 </div>
 
                 <div>
-                    <h3 class="text-xl font-black text-white">¡Orden de Trabajo Creada!</h3>
-                    <p class="text-xs text-gray-400 mt-1.5">La orden de servicio <strong>#{{ $created_order_id }}</strong>
-                        ha sido ingresada en el sistema. Puedes proceder a imprimir los comprobantes.</p>
+                    <h3 class="text-base font-semibold text-zinc-900 dark:text-zinc-100">¡Orden de Trabajo Creada!</h3>
+                    <p class="text-xs text-zinc-500 mt-1">La orden de servicio <strong>#{{ $created_order_id }}</strong> ha sido ingresada en el sistema. Puedes proceder a imprimir los comprobantes.</p>
                     @if($this->createdOrder && $this->createdOrder->images && $this->createdOrder->images->count() > 0)
-                        <div class="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 bg-blue-950/80 border border-blue-500/30 text-blue-300 text-xs font-bold rounded-xl">
-                            📸 {{ $this->createdOrder->images->count() }} foto(s) de check-in respaldada(s)
+                        <div class="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 text-xs font-medium rounded-md border border-zinc-200 dark:border-zinc-700">
+                            <x-ui.icon name="camera" class="w-3.5 h-3.5 text-zinc-500" />
+                            <span>{{ $this->createdOrder->images->count() }} foto(s) de check-in respaldada(s)</span>
                         </div>
                     @endif
                 </div>
@@ -1626,32 +1204,26 @@
                         $clientNameShort = explode(' ', $this->createdOrder->client?->full_name ?? '')[0];
                         $passText = $this->createdOrder->unlock_password ?: 'Sin Clave';
                     @endphp
-                    <div class="bg-amber-950/60 border border-amber-500/40 p-4 rounded-2xl text-left space-y-2.5 shadow-xl">
+                    <div class="bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 p-3.5 rounded-lg text-left space-y-2">
                         <div class="flex items-center justify-between">
-                            <span class="text-[11px] font-black uppercase text-amber-300 tracking-wider flex items-center gap-1.5">
-                                🏷️ ESCRIBIR EN LA CINTA DEL EQUIPO:
-                            </span>
-                            <span class="text-[10px] bg-amber-500/20 text-amber-300 font-mono px-2.5 py-0.5 rounded-md font-extrabold border border-amber-500/30">
-                                Marcador / Plumón
-                            </span>
+                            <span class="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">Para Cinta Adhesiva en Equipo:</span>
+                            <span class="text-[10px] font-mono font-semibold text-zinc-400">#{{ $this->createdOrder->id }} ({{ $shortUuid }})</span>
                         </div>
-                        
-                        <!-- Etiqueta estilo Cinta Amarilla de Taller (Ultra Alto Contraste) -->
-                        <div class="bg-gradient-to-r from-yellow-300 via-amber-200 to-yellow-300 text-slate-950 p-3.5 rounded-2xl font-mono shadow-md border-2 border-yellow-400 select-all space-y-2 relative overflow-hidden">
-                            <div class="flex items-center justify-between border-b-2 border-dashed border-slate-950/20 pb-2">
-                                <span class="text-xl font-black text-slate-950 tracking-wider drop-shadow-sm font-mono">#{{ $shortUuid }}</span>
-                                <span class="text-xs bg-slate-950 text-yellow-300 font-black px-2.5 py-1 rounded-lg tracking-wide shadow-sm font-sans">{{ $clientNameShort }}</span>
+                        <div class="bg-amber-100 border border-amber-300 p-2.5 rounded text-zinc-900 space-y-1">
+                            <div class="flex items-center justify-between text-xs font-semibold">
+                                <span class="font-bold">OT #{{ $this->createdOrder->id }} • {{ $clientNameShort }}</span>
+                                <span class="font-mono text-[10px] text-zinc-600">{{ now()->format('d/m/y') }}</span>
                             </div>
-                            <div class="flex items-center justify-between text-xs font-black text-slate-950 pt-0.5 font-sans">
-                                <span class="truncate max-w-[210px] font-extrabold flex items-center gap-1">📱 {{ $this->createdOrder->brand_model }}</span>
-                                <span class="shrink-0 bg-slate-950/10 px-2 py-0.5 rounded border border-slate-950/20 font-bold">🔒 {{ $passText }}</span>
+                            <div class="flex items-center justify-between text-xs font-medium pt-0.5">
+                                <span class="truncate max-w-[210px]">{{ $this->createdOrder->brand_model }}</span>
+                                <span class="shrink-0 bg-black/10 px-1.5 py-0.5 rounded text-[10px] font-mono">{{ $passText }}</span>
                             </div>
                         </div>
                     </div>
                 @endif
 
                 <!-- Botones de Acción de Impresión -->
-                <div class="grid grid-cols-1 gap-2.5">
+                <div class="grid grid-cols-1 gap-2">
                     @if($this->created_order)
                         @php
                             $cleanPhone = preg_replace('/[^0-9]/', '', $this->created_order->client?->phone ?? '');
@@ -1660,24 +1232,27 @@
                         @endphp
                         @if($cleanPhone)
                             <a href="https://wa.me/{{ $cleanPhone }}?text={{ urlencode($waMessage) }}" target="_blank"
-                                class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-2xl text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 cursor-pointer">
-                                💬 ENVIAR COMPROBANTE Y TÉRMINOS POR WHATSAPP
+                                class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 px-4 rounded-lg text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-xs">
+                                <x-ui.icon name="message-square" class="w-4 h-4" />
+                                Enviar Comprobante y Términos por WhatsApp
                             </a>
                         @endif
                     @endif
 
                     <button type="button" onclick="window.printContent('receipt-print-template', 'qr-canvas-a4')"
-                        class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-4 rounded-2xl text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg shadow-blue-500/10 cursor-pointer">
-                        📄 IMPRIMIR RECIBO CLIENTE (A4 / CARTA)
+                        class="bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-white text-white dark:text-zinc-900 font-medium py-2.5 px-4 rounded-lg text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-xs">
+                        <x-ui.icon name="printer" class="w-4 h-4" />
+                        Imprimir Recibo Cliente (A4 / Carta)
                     </button>
 
                     <button type="button" onclick="window.printStickerLabel({{ $created_order_id }})"
-                        class="bg-amber-600 hover:bg-amber-500 text-white font-bold py-3.5 px-4 rounded-2xl text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg shadow-amber-500/10 cursor-pointer">
-                        📌 IMPRIMIR ETIQUETA ADHESIVA (STICKER)
+                        class="bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700 font-medium py-2.5 px-4 rounded-lg text-xs flex items-center justify-center gap-2 transition cursor-pointer">
+                        <x-ui.icon name="tag" class="w-4 h-4" />
+                        Imprimir Etiqueta Adhesiva (Sticker)
                     </button>
 
                     <button type="button" wire:click="closeSuccessModal"
-                        class="bg-gray-900 hover:bg-gray-850 text-gray-300 font-bold py-3 px-4 rounded-2xl text-xs cursor-pointer">
+                        class="text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 font-medium py-2 px-4 rounded-lg text-xs cursor-pointer transition">
                         Ir al Panel de Control
                     </button>
                 </div>
@@ -1686,112 +1261,92 @@
 
         <!-- PLANTILLAS DE IMPRESIÓN OCULTAS EN EL DOM -->
         <div style="display: none;">
-
-            <!-- 1. COMPROBANTE DE CLIENTE (A4 / Carta) -->
             @if($this->createdOrder)
                 @include('components.print.work-order-a4', ['templateId' => 'receipt-print-template', 'order' => $this->createdOrder, 'qrCanvasId' => 'qr-canvas-a4'])
-
-                <!-- 2. COMPROBANTE TÉRMICO DE IDENTIFICACIÓN (58mm / 80mm) -->
                 @include('components.print.work-order-thermal', ['templateId' => 'thermal-label-print-template', 'order' => $this->createdOrder, 'qrCanvasId' => 'qr-canvas-thermal'])
             @endif
-
         </div>
     @endif
 
     <!-- MODAL CLIENTE KIOSCO (FIRMA EN PANTALLA) -->
     @if($kiosk_mode)
-        <div class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-gray-950/95 backdrop-blur-md animate-fade-in"
+        <div class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-zinc-950/80 backdrop-blur-xs animate-fade-in"
             x-data="kioskSignaturePad()">
-            <div class="bg-gray-900 border border-gray-800 rounded-3xl max-w-lg w-full p-6 space-y-6 shadow-2xl relative">
+            <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl max-w-lg w-full p-6 space-y-5 shadow-xl relative">
 
                 <div class="text-center">
-                    <div
-                        class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-black uppercase tracking-widest">
-                        🖥️ Modo Kiosco de Firma
+                    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-brand-500/10 border border-brand-500/20 text-brand-600 dark:text-brand-400 text-xs font-medium uppercase tracking-wider">
+                        Modo Kiosco de Firma
                     </div>
-                    <h3 class="text-xl font-black text-white mt-2">Valida e Ingresa tu Firma</h3>
-                    <p class="text-xs text-gray-400">Por favor, revisa tus datos, acepta las condiciones y firma en el
-                        panel.</p>
+                    <h3 class="text-base font-semibold text-zinc-900 dark:text-zinc-100 mt-2">Valida e Ingresa tu Firma</h3>
+                    <p class="text-xs text-zinc-500">Por favor, revisa tus datos, acepta las condiciones y firma en el panel.</p>
                 </div>
 
                 <!-- Resumen Simplificado -->
-                <div class="bg-gray-950/60 rounded-2xl p-4 border border-gray-800 space-y-2.5 text-xs text-gray-300">
-                    <p><strong>Cliente:</strong> <span class="text-white font-bold">{{ $full_name }}</span></p>
-                    <p><strong>Equipo:</strong> <span class="text-white font-bold capitalize">{{ $device_type }} /
-                            {{ $brand_model }}</span></p>
-                    <p><strong>Falla Reportada:</strong> <span class="text-gray-400 italic">{{ $reported_issue }}</span></p>
+                <div class="bg-zinc-50 dark:bg-zinc-950 rounded-lg p-3.5 border border-zinc-200 dark:border-zinc-800 space-y-2 text-xs text-zinc-600 dark:text-zinc-400">
+                    <p><strong class="text-zinc-900 dark:text-zinc-100">Cliente:</strong> {{ $full_name }}</p>
+                    <p><strong class="text-zinc-900 dark:text-zinc-100">Equipo:</strong> {{ ucfirst($device_type) }} / {{ $brand_model }}</p>
+                    <p><strong class="text-zinc-900 dark:text-zinc-100">Falla Reportada:</strong> {{ $reported_issue }}</p>
                     @if($aesthetic_notes)
-                        <p class="text-yellow-400/90 font-medium"><strong>Observaciones Estéticas:</strong>
-                            {{ $aesthetic_notes }}</p>
+                        <p><strong class="text-zinc-900 dark:text-zinc-100">Observaciones Estéticas:</strong> {{ $aesthetic_notes }}</p>
                     @endif
                     @if($budget_type === 'pending')
-                        <p class="text-blue-400"><strong>Presupuesto:</strong> Sujeto a Diagnóstico Técnico</p>
+                        <p class="text-brand-600 dark:text-brand-400 font-medium">Presupuesto: Sujeto a Diagnóstico Técnico</p>
                     @else
-                        <p><strong>Total Estimado:</strong> <span
-                                class="text-emerald-400 font-bold">${{ number_format($this->total, 0, ',', '.') }}</span></p>
+                        <p><strong class="text-zinc-900 dark:text-zinc-100">Total Estimado:</strong> <span class="font-mono font-semibold text-zinc-900 dark:text-zinc-100">${{ number_format($this->total, 0, ',', '.') }}</span></p>
                     @endif
                 </div>
 
                 <!-- Condiciones Legales -->
-                <div class="space-y-1.5">
-                    <span class="text-[10px] font-black text-gray-500 uppercase tracking-wider">Condiciones Legales de
-                        Recepción</span>
-                    <div
-                        class="bg-gray-950 rounded-2xl p-3.5 border border-gray-800 max-h-48 overflow-y-auto text-xs text-gray-300 italic font-sans leading-relaxed whitespace-pre-line scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent">
-{{ \App\Models\Setting::find(1)->warranty_text ?? "• GARANTÍA LIMITADA (90 DÍAS): Cobertura de 90 días aplicable únicamente a la falla reparada y repuestos instalados.\n• EXCLUSIONES: Se anula por humedad, golpes, sellos rotos o manipulación de terceros.\n• DATOS: El cliente es responsable de su respaldo de datos.\n• NOTIFICACIONES Y ABANDONO (LEY 19.496): Notificación formal por WhatsApp/Email. Bodegaje a los 30 días y abandono legal a los 90 días." }}
+                <div class="space-y-1">
+                    <span class="text-[10px] font-medium text-zinc-500 uppercase tracking-wider">Condiciones Legales de Recepción</span>
+                    <div class="bg-zinc-50 dark:bg-zinc-950 rounded-lg p-3 border border-zinc-200 dark:border-zinc-800 max-h-40 overflow-y-auto text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed whitespace-pre-line">
+{{ \App\Models\Setting::find(1)->warranty_text ?? "• GARANTÍA LIMITADA (90 DÍAS): Cobertura de 90 días aplicable únicamente a la falla reparada y repuestos instalados.
+• EXCLUSIONES: Se anula por humedad, golpes, sellos rotos o manipulación de terceros.
+• DATOS: El cliente es responsable de su respaldo de datos.
+• NOTIFICACIONES Y ABANDONO (LEY 19.496): Notificación formal por WhatsApp/Email. Bodegaje a los 30 días y abandono legal a los 90 días." }}
                     </div>
                 </div>
 
                 <!-- Lienzo Kiosco -->
-                <div class="space-y-4">
+                <div class="space-y-3">
                     <div class="flex items-start">
                         <div class="flex items-center h-5">
                             <input id="kiosk-terms" type="checkbox" wire:model="terms_accepted"
-                                class="w-5 h-5 border border-gray-700 rounded bg-gray-950 text-blue-500 focus:ring-blue-500 cursor-pointer"
+                                class="w-4 h-4 border border-zinc-300 dark:border-zinc-700 rounded bg-white dark:bg-zinc-900 text-brand-500 focus:ring-brand-500 cursor-pointer"
                                 required>
                         </div>
                         <label for="kiosk-terms"
-                            class="ml-3 text-xs font-semibold text-gray-300 cursor-pointer select-none leading-normal">
-                            Acepto todas las condiciones y observaciones de recepción del equipo descritas anteriormente.
+                            class="ml-2.5 text-xs text-zinc-600 dark:text-zinc-400 cursor-pointer select-none leading-normal">
+                            Acepto las condiciones legales y observaciones aquí declaradas.
                         </label>
                     </div>
 
-                    <div class="space-y-1.5">
-                        <label
-                            class="block text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Firma
-                            Digital del Cliente</label>
-                        <div
-                            class="bg-white rounded-2xl border-2 border-dashed border-gray-300 w-full h-44 relative overflow-hidden touch-none shadow-inner">
-                            <canvas id="kiosk-sig-pad" class="w-full h-full rounded-2xl cursor-crosshair"></canvas>
-                            <button type="button" @click="clearKioskPad"
-                                class="absolute bottom-2.5 right-2.5 bg-gray-900 hover:bg-gray-850 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl border border-gray-750 transition cursor-pointer">
-                                Limpiar Firma
-                            </button>
-                        </div>
+                    <div class="bg-white rounded-lg border border-zinc-300 dark:border-zinc-700 w-full h-44 relative overflow-hidden touch-none shadow-xs">
+                        <canvas id="kiosk-signature-pad" class="w-full h-full cursor-crosshair"></canvas>
+                        <button type="button" @click="clearKioskPad"
+                            class="absolute bottom-2 right-2 bg-zinc-800 hover:bg-zinc-700 text-white text-[10px] font-medium px-2.5 py-1 rounded transition cursor-pointer">
+                            Limpiar
+                        </button>
                     </div>
-                </div>
 
-                <!-- Botones -->
-                <div class="grid grid-cols-2 gap-3.5 pt-2">
-                    <button type="button" wire:click="toggleKioskMode"
-                        class="bg-gray-800 hover:bg-gray-750 text-gray-300 font-bold py-3.5 px-4 rounded-2xl text-xs transition cursor-pointer border border-gray-750">
-                        ❌ CANCELAR Y SALIR
-                    </button>
-                    <button type="button" @click="saveKioskPad"
-                        class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-4 rounded-2xl text-xs tracking-wide transition shadow-lg shadow-blue-500/10 cursor-pointer">
-                        💾 GUARDAR Y ACEPTAR
-                    </button>
+                    <div class="flex gap-2">
+                        <button type="button" wire:click="toggleKioskMode"
+                            class="w-1/3 py-2 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 font-medium rounded-lg text-xs transition cursor-pointer">
+                            Salir
+                        </button>
+                        <button type="button" @click="saveKioskPad"
+                            class="w-2/3 py-2 bg-brand-500 hover:bg-brand-600 text-white font-medium rounded-lg text-xs transition cursor-pointer">
+                            Confirmar y Cerrar
+                        </button>
+                    </div>
                 </div>
 
             </div>
         </div>
     @endif
-
 </div>
 
-<!-- DEPENDENCIAS DE FIRMA Y QR -->
-<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('signaturePad', () => ({

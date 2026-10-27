@@ -1,31 +1,34 @@
-<div class="px-2">
+<div class="space-y-6 pb-16 md:pb-6">
     <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h2 class="text-2xl font-black text-white tracking-tight flex items-center gap-3">
-                <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <h1 class="text-xl sm:text-2xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight flex items-center gap-2.5">
+                <span class="p-2 rounded-lg bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-900/50">
+                    <x-ui.icon name="shopping-bag" class="w-5 h-5" />
+                </span>
                 Compras y Gastos
-            </h2>
-            <p class="text-sm text-gray-400 mt-1 font-medium">Registra compras de inventario (repuestos) y gastos generales.</p>
+            </h1>
+            <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1">Registra compras de inventario (repuestos) y gastos generales.</p>
         </div>
         
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 self-start sm:self-auto">
             @if(!$showForm)
-            <div class="flex items-center gap-3 bg-gray-800/80 p-1.5 rounded-xl border border-gray-700/50">
-                <select wire:model.live="currentMonth" class="bg-gray-900 border-none text-white text-sm font-semibold rounded-lg focus:ring-emerald-500 block py-2 px-3">
+            <div class="flex items-center gap-2 bg-white dark:bg-zinc-900 p-1 rounded-lg border border-zinc-200 dark:border-zinc-800 shadow-xs">
+                <select wire:model.live="currentMonth" class="bg-transparent text-zinc-800 dark:text-zinc-200 text-xs font-medium rounded-md border-0 py-1.5 pl-2.5 pr-7 focus:ring-1 focus:ring-orange-500">
                     @for($m=1; $m<=12; $m++)
-                        <option value="{{ $m }}">{{ \Carbon\Carbon::create(2000, $m, 1)->locale('es')->monthName }}</option>
+                        <option value="{{ $m }}">{{ ucfirst(\Carbon\Carbon::create(2000, $m, 1)->locale('es')->monthName) }}</option>
                     @endfor
                 </select>
-                <select wire:model.live="currentYear" class="bg-gray-900 border-none text-white text-sm font-semibold rounded-lg focus:ring-emerald-500 block py-2 px-3">
+                <div class="w-px h-4 bg-zinc-200 dark:bg-zinc-700"></div>
+                <select wire:model.live="currentYear" class="bg-transparent text-zinc-800 dark:text-zinc-200 text-xs font-medium rounded-md border-0 py-1.5 pl-2.5 pr-7 focus:ring-1 focus:ring-orange-500">
                     @for($y=date('Y'); $y>=date('Y')-2; $y--)
                         <option value="{{ $y }}">{{ $y }}</option>
                     @endfor
                 </select>
             </div>
             
-            <button wire:click="createExpense" class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white text-sm font-bold rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all hover:-translate-y-0.5">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            <button wire:click="createExpense" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow-xs transition duration-150 cursor-pointer">
+                <x-ui.icon name="plus" class="w-4 h-4" />
                 Registrar Compra/Gasto
             </button>
             @endif
@@ -33,73 +36,74 @@
     </div>
 
     @if(session()->has('error'))
-        <div class="mb-4 bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl">
-            {{ session('error') }}
+        <div class="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/60 rounded-lg p-3.5 flex items-center gap-3">
+            <x-ui.icon name="alert-triangle" class="w-5 h-5 text-red-600 dark:text-red-400 shrink-0" />
+            <span class="text-red-800 dark:text-red-300 text-xs font-medium">{{ session('error') }}</span>
         </div>
     @endif
 
     @if($showForm)
-        <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-lg shadow-black/20 mb-8 max-w-5xl mx-auto">
-            <h3 class="text-lg font-black text-white tracking-tight mb-6 flex items-center gap-2">
-                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-xs max-w-5xl mx-auto">
+            <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100 tracking-tight mb-4 flex items-center gap-2">
+                <x-ui.icon name="file-text" class="w-4 h-4 text-orange-500" />
                 {{ $expenseId ? 'Editar Documento' : 'Nuevo Documento' }}
             </h3>
             
-            <form wire:submit.prevent="saveExpense">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <form wire:submit.prevent="saveExpense" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
                     <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Fecha</label>
-                        <input type="date" wire:model="date" class="w-full bg-gray-900 border border-gray-700 text-white text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block p-3 transition">
-                        @error('date') <span class="text-xs text-red-400 mt-1 block">{{ $message }}</span> @enderror
+                        <label class="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Fecha</label>
+                        <input type="date" wire:model="date" class="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700/80 text-zinc-900 dark:text-zinc-100 text-xs rounded-lg focus:ring-1 focus:ring-orange-500 focus:border-orange-500 block p-2 transition">
+                        @error('date') <span class="text-xs text-red-600 dark:text-red-400 mt-1 block">{{ $message }}</span> @enderror
                     </div>
                     
                     <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Tipo de Documento</label>
-                        <select wire:model.live="document_type" class="w-full bg-gray-900 border border-gray-700 text-white text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block p-3 transition">
+                        <label class="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Tipo de Documento</label>
+                        <select wire:model.live="document_type" class="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700/80 text-zinc-900 dark:text-zinc-100 text-xs rounded-lg focus:ring-1 focus:ring-orange-500 focus:border-orange-500 block p-2 transition">
                             <option value="factura">Factura de Compra</option>
                             <option value="boleta">Boleta</option>
                             <option value="recibo">Recibo / Vale</option>
                             <option value="otro">Otro</option>
                         </select>
-                        @error('document_type') <span class="text-xs text-red-400 mt-1 block">{{ $message }}</span> @enderror
+                        @error('document_type') <span class="text-xs text-red-600 dark:text-red-400 mt-1 block">{{ $message }}</span> @enderror
                     </div>
                     
                     <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">N° Documento / Folio</label>
-                        <input type="text" wire:model="document_number" class="w-full bg-gray-900 border border-gray-700 text-white text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block p-3 transition" placeholder="Ej: 1542">
+                        <label class="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">N° Documento / Folio</label>
+                        <input type="text" wire:model="document_number" class="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700/80 text-zinc-900 dark:text-zinc-100 text-xs rounded-lg focus:ring-1 focus:ring-orange-500 focus:border-orange-500 block p-2 transition" placeholder="Ej: 1542">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                     <div class="relative">
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Proveedor</label>
+                        <label class="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Proveedor</label>
                         @if($supplier_id)
-                            <div class="flex items-center justify-between w-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm rounded-xl p-3">
-                                <div class="font-bold flex items-center gap-2">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <div class="flex items-center justify-between w-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-700 dark:text-emerald-400 text-xs rounded-lg p-2.5">
+                                <div class="font-medium flex items-center gap-1.5">
+                                    <x-ui.icon name="check" class="w-4 h-4" />
                                     {{ $supplier_name }}
                                 </div>
-                                <button type="button" wire:click="clearSupplier" class="text-emerald-500 hover:text-white transition-colors p-1 bg-emerald-500/20 rounded-lg">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                <button type="button" wire:click="clearSupplier" class="text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-200 p-0.5">
+                                    <x-ui.icon name="x" class="w-4 h-4" />
                                 </button>
                             </div>
                         @else
                             <div class="relative">
-                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                                </div>
-                                <input type="text" wire:model.live.debounce.300ms="searchSupplier" class="w-full bg-gray-900 border border-gray-700 text-white text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block pl-10 p-3 transition" placeholder="Buscar proveedor por nombre o RUT...">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-zinc-400">
+                                    <x-ui.icon name="search" class="w-4 h-4" />
+                                </span>
+                                <input type="text" wire:model.live.debounce.300ms="searchSupplier" class="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700/80 text-zinc-900 dark:text-zinc-100 text-xs rounded-lg focus:ring-1 focus:ring-orange-500 focus:border-orange-500 block pl-9 p-2 transition" placeholder="Buscar proveedor por nombre o RUT...">
                             </div>
                             
                             @if(count($foundSuppliers) > 0)
-                                <div class="absolute z-50 w-full mt-1 bg-gray-800 border border-gray-700 rounded-xl shadow-xl overflow-hidden">
-                                    <ul class="max-h-60 overflow-y-auto theme-scrollbar">
+                                <div class="absolute z-50 w-full mt-1 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-lg overflow-hidden">
+                                    <ul class="max-h-60 overflow-y-auto">
                                         @foreach($foundSuppliers as $supplier)
                                             <li>
-                                                <button type="button" wire:click="selectSupplier({{ $supplier->id }})" class="w-full text-left px-4 py-3 hover:bg-gray-700 focus:bg-gray-700 focus:outline-none transition-colors border-b border-gray-700/50 last:border-0">
-                                                    <div class="text-sm font-bold text-white">{{ $supplier->name }}</div>
+                                                <button type="button" wire:click="selectSupplier({{ $supplier->id }})" class="w-full text-left px-3 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-700/60 focus:outline-none transition-colors border-b border-zinc-100 dark:border-zinc-700/50 last:border-0">
+                                                    <div class="text-xs font-semibold text-zinc-800 dark:text-zinc-200">{{ $supplier->name }}</div>
                                                     @if($supplier->rut)
-                                                        <div class="text-[10px] text-gray-400">{{ $supplier->rut }}</div>
+                                                        <div class="text-[10px] text-zinc-400 font-mono">{{ $supplier->rut }}</div>
                                                     @endif
                                                 </button>
                                             </li>
@@ -111,8 +115,8 @@
                     </div>
                     
                     <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Categoría Principal</label>
-                        <select wire:model="category" class="w-full bg-gray-900 border border-gray-700 text-white text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block p-3 transition">
+                        <label class="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Categoría Principal</label>
+                        <select wire:model="category" class="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700/80 text-zinc-900 dark:text-zinc-100 text-xs rounded-lg focus:ring-1 focus:ring-orange-500 focus:border-orange-500 block p-2 transition">
                             <option value="Inventario/Repuestos">Inventario / Repuestos</option>
                             <option value="General">General</option>
                             <option value="Arriendo">Arriendo</option>
@@ -120,41 +124,41 @@
                             <option value="Sueldos">Sueldos</option>
                             <option value="Marketing">Marketing / Publicidad</option>
                         </select>
-                        @error('category') <span class="text-xs text-red-400 mt-1 block">{{ $message }}</span> @enderror
+                        @error('category') <span class="text-xs text-red-600 dark:text-red-400 mt-1 block">{{ $message }}</span> @enderror
                     </div>
                 </div>
 
-                <div class="mb-6">
-                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Descripción General (Opcional)</label>
-                    <input type="text" wire:model="description" class="w-full bg-gray-900 border border-gray-700 text-white text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block p-3 transition" placeholder="Ej: Compra de mercadería del mes">
+                <div>
+                    <label class="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Descripción General (Opcional)</label>
+                    <input type="text" wire:model="description" class="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700/80 text-zinc-900 dark:text-zinc-100 text-xs rounded-lg focus:ring-1 focus:ring-orange-500 focus:border-orange-500 block p-2 transition" placeholder="Ej: Compra de mercadería del mes">
                 </div>
 
                 <!-- Detalles de Productos (Inventario) -->
-                <div class="bg-gray-900 p-4 rounded-xl border border-gray-700 mb-6">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                <div class="bg-zinc-50/60 dark:bg-zinc-850/60 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3">
                         <div>
-                            <h4 class="text-sm font-black text-white">Detalle de Productos (Inventario)</h4>
-                            <p class="text-xs text-gray-400">Si agregas productos, el stock se actualizará automáticamente y los montos totales se calcularán en base a estos productos.</p>
+                            <h4 class="text-xs font-bold text-zinc-800 dark:text-zinc-200">Detalle de Productos (Inventario)</h4>
+                            <p class="text-[11px] text-zinc-400 dark:text-zinc-500">Si agregas productos, el stock se actualizará automáticamente y los montos totales se calcularán de ellos.</p>
                         </div>
                         
                         <!-- Buscador -->
                         <div class="relative w-full md:w-64">
-                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                            </div>
-                            <input type="text" wire:model.live.debounce.300ms="searchProduct" class="w-full bg-gray-800 border border-gray-700 text-white text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block pl-10 p-2.5 transition" placeholder="Buscar repuesto para comprar...">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-2.5 pointer-events-none text-zinc-400">
+                                <x-ui.icon name="search" class="w-3.5 h-3.5" />
+                            </span>
+                            <input type="text" wire:model.live.debounce.300ms="searchProduct" class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 text-xs rounded-lg focus:ring-1 focus:ring-orange-500 focus:border-orange-500 block pl-8 py-1.5 pr-2 transition" placeholder="Buscar repuesto para comprar...">
                             
                             @if(count($foundProducts) > 0)
-                                <div class="absolute z-50 w-full mt-1 bg-gray-800 border border-gray-700 rounded-xl shadow-xl overflow-hidden">
-                                    <ul class="max-h-60 overflow-y-auto theme-scrollbar">
+                                <div class="absolute z-50 w-full mt-1 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-lg overflow-hidden">
+                                    <ul class="max-h-60 overflow-y-auto">
                                         @foreach($foundProducts as $product)
                                             <li>
-                                                <button type="button" wire:click="addProductToCart({{ $product->id }})" class="w-full text-left px-4 py-3 hover:bg-gray-700 focus:bg-gray-700 focus:outline-none transition-colors border-b border-gray-700/50 last:border-0 flex justify-between items-center group">
+                                                <button type="button" wire:click="addProductToCart({{ $product->id }})" class="w-full text-left px-3 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-700/60 focus:outline-none transition-colors border-b border-zinc-100 dark:border-zinc-700/50 last:border-0 flex justify-between items-center group">
                                                     <div>
-                                                        <div class="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors">{{ $product->name }}</div>
-                                                        <div class="text-xs text-gray-500">Stock: <span class="{{ $product->stock <= $product->min_stock ? 'text-red-400' : 'text-emerald-400' }}">{{ $product->stock }}</span></div>
+                                                        <div class="text-xs font-semibold text-zinc-800 dark:text-zinc-200 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">{{ $product->name }}</div>
+                                                        <div class="text-[10px] text-zinc-400">Stock: <span class="{{ $product->stock <= $product->min_stock ? 'text-red-500' : 'text-emerald-500' }}">{{ $product->stock }}</span></div>
                                                     </div>
-                                                    <svg class="w-4 h-4 text-gray-500 group-hover:text-emerald-400 opacity-0 group-hover:opacity-100 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                                    <x-ui.icon name="plus" class="w-3.5 h-3.5 text-zinc-400 group-hover:text-orange-500" />
                                                 </button>
                                             </li>
                                         @endforeach
@@ -165,38 +169,38 @@
                     </div>
 
                     @if(count($cart) > 0)
-                        <div class="overflow-x-auto theme-scrollbar mb-4">
-                            <table class="w-full text-left text-sm text-gray-300">
-                                <thead class="bg-gray-800/50 border-b border-gray-700 text-[10px] uppercase text-gray-500 tracking-wider">
-                                    <tr>
-                                        <th class="px-4 py-3 font-black w-1/3">Producto</th>
-                                        <th class="px-4 py-3 font-black text-center w-24">Cant.</th>
-                                        <th class="px-4 py-3 font-black text-right w-32">Costo Unitario (Neto)</th>
-                                        <th class="px-4 py-3 font-black text-right w-32">Subtotal (Neto)</th>
-                                        <th class="px-4 py-3 font-black text-center w-12"></th>
+                        <div class="overflow-x-auto mb-3">
+                            <table class="w-full text-left text-xs whitespace-nowrap">
+                                <thead>
+                                    <tr class="bg-zinc-100/80 dark:bg-zinc-800/80 border-b border-zinc-200 dark:border-zinc-700 text-[10px] uppercase text-zinc-500 dark:text-zinc-400 font-semibold tracking-wider">
+                                        <th class="px-3 py-2 w-1/3">Producto</th>
+                                        <th class="px-3 py-2 text-center w-24">Cant.</th>
+                                        <th class="px-3 py-2 text-right w-32">Costo Unitario (Neto)</th>
+                                        <th class="px-3 py-2 text-right w-32">Subtotal (Neto)</th>
+                                        <th class="px-3 py-2 text-center w-12"></th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-700/50">
+                                <tbody class="divide-y divide-zinc-200/60 dark:divide-zinc-700/60">
                                     @foreach($cart as $index => $item)
-                                        <tr class="hover:bg-gray-800/50 transition-colors">
-                                            <td class="px-4 py-2 font-medium text-white">
+                                        <tr class="hover:bg-zinc-100/50 dark:hover:bg-zinc-800/50 transition-colors">
+                                            <td class="px-3 py-1.5 font-medium text-zinc-800 dark:text-zinc-200">
                                                 {{ $item['name'] }}
                                             </td>
-                                            <td class="px-4 py-2">
-                                                <input type="number" wire:model.live.debounce.500ms="cart.{{ $index }}.quantity" wire:change="updateCartItem({{ $index }}, 'quantity', $event.target.value)" class="w-full bg-gray-800 border border-gray-700 text-white text-sm text-center rounded-lg p-1.5 focus:ring-emerald-500 focus:border-emerald-500" min="1">
+                                            <td class="px-3 py-1.5">
+                                                <input type="number" wire:model.live.debounce.500ms="cart.{{ $index }}.quantity" wire:change="updateCartItem({{ $index }}, 'quantity', $event.target.value)" class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200 text-xs text-center rounded p-1 focus:ring-1 focus:ring-orange-500 focus:border-orange-500" min="1">
                                             </td>
-                                            <td class="px-4 py-2">
+                                            <td class="px-3 py-1.5">
                                                 <div class="relative">
-                                                    <span class="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-500">$</span>
-                                                    <input type="number" wire:model.live.debounce.500ms="cart.{{ $index }}.unit_cost" wire:change="updateCartItem({{ $index }}, 'unit_cost', $event.target.value)" class="w-full bg-gray-800 border border-gray-700 text-white text-sm text-right rounded-lg pl-6 p-1.5 focus:ring-emerald-500 focus:border-emerald-500" min="0">
+                                                    <span class="absolute inset-y-0 left-0 flex items-center pl-2 text-zinc-400 text-xs">$</span>
+                                                    <input type="number" wire:model.live.debounce.500ms="cart.{{ $index }}.unit_cost" wire:change="updateCartItem({{ $index }}, 'unit_cost', $event.target.value)" class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200 text-xs text-right rounded pl-5 p-1 focus:ring-1 focus:ring-orange-500 focus:border-orange-500" min="0">
                                                 </div>
                                             </td>
-                                            <td class="px-4 py-2 text-right font-bold text-white">
+                                            <td class="px-3 py-1.5 text-right font-semibold text-zinc-900 dark:text-zinc-100">
                                                 ${{ number_format($item['subtotal'], 0, ',', '.') }}
                                             </td>
-                                            <td class="px-4 py-2 text-center">
-                                                <button type="button" wire:click="removeProductFromCart({{ $index }})" class="p-1.5 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                            <td class="px-3 py-1.5 text-center">
+                                                <button type="button" wire:click="removeProductFromCart({{ $index }})" class="p-1 text-zinc-400 hover:text-red-500 rounded transition-colors">
+                                                    <x-ui.icon name="x" class="w-3.5 h-3.5" />
                                                 </button>
                                             </td>
                                         </tr>
@@ -204,66 +208,64 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="flex items-center gap-2 px-2 pb-2">
-                            <label class="inline-flex items-center cursor-pointer">
-                                <input type="checkbox" wire:model="updateCostPrice" class="sr-only peer">
-                                <div class="relative w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
-                                <span class="ms-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Actualizar Precio de Costo en Inventario</span>
+                        <div class="flex items-center gap-2 pt-1">
+                            <label class="inline-flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" wire:model="updateCostPrice" class="rounded border-zinc-300 dark:border-zinc-700 text-orange-500 focus:ring-orange-500">
+                                <span class="text-xs text-zinc-600 dark:text-zinc-400 font-medium">Actualizar Precio de Costo en Inventario</span>
                             </label>
                         </div>
                     @else
-                        <div class="text-center py-6 border-2 border-dashed border-gray-700 rounded-xl">
-                            <svg class="w-8 h-8 text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-                            <p class="text-xs text-gray-500 font-medium">No hay productos en esta compra.</p>
-                            <p class="text-[10px] text-gray-600">Busca repuestos arriba o ingresa solo los montos totales si es un gasto genérico.</p>
+                        <div class="text-center py-5 border border-dashed border-zinc-200 dark:border-zinc-700 rounded-lg">
+                            <x-ui.icon name="package" class="w-6 h-6 text-zinc-300 dark:text-zinc-600 mx-auto mb-1.5" />
+                            <p class="text-xs text-zinc-500 dark:text-zinc-400 font-medium">No hay productos en esta compra.</p>
+                            <p class="text-[10px] text-zinc-400 dark:text-zinc-500">Busca repuestos arriba o ingresa solo los montos totales si es un gasto genérico.</p>
                         </div>
                     @endif
                 </div>
 
                 <!-- Montos -->
-                <div class="bg-gray-900/50 p-4 rounded-xl border border-gray-700 mb-6">
-                    <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4">Totales del Documento</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-zinc-50/60 dark:bg-zinc-850/60 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                    <h4 class="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-3">Totales del Documento</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                         <div>
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Monto Total *</label>
+                            <label class="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1">Monto Total *</label>
                             <div class="relative">
-                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">$</span>
-                                <input type="number" wire:model.live.debounce.500ms="total_amount" class="w-full bg-gray-800 border border-gray-700 text-white text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block pl-8 p-3 transition font-bold text-emerald-400" {{ count($cart) > 0 ? 'readonly' : '' }} placeholder="0">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-zinc-400 font-semibold text-xs">$</span>
+                                <input type="number" wire:model.live.debounce.500ms="total_amount" class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 text-xs font-bold rounded-lg pl-7 p-2 focus:ring-1 focus:ring-orange-500 focus:border-orange-500 transition" {{ count($cart) > 0 ? 'readonly' : '' }} placeholder="0">
                             </div>
-                            @error('total_amount') <span class="text-xs text-red-400 mt-1 block">{{ $message }}</span> @enderror
+                            @error('total_amount') <span class="text-xs text-red-600 dark:text-red-400 mt-1 block">{{ $message }}</span> @enderror
                         </div>
                         
                         <div>
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Monto Neto</label>
+                            <label class="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1">Monto Neto</label>
                             <div class="relative">
-                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">$</span>
-                                <input type="number" wire:model="net_amount" class="w-full bg-gray-800 border border-gray-700 text-gray-400 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block pl-8 p-3 transition" {{ count($cart) > 0 || $autoCalculateTax ? 'readonly' : '' }}>
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-zinc-400 font-semibold text-xs">$</span>
+                                <input type="number" wire:model="net_amount" class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 text-xs rounded-lg pl-7 p-2 focus:ring-1 focus:ring-orange-500 focus:border-orange-500 transition" {{ count($cart) > 0 || $autoCalculateTax ? 'readonly' : '' }}>
                             </div>
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">IVA</label>
+                            <label class="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1">IVA</label>
                             <div class="relative">
-                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">$</span>
-                                <input type="number" wire:model="tax_amount" class="w-full bg-gray-800 border border-gray-700 text-gray-400 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block pl-8 p-3 transition" {{ count($cart) > 0 || $autoCalculateTax ? 'readonly' : '' }}>
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-zinc-400 font-semibold text-xs">$</span>
+                                <input type="number" wire:model="tax_amount" class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 text-xs rounded-lg pl-7 p-2 focus:ring-1 focus:ring-orange-500 focus:border-orange-500 transition" {{ count($cart) > 0 || $autoCalculateTax ? 'readonly' : '' }}>
                             </div>
                         </div>
                     </div>
                     @if($document_type === 'factura' && count($cart) == 0)
-                        <div class="mt-3 flex items-center">
-                            <label class="inline-flex items-center cursor-pointer">
-                                <input type="checkbox" wire:model.live="autoCalculateTax" class="sr-only peer">
-                                <div class="relative w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
-                                <span class="ms-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Calcular Neto e IVA automáticamente desde el Total</span>
+                        <div class="mt-2.5 flex items-center">
+                            <label class="inline-flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" wire:model.live="autoCalculateTax" class="rounded border-zinc-300 dark:border-zinc-700 text-orange-500 focus:ring-orange-500">
+                                <span class="text-xs text-zinc-600 dark:text-zinc-400 font-medium">Calcular Neto e IVA automáticamente desde el Total</span>
                             </label>
                         </div>
                     @endif
                 </div>
 
-                <div class="flex justify-end gap-3 pt-4 border-t border-gray-700/50">
-                    <button type="button" wire:click="cancel" class="px-5 py-2.5 text-sm font-bold text-gray-300 bg-gray-800 hover:bg-gray-700 rounded-xl transition-all">Cancelar</button>
-                    <button type="submit" class="px-5 py-2.5 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl transition-all shadow-lg shadow-emerald-500/20 flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <div class="flex justify-end gap-2.5 pt-2">
+                    <button type="button" wire:click="cancel" class="px-4 py-2 text-xs font-semibold text-zinc-700 dark:text-zinc-300 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 rounded-lg transition cursor-pointer">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition shadow-xs flex items-center gap-1.5 cursor-pointer">
+                        <x-ui.icon name="check" class="w-4 h-4" />
                         Guardar Documento
                     </button>
                 </div>
@@ -271,90 +273,93 @@
         </div>
     @else
         <!-- Table -->
-        <div class="bg-gray-800 border border-gray-700 rounded-2xl overflow-hidden shadow-lg shadow-black/20">
-            <div class="overflow-x-auto theme-scrollbar">
-                <table class="w-full text-left text-sm text-gray-300">
-                    <thead class="bg-gray-900/50 border-b border-gray-700 text-[10px] uppercase text-gray-500 tracking-wider">
-                        <tr>
-                            <th class="px-6 py-4 font-black">Fecha</th>
-                            <th class="px-6 py-4 font-black">Documento</th>
-                            <th class="px-6 py-4 font-black">Proveedor</th>
-                            <th class="px-6 py-4 font-black">Ítems</th>
-                            <th class="px-6 py-4 font-black">Categoría</th>
-                            <th class="px-6 py-4 font-black text-right">Total</th>
-                            <th class="px-6 py-4 font-black text-right">Acciones</th>
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden shadow-xs">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs whitespace-nowrap">
+                    <thead>
+                        <tr class="bg-zinc-50/80 dark:bg-zinc-850/60 border-b border-zinc-200 dark:border-zinc-800 text-[10px] uppercase text-zinc-500 dark:text-zinc-400 font-semibold tracking-wider">
+                            <th class="px-4 py-3">Fecha</th>
+                            <th class="px-4 py-3">Documento</th>
+                            <th class="px-4 py-3">Proveedor</th>
+                            <th class="px-4 py-3">Ítems</th>
+                            <th class="px-4 py-3">Categoría</th>
+                            <th class="px-4 py-3 text-right">Total</th>
+                            <th class="px-4 py-3 text-right">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-700/50">
+                    <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800/60">
                         @forelse($expenses as $expense)
-                            <tr class="hover:bg-gray-700/30 transition-colors">
-                                <td class="px-6 py-4 font-semibold text-white whitespace-nowrap">{{ $expense->date->format('d/m/Y') }}</td>
-                                <td class="px-6 py-4">
-                                    <div class="flex flex-col">
-                                        <span class="px-2 py-0.5 text-[10px] font-bold rounded-lg border w-max mb-1
-                                            {{ $expense->document_type === 'factura' ? 'bg-orange-500/10 text-orange-400 border-orange-500/20' : 
-                                              ($expense->document_type === 'boleta' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-gray-700 text-gray-300 border-gray-600') }}">
+                            <tr class="hover:bg-zinc-50/70 dark:hover:bg-zinc-800/40 transition-colors">
+                                <td class="px-4 py-3 font-mono text-zinc-500 dark:text-zinc-400 text-xs">{{ $expense->date->format('d/m/Y') }}</td>
+                                <td class="px-4 py-3">
+                                    <div class="flex flex-col gap-0.5">
+                                        @php
+                                            $badgeVariant = match($expense->document_type) {
+                                                'factura' => 'warning',
+                                                'boleta' => 'info',
+                                                default => 'neutral'
+                                            };
+                                        @endphp
+                                        <x-ui.badge :variant="$badgeVariant" size="xs">
                                             {{ ucfirst($expense->document_type) }}
-                                        </span>
+                                        </x-ui.badge>
                                         @if($expense->document_number)
-                                            <span class="text-xs text-gray-500">Folio: {{ $expense->document_number }}</span>
+                                            <span class="text-[10px] font-mono text-zinc-400">Folio: {{ $expense->document_number }}</span>
                                         @endif
                                     </div>
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-4 py-3">
                                     @if($expense->supplier)
-                                        <div class="font-bold text-white flex items-center gap-1.5">
-                                            <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                                        <div class="font-semibold text-zinc-800 dark:text-zinc-200 flex items-center gap-1.5">
                                             {{ $expense->supplier->name }}
                                         </div>
                                         @if($expense->supplier->rut)
-                                            <div class="text-[10px] text-gray-400">{{ $expense->supplier->rut }}</div>
+                                            <div class="text-[10px] font-mono text-zinc-400">{{ $expense->supplier->rut }}</div>
                                         @endif
                                     @else
-                                        <div class="font-bold text-white">{{ $expense->supplier_name ?? 'N/A' }}</div>
+                                        <div class="font-semibold text-zinc-800 dark:text-zinc-200">{{ $expense->supplier_name ?? 'N/A' }}</div>
                                         @if($expense->supplier_rut)
-                                            <div class="text-[10px] text-gray-400">{{ $expense->supplier_rut }}</div>
+                                            <div class="text-[10px] font-mono text-zinc-400">{{ $expense->supplier_rut }}</div>
                                         @endif
                                     @endif
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-4 py-3">
                                     @if($expense->purchaseItems->count() > 0)
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                                        <x-ui.badge variant="success" size="xs">
                                             {{ $expense->purchaseItems->sum('quantity') }} prod.
-                                        </span>
+                                        </x-ui.badge>
                                     @else
-                                        <span class="text-xs text-gray-500 italic">Gasto general</span>
+                                        <span class="text-xs text-zinc-400 italic">Gasto general</span>
                                     @endif
                                 </td>
-                                <td class="px-6 py-4">
-                                    <span class="px-2.5 py-1 text-[10px] font-bold rounded-lg border bg-gray-800 text-gray-300 border-gray-700">
+                                <td class="px-4 py-3">
+                                    <x-ui.badge variant="neutral" size="xs">
                                         {{ $expense->category }}
-                                    </span>
+                                    </x-ui.badge>
                                 </td>
-                                <td class="px-6 py-4 text-right">
-                                    <div class="font-black text-red-400">${{ number_format($expense->total_amount, 0, ',', '.') }}</div>
+                                <td class="px-4 py-3 text-right">
+                                    <div class="font-bold text-zinc-900 dark:text-zinc-100">${{ number_format($expense->total_amount, 0, ',', '.') }}</div>
                                     @if($expense->document_type === 'factura')
-                                        <div class="text-[10px] text-gray-500">IVA: ${{ number_format($expense->tax_amount, 0, ',', '.') }}</div>
+                                        <div class="text-[10px] text-zinc-400">IVA: ${{ number_format($expense->tax_amount, 0, ',', '.') }}</div>
                                     @endif
                                 </td>
-                                <td class="px-6 py-4 text-right">
-                                    <div class="flex items-center justify-end gap-2">
-                                        <button wire:click="editExpense({{ $expense->id }})" class="p-2 text-gray-400 hover:text-white bg-gray-800 hover:bg-gray-700 rounded-lg transition-all" title="Editar">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                <td class="px-4 py-3 text-right">
+                                    <div class="flex items-center justify-end gap-1">
+                                        <button wire:click="editExpense({{ $expense->id }})" class="p-1.5 text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded transition cursor-pointer" title="Editar">
+                                            <x-ui.icon name="edit" class="w-3.5 h-3.5" />
                                         </button>
-                                        <button wire:click="deleteExpense({{ $expense->id }})" wire:confirm="¿Estás seguro de eliminar este registro? Si tiene productos, se revertirá el stock del inventario." class="p-2 text-gray-400 hover:text-red-400 bg-gray-800 hover:bg-red-500/10 rounded-lg transition-all" title="Eliminar">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                        <button wire:click="deleteExpense({{ $expense->id }})" wire:confirm="¿Estás seguro de eliminar este registro? Si tiene productos, se revertirá el stock del inventario." class="p-1.5 text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded transition cursor-pointer" title="Eliminar">
+                                            <x-ui.icon name="trash" class="w-3.5 h-3.5" />
                                         </button>
                                     </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="px-6 py-12 text-center text-gray-500">
-                                    <div class="flex flex-col items-center justify-center">
-                                        <svg class="w-12 h-12 text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                                        <p class="font-semibold text-gray-400">No hay compras ni gastos registrados en este mes.</p>
+                                <td colspan="7" class="px-6 py-12 text-center text-zinc-400 dark:text-zinc-500 text-xs">
+                                    <div class="flex flex-col items-center justify-center gap-2">
+                                        <x-ui.icon name="shopping-bag" class="w-8 h-8 text-zinc-300 dark:text-zinc-600" />
+                                        <span>No hay compras ni gastos registrados en este mes.</span>
                                     </div>
                                 </td>
                             </tr>
@@ -363,7 +368,7 @@
                 </table>
             </div>
             @if($expenses->hasPages())
-                <div class="px-6 py-4 border-t border-gray-700/50 bg-gray-900/30">
+                <div class="px-4 py-3 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50">
                     {{ $expenses->links() }}
                 </div>
             @endif

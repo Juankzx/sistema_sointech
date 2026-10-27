@@ -1,21 +1,24 @@
-<div class="px-2">
+<div class="space-y-6 pb-16 md:pb-6">
     <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h2 class="text-2xl font-black text-white tracking-tight flex items-center gap-3">
-                <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            <h1 class="text-xl sm:text-2xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight flex items-center gap-2.5">
+                <span class="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/50">
+                    <x-ui.icon name="trending-up" class="w-5 h-5" />
+                </span>
                 Panel Financiero
-            </h2>
-            <p class="text-sm text-gray-400 mt-1 font-medium">Resumen de ingresos, egresos y utilidad.</p>
+            </h1>
+            <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1">Resumen mensual de ingresos, egresos y utilidad.</p>
         </div>
         
-        <div class="flex items-center gap-3 bg-gray-800/80 p-1.5 rounded-xl border border-gray-700/50">
-            <select wire:model.live="currentMonth" class="bg-gray-900 border-none text-white text-sm font-semibold rounded-lg focus:ring-emerald-500 block py-2 px-3">
+        <div class="flex items-center gap-2 bg-white dark:bg-zinc-900 p-1 rounded-lg border border-zinc-200 dark:border-zinc-800 shadow-xs self-start sm:self-auto">
+            <select wire:model.live="currentMonth" class="bg-transparent text-zinc-800 dark:text-zinc-200 text-xs font-medium rounded-md border-0 py-1.5 pl-2.5 pr-7 focus:ring-1 focus:ring-orange-500">
                 @for($m=1; $m<=12; $m++)
-                    <option value="{{ $m }}">{{ \Carbon\Carbon::create(2000, $m, 1)->locale('es')->monthName }}</option>
+                    <option value="{{ $m }}">{{ ucfirst(\Carbon\Carbon::create(2000, $m, 1)->locale('es')->monthName) }}</option>
                 @endfor
             </select>
-            <select wire:model.live="currentYear" class="bg-gray-900 border-none text-white text-sm font-semibold rounded-lg focus:ring-emerald-500 block py-2 px-3">
+            <div class="w-px h-4 bg-zinc-200 dark:bg-zinc-700"></div>
+            <select wire:model.live="currentYear" class="bg-transparent text-zinc-800 dark:text-zinc-200 text-xs font-medium rounded-md border-0 py-1.5 pl-2.5 pr-7 focus:ring-1 focus:ring-orange-500">
                 @for($y=date('Y'); $y>=date('Y')-2; $y--)
                     <option value="{{ $y }}">{{ $y }}</option>
                 @endfor
@@ -24,154 +27,149 @@
     </div>
 
     <!-- Main Metric Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         
         <!-- Total Ingresos Reales (Mano de Obra + POS) -->
-        <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 relative overflow-hidden group hover:border-emerald-500/50 transition-all duration-300 shadow-lg shadow-black/20">
-            <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl group-hover:bg-emerald-500/20 transition-all duration-500"></div>
-            <div class="flex items-center justify-between mb-4 relative z-10">
-                <div>
-                    <h3 class="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">Ingresos Reales (M. Obra + POS)</h3>
-                </div>
-                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                </div>
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-xs transition duration-150">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-medium text-zinc-500 dark:text-zinc-400">Ingresos Reales (Mano de Obra + POS)</span>
+                <span class="p-1.5 rounded-md bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
+                    <x-ui.icon name="trending-up" class="w-4 h-4" />
+                </span>
             </div>
-            <div class="relative z-10">
-                <span class="text-3xl font-black text-white tracking-tight">${{ number_format($totalSales, 0, ',', '.') }}</span>
-                <div class="text-xs font-semibold text-gray-400 mt-2">Neto sin IVA: ${{ number_format($totalSalesNet, 0, ',', '.') }} (Excluye repuestos clientes)</div>
+            <div class="mt-2">
+                <span class="text-2xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">${{ number_format($totalSales, 0, ',', '.') }}</span>
+                <div class="text-[11px] text-zinc-400 dark:text-zinc-500 mt-1">Neto sin IVA: ${{ number_format($totalSalesNet, 0, ',', '.') }} (Excluye repuestos de clientes)</div>
             </div>
         </div>
 
         <!-- Total Expenses -->
-        <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 relative overflow-hidden group hover:border-red-500/50 transition-all duration-300 shadow-lg shadow-black/20">
-            <div class="absolute -right-4 -top-4 w-24 h-24 bg-red-500/10 rounded-full blur-xl group-hover:bg-red-500/20 transition-all duration-500"></div>
-            <div class="flex items-center justify-between mb-4 relative z-10">
-                <div>
-                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Egresos / Gastos</h3>
-                </div>
-                <div class="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
-                </div>
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-xs transition duration-150">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-medium text-zinc-500 dark:text-zinc-400">Total Egresos / Gastos</span>
+                <span class="p-1.5 rounded-md bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400">
+                    <x-ui.icon name="trending-down" class="w-4 h-4" />
+                </span>
             </div>
-            <div class="relative z-10">
-                <span class="text-3xl font-black text-white tracking-tight">${{ number_format($totalExpenses, 0, ',', '.') }}</span>
-                <div class="text-xs font-semibold text-gray-500 mt-2">Neto: ${{ number_format($totalExpensesNet, 0, ',', '.') }}</div>
+            <div class="mt-2">
+                <span class="text-2xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">${{ number_format($totalExpenses, 0, ',', '.') }}</span>
+                <div class="text-[11px] text-zinc-400 dark:text-zinc-500 mt-1">Neto: ${{ number_format($totalExpensesNet, 0, ',', '.') }}</div>
             </div>
         </div>
 
         <!-- Net Profit -->
-        <div class="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-2xl p-6 relative overflow-hidden group {{ $netProfit >= 0 ? 'hover:border-blue-500/50' : 'hover:border-orange-500/50' }} transition-all duration-300 shadow-lg shadow-black/20">
-            <div class="absolute -right-4 -top-4 w-24 h-24 {{ $netProfit >= 0 ? 'bg-blue-500/10 group-hover:bg-blue-500/20' : 'bg-orange-500/10 group-hover:bg-orange-500/20' }} rounded-full blur-xl transition-all duration-500"></div>
-            <div class="flex items-center justify-between mb-4 relative z-10">
-                <div>
-                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Utilidad Neta Final</h3>
-                </div>
-                <div class="w-10 h-10 rounded-xl {{ $netProfit >= 0 ? 'bg-blue-500/10 border-blue-500/20 text-blue-400' : 'bg-orange-500/10 border-orange-500/20 text-orange-400' }} border flex items-center justify-center">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                </div>
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-xs border-l-4 {{ $netProfit >= 0 ? 'border-l-emerald-500' : 'border-l-orange-500' }} transition duration-150">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-medium text-zinc-500 dark:text-zinc-400">Utilidad Neta Final</span>
+                <span class="p-1.5 rounded-md {{ $netProfit >= 0 ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400' : 'bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400' }}">
+                    <x-ui.icon name="dollar-sign" class="w-4 h-4" />
+                </span>
             </div>
-            <div class="relative z-10">
-                <span class="text-3xl font-black tracking-tight {{ $netProfit >= 0 ? 'text-blue-400' : 'text-orange-400' }}">${{ number_format($netProfit, 0, ',', '.') }}</span>
-                <div class="text-xs font-semibold text-gray-500 mt-2">Mano de Obra + POS menos Gastos</div>
+            <div class="mt-2">
+                <span class="text-2xl font-bold tracking-tight {{ $netProfit >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-orange-600 dark:text-orange-400' }}">${{ number_format($netProfit, 0, ',', '.') }}</span>
+                <div class="text-[11px] text-zinc-400 dark:text-zinc-500 mt-1">Mano de Obra + POS menos Gastos</div>
             </div>
         </div>
     </div>
 
     <!-- Breakdown Section: Servicios vs Repuestos -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Servicios / Mano de Obra (Utilidad Directa) -->
-        <div class="bg-gray-800/90 border border-emerald-500/30 rounded-2xl p-6 relative overflow-hidden shadow-lg shadow-black/20">
-            <div class="flex items-center justify-between mb-3">
-                <div>
-                    <h3 class="text-xs font-black text-emerald-400 uppercase tracking-widest">🛠️ Mano de Obra OT (Tu Utilidad Real)</h3>
-                    <p class="text-[11px] text-gray-400">Plata que realmente te entra como ganancia por tus reparaciones</p>
-                </div>
-                <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-xs">
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                    <span class="p-1.5 rounded-md bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
+                        <x-ui.icon name="wrench" class="w-4 h-4" />
+                    </span>
+                    <div>
+                        <h3 class="text-xs font-semibold text-zinc-800 dark:text-zinc-200">Mano de Obra OT (Utilidad del Taller)</h3>
+                        <p class="text-[11px] text-zinc-400 dark:text-zinc-500">Ingreso real directo por servicio de reparaciones</p>
+                    </div>
                 </div>
             </div>
-            <div class="mt-2">
-                <span class="text-3xl font-black text-white">${{ number_format($servicesIncome, 0, ',', '.') }}</span>
-                <span class="text-xs font-semibold text-emerald-400 ml-2">Ganancia directa del taller</span>
+            <div class="mt-3 flex items-baseline gap-2">
+                <span class="text-2xl font-bold text-zinc-900 dark:text-zinc-100">${{ number_format($servicesIncome, 0, ',', '.') }}</span>
+                <span class="text-[11px] font-medium text-emerald-600 dark:text-emerald-400">Ganancia directa</span>
             </div>
         </div>
 
         <!-- Repuestos / Componentes + Envío (Plata del Cliente) -->
-        <div class="bg-gray-800/90 border border-amber-500/30 rounded-2xl p-6 relative overflow-hidden shadow-lg shadow-black/20">
-            <div class="flex items-center justify-between mb-3">
-                <div>
-                    <h3 class="text-xs font-black text-amber-400 uppercase tracking-widest">📦 Repuestos y Envíos (Plata del Cliente)</h3>
-                    <p class="text-[11px] text-gray-400">Cobrado a precio costo al cliente (No suma a tu utilidad)</p>
-                </div>
-                <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-xs">
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                    <span class="p-1.5 rounded-md bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400">
+                        <x-ui.icon name="package" class="w-4 h-4" />
+                    </span>
+                    <div>
+                        <h3 class="text-xs font-semibold text-zinc-800 dark:text-zinc-200">Repuestos y Envíos (Costo Cliente)</h3>
+                        <p class="text-[11px] text-zinc-400 dark:text-zinc-500">Cobrado al costo al cliente (no suma a tu utilidad)</p>
+                    </div>
                 </div>
             </div>
-            <div class="mt-2 flex flex-wrap items-baseline gap-2">
-                <span class="text-3xl font-black text-white">${{ number_format($productsIncome, 0, ',', '.') }}</span>
-                <span class="text-xs font-semibold text-amber-400">
-                    Repuestos: ${{ number_format($otPartsTotal ?? 0, 0, ',', '.') }} | Envíos: ${{ number_format($otShippingTotal ?? 0, 0, ',', '.') }}
+            <div class="mt-3 flex flex-wrap items-baseline gap-2">
+                <span class="text-2xl font-bold text-zinc-900 dark:text-zinc-100">${{ number_format($productsIncome, 0, ',', '.') }}</span>
+                <span class="text-[11px] text-zinc-500 dark:text-zinc-400">
+                    Repuestos: ${{ number_format($otPartsTotal ?? 0, 0, ',', '.') }} • Envíos: ${{ number_format($otShippingTotal ?? 0, 0, ',', '.') }}
                 </span>
             </div>
         </div>
     </div>
 
     <!-- Taxes (IVA) section -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-lg shadow-black/20">
-            <h3 class="text-sm font-black text-white tracking-tight mb-4 flex items-center gap-2">
-                <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"></path></svg>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-xs">
+            <h3 class="text-xs font-semibold text-zinc-800 dark:text-zinc-200 uppercase tracking-wider mb-3 flex items-center gap-2">
+                <x-ui.icon name="file-text" class="w-4 h-4 text-zinc-400" />
                 Resumen de IVA (19%)
             </h3>
             
-            <div class="space-y-4">
-                <div class="flex items-center justify-between p-3 rounded-xl bg-gray-900 border border-gray-800">
-                    <span class="text-xs font-semibold text-gray-400">IVA Débito (Ventas)</span>
-                    <span class="text-sm font-bold text-emerald-400">${{ number_format($totalSalesTax, 0, ',', '.') }}</span>
+            <div class="space-y-2.5">
+                <div class="flex items-center justify-between p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-850 border border-zinc-200/80 dark:border-zinc-800 text-xs">
+                    <span class="text-zinc-500 dark:text-zinc-400">IVA Débito (Ventas)</span>
+                    <span class="font-semibold text-emerald-600 dark:text-emerald-400">${{ number_format($totalSalesTax, 0, ',', '.') }}</span>
                 </div>
                 
-                <div class="flex items-center justify-between p-3 rounded-xl bg-gray-900 border border-gray-800">
-                    <span class="text-xs font-semibold text-gray-400">IVA Crédito (Compras/Gastos)</span>
-                    <span class="text-sm font-bold text-red-400">-${{ number_format($totalExpensesTax, 0, ',', '.') }}</span>
+                <div class="flex items-center justify-between p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-850 border border-zinc-200/80 dark:border-zinc-800 text-xs">
+                    <span class="text-zinc-500 dark:text-zinc-400">IVA Crédito (Compras/Gastos)</span>
+                    <span class="font-semibold text-red-600 dark:text-red-400">-${{ number_format($totalExpensesTax, 0, ',', '.') }}</span>
                 </div>
 
-                <div class="flex items-center justify-between p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
-                    <span class="text-xs font-black text-purple-400 uppercase tracking-widest">Saldo IVA (Estimado)</span>
-                    <span class="text-lg font-black {{ $taxBalance > 0 ? 'text-white' : 'text-purple-300' }}">
+                <div class="flex items-center justify-between p-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
+                    <span class="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Saldo IVA (Estimado)</span>
+                    <span class="text-base font-bold {{ $taxBalance > 0 ? 'text-zinc-900 dark:text-zinc-100' : 'text-emerald-600 dark:text-emerald-400' }}">
                         ${{ number_format($taxBalance, 0, ',', '.') }}
                     </span>
                 </div>
                 @if($taxBalance > 0)
-                    <p class="text-[10px] text-gray-500 text-center font-medium">Tienes IVA a pagar al SII por este mes.</p>
+                    <p class="text-[11px] text-zinc-400 text-center">Tienes IVA a pagar al SII por este mes.</p>
                 @else
-                    <p class="text-[10px] text-gray-500 text-center font-medium">Tienes saldo a favor (Remanente) para el próximo mes.</p>
+                    <p class="text-[11px] text-zinc-400 text-center">Tienes saldo a favor (Remanente) para el próximo mes.</p>
                 @endif
             </div>
         </div>
 
         <!-- Quick Links -->
-        <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-lg shadow-black/20 flex flex-col">
-            <h3 class="text-sm font-black text-white tracking-tight mb-4">Acciones Rápidas</h3>
-            <div class="grid grid-cols-1 gap-3 flex-1">
-                <a href="{{ route('finance.sales-book') }}" class="flex items-center justify-between p-4 rounded-xl bg-gray-900 border border-gray-800 hover:border-emerald-500/50 hover:bg-gray-800 transition-all group">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-xs flex flex-col">
+            <h3 class="text-xs font-semibold text-zinc-800 dark:text-zinc-200 uppercase tracking-wider mb-3">Acciones Rápidas</h3>
+            <div class="grid grid-cols-1 gap-2.5 flex-1">
+                <a href="{{ route('finance.sales-book') }}" class="flex items-center justify-between p-3 rounded-lg bg-zinc-50 dark:bg-zinc-850 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-zinc-100/60 dark:hover:bg-zinc-800/60 transition group">
+                    <div class="flex items-center gap-2.5">
+                        <div class="p-1.5 rounded-md bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
+                            <x-ui.icon name="file-text" class="w-4 h-4" />
                         </div>
-                        <span class="text-sm font-bold text-gray-300 group-hover:text-white transition-colors">Ver Libro de Ventas</span>
+                        <span class="text-xs font-medium text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition">Ver Libro de Ventas</span>
                     </div>
-                    <svg class="w-5 h-5 text-gray-600 group-hover:text-emerald-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    <x-ui.icon name="chevron-right" class="w-4 h-4 text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-200 transition" />
                 </a>
 
-                <a href="{{ route('finance.purchases') }}" class="flex items-center justify-between p-4 rounded-xl bg-gray-900 border border-gray-800 hover:border-red-500/50 hover:bg-gray-800 transition-all group">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-lg bg-red-500/10 text-red-500 flex items-center justify-center">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                <a href="{{ route('finance.purchases') }}" class="flex items-center justify-between p-3 rounded-lg bg-zinc-50 dark:bg-zinc-850 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-zinc-100/60 dark:hover:bg-zinc-800/60 transition group">
+                    <div class="flex items-center gap-2.5">
+                        <div class="p-1.5 rounded-md bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400">
+                            <x-ui.icon name="shopping-bag" class="w-4 h-4" />
                         </div>
-                        <span class="text-sm font-bold text-gray-300 group-hover:text-white transition-colors">Registrar Compra o Gasto</span>
+                        <span class="text-xs font-medium text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition">Registrar Compra o Gasto</span>
                     </div>
-                    <svg class="w-5 h-5 text-gray-600 group-hover:text-red-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    <x-ui.icon name="chevron-right" class="w-4 h-4 text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-200 transition" />
                 </a>
             </div>
         </div>
