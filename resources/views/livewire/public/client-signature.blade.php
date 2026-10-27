@@ -22,7 +22,10 @@
                 
                 <div class="text-center space-y-1">
                     <div class="flex items-center justify-center gap-2 mb-2">
-                        <img src="/images/logo-dark.png" alt="Sointech" class="h-7 w-auto object-contain">
+                        <div class="w-10 h-10 rounded-2xl bg-slate-100 dark:bg-zinc-800 p-1.5 border border-zinc-200 dark:border-zinc-700 shadow-xs flex items-center justify-center shrink-0 overflow-hidden">
+                            <img src="{{ asset('images/logo-light-trans.png') }}" class="w-full h-full object-contain dark:hidden" alt="Sointech">
+                            <img src="{{ asset('images/logo-dark-trans.png') }}" class="w-full h-full object-contain hidden dark:block" alt="Sointech">
+                        </div>
                     </div>
                     <h1 class="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">Acuerdo de Servicio Técnico</h1>
                     <p class="text-xs text-zinc-500">Estimado/a {{ explode(' ', $orderData['full_name'])[0] }}, confirma las condiciones de ingreso.</p>

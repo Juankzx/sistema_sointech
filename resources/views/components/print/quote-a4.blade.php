@@ -36,7 +36,7 @@
         @if($settings->logo_path)
             <img src="{{ asset('storage/' . $settings->logo_path) }}" class="w-2/3 object-contain filter grayscale" alt="Watermark">
         @else
-            <img src="{{ asset('images/logo-dark.png') }}" class="w-2/3 object-contain filter grayscale" alt="Watermark">
+            <img src="{{ asset('images/logo-light-trans.png') }}" class="w-2/3 object-contain filter grayscale" alt="Watermark">
         @endif
     </div>
     
@@ -47,7 +47,7 @@
             @if($settings->logo_path)
                 <img src="{{ asset('storage/' . $settings->logo_path) }}" alt="{{ $settings->company_name ?: 'Soin Technology' }}" class="h-16 mb-3 object-contain">
             @else
-                <img src="{{ asset('images/logo-dark.png') }}" alt="Soin Technology" class="h-16 mb-3 object-contain">
+                <img src="{{ asset('images/logo-light-trans.png') }}" alt="Soin Technology" class="h-16 mb-3 object-contain">
             @endif
             <h1 class="text-sm font-black text-gray-900 tracking-widest uppercase">{{ $settings->company_name ?: 'Soin Technology' }}</h1>
             <p class="text-[10px] text-gray-500 mt-1 leading-tight">

@@ -7,8 +7,8 @@
         <div class="absolute bottom-10 -left-20 w-96 h-96 rounded-full bg-cyan-400/30 blur-3xl pointer-events-none"></div>
 
         <div class="relative z-10 flex items-center gap-3.5">
-            <div class="p-2.5 rounded-2xl bg-white/15 backdrop-blur-md border border-white/25 shadow-lg">
-                <img src="{{ asset('images/logo-dark.png') }}" class="h-9 w-auto object-contain" alt="Sointech Logo">
+            <div class="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-md border border-white/25 shadow-lg p-2 flex items-center justify-center shrink-0 overflow-hidden">
+                <img src="{{ asset('images/logo-dark-trans.png') }}" class="w-full h-full object-contain" alt="Sointech Logo">
             </div>
             <div>
                 <span class="text-white font-extrabold tracking-tight text-lg block leading-none">SOINTECH</span>
@@ -47,8 +47,9 @@
             <div class="flex flex-col items-center mb-7 text-center">
                 <div class="w-14 h-14 rounded-2xl p-0.5 shadow-lg mb-3.5"
                      style="background: linear-gradient(135deg, #7c3aed, #db2777, #06b6d4);">
-                    <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center p-2">
-                        <img src="{{ asset('images/logo-dark.png') }}" class="h-8 w-auto object-contain" alt="Sointech Logo">
+                    <div class="w-full h-full bg-slate-100 dark:bg-slate-950 rounded-[14px] flex items-center justify-center p-2 overflow-hidden">
+                        <img src="{{ asset('images/logo-light-trans.png') }}" class="w-full h-full object-contain dark:hidden" alt="Sointech Logo">
+                        <img src="{{ asset('images/logo-dark-trans.png') }}" class="w-full h-full object-contain hidden dark:block" alt="Sointech Logo">
                     </div>
                 </div>
                 <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Nueva Contraseña</h2>

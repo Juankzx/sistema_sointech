@@ -10,7 +10,10 @@
             </a>
             @endauth
             <div class="flex items-center gap-2.5">
-                <img src="/images/logo-dark.png" alt="Sointech" class="h-7 w-auto object-contain">
+                <div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-zinc-800 p-1.5 border border-zinc-200 dark:border-zinc-700 shadow-xs flex items-center justify-center shrink-0 overflow-hidden">
+                    <img src="{{ asset('images/logo-light-trans.png') }}" class="w-full h-full object-contain dark:hidden" alt="Sointech">
+                    <img src="{{ asset('images/logo-dark-trans.png') }}" class="w-full h-full object-contain hidden dark:block" alt="Sointech">
+                </div>
                 <div>
                     <span class="text-sm font-bold tracking-tight text-zinc-900 dark:text-zinc-100 uppercase">Sointech</span>
                     <span class="text-[10px] text-zinc-400 block font-medium">Servicio Técnico Especializado</span>

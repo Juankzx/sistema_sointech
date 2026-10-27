@@ -13,7 +13,9 @@
         <div class="relative z-10 flex flex-col justify-between p-12 w-full h-full">
             <!-- Branding Header -->
             <div class="flex items-center gap-3">
-                <img src="/images/logo-dark.png" class="h-10 w-auto object-contain" alt="Sointech Logo">
+                <div class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-lg p-2 flex items-center justify-center shrink-0 overflow-hidden">
+                    <img src="{{ asset('images/logo-dark-trans.png') }}" class="w-full h-full object-contain" alt="Sointech Logo">
+                </div>
             </div>
             
             <!-- Mid Quote / Feature Showcase -->
@@ -52,7 +54,9 @@
             <div class="flex flex-col items-center mb-6 relative">
                 <!-- Logo shown on mobile layout -->
                 <div class="md:hidden mb-4">
-                    <img src="/images/logo-dark.png" class="h-12 w-auto object-contain" alt="Sointech Logo">
+                    <div class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-lg p-2 flex items-center justify-center shrink-0 overflow-hidden mx-auto">
+                        <img src="{{ asset('images/logo-dark-trans.png') }}" class="w-full h-full object-contain" alt="Sointech Logo">
+                    </div>
                 </div>
                 <h2 class="text-3xl font-extrabold text-white tracking-tight">Crear una Cuenta</h2>
                 <p class="text-sm text-gray-400 mt-2">Completa los datos para registrarte como operador</p>

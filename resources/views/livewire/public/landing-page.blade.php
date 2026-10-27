@@ -116,8 +116,8 @@
             <div class="flex justify-between items-center transition-all duration-300" :class="scrolled ? 'h-16' : 'h-20'">
                 <!-- Soin Technology Official Logo Brand -->
                 <a href="#inicio" class="flex items-center gap-3.5 group">
-                    <div class="p-1.5 rounded-2xl bg-[#140e29] border border-purple-400/30 shadow-lg group-hover:scale-105 group-hover:border-pink-400/60 transition-all flex items-center justify-center">
-                        <img src="{{ asset('images/logo-dark.png') }}" class="h-10 sm:h-11 w-auto object-contain" alt="Soin Technology Logo">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#130d2a]/90 border border-purple-400/30 shadow-lg shadow-purple-900/30 group-hover:scale-105 group-hover:border-pink-400/60 p-2 transition-all flex items-center justify-center shrink-0 overflow-hidden">
+                        <img src="{{ asset('images/logo-dark-trans.png') }}" class="w-full h-full object-contain" alt="Soin Technology Logo">
                     </div>
                     <div class="flex flex-col">
                         <span class="font-black text-lg sm:text-2xl tracking-tight text-white leading-none flex items-center gap-1.5">
@@ -823,8 +823,8 @@
                 <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
                     <div class="flex items-center gap-4 sm:gap-5">
                         <div class="p-1 rounded-2xl bg-gradient-to-tr from-amber-400 via-pink-500 to-purple-600 shrink-0 shadow-lg shadow-pink-500/25">
-                            <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-[#181230] p-1.5 flex items-center justify-center">
-                                <img src="{{ asset('images/logo-dark.png') }}" alt="Instagram Soin Technology" class="w-full h-full object-contain">
+                            <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-[#181230] p-2 flex items-center justify-center overflow-hidden">
+                                <img src="{{ asset('images/logo-dark-trans.png') }}" alt="Instagram Soin Technology" class="w-full h-full object-contain">
                             </div>
                         </div>
 
@@ -894,8 +894,8 @@
                             <div class="px-5 py-3.5 flex items-center justify-between border-b border-purple-400/15 bg-[#1b1534]">
                                 <div class="flex items-center gap-2.5">
                                     <span class="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-400 via-pink-500 to-purple-600 p-[1.5px] flex items-center justify-center">
-                                        <span class="w-full h-full rounded-full bg-[#181230] p-1 flex items-center justify-center">
-                                            <img src="{{ asset('images/logo-dark.png') }}" class="w-full h-full object-contain" alt="Soin">
+                                        <span class="w-full h-full rounded-full bg-[#181230] p-1 flex items-center justify-center overflow-hidden">
+                                            <img src="{{ asset('images/logo-dark-trans.png') }}" class="w-full h-full object-contain" alt="Soin">
                                         </span>
                                     </span>
                                     <div>
@@ -1125,9 +1125,9 @@
 
                 <!-- Col 1: Brand & Bio -->
                 <div class="lg:col-span-4 space-y-4">
-                    <a href="#inicio" class="flex items-center gap-3">
-                        <div class="p-1 rounded-xl bg-[#140e29] border border-purple-400/30">
-                            <img src="{{ asset('images/logo-dark.png') }}" class="h-9 w-auto object-contain" alt="Soin Technology Logo">
+                    <a href="#inicio" class="flex items-center gap-3 group">
+                        <div class="w-11 h-11 rounded-2xl bg-[#140e29] border border-purple-400/30 p-2 shadow-md flex items-center justify-center overflow-hidden group-hover:border-pink-400/60 transition">
+                            <img src="{{ asset('images/logo-dark-trans.png') }}" class="w-full h-full object-contain" alt="Soin Technology Logo">
                         </div>
                         <span class="font-black text-xl text-white tracking-tight">SOIN TECHNOLOGY</span>
                     </a>

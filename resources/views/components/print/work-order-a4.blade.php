@@ -25,7 +25,13 @@
             }
         }
         if (!$logoSrc) {
-            $defaultLogoPath = public_path('images/logo-dark.png');
+            $defaultLogoPath = public_path('images/logo-light-trans.png');
+            if (!file_exists($defaultLogoPath)) {
+                $defaultLogoPath = public_path('images/logo-light.png');
+            }
+            if (!file_exists($defaultLogoPath)) {
+                $defaultLogoPath = public_path('images/logo-dark.png');
+            }
             if (file_exists($defaultLogoPath)) {
                 $logoData = base64_encode(file_get_contents($defaultLogoPath));
                 $logoSrc = 'data:image/png;base64,' . $logoData;
