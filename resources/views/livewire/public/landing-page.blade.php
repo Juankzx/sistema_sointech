@@ -49,10 +49,35 @@
             setInterval(() => {
                 this.activeSlide = (this.activeSlide + 1) % this.slides.length;
             }, 6000);
+            this.updateScroll();
+        },
+        activeSection: 'inicio',
+        sections: ['inicio', 'rastreo', 'servicios', 'microsoldadura', 'empresas', 'instagram', 'contacto'],
+        updateScroll() {
+            const scrollY = window.pageYOffset || window.scrollY || document.documentElement.scrollTop || 0;
+            this.scrolled = scrollY > 20;
+
+            const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+            if ((window.innerHeight + scrollY) >= (scrollHeight - 160)) {
+                this.activeSection = 'contacto';
+                return;
+            }
+
+            for (let i = this.sections.length - 1; i >= 0; i--) {
+                const el = document.getElementById(this.sections[i]);
+                if (el) {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.top <= 240) {
+                        this.activeSection = this.sections[i];
+                        return;
+                    }
+                }
+            }
+            this.activeSection = 'inicio';
         }
     }"
-    @scroll.window="scrolled = (window.pageYOffset > 40)"
-    class="min-h-screen bg-[#000000] text-neutral-100 font-sans selection:bg-neutral-800 selection:text-white overflow-x-hidden relative antialiased"
+    @scroll.window="updateScroll()"
+    class="min-h-screen bg-[#000000] text-neutral-100 font-sans selection:bg-neutral-800 selection:text-white relative antialiased"
 >
 
     @php
@@ -69,136 +94,214 @@
         <div class="absolute inset-0 opacity-[0.015]" style="background-image: radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px); background-size: 32px 32px;"></div>
     </div>
 
-    <!-- Apple Global Ribbon (Clean Status & Direct Access) -->
-    <div class="relative z-40 border-b border-white/[0.06] bg-black/80 backdrop-blur-md text-[11px] text-neutral-400">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center justify-between gap-3">
-            <div class="flex items-center gap-2.5">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                <span class="text-neutral-300 font-medium">Laboratorio de Precisión &amp; Soporte TI Activo</span>
-                <span class="hidden sm:inline text-neutral-600">/</span>
-                <span class="hidden sm:inline text-neutral-400">Garantía escrita y seguimiento digital en tiempo real</span>
-            </div>
+    <!-- FIXED TOP NAVIGATION WRAPPER (Guaranteed Never to Disappear on Scroll) -->
+    <div class="fixed top-0 inset-x-0 w-full z-50 transition-all duration-300">
 
-            <div class="flex items-center gap-4 ml-auto">
-                <a href="{{ $igProfileUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-neutral-300 hover:text-white transition">
-                    <svg class="w-3.5 h-3.5 text-neutral-400" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                    </svg>
-                    <span>@soin_tech</span>
-                </a>
-                <span class="text-neutral-700">|</span>
-                <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-neutral-300 hover:text-white transition">
-                    <svg class="w-3.5 h-3.5 text-[#25D366] fill-current" viewBox="0 0 24 24">
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M8.53 7.33C8.37 7.33 8.1 7.39 7.87 7.64C7.65 7.89 7 8.5 7 9.71C7 10.93 7.89 12.1 8 12.27C8.14 12.44 9.76 14.94 12.25 16C12.84 16.27 13.3 16.42 13.66 16.53C14.25 16.72 14.79 16.69 15.22 16.63C15.7 16.56 16.68 16.03 16.89 15.45C17.1 14.87 17.1 14.38 17.04 14.27C16.97 14.17 16.81 14.11 16.56 14C16.31 13.86 15.09 13.26 14.87 13.18C14.64 13.1 14.5 13.06 14.31 13.3C14.15 13.55 13.67 14.11 13.53 14.27C13.38 14.44 13.24 14.46 13 14.34C12.74 14.21 11.94 13.95 11 13.11C10.26 12.45 9.77 11.64 9.62 11.39C9.5 11.15 9.61 11 9.73 10.89C9.84 10.78 10 10.6 10.1 10.45C10.23 10.31 10.27 10.2 10.35 10.04C10.43 9.87 10.39 9.73 10.33 9.61C10.27 9.5 9.77 8.26 9.56 7.77C9.36 7.29 9.16 7.35 9 7.34C8.86 7.34 8.7 7.33 8.53 7.33Z"/>
-                    </svg>
-                    <span>{{ $whatsappNumber }}</span>
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Apple Sticky Frosted Glass Navbar -->
-    <header
-        class="sticky top-0 z-50 transition-all duration-300"
-        :class="scrolled ? 'bg-black/85 backdrop-blur-2xl border-b border-white/[0.08] py-2' : 'bg-black/60 backdrop-blur-xl border-b border-transparent py-3.5'"
-    >
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-14">
-                <!-- Brand Logo (Apple Minimalist) -->
-                <a href="#inicio" class="flex items-center gap-3 group">
-                    <div class="w-10 h-10 rounded-2xl bg-white/[0.06] border border-white/10 p-1.5 flex items-center justify-center shrink-0 overflow-hidden group-hover:border-white/25 transition">
-                        <img src="{{ asset('images/logo-dark-trans.png') }}" class="w-full h-full object-contain" alt="Soin Technology Logo">
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="font-bold text-base sm:text-lg tracking-tight text-white leading-none">
-                            SOIN <span class="text-neutral-400 font-light">TECHNOLOGY</span>
-                        </span>
-                        <span class="text-[10px] font-medium tracking-wider text-neutral-400 uppercase mt-0.5">
-                            Laboratorio &amp; Soluciones TI
-                        </span>
-                    </div>
-                </a>
-
-                <!-- Desktop Navigation Links (Apple Style Subtle Typography) -->
-                <nav class="hidden lg:flex items-center gap-1 xl:gap-2">
-                    <a href="#inicio" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-neutral-300 hover:text-white hover:bg-white/[0.06] transition">
-                        Inicio
-                    </a>
-                    <a href="#rastreo" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-neutral-300 hover:text-white hover:bg-white/[0.06] transition">
-                        Seguimiento OT
-                    </a>
-                    <a href="#servicios" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-neutral-300 hover:text-white hover:bg-white/[0.06] transition">
-                        Especialidades
-                    </a>
-                    <a href="#microsoldadura" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-neutral-300 hover:text-white hover:bg-white/[0.06] transition">
-                        Microsoldadura
-                    </a>
-                    <a href="#empresas" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-neutral-300 hover:text-white hover:bg-white/[0.06] transition">
-                        Empresas B2B
-                    </a>
-                    <a href="#instagram" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-neutral-300 hover:text-white hover:bg-white/[0.06] transition">
-                        Instagram
-                    </a>
-                    <a href="#contacto" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-neutral-300 hover:text-white hover:bg-white/[0.06] transition">
-                        Contacto
-                    </a>
-                </nav>
-
-                <!-- Action Buttons (Apple Signature Pill Shapes) -->
-                <div class="hidden sm:flex items-center gap-3">
-                    <a href="#contacto" class="px-5 py-2 rounded-full text-xs font-medium bg-white text-black hover:bg-neutral-200 transition shadow-xs">
-                        Cotizar
-                    </a>
-                    @auth
-                        <a href="{{ url('/dashboard') }}" class="px-4 py-2 rounded-full text-xs font-medium bg-white/[0.08] hover:bg-white/[0.14] text-white border border-white/10 transition flex items-center gap-2">
-                            <span>Panel</span>
-                            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}" class="px-4 py-2 rounded-full text-xs font-medium bg-white/[0.06] hover:bg-white/[0.12] text-neutral-300 hover:text-white border border-white/10 transition flex items-center gap-1.5">
-                            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                            </svg>
-                            <span>Acceso Taller</span>
-                        </a>
-                    @endauth
+        <!-- Apple Global Ribbon (Smoothly collapses when scrolled) -->
+        <div
+            class="border-b bg-black/90 backdrop-blur-md text-[11px] text-neutral-400 transition-all duration-300"
+            :class="scrolled ? 'max-h-0 opacity-0 overflow-hidden py-0 border-transparent pointer-events-none' : 'max-h-14 opacity-100 py-2 border-white/[0.06]'"
+        >
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    <span class="text-neutral-300 font-medium">Laboratorio de Precisión &amp; Soporte TI Activo</span>
+                    <span class="hidden sm:inline text-neutral-600">/</span>
+                    <span class="hidden sm:inline text-neutral-400">Garantía escrita y seguimiento digital en tiempo real</span>
                 </div>
 
-                <!-- Mobile Menu Button -->
-                <button @click="mobileMenu = !mobileMenu" type="button" class="lg:hidden p-2 rounded-xl bg-white/[0.06] border border-white/10 text-neutral-300 hover:text-white">
-                    <svg x-show="!mobileMenu" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
-                    </svg>
-                    <svg x-show="mobileMenu" style="display: none;" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
+                <div class="flex items-center gap-4 ml-auto">
+                    <a href="{{ $igProfileUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-neutral-300 hover:text-white transition">
+                        <svg class="w-3.5 h-3.5 text-neutral-400" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                        </svg>
+                        <span>@soin_tech</span>
+                    </a>
+                    <span class="text-neutral-700">|</span>
+                    <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-neutral-300 hover:text-white transition">
+                        <svg class="w-3.5 h-3.5 text-[#25D366] fill-current" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M8.53 7.33C8.37 7.33 8.1 7.39 7.87 7.64C7.65 7.89 7 8.5 7 9.71C7 10.93 7.89 12.1 8 12.27C8.14 12.44 9.76 14.94 12.25 16C12.84 16.27 13.3 16.42 13.66 16.53C14.25 16.72 14.79 16.69 15.22 16.63C15.7 16.56 16.68 16.03 16.89 15.45C17.1 14.87 17.1 14.38 17.04 14.27C16.97 14.17 16.81 14.11 16.56 14C16.31 13.86 15.09 13.26 14.87 13.18C14.64 13.1 14.5 13.06 14.31 13.3C14.15 13.55 13.67 14.11 13.53 14.27C13.38 14.44 13.24 14.46 13 14.34C12.74 14.21 11.94 13.95 11 13.11C10.26 12.45 9.77 11.64 9.62 11.39C9.5 11.15 9.61 11 9.73 10.89C9.84 10.78 10 10.6 10.1 10.45C10.23 10.31 10.27 10.2 10.35 10.04C10.43 9.87 10.39 9.73 10.33 9.61C10.27 9.5 9.77 8.26 9.56 7.77C9.36 7.29 9.16 7.35 9 7.34C8.86 7.34 8.7 7.33 8.53 7.33Z"/>
+                        </svg>
+                        <span>{{ $whatsappNumber }}</span>
+                    </a>
+                </div>
             </div>
         </div>
 
-        <!-- Mobile Drawer -->
-        <div x-show="mobileMenu" x-transition style="display: none;" class="lg:hidden border-t border-white/[0.08] bg-black/95 backdrop-blur-2xl px-5 pt-4 pb-6 space-y-2">
-            <a @click="mobileMenu = false" href="#inicio" class="block px-3 py-2 rounded-xl text-sm font-medium text-neutral-200 hover:bg-white/5">Inicio</a>
-            <a @click="mobileMenu = false" href="#rastreo" class="block px-3 py-2 rounded-xl text-sm font-medium text-neutral-200 hover:bg-white/5">Rastrear Orden OT</a>
-            <a @click="mobileMenu = false" href="#servicios" class="block px-3 py-2 rounded-xl text-sm font-medium text-neutral-200 hover:bg-white/5">Especialidades Técnicas</a>
-            <a @click="mobileMenu = false" href="#microsoldadura" class="block px-3 py-2 rounded-xl text-sm font-medium text-neutral-200 hover:bg-white/5">Microsoldadura &amp; Placas</a>
-            <a @click="mobileMenu = false" href="#empresas" class="block px-3 py-2 rounded-xl text-sm font-medium text-neutral-200 hover:bg-white/5">Soporte TI para Empresas</a>
-            <a @click="mobileMenu = false" href="#instagram" class="block px-3 py-2 rounded-xl text-sm font-medium text-neutral-200 hover:bg-white/5">Instagram Oficial</a>
-            <a @click="mobileMenu = false" href="#contacto" class="block px-3 py-2 rounded-xl text-sm font-medium text-white hover:bg-white/5">Solicitar Presupuesto</a>
-            <div class="pt-3 border-t border-white/[0.08] flex gap-3">
-                @auth
-                    <a href="{{ url('/dashboard') }}" class="w-full text-center py-2.5 rounded-full text-xs font-semibold bg-white text-black">Ir al Panel</a>
-                @else
-                    <a href="{{ route('login') }}" class="w-full text-center py-2.5 rounded-full text-xs font-medium bg-white/[0.08] text-white border border-white/10">Acceso Taller</a>
-                @endauth
+        <!-- Apple Frosted Glass Navbar with ScrollSpy Highlighting -->
+        <header
+            class="transition-all duration-300 border-b"
+            :class="scrolled ? 'bg-black/90 backdrop-blur-2xl border-white/[0.1] shadow-[0_15px_40px_rgba(0,0,0,0.85)] py-2' : 'bg-black/75 backdrop-blur-xl border-white/[0.06] py-3'"
+        >
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-14">
+                    <!-- Brand Logo -->
+                    <a href="#inicio" @click="activeSection = 'inicio'" class="flex items-center gap-3 group">
+                        <div class="w-10 h-10 rounded-2xl bg-white/[0.06] border border-white/10 p-1.5 flex items-center justify-center shrink-0 overflow-hidden group-hover:border-white/25 transition">
+                            <img src="{{ asset('images/logo-dark-trans.png') }}" class="w-full h-full object-contain" alt="Soin Technology Logo">
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="font-bold text-base sm:text-lg tracking-tight text-white leading-none">
+                                SOIN <span class="text-neutral-400 font-light">TECHNOLOGY</span>
+                            </span>
+                            <span class="text-[10px] font-medium tracking-wider text-neutral-400 uppercase mt-0.5">
+                                Laboratorio &amp; Soluciones TI
+                            </span>
+                        </div>
+                    </a>
+
+                    <!-- Desktop Navigation Links (with Active Section Highlight / ScrollSpy) -->
+                    <nav class="hidden lg:flex items-center gap-1 xl:gap-1.5 p-1 rounded-full bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
+                        <a
+                            href="#inicio"
+                            @click="activeSection = 'inicio'"
+                            class="px-3.5 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer"
+                            :class="activeSection === 'inicio' ? 'bg-white text-black font-semibold shadow-xs' : 'text-neutral-400 hover:text-white hover:bg-white/[0.05] font-medium'"
+                        >
+                            Inicio
+                        </a>
+                        <a
+                            href="#rastreo"
+                            @click="activeSection = 'rastreo'"
+                            class="px-3.5 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer"
+                            :class="activeSection === 'rastreo' ? 'bg-white text-black font-semibold shadow-xs' : 'text-neutral-400 hover:text-white hover:bg-white/[0.05] font-medium'"
+                        >
+                            Seguimiento OT
+                        </a>
+                        <a
+                            href="#servicios"
+                            @click="activeSection = 'servicios'"
+                            class="px-3.5 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer"
+                            :class="activeSection === 'servicios' ? 'bg-white text-black font-semibold shadow-xs' : 'text-neutral-400 hover:text-white hover:bg-white/[0.05] font-medium'"
+                        >
+                            Especialidades
+                        </a>
+                        <a
+                            href="#microsoldadura"
+                            @click="activeSection = 'microsoldadura'"
+                            class="px-3.5 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer"
+                            :class="activeSection === 'microsoldadura' ? 'bg-white text-black font-semibold shadow-xs' : 'text-neutral-400 hover:text-white hover:bg-white/[0.05] font-medium'"
+                        >
+                            Microsoldadura
+                        </a>
+                        <a
+                            href="#empresas"
+                            @click="activeSection = 'empresas'"
+                            class="px-3.5 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer"
+                            :class="activeSection === 'empresas' ? 'bg-white text-black font-semibold shadow-xs' : 'text-neutral-400 hover:text-white hover:bg-white/[0.05] font-medium'"
+                        >
+                            Empresas B2B
+                        </a>
+                        <a
+                            href="#instagram"
+                            @click="activeSection = 'instagram'"
+                            class="px-3.5 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer"
+                            :class="activeSection === 'instagram' ? 'bg-white text-black font-semibold shadow-xs' : 'text-neutral-400 hover:text-white hover:bg-white/[0.05] font-medium'"
+                        >
+                            Instagram
+                        </a>
+                        <a
+                            href="#contacto"
+                            @click="activeSection = 'contacto'"
+                            class="px-3.5 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer"
+                            :class="activeSection === 'contacto' ? 'bg-white text-black font-semibold shadow-xs' : 'text-neutral-400 hover:text-white hover:bg-white/[0.05] font-medium'"
+                        >
+                            Contacto
+                        </a>
+                    </nav>
+
+                    <!-- Right CTAs -->
+                    <div class="hidden sm:flex items-center gap-3">
+                        <a href="#contacto" @click="activeSection = 'contacto'" class="px-5 py-2 rounded-full text-xs font-semibold bg-white text-black hover:bg-neutral-200 transition shadow-xs">
+                            Cotizar
+                        </a>
+                        @auth
+                            <a href="{{ url('/dashboard') }}" class="px-4 py-2 rounded-full text-xs font-medium bg-white/[0.08] hover:bg-white/[0.14] text-white border border-white/10 transition flex items-center gap-2">
+                                <span>Panel</span>
+                                <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                            </a>
+                        @else
+                            <a href="{{ route('login') }}" class="px-4 py-2 rounded-full text-xs font-medium bg-white/[0.06] hover:bg-white/[0.12] text-neutral-300 hover:text-white border border-white/10 transition flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                </svg>
+                                <span>Acceso Taller</span>
+                            </a>
+                        @endauth
+                    </div>
+
+                    <!-- Mobile Menu Button -->
+                    <button @click="mobileMenu = !mobileMenu" type="button" class="lg:hidden p-2 rounded-xl bg-white/[0.06] border border-white/10 text-neutral-300 hover:text-white cursor-pointer" aria-label="Abrir menú">
+                        <svg x-show="!mobileMenu" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                        <svg x-show="mobileMenu" style="display: none;" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
-        </div>
-    </header>
+
+            <!-- Mobile Drawer with Highlighted Active Section -->
+            <div x-show="mobileMenu" x-transition style="display: none;" class="lg:hidden border-t border-white/[0.08] bg-black/95 backdrop-blur-2xl px-5 pt-4 pb-6 space-y-1.5">
+                <a
+                    @click="mobileMenu = false; activeSection = 'inicio'"
+                    href="#inicio"
+                    class="block px-3.5 py-2.5 rounded-xl text-sm transition"
+                    :class="activeSection === 'inicio' ? 'bg-white text-black font-semibold' : 'text-neutral-300 hover:bg-white/5 font-medium'"
+                >Inicio</a>
+                <a
+                    @click="mobileMenu = false; activeSection = 'rastreo'"
+                    href="#rastreo"
+                    class="block px-3.5 py-2.5 rounded-xl text-sm transition"
+                    :class="activeSection === 'rastreo' ? 'bg-white text-black font-semibold' : 'text-neutral-300 hover:bg-white/5 font-medium'"
+                >Rastrear Orden OT</a>
+                <a
+                    @click="mobileMenu = false; activeSection = 'servicios'"
+                    href="#servicios"
+                    class="block px-3.5 py-2.5 rounded-xl text-sm transition"
+                    :class="activeSection === 'servicios' ? 'bg-white text-black font-semibold' : 'text-neutral-300 hover:bg-white/5 font-medium'"
+                >Especialidades Técnicas</a>
+                <a
+                    @click="mobileMenu = false; activeSection = 'microsoldadura'"
+                    href="#microsoldadura"
+                    class="block px-3.5 py-2.5 rounded-xl text-sm transition"
+                    :class="activeSection === 'microsoldadura' ? 'bg-white text-black font-semibold' : 'text-neutral-300 hover:bg-white/5 font-medium'"
+                >Microsoldadura &amp; Placas</a>
+                <a
+                    @click="mobileMenu = false; activeSection = 'empresas'"
+                    href="#empresas"
+                    class="block px-3.5 py-2.5 rounded-xl text-sm transition"
+                    :class="activeSection === 'empresas' ? 'bg-white text-black font-semibold' : 'text-neutral-300 hover:bg-white/5 font-medium'"
+                >Soporte TI para Empresas</a>
+                <a
+                    @click="mobileMenu = false; activeSection = 'instagram'"
+                    href="#instagram"
+                    class="block px-3.5 py-2.5 rounded-xl text-sm transition"
+                    :class="activeSection === 'instagram' ? 'bg-white text-black font-semibold' : 'text-neutral-300 hover:bg-white/5 font-medium'"
+                >Instagram Oficial</a>
+                <a
+                    @click="mobileMenu = false; activeSection = 'contacto'"
+                    href="#contacto"
+                    class="block px-3.5 py-2.5 rounded-xl text-sm transition"
+                    :class="activeSection === 'contacto' ? 'bg-white text-black font-semibold' : 'text-white hover:bg-white/5 font-medium'"
+                >Solicitar Presupuesto</a>
+
+                <div class="pt-3 border-t border-white/[0.08] flex gap-3">
+                    @auth
+                        <a href="{{ url('/dashboard') }}" class="w-full text-center py-2.5 rounded-full text-xs font-semibold bg-white text-black">Ir al Panel</a>
+                    @else
+                        <a href="{{ route('login') }}" class="w-full text-center py-2.5 rounded-full text-xs font-medium bg-white/[0.08] text-white border border-white/10">Acceso Taller</a>
+                    @endauth
+                </div>
+            </div>
+        </header>
+    </div>
 
     <!-- ============================================================== -->
     <!-- HERO SECTION: APPLE KEYNOTE PRESENTATION                       -->
     <!-- ============================================================== -->
-    <section id="inicio" class="relative z-10 pt-12 pb-16 lg:pt-16 lg:pb-24 overflow-hidden">
+    <section id="inicio" class="relative z-10 pt-28 sm:pt-36 lg:pt-40 pb-16 lg:pb-24 overflow-hidden scroll-mt-28">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             <!-- Grand Apple Headline -->
@@ -296,7 +399,7 @@
     <!-- ============================================================== -->
     <!-- RASTREO DE ORDEN OT: APPLE "FIND MY / STATUS" PORTAL           -->
     <!-- ============================================================== -->
-    <section id="rastreo" class="relative z-10 py-16 sm:py-20 border-t border-white/[0.06] bg-[#08080a]">
+    <section id="rastreo" class="relative z-10 py-16 sm:py-20 border-t border-white/[0.06] bg-[#08080a] scroll-mt-24">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
             <div class="rounded-3xl bg-[#121214] border border-white/10 p-7 sm:p-10 shadow-2xl space-y-6">
@@ -378,7 +481,7 @@
     <!-- ============================================================== -->
     <!-- BENTO GRID: ESPECIALIDADES TÉCNICAS (#servicios)               -->
     <!-- ============================================================== -->
-    <section id="servicios" class="relative z-10 py-20 sm:py-28 border-t border-white/[0.06] bg-[#000000]">
+    <section id="servicios" class="relative z-10 py-20 sm:py-28 border-t border-white/[0.06] bg-[#000000] scroll-mt-24">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             <div class="max-w-3xl mb-16">
@@ -614,7 +717,7 @@
     <!-- ============================================================== -->
     <!-- MICROSOLDADURA: APPLE HARDWARE ENGINEERING LAB                 -->
     <!-- ============================================================== -->
-    <section id="microsoldadura" class="relative z-10 py-20 sm:py-28 border-t border-white/[0.06] bg-[#08080a]">
+    <section id="microsoldadura" class="relative z-10 py-20 sm:py-28 border-t border-white/[0.06] bg-[#08080a] scroll-mt-24">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
 
@@ -679,7 +782,7 @@
     <!-- ============================================================== -->
     <!-- EMPRESAS & SOPORTE TI B2B: APPLE AT WORK                       -->
     <!-- ============================================================== -->
-    <section id="empresas" class="relative z-10 py-20 sm:py-28 border-t border-white/[0.06] bg-[#000000]">
+    <section id="empresas" class="relative z-10 py-20 sm:py-28 border-t border-white/[0.06] bg-[#000000] scroll-mt-24">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             <div class="rounded-3xl bg-[#121214] border border-white/10 overflow-hidden shadow-2xl">
@@ -735,7 +838,7 @@
     <!-- ============================================================== -->
     <!-- INSTAGRAM GALLERY: APPLE "SHOT ON LAB" GRID (#instagram)       -->
     <!-- ============================================================== -->
-    <section id="instagram" class="relative z-10 py-20 sm:py-28 border-t border-white/[0.06] bg-[#08080a]">
+    <section id="instagram" class="relative z-10 py-20 sm:py-28 border-t border-white/[0.06] bg-[#08080a] scroll-mt-24">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
@@ -836,7 +939,7 @@
     <!-- ============================================================== -->
     <!-- CONTACTO & COTIZACIÓN DIRECTA (#contacto)                      -->
     <!-- ============================================================== -->
-    <section id="contacto" class="relative z-10 py-20 sm:py-28 border-t border-white/[0.06] bg-[#000000]">
+    <section id="contacto" class="relative z-10 py-20 sm:py-28 border-t border-white/[0.06] bg-[#000000] scroll-mt-24">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
 
