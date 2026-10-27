@@ -160,7 +160,7 @@ body::before {
    UTILIDADES DE MARCA
    ========================================== */
 .text-gradient {
-    background: linear-gradient(120deg, #7c3aed, #db2777 50%, #06b6d4);
+    background-image: linear-gradient(120deg, #7c3aed, #db2777 50%, #06b6d4);
     background-size: 200% 200%;
     -webkit-background-clip: text;
     background-clip: text;
@@ -169,8 +169,9 @@ body::before {
 }
 
 .bg-aurora {
-    background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 30%, #db2777 65%, #2563eb 100%);
-    background-size: 220% 220%;
+    background-color: #7c3aed;
+    background-image: linear-gradient(135deg, #4c1d95 0%, #7c3aed 30%, #db2777 65%, #2563eb 100%);
+    background-size: 200% 200%;
     animation: gradient-shift 12s ease infinite;
 }
 
@@ -185,6 +186,7 @@ label.bg-brand-600 {
     position: relative;
     overflow: hidden;
     border-color: transparent !important;
+    background-color: #7c3aed;
     background-image: linear-gradient(135deg, #7c3aed 0%, #c026d3 55%, #db2777 100%);
     background-size: 160% 160%;
     background-position: 0% 50%;
@@ -228,6 +230,7 @@ button.bg-orange-600:hover::after, a.bg-orange-600:hover::after {
 
 /* Botones verdes (WhatsApp / pagos) con degradado esmeralda→celeste */
 button.bg-emerald-600, a.bg-emerald-600 {
+    background-color: #059669;
     background-image: linear-gradient(135deg, #059669, #0891b2);
     box-shadow: 0 6px 16px -6px rgba(8, 145, 178, 0.5);
     transition: transform 0.18s ease, box-shadow 0.18s ease;
@@ -239,26 +242,6 @@ button.bg-emerald-600:hover, a.bg-emerald-600:hover {
 button:disabled, button[disabled] {
     transform: none !important;
     box-shadow: none !important;
-}
-
-/* ==========================================
-   TARJETAS "GLASS" (vidrio suave sobre el fondo aurora)
-   ========================================== */
-.rounded-xl.bg-white,
-.rounded-2xl.bg-white {
-    background-color: rgba(255, 255, 255, 0.82);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
-    backdrop-filter: blur(14px) saturate(140%);
-    transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
-}
-
-.dark .rounded-xl.dark\:bg-zinc-900,
-.dark .rounded-2xl.dark\:bg-zinc-900,
-.dark .rounded-xl.dark\:bg-slate-900,
-.dark .rounded-2xl.dark\:bg-slate-900 {
-    background-color: rgba(33, 27, 62, 0.72);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
-    backdrop-filter: blur(14px) saturate(140%);
 }
 
 /* Tarjetas de KPIs / grillas: elevación al pasar el mouse */
