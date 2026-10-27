@@ -8,23 +8,116 @@
 /* Enable class-based dark mode in Tailwind v4 */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ==========================================================
+   PALETA SOINTECH "AURORA"
+   Morado (brand) · Rosa oscuro (orange→pink) · Azul · Celeste
+   Los neutros (slate/zinc) se tiñen de lavanda para que la
+   interfaz se sienta cálida y alegre en vez de gris/fría.
+   ========================================================== */
 @theme {
     --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    
-    --color-brand-50: #fff7ed;
-    --color-brand-100: #ffedd5;
-    --color-brand-200: #fed7aa;
-    --color-brand-300: #fdba74;
-    --color-brand-400: #fb923c;
-    --color-brand-500: #f97316;
-    --color-brand-600: #ea580c;
-    --color-brand-700: #c2410c;
-    --color-brand-800: #9a3412;
-    --color-brand-900: #7c2d12;
+
+    /* Brand: morado vibrante */
+    --color-brand-50: #f5f3ff;
+    --color-brand-100: #ede9fe;
+    --color-brand-200: #ddd6fe;
+    --color-brand-300: #c4b5fd;
+    --color-brand-400: #a78bfa;
+    --color-brand-500: #8b5cf6;
+    --color-brand-600: #7c3aed;
+    --color-brand-700: #6d28d9;
+    --color-brand-800: #5b21b6;
+    --color-brand-900: #4c1d95;
+    --color-brand-950: #2e1065;
+
+    /* "orange" (usado como acento en muchas vistas) → rosa oscuro / magenta */
+    --color-orange-50: #fdf2f8;
+    --color-orange-100: #fce7f3;
+    --color-orange-200: #fbcfe8;
+    --color-orange-300: #f9a8d4;
+    --color-orange-400: #f472b6;
+    --color-orange-500: #ec4899;
+    --color-orange-600: #db2777;
+    --color-orange-700: #be185d;
+    --color-orange-800: #9d174d;
+    --color-orange-900: #831843;
+    --color-orange-950: #500724;
+
+    /* Info → azul/celeste más vivo */
+    --color-sky-50: #ecfeff;
+    --color-sky-100: #cffafe;
+    --color-sky-200: #a5f3fc;
+    --color-sky-300: #67e8f9;
+    --color-sky-400: #22d3ee;
+    --color-sky-500: #06b6d4;
+    --color-sky-600: #0891b2;
+    --color-sky-700: #0e7490;
+    --color-sky-800: #155e75;
+    --color-sky-900: #164e63;
+    --color-sky-950: #083344;
+
+    /* Neutros cálidos lavanda (reemplazan grises fríos) */
+    --color-slate-50: #faf8ff;
+    --color-slate-100: #f3effc;
+    --color-slate-200: #e6e0f5;
+    --color-slate-300: #d0c8e8;
+    --color-slate-400: #a299c2;
+    --color-slate-500: #79709b;
+    --color-slate-600: #5b527c;
+    --color-slate-700: #443c64;
+    --color-slate-800: #2f284f;
+    --color-slate-900: #211b3e;
+    --color-slate-950: #16112e;
+
+    --color-zinc-50: #faf8ff;
+    --color-zinc-100: #f3effc;
+    --color-zinc-200: #e6e0f5;
+    --color-zinc-300: #d0c8e8;
+    --color-zinc-400: #a299c2;
+    --color-zinc-500: #79709b;
+    --color-zinc-600: #5b527c;
+    --color-zinc-700: #443c64;
+    --color-zinc-750: #3a3359;
+    --color-zinc-800: #2f284f;
+    --color-zinc-900: #211b3e;
+    --color-zinc-950: #16112e;
+
+    --animate-fade-in: fade-in-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+    --animate-float: float 7s ease-in-out infinite;
+    --animate-gradient: gradient-shift 8s ease infinite;
 }
 
 /* ==========================================
-   BASE & SMOOTH TRANSITIONS
+   KEYFRAMES
+   ========================================== */
+@keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33%      { transform: translate(30px, -25px) scale(1.06); }
+    66%      { transform: translate(-20px, 20px) scale(0.96); }
+}
+
+@keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50%      { background-position: 100% 50%; }
+}
+
+@keyframes aurora {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+    50%      { transform: translate3d(-3%, 2%, 0) rotate(4deg); }
+}
+
+@keyframes shine {
+    from { transform: translateX(-120%) skewX(-20deg); }
+    to   { transform: translateX(220%) skewX(-20deg); }
+}
+
+/* ==========================================
+   BASE & FONDO AURORA
    ========================================== */
 html {
     color-scheme: light dark;
@@ -35,7 +128,191 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Hide scrollbars when desired */
+/* Fondo de color suave y animado detrás de toda la app */
+body::before {
+    content: '';
+    position: fixed;
+    inset: -10%;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(40% 35% at 10% 5%,  rgba(139, 92, 246, 0.20), transparent 70%),
+        radial-gradient(35% 30% at 90% 10%, rgba(236, 72, 153, 0.16), transparent 70%),
+        radial-gradient(40% 35% at 15% 95%, rgba(34, 211, 238, 0.16), transparent 70%),
+        radial-gradient(35% 35% at 90% 90%, rgba(59, 130, 246, 0.16), transparent 70%);
+    animation: aurora 22s ease-in-out infinite;
+}
+
+.dark body::before {
+    background:
+        radial-gradient(40% 35% at 10% 5%,  rgba(139, 92, 246, 0.30), transparent 70%),
+        radial-gradient(35% 30% at 90% 10%, rgba(219, 39, 119, 0.24), transparent 70%),
+        radial-gradient(40% 35% at 15% 95%, rgba(6, 182, 212, 0.18), transparent 70%),
+        radial-gradient(35% 35% at 90% 90%, rgba(59, 130, 246, 0.22), transparent 70%);
+}
+
+::selection {
+    background: #db2777;
+    color: #fff;
+}
+
+/* ==========================================
+   UTILIDADES DE MARCA
+   ========================================== */
+.text-gradient {
+    background: linear-gradient(120deg, #7c3aed, #db2777 50%, #06b6d4);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradient-shift 8s ease infinite;
+}
+
+.bg-aurora {
+    background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 30%, #db2777 65%, #2563eb 100%);
+    background-size: 220% 220%;
+    animation: gradient-shift 12s ease infinite;
+}
+
+/* ==========================================
+   BOTONES PRIMARIOS CON DEGRADADO + BRILLO
+   (aplica automáticamente a todos los botones de marca)
+   ========================================== */
+button.bg-brand-500, a.bg-brand-500,
+button.bg-brand-600, a.bg-brand-600,
+button.bg-orange-600, a.bg-orange-600,
+label.bg-brand-600 {
+    position: relative;
+    overflow: hidden;
+    border-color: transparent !important;
+    background-image: linear-gradient(135deg, #7c3aed 0%, #c026d3 55%, #db2777 100%);
+    background-size: 160% 160%;
+    background-position: 0% 50%;
+    box-shadow: 0 6px 18px -6px rgba(192, 38, 211, 0.55);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background-position 0.5s ease, filter 0.18s ease;
+}
+
+button.bg-brand-500:hover, a.bg-brand-500:hover,
+button.bg-brand-600:hover, a.bg-brand-600:hover,
+button.bg-orange-600:hover, a.bg-orange-600:hover,
+label.bg-brand-600:hover {
+    background-position: 100% 50%;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px -8px rgba(219, 39, 119, 0.6);
+}
+
+button.bg-brand-500:active, a.bg-brand-500:active,
+button.bg-brand-600:active, a.bg-brand-600:active,
+button.bg-orange-600:active, a.bg-orange-600:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Destello que cruza el botón al pasar el mouse */
+button.bg-brand-500::after, a.bg-brand-500::after,
+button.bg-brand-600::after, a.bg-brand-600::after,
+button.bg-orange-600::after, a.bg-orange-600::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0; left: 0;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+    transform: translateX(-120%) skewX(-20deg);
+    pointer-events: none;
+}
+
+button.bg-brand-500:hover::after, a.bg-brand-500:hover::after,
+button.bg-brand-600:hover::after, a.bg-brand-600:hover::after,
+button.bg-orange-600:hover::after, a.bg-orange-600:hover::after {
+    animation: shine 0.8s ease;
+}
+
+/* Botones verdes (WhatsApp / pagos) con degradado esmeralda→celeste */
+button.bg-emerald-600, a.bg-emerald-600 {
+    background-image: linear-gradient(135deg, #059669, #0891b2);
+    box-shadow: 0 6px 16px -6px rgba(8, 145, 178, 0.5);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+button.bg-emerald-600:hover, a.bg-emerald-600:hover {
+    transform: translateY(-1px);
+}
+
+button:disabled, button[disabled] {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* ==========================================
+   TARJETAS "GLASS" (vidrio suave sobre el fondo aurora)
+   ========================================== */
+.rounded-xl.bg-white,
+.rounded-2xl.bg-white {
+    background-color: rgba(255, 255, 255, 0.82);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    backdrop-filter: blur(14px) saturate(140%);
+    transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+}
+
+.dark .rounded-xl.dark\:bg-zinc-900,
+.dark .rounded-2xl.dark\:bg-zinc-900,
+.dark .rounded-xl.dark\:bg-slate-900,
+.dark .rounded-2xl.dark\:bg-slate-900 {
+    background-color: rgba(33, 27, 62, 0.72);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    backdrop-filter: blur(14px) saturate(140%);
+}
+
+/* Tarjetas de KPIs / grillas: elevación al pasar el mouse */
+@media (hover: hover) {
+    main .grid > .rounded-xl:hover,
+    main .grid > .rounded-2xl:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 30px -14px rgba(124, 58, 237, 0.35);
+        border-color: rgba(167, 139, 250, 0.55);
+    }
+}
+
+/* ==========================================
+   ENTRADA ANIMADA DEL CONTENIDO
+   ========================================== */
+.animate-fade-in {
+    animation: fade-in-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.page-enter > * {
+    animation: fade-in-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+main .grid > * {
+    animation: fade-in-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+main .grid > *:nth-child(2) { animation-delay: 0.04s; }
+main .grid > *:nth-child(3) { animation-delay: 0.08s; }
+main .grid > *:nth-child(4) { animation-delay: 0.12s; }
+main .grid > *:nth-child(5) { animation-delay: 0.16s; }
+main .grid > *:nth-child(6) { animation-delay: 0.20s; }
+main .grid > *:nth-child(n+7) { animation-delay: 0.24s; }
+
+/* Inputs: foco con halo morado */
+input:focus, select:focus, textarea:focus {
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.18);
+}
+
+/* Navegación lateral activa con barra degradada */
+.nav-active {
+    position: relative;
+}
+.nav-active::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 20%; bottom: 20%;
+    width: 3px;
+    border-radius: 9999px;
+    background: linear-gradient(180deg, #7c3aed, #db2777);
+}
+
+/* ==========================================
+   SCROLLBARS
+   ========================================== */
 .no-scrollbar::-webkit-scrollbar {
     display: none;
 }
@@ -44,7 +321,6 @@ body {
     scrollbar-width: none;
 }
 
-/* Clean, modern scrollbars for both themes */
 .theme-scrollbar::-webkit-scrollbar,
 .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
@@ -58,39 +334,23 @@ body {
 
 .theme-scrollbar::-webkit-scrollbar-thumb,
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: rgba(148, 163, 184, 0.4); /* slate-400 */
+    background-color: rgba(139, 92, 246, 0.35);
     border-radius: 9999px;
 }
 
 .theme-scrollbar::-webkit-scrollbar-thumb:hover,
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(100, 116, 139, 0.7); /* slate-500 */
+    background-color: rgba(139, 92, 246, 0.6);
 }
 
-.dark .theme-scrollbar::-webkit-scrollbar-thumb,
-.dark .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: rgba(71, 85, 105, 0.5); /* slate-600 */
-}
-
-.dark .theme-scrollbar::-webkit-scrollbar-thumb:hover,
-.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(148, 163, 184, 0.6); /* slate-400 */
-}
-
-/* Firefox scrollbar */
 .theme-scrollbar,
 .custom-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
-}
-
-.dark .theme-scrollbar,
-.dark .custom-scrollbar {
-    scrollbar-color: rgba(71, 85, 105, 0.5) transparent;
+    scrollbar-color: rgba(139, 92, 246, 0.35) transparent;
 }
 
 /* ==========================================
-   MOBILE SAFE AREAS & INTERACTIONS
+   MOBILE / PWA (iPhone)
    ========================================== */
 .safe-area-bottom {
     padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -100,9 +360,31 @@ body {
     padding-top: env(safe-area-inset-top, 0px);
 }
 
+/* Evita el zoom automático de iOS al enfocar inputs pequeños */
+@media (max-width: 767px) {
+    input, select, textarea {
+        font-size: 16px !important;
+    }
+    html {
+        -webkit-tap-highlight-color: rgba(139, 92, 246, 0.15);
+    }
+}
+
 @media (hover: none) and (pointer: coarse) {
     .active\:scale-98:active {
         transform: scale(0.98);
         transition: transform 0.1s ease;
+    }
+    button:active, a:active {
+        transition: transform 0.08s ease;
+    }
+}
+
+/* Accesibilidad: sin animaciones si el usuario lo prefiere */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 }

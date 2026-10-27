@@ -1,29 +1,33 @@
 <div class="space-y-6 animate-fade-in max-w-full overflow-x-hidden" wire:poll.visible.10s>
 
     <!-- 1. HEADER DE BIENVENIDA & ACCIONES RÁPIDAS -->
-    <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-            <div class="flex items-center gap-2">
-                <span class="px-2 py-0.5 bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-500/20 text-[10px] font-semibold uppercase tracking-wider rounded">
+    <div class="relative overflow-hidden rounded-2xl p-5 sm:p-6 text-white shadow-lg shadow-purple-950/15 border border-white/15 flex flex-col md:flex-row md:items-center justify-between gap-4"
+         style="background: linear-gradient(125deg, #4c1d95 0%, #7c3aed 35%, #db2777 72%, #0284c7 100%);">
+        <div class="absolute -top-16 -right-16 w-56 h-56 rounded-full bg-cyan-300/25 blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-16 left-1/3 w-56 h-56 rounded-full bg-pink-400/25 blur-3xl pointer-events-none"></div>
+
+        <div class="relative z-10">
+            <div class="flex flex-wrap items-center gap-2">
+                <span class="px-2.5 py-0.5 bg-white/20 backdrop-blur-md text-white border border-white/25 text-[10px] font-bold uppercase tracking-wider rounded-full">
                     {{ ucfirst(auth()->user()->role) }}
                 </span>
-                <span class="text-xs text-zinc-500 font-medium">{{ ucfirst(\Carbon\Carbon::now()->locale('es')->isoFormat('dddd, D [de] MMMM [de] YYYY')) }}</span>
+                <span class="text-xs text-purple-100/90 font-medium">{{ ucfirst(\Carbon\Carbon::now()->locale('es')->isoFormat('dddd, D [de] MMMM [de] YYYY')) }}</span>
             </div>
-            <h1 class="text-xl sm:text-2xl font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight mt-1">
-                Hola, {{ auth()->user()->name }}
+            <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight mt-1.5">
+                ¡Hola, {{ auth()->user()->name }}! 👋
             </h1>
-            <p class="text-xs text-zinc-500 mt-0.5">Resumen de operaciones del taller y estado en tiempo real.</p>
+            <p class="text-xs text-purple-100/90 mt-0.5">Resumen de operaciones del taller y estado en tiempo real.</p>
         </div>
 
         <!-- Quick Action Buttons -->
-        <div class="flex flex-wrap items-center gap-2.5">
+        <div class="relative z-10 flex flex-wrap items-center gap-2.5">
             @if(auth()->user()->isAdmin() || auth()->user()->role === 'recepcionista')
-                <a href="{{ route('work-orders.create') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-brand-500 hover:bg-brand-600 text-white font-medium text-xs rounded-lg transition shadow-xs">
-                    <x-ui.icon name="plus" class="w-4 h-4" />
+                <a href="{{ route('work-orders.create') }}" class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-white text-purple-900 hover:bg-purple-50 font-bold text-xs rounded-xl transition shadow-md hover:-translate-y-0.5">
+                    <x-ui.icon name="plus" class="w-4 h-4 text-pink-600" />
                     <span>Nueva Orden OT</span>
                 </a>
-                <a href="{{ route('pos.index') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-750 text-zinc-700 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-700 font-medium text-xs rounded-lg transition shadow-xs">
-                    <x-ui.icon name="shopping-bag" class="w-4 h-4 text-emerald-500" />
+                <a href="{{ route('pos.index') }}" class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-white/15 hover:bg-white/25 backdrop-blur-md text-white border border-white/30 font-bold text-xs rounded-xl transition shadow-sm hover:-translate-y-0.5">
+                    <x-ui.icon name="shopping-bag" class="w-4 h-4 text-cyan-300" />
                     <span>Punto de Venta POS</span>
                 </a>
             @endif
@@ -31,66 +35,71 @@
     </div>
 
     <!-- 2. TARJETAS DE KPIS PRINCIPALES (GRID 5 COLS) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
-        <!-- Total Órdenes -->
-        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-xs flex items-center justify-between">
+    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+        <!-- Total Órdenes (Morado Vibrante) -->
+        <div class="bg-white dark:bg-zinc-900 border border-purple-200/80 dark:border-purple-800/50 rounded-2xl p-4 shadow-xs flex items-center justify-between relative overflow-hidden">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-500"></div>
             <div>
-                <span class="text-[11px] font-medium text-zinc-500 uppercase tracking-wider block">Órdenes Totales</span>
-                <span class="text-2xl font-semibold font-mono text-zinc-900 dark:text-zinc-100 mt-0.5 block">{{ $totalOrders }}</span>
-                <span class="text-[11px] text-zinc-400 mt-0.5 block">{{ $ingresadas }} en recepción</span>
+                <span class="text-[11px] font-bold text-purple-600 dark:text-purple-300 uppercase tracking-wider block">Órdenes Totales</span>
+                <span class="text-2xl font-extrabold font-mono text-zinc-900 dark:text-zinc-100 mt-0.5 block">{{ $totalOrders }}</span>
+                <span class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 block">{{ $ingresadas }} en recepción</span>
             </div>
-            <div class="w-9 h-9 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-zinc-600 dark:text-zinc-400 shrink-0">
-                <x-ui.icon name="clipboard" class="w-4 h-4" />
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-purple-500/30 shrink-0">
+                <x-ui.icon name="clipboard" class="w-5 h-5" />
             </div>
         </div>
 
-        <!-- En Reparación -->
-        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-xs flex items-center justify-between">
+        <!-- En Reparación (Azul & Celeste) -->
+        <div class="bg-white dark:bg-zinc-900 border border-sky-200/80 dark:border-sky-800/50 rounded-2xl p-4 shadow-xs flex items-center justify-between relative overflow-hidden">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-cyan-400"></div>
             <div>
-                <span class="text-[11px] font-medium text-zinc-500 uppercase tracking-wider block">En Reparación</span>
-                <span class="text-2xl font-semibold font-mono text-zinc-900 dark:text-zinc-100 mt-0.5 block">{{ $enReparacion }}</span>
-                <span class="text-[11px] text-zinc-400 mt-0.5 block">{{ $enRevision }} en revisión</span>
+                <span class="text-[11px] font-bold text-blue-600 dark:text-cyan-300 uppercase tracking-wider block">En Reparación</span>
+                <span class="text-2xl font-extrabold font-mono text-zinc-900 dark:text-zinc-100 mt-0.5 block">{{ $enReparacion }}</span>
+                <span class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 block">{{ $enRevision }} en revisión</span>
             </div>
-            <div class="w-9 h-9 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-zinc-600 dark:text-zinc-400 shrink-0">
-                <x-ui.icon name="tool" class="w-4 h-4" />
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white shadow-md shadow-cyan-500/30 shrink-0">
+                <x-ui.icon name="tool" class="w-5 h-5" />
             </div>
         </div>
 
-        <!-- Esperando Repuestos -->
-        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-xs flex items-center justify-between">
+        <!-- Esperando Repuestos (Rosa Oscuro / Magenta) -->
+        <div class="bg-white dark:bg-zinc-900 border border-pink-200/80 dark:border-pink-800/50 rounded-2xl p-4 shadow-xs flex items-center justify-between relative overflow-hidden">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-500 to-rose-500"></div>
             <div>
-                <span class="text-[11px] font-medium text-zinc-500 uppercase tracking-wider block">Esperando Repuestos</span>
-                <span class="text-2xl font-semibold font-mono text-zinc-900 dark:text-zinc-100 mt-0.5 block">{{ $esperandoRepuestos }}</span>
-                <span class="text-[11px] text-zinc-400 mt-0.5 block">A la espera de piezas</span>
+                <span class="text-[11px] font-bold text-pink-600 dark:text-pink-300 uppercase tracking-wider block">Esp. Repuestos</span>
+                <span class="text-2xl font-extrabold font-mono text-zinc-900 dark:text-zinc-100 mt-0.5 block">{{ $esperandoRepuestos }}</span>
+                <span class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 block">A la espera de piezas</span>
             </div>
-            <div class="w-9 h-9 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-zinc-600 dark:text-zinc-400 shrink-0">
-                <x-ui.icon name="package" class="w-4 h-4" />
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-white shadow-md shadow-pink-500/30 shrink-0">
+                <x-ui.icon name="package" class="w-5 h-5" />
             </div>
         </div>
 
-        <!-- Listas para Entrega -->
-        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-xs flex items-center justify-between">
+        <!-- Listas para Entrega (Esmeralda / Turquesa) -->
+        <div class="bg-white dark:bg-zinc-900 border border-emerald-200/80 dark:border-emerald-800/50 rounded-2xl p-4 shadow-xs flex items-center justify-between relative overflow-hidden">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-400"></div>
             <div>
-                <span class="text-[11px] font-medium text-zinc-500 uppercase tracking-wider block">Listas para Entrega</span>
-                <span class="text-2xl font-semibold font-mono text-emerald-600 dark:text-emerald-400 mt-0.5 block">{{ $listas }}</span>
-                <span class="text-[11px] text-zinc-400 mt-0.5 block">{{ $entregadas }} entregadas en total</span>
+                <span class="text-[11px] font-bold text-emerald-600 dark:text-emerald-300 uppercase tracking-wider block">Listas Entrega</span>
+                <span class="text-2xl font-extrabold font-mono text-emerald-600 dark:text-emerald-400 mt-0.5 block">{{ $listas }}</span>
+                <span class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 block">{{ $entregadas }} entregadas</span>
             </div>
-            <div class="w-9 h-9 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
-                <x-ui.icon name="check-circle" class="w-4 h-4" />
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-md shadow-emerald-500/30 shrink-0">
+                <x-ui.icon name="check-circle" class="w-5 h-5" />
             </div>
         </div>
 
-        <!-- Utilidad Mano de Obra / Finanzas -->
-        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-xs flex items-center justify-between">
+        <!-- Utilidad Mano de Obra / Finanzas (Aurora Morado-Rosa-Celeste) -->
+        <div class="col-span-2 sm:col-span-2 lg:col-span-1 bg-white dark:bg-zinc-900 border border-purple-200/80 dark:border-purple-800/50 rounded-2xl p-4 shadow-xs flex items-center justify-between relative overflow-hidden">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-aurora"></div>
             <div>
-                <span class="text-[11px] font-medium text-zinc-500 uppercase tracking-wider block">Utilidad M. Obra</span>
-                <span class="text-xl font-semibold font-mono text-zinc-900 dark:text-zinc-100 mt-0.5 block">
+                <span class="text-[11px] font-bold text-purple-600 dark:text-pink-300 uppercase tracking-wider block">Utilidad M. Obra</span>
+                <span class="text-xl font-extrabold font-mono text-zinc-900 dark:text-zinc-100 mt-0.5 block">
                     ${{ number_format($totalRevenue, 0, ',', '.') }}
                 </span>
-                <span class="text-[11px] text-zinc-400 mt-0.5 block">Ganancia neta (Sin repuestos)</span>
+                <span class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 block">Ganancia neta taller</span>
             </div>
-            <div class="w-9 h-9 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-zinc-600 dark:text-zinc-400 shrink-0">
-                <x-ui.icon name="dollar-sign" class="w-4 h-4" />
+            <div class="w-10 h-10 rounded-xl bg-aurora flex items-center justify-center text-white shadow-md shadow-brand-500/30 shrink-0">
+                <x-ui.icon name="dollar-sign" class="w-5 h-5" />
             </div>
         </div>
     </div>
@@ -133,12 +142,12 @@
                                      datasets: [{
                                          label: 'Nuevas Órdenes',
                                          data: data,
-                                         borderColor: '#f97316',
-                                         backgroundColor: 'rgba(249, 115, 22, 0.08)',
+                                         borderColor: '#8b5cf6',
+                                         backgroundColor: 'rgba(219, 39, 119, 0.10)',
                                          fill: true,
                                          tension: 0.3,
                                          borderWidth: 2,
-                                         pointBackgroundColor: '#f97316',
+                                         pointBackgroundColor: '#db2777',
                                          pointRadius: 3
                                      }]
                                  },
@@ -198,7 +207,7 @@
                                      labels: statusLabels,
                                      datasets: [{
                                          data: statusValues,
-                                         backgroundColor: ['#71717a', '#6366f1', '#3b82f6', '#f59e0b', '#10b981', '#a855f7'],
+                                         backgroundColor: ['#8b5cf6', '#db2777', '#3b82f6', '#06b6d4', '#f59e0b', '#10b981'],
                                          borderWidth: 0
                                      }]
                                  },
