@@ -76,6 +76,17 @@ class ManageSettings extends Component
     public $whatsapp_template_name = 'ot_status_update';
     public $test_whatsapp_recipient = '';
 
+    // Landing Page & Instagram Feed Settings
+    public $instagram_posts = [];
+    public $ig_category = 'Microsoldadura SMD';
+    public $ig_title = '';
+    public $ig_caption = '';
+    public $ig_url = 'https://www.instagram.com/sointech.cl';
+    public $ig_theme = 'purple';
+    public $ig_likes = '120';
+    public $ig_date = 'Caso Real · Laboratorio';
+    public $ig_photo;
+
     public $activeTab = 'general';
 
     protected $paginationTheme = 'tailwind';
@@ -102,7 +113,7 @@ class ManageSettings extends Component
             $this->timezone = $settings->timezone ?? 'America/Santiago';
             $this->support_email = $settings->support_email;
             $this->support_whatsapp = $settings->support_whatsapp;
-            $this->social_instagram = $settings->social_instagram;
+            $this->social_instagram = $settings->social_instagram ?: 'https://www.instagram.com/sointech.cl';
             $this->social_facebook = $settings->social_facebook;
             
             $this->logo_path = $settings->logo_path;
@@ -133,6 +144,12 @@ class ManageSettings extends Component
             $this->whatsapp_access_token = $settings->whatsapp_access_token ?? '';
             $this->whatsapp_template_name = $settings->whatsapp_template_name ?: 'ot_status_update';
             $this->test_whatsapp_recipient = $settings->support_whatsapp ?: '';
+
+            // Landing Page & Instagram Posts
+            $pred = is_array($settings->predictive_catalog) ? $settings->predictive_catalog : [];
+            $this->instagram_posts = !empty($pred['instagram_posts'])
+                ? $pred['instagram_posts']
+                : \App\Livewire\Public\LandingPage::defaultInstagramPosts();
         }
     }
 
@@ -435,6 +452,73 @@ class ManageSettings extends Component
         if ($device) {
             $device->delete();
             session()->flash('message', 'Equipo eliminado del catálogo predictivo.');
+        }
+    }
+
+    public function addInstagramPost()
+    {
+        $this->validate([
+            'ig_category' => 'required|string|max:60',
+            'ig_title'    => 'required|string|max:120',
+            'ig_caption'  => 'required|string|max:500',
+            'ig_url'      => 'nullable|string|max:255',
+            'ig_theme'    => 'required|in:purple,pink,cyan,blue,emerald',
+            'ig_likes'    => 'nullable|string|max:20',
+            'ig_date'     => 'nullable|string|max:40',
+            'ig_photo'    => 'nullable|image|max:3072',
+        ]);
+
+        $imagePath = null;
+        if ($this->ig_photo) {
+            $imagePath = $this->ig_photo->store('instagram', 'public');
+        }
+
+        array_unshift($this->instagram_posts, [
+            'category' => trim($this->ig_category),
+            'title'    => trim($this->ig_title),
+            'caption'  => trim($this->ig_caption),
+            'url'      => trim($this->ig_url ?: 'https://www.instagram.com/sointech.cl'),
+            'image'    => $imagePath,
+            'theme'    => $this->ig_theme,
+            'likes'    => trim($this->ig_likes ?: '125'),
+            'date'     => trim($this->ig_date ?: 'Publicación Destacada'),
+        ]);
+
+        $this->saveInstagramPostsToDb();
+
+        $this->ig_title = '';
+        $this->ig_caption = '';
+        $this->ig_photo = null;
+        session()->flash('message', 'Publicación de Instagram agregada a la Landing Page.');
+    }
+
+    public function deleteInstagramPost($index)
+    {
+        if (isset($this->instagram_posts[$index])) {
+            unset($this->instagram_posts[$index]);
+            $this->instagram_posts = array_values($this->instagram_posts);
+            $this->saveInstagramPostsToDb();
+            session()->flash('message', 'Publicación eliminada de la Landing Page.');
+        }
+    }
+
+    public function resetInstagramPosts()
+    {
+        $this->instagram_posts = \App\Livewire\Public\LandingPage::defaultInstagramPosts();
+        $this->saveInstagramPostsToDb();
+        session()->flash('message', 'Publicaciones de Instagram restauradas a los casos por defecto.');
+    }
+
+    protected function saveInstagramPostsToDb()
+    {
+        $settings = Setting::find(1);
+        if ($settings) {
+            $pred = is_array($settings->predictive_catalog) ? $settings->predictive_catalog : [];
+            $pred['instagram_posts'] = $this->instagram_posts;
+            $settings->update([
+                'predictive_catalog' => $pred,
+                'social_instagram'   => $this->social_instagram,
+            ]);
         }
     }
 

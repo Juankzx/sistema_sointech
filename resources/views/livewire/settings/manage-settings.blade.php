@@ -57,6 +57,12 @@
             <x-ui.icon name="whatsapp" class="w-4 h-4 text-emerald-500" />
             <span>WhatsApp Cloud API</span>
         </button>
+        <button type="button" @click="activeTab = 'instagram'" 
+            :class="activeTab === 'instagram' ? 'bg-white dark:bg-zinc-800 text-pink-600 dark:text-pink-400 shadow-sm border border-zinc-200/80 dark:border-zinc-700/80' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'" 
+            class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition cursor-pointer">
+            <x-ui.icon name="camera" class="w-4 h-4 text-pink-500" />
+            <span>Landing & Instagram</span>
+        </button>
     </div>
 
     <!-- Alert Notifications -->
@@ -737,6 +743,123 @@
                     </button>
                 </div>
             </form>
+        </x-ui.card>
+    </div>
+
+    <!-- TAB 7: LANDING PAGE & INSTAGRAM FEED -->
+    <div x-show="activeTab === 'instagram'" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="space-y-6" x-cloak>
+        <x-ui.card>
+            <div class="p-5 border-b border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-2.5">
+                    <x-ui.icon name="camera" class="w-5 h-5 text-pink-500" />
+                    <div>
+                        <h2 class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Publicaciones de Instagram en la Landing Page</h2>
+                        <p class="text-[11px] text-zinc-500">Agrega tus trabajos reales, Reels o publicaciones de @sointech.cl para mostrarlos en la página pública.</p>
+                    </div>
+                </div>
+                <button type="button" wire:click="resetInstagramPosts"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition cursor-pointer">
+                    <x-ui.icon name="refresh-cw" class="w-3.5 h-3.5" />
+                    <span>Restaurar Casos por Defecto</span>
+                </button>
+            </div>
+
+            <div class="p-5 sm:p-6 space-y-6">
+                <!-- Formulario para Agregar Nuevo Post -->
+                <form wire:submit.prevent="addInstagramPost" class="p-4 sm:p-5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/80 space-y-4">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-pink-600 dark:text-pink-400 flex items-center gap-1.5">
+                        <x-ui.icon name="plus" class="w-4 h-4" />
+                        <span>Nueva Publicación / Caso de Éxito</span>
+                    </h3>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">Categoría / Especialidad *</label>
+                            <select wire:model="ig_category" class="w-full px-3 py-2 text-xs rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
+                                <option value="Microsoldadura SMD">Microsoldadura SMD / Placas</option>
+                                <option value="Consolas · PS5 / Xbox">Consolas · PS5 / Xbox / Switch</option>
+                                <option value="Notebooks & Mac">Notebooks & Mac</option>
+                                <option value="iPhone & Smartphones">iPhone & Smartphones</option>
+                                <option value="Empresas & Soporte TI">Empresas & Soporte TI</option>
+                                <option value="Software & Sistemas POS">Software & Sistemas POS</option>
+                            </select>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">Título del Trabajo / Equipo *</label>
+                            <input type="text" wire:model="ig_title" placeholder="Ej: Reparación de Corto en Placa MacBook Pro M2"
+                                class="w-full px-3 py-2 text-xs rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
+                            @error('ig_title') <span class="text-[11px] text-rose-500 mt-0.5 block">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">Descripción / Pie de Foto (Caption) *</label>
+                        <textarea wire:model="ig_caption" rows="2" placeholder="Describe brevemente el diagnóstico, procedimiento técnico y resultado..."
+                            class="w-full px-3 py-2 text-xs rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100"></textarea>
+                        @error('ig_caption') <span class="text-[11px] text-rose-500 mt-0.5 block">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">Link al Post o Reel de Instagram</label>
+                            <input type="url" wire:model="ig_url" placeholder="https://www.instagram.com/p/..."
+                                class="w-full px-3 py-2 text-xs rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">Color de Acento</label>
+                            <select wire:model="ig_theme" class="w-full px-3 py-2 text-xs rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
+                                <option value="purple">Morado Laboratorio</option>
+                                <option value="pink">Rosa / Magenta</option>
+                                <option value="cyan">Celeste / Cian</option>
+                                <option value="blue">Azul Real</option>
+                                <option value="emerald">Esmeralda Corporativo</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">Foto del Trabajo (Opcional)</label>
+                            <input type="file" wire:model="ig_photo" accept="image/*"
+                                class="w-full text-xs text-zinc-600 dark:text-zinc-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-500/15 file:text-brand-600 dark:file:text-brand-300 hover:file:bg-brand-500/25">
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end pt-2">
+                        <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-brand-600 hover:bg-brand-500 transition cursor-pointer">
+                            <x-ui.icon name="plus" class="w-4 h-4" />
+                            <span>Publicar en la Landing Page</span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Lista de Posts Actuales -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    @foreach($instagram_posts as $idx => $post)
+                        <div class="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex flex-col justify-between gap-3">
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between gap-2">
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-brand-500/15 text-brand-600 dark:text-brand-300 border border-brand-500/25">
+                                        {{ $post['category'] ?? 'Taller' }}
+                                    </span>
+                                    <button type="button" wire:click="deleteInstagramPost({{ $idx }})"
+                                        class="text-zinc-400 hover:text-rose-500 transition p-1 cursor-pointer" title="Eliminar post">
+                                        <x-ui.icon name="trash" class="w-4 h-4" />
+                                    </button>
+                                </div>
+                                @if(!empty($post['image']))
+                                    <img src="{{ Storage::url($post['image']) }}" class="w-full h-32 object-cover rounded-lg border border-zinc-200 dark:border-zinc-800" alt="{{ $post['title'] }}">
+                                @endif
+                                <h4 class="text-xs font-bold text-zinc-900 dark:text-zinc-100">{{ $post['title'] ?? '' }}</h4>
+                                <p class="text-[11px] text-zinc-500 dark:text-zinc-400 line-clamp-2">{{ $post['caption'] ?? '' }}</p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-zinc-100 dark:border-zinc-800 text-[10px] text-zinc-400">
+                                <span>❤️ {{ $post['likes'] ?? '120' }}</span>
+                                <a href="{{ $post['url'] ?? '#' }}" target="_blank" class="text-pink-500 hover:underline font-medium truncate max-w-[160px]">
+                                    Ver enlace ↗
+                                </a>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
         </x-ui.card>
     </div>
 </div>
