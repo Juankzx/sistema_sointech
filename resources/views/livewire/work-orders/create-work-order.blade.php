@@ -375,58 +375,70 @@
                 <!-- Estado Inicial Selector (4 Segmented Cards) -->
                 <div>
                     <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-2">Estado de Ingreso Inicial *</label>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                        <!-- Ingresado -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+                        <!-- Ingresado (Celeste / Azul) -->
                         <button type="button" wire:click="$set('initial_status', 'Ingresado')"
-                            class="flex flex-col items-center gap-1.5 py-3 px-2 rounded-lg border text-center transition cursor-pointer {{ $initial_status === 'Ingresado' ? 'border-brand-500 bg-brand-500/5 text-brand-600 dark:text-brand-400' : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-850 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400' }}">
-                            <div class="w-8 h-8 rounded-lg flex items-center justify-center {{ $initial_status === 'Ingresado' ? 'bg-brand-500/10 text-brand-600 dark:text-brand-400' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500' }}">
+                            class="relative flex flex-col items-center gap-2 py-3.5 px-3 rounded-xl border text-center transition-all duration-200 cursor-pointer {{ $initial_status === 'Ingresado' ? 'border-sky-500 bg-sky-500/15 dark:bg-sky-500/20 text-sky-800 dark:text-sky-200 ring-2 ring-sky-500/30 shadow-md shadow-sky-500/10 -translate-y-0.5' : 'border-zinc-200 dark:border-zinc-700/80 bg-zinc-50/80 dark:bg-zinc-800/60 hover:bg-white dark:hover:bg-zinc-800 hover:border-sky-400/60 text-zinc-700 dark:text-zinc-300' }}">
+                            @if($initial_status === 'Ingresado')
+                                <span class="w-2 h-2 rounded-full bg-sky-400 absolute top-2.5 right-2.5 animate-pulse"></span>
+                            @endif
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center transition {{ $initial_status === 'Ingresado' ? 'bg-gradient-to-br from-sky-400 to-blue-600 text-white shadow-md shadow-sky-500/30' : 'bg-sky-500/10 dark:bg-sky-500/15 text-sky-600 dark:text-sky-400' }}">
                                 <x-ui.icon name="clock" class="w-4 h-4" />
                             </div>
                             <div>
-                                <div class="text-xs font-semibold leading-tight">Ingresado</div>
-                                <div class="text-[10px] text-zinc-500 mt-0.5">Cola de espera</div>
+                                <div class="text-xs font-bold leading-tight">Ingresado</div>
+                                <div class="text-[10px] {{ $initial_status === 'Ingresado' ? 'text-sky-700/80 dark:text-sky-300/80' : 'text-zinc-500 dark:text-zinc-400' }} mt-0.5">Cola de espera</div>
                             </div>
                         </button>
 
-                        <!-- En Revisión -->
+                        <!-- En Revisión (Morado Vibrante) -->
                         <button type="button" wire:click="$set('initial_status', 'En Revisión')"
-                            class="flex flex-col items-center gap-1.5 py-3 px-2 rounded-lg border text-center transition cursor-pointer {{ $initial_status === 'En Revisión' ? 'border-brand-500 bg-brand-500/5 text-brand-600 dark:text-brand-400' : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-850 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400' }}">
-                            <div class="w-8 h-8 rounded-lg flex items-center justify-center {{ $initial_status === 'En Revisión' ? 'bg-brand-500/10 text-brand-600 dark:text-brand-400' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500' }}">
+                            class="relative flex flex-col items-center gap-2 py-3.5 px-3 rounded-xl border text-center transition-all duration-200 cursor-pointer {{ $initial_status === 'En Revisión' ? 'border-brand-500 bg-brand-500/15 dark:bg-brand-500/20 text-brand-800 dark:text-brand-200 ring-2 ring-brand-500/30 shadow-md shadow-brand-500/15 -translate-y-0.5' : 'border-zinc-200 dark:border-zinc-700/80 bg-zinc-50/80 dark:bg-zinc-800/60 hover:bg-white dark:hover:bg-zinc-800 hover:border-brand-400/60 text-zinc-700 dark:text-zinc-300' }}">
+                            @if($initial_status === 'En Revisión')
+                                <span class="w-2 h-2 rounded-full bg-purple-400 absolute top-2.5 right-2.5 animate-pulse"></span>
+                            @endif
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center transition {{ $initial_status === 'En Revisión' ? 'bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-md shadow-purple-500/30' : 'bg-purple-500/10 dark:bg-purple-500/15 text-purple-600 dark:text-purple-400' }}">
                                 <x-ui.icon name="search" class="w-4 h-4" />
                             </div>
                             <div>
-                                <div class="text-xs font-semibold leading-tight">En Revisión</div>
-                                <div class="text-[10px] text-zinc-500 mt-0.5">Diagnóstico directo</div>
+                                <div class="text-xs font-bold leading-tight">En Revisión</div>
+                                <div class="text-[10px] {{ $initial_status === 'En Revisión' ? 'text-purple-700/80 dark:text-purple-300/80' : 'text-zinc-500 dark:text-zinc-400' }} mt-0.5">Diagnóstico directo</div>
                             </div>
                         </button>
 
-                        <!-- Aprobado -->
+                        <!-- Aprobado (Esmeralda / Turquesa) -->
                         <button type="button" wire:click="$set('initial_status', 'Aprobado')"
-                            class="flex flex-col items-center gap-1.5 py-3 px-2 rounded-lg border text-center transition cursor-pointer {{ $initial_status === 'Aprobado' ? 'border-brand-500 bg-brand-500/5 text-brand-600 dark:text-brand-400' : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-850 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400' }}">
-                            <div class="w-8 h-8 rounded-lg flex items-center justify-center {{ $initial_status === 'Aprobado' ? 'bg-brand-500/10 text-brand-600 dark:text-brand-400' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500' }}">
+                            class="relative flex flex-col items-center gap-2 py-3.5 px-3 rounded-xl border text-center transition-all duration-200 cursor-pointer {{ $initial_status === 'Aprobado' ? 'border-emerald-500 bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-200 ring-2 ring-emerald-500/30 shadow-md shadow-emerald-500/10 -translate-y-0.5' : 'border-zinc-200 dark:border-zinc-700/80 bg-zinc-50/80 dark:bg-zinc-800/60 hover:bg-white dark:hover:bg-zinc-800 hover:border-emerald-400/60 text-zinc-700 dark:text-zinc-300' }}">
+                            @if($initial_status === 'Aprobado')
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 absolute top-2.5 right-2.5 animate-pulse"></span>
+                            @endif
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center transition {{ $initial_status === 'Aprobado' ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30' : 'bg-emerald-500/10 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400' }}">
                                 <x-ui.icon name="check-circle" class="w-4 h-4" />
                             </div>
                             <div>
-                                <div class="text-xs font-semibold leading-tight">Aprobado</div>
-                                <div class="text-[10px] text-zinc-500 mt-0.5">Pasa a reparación</div>
+                                <div class="text-xs font-bold leading-tight">Aprobado</div>
+                                <div class="text-[10px] {{ $initial_status === 'Aprobado' ? 'text-emerald-700/80 dark:text-emerald-300/80' : 'text-zinc-500 dark:text-zinc-400' }} mt-0.5">Pasa a reparación</div>
                             </div>
                         </button>
 
-                        <!-- Garantía -->
+                        <!-- Garantía (Rosa Oscuro / Magenta) -->
                         <button type="button" wire:click="$set('initial_status', 'Garantía')"
-                            class="flex flex-col items-center gap-1.5 py-3 px-2 rounded-lg border text-center transition cursor-pointer {{ $initial_status === 'Garantía' ? 'border-brand-500 bg-brand-500/5 text-brand-600 dark:text-brand-400' : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-850 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400' }}">
-                            <div class="w-8 h-8 rounded-lg flex items-center justify-center {{ $initial_status === 'Garantía' ? 'bg-brand-500/10 text-brand-600 dark:text-brand-400' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500' }}">
+                            class="relative flex flex-col items-center gap-2 py-3.5 px-3 rounded-xl border text-center transition-all duration-200 cursor-pointer {{ $initial_status === 'Garantía' ? 'border-pink-500 bg-pink-500/15 dark:bg-pink-500/20 text-pink-800 dark:text-pink-200 ring-2 ring-pink-500/30 shadow-md shadow-pink-500/15 -translate-y-0.5' : 'border-zinc-200 dark:border-zinc-700/80 bg-zinc-50/80 dark:bg-zinc-800/60 hover:bg-white dark:hover:bg-zinc-800 hover:border-pink-400/60 text-zinc-700 dark:text-zinc-300' }}">
+                            @if($initial_status === 'Garantía')
+                                <span class="w-2 h-2 rounded-full bg-pink-400 absolute top-2.5 right-2.5 animate-pulse"></span>
+                            @endif
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center transition {{ $initial_status === 'Garantía' ? 'bg-gradient-to-br from-pink-500 to-rose-600 text-white shadow-md shadow-pink-500/30' : 'bg-pink-500/10 dark:bg-pink-500/15 text-pink-600 dark:text-pink-400' }}">
                                 <x-ui.icon name="shield" class="w-4 h-4" />
                             </div>
                             <div>
-                                <div class="text-xs font-semibold leading-tight">Garantía</div>
-                                <div class="text-[10px] text-zinc-500 mt-0.5">Reingreso revisión</div>
+                                <div class="text-xs font-bold leading-tight">Garantía</div>
+                                <div class="text-[10px] {{ $initial_status === 'Garantía' ? 'text-pink-700/80 dark:text-pink-300/80' : 'text-zinc-500 dark:text-zinc-400' }} mt-0.5">Reingreso revisión</div>
                             </div>
                         </button>
                     </div>
 
-                    <p class="mt-2 text-[11px] text-zinc-500 flex items-center gap-1.5">
-                        <x-ui.icon name="info" class="w-3.5 h-3.5 shrink-0" />
+                    <p class="mt-2.5 text-[11px] text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                        <x-ui.icon name="info" class="w-3.5 h-3.5 text-brand-500 shrink-0" />
                         <span>
                             @if($initial_status === 'Ingresado') Bitácora: Equipo en cola de espera para diagnóstico técnico.
                             @elseif($initial_status === 'En Revisión') Bitácora: Pasa directo a revisión y diagnóstico inmediato.
@@ -1018,55 +1030,55 @@
                 <div>
                     <label class="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-2">Canal de Firma del Cliente</label>
 
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                        <!-- Opción 1: QR -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                        <!-- Opción 1: QR (Morado) -->
                         <button type="button" @click="setMode('qr'); $wire.generateSignatureToken()"
-                            :class="signMode === 'qr' ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-100 shadow-xs' : 'bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-750'"
-                            class="flex flex-col items-center gap-2 p-3 border rounded-xl transition cursor-pointer text-center">
-                            <div class="w-8 h-8 rounded-lg flex items-center justify-center" :class="signMode === 'qr' ? 'bg-white/20 text-white dark:text-zinc-900' : 'bg-zinc-100 dark:bg-zinc-700 text-zinc-500'">
+                            :class="signMode === 'qr' ? 'border-purple-500 bg-purple-500/15 dark:bg-purple-500/20 text-purple-800 dark:text-purple-200 ring-2 ring-purple-500/30 shadow-md shadow-purple-500/15 -translate-y-0.5' : 'bg-zinc-50/80 dark:bg-zinc-800/60 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700/80 hover:bg-white dark:hover:bg-zinc-800 hover:border-purple-400/60'"
+                            class="flex flex-col items-center gap-2 p-3.5 border rounded-xl transition-all duration-200 cursor-pointer text-center">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center transition" :class="signMode === 'qr' ? 'bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-md shadow-purple-500/30' : 'bg-purple-500/10 dark:bg-purple-500/15 text-purple-600 dark:text-purple-400'">
                                 <x-ui.icon name="qr-code" class="w-4 h-4" />
                             </div>
                             <div>
-                                <div class="text-xs font-semibold">Código QR</div>
+                                <div class="text-xs font-bold">Código QR</div>
                                 <div class="text-[10px] opacity-75 mt-0.5">Desde su smartphone</div>
                             </div>
                         </button>
 
-                        <!-- Opción 2: Kiosco / Tablet -->
+                        <!-- Opción 2: Kiosco / Tablet (Celeste / Azul) -->
                         <button type="button" @click="setMode('kiosk'); $wire.toggleKioskMode()"
-                            :class="signMode === 'kiosk' ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-100 shadow-xs' : 'bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-750'"
-                            class="flex flex-col items-center gap-2 p-3 border rounded-xl transition cursor-pointer text-center">
-                            <div class="w-8 h-8 rounded-lg flex items-center justify-center" :class="signMode === 'kiosk' ? 'bg-white/20 text-white dark:text-zinc-900' : 'bg-zinc-100 dark:bg-zinc-700 text-zinc-500'">
+                            :class="signMode === 'kiosk' ? 'border-sky-500 bg-sky-500/15 dark:bg-sky-500/20 text-sky-800 dark:text-sky-200 ring-2 ring-sky-500/30 shadow-md shadow-sky-500/10 -translate-y-0.5' : 'bg-zinc-50/80 dark:bg-zinc-800/60 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700/80 hover:bg-white dark:hover:bg-zinc-800 hover:border-sky-400/60'"
+                            class="flex flex-col items-center gap-2 p-3.5 border rounded-xl transition-all duration-200 cursor-pointer text-center">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center transition" :class="signMode === 'kiosk' ? 'bg-gradient-to-br from-sky-400 to-blue-600 text-white shadow-md shadow-sky-500/30' : 'bg-sky-500/10 dark:bg-sky-500/15 text-sky-600 dark:text-sky-400'">
                                 <x-ui.icon name="tablet" class="w-4 h-4" />
                             </div>
                             <div>
-                                <div class="text-xs font-semibold">Tablet / Kiosco</div>
+                                <div class="text-xs font-bold">Tablet / Kiosco</div>
                                 <div class="text-[10px] opacity-75 mt-0.5">Gira la pantalla</div>
                             </div>
                         </button>
 
-                        <!-- Opción 3: Firma en mostrador -->
+                        <!-- Opción 3: Firma en mostrador (Rosa Oscuro) -->
                         <button type="button" @click="setMode('counter')"
-                            :class="signMode === 'counter' ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-100 shadow-xs' : 'bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-750'"
-                            class="flex flex-col items-center gap-2 p-3 border rounded-xl transition cursor-pointer text-center">
-                            <div class="w-8 h-8 rounded-lg flex items-center justify-center" :class="signMode === 'counter' ? 'bg-white/20 text-white dark:text-zinc-900' : 'bg-zinc-100 dark:bg-zinc-700 text-zinc-500'">
+                            :class="signMode === 'counter' ? 'border-pink-500 bg-pink-500/15 dark:bg-pink-500/20 text-pink-800 dark:text-pink-200 ring-2 ring-pink-500/30 shadow-md shadow-pink-500/15 -translate-y-0.5' : 'bg-zinc-50/80 dark:bg-zinc-800/60 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700/80 hover:bg-white dark:hover:bg-zinc-800 hover:border-pink-400/60'"
+                            class="flex flex-col items-center gap-2 p-3.5 border rounded-xl transition-all duration-200 cursor-pointer text-center">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center transition" :class="signMode === 'counter' ? 'bg-gradient-to-br from-pink-500 to-rose-600 text-white shadow-md shadow-pink-500/30' : 'bg-pink-500/10 dark:bg-pink-500/15 text-pink-600 dark:text-pink-400'">
                                 <x-ui.icon name="edit-3" class="w-4 h-4" />
                             </div>
                             <div>
-                                <div class="text-xs font-semibold">Firmar Aquí</div>
+                                <div class="text-xs font-bold">Firmar Aquí</div>
                                 <div class="text-[10px] opacity-75 mt-0.5">Firma en pantalla</div>
                             </div>
                         </button>
 
-                        <!-- Opción 4: Cliente Ausente (WhatsApp) -->
+                        <!-- Opción 4: Cliente Ausente (WhatsApp Esmeralda) -->
                         <button type="button" @click="setMode('absent'); $wire.set('terms_accepted', true)"
-                            :class="signMode === 'absent' ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-100 shadow-xs' : 'bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-750'"
-                            class="flex flex-col items-center gap-2 p-3 border rounded-xl transition cursor-pointer text-center">
-                            <div class="w-8 h-8 rounded-lg flex items-center justify-center" :class="signMode === 'absent' ? 'bg-white/20 text-white dark:text-zinc-900' : 'bg-zinc-100 dark:bg-zinc-700 text-zinc-500'">
+                            :class="signMode === 'absent' ? 'border-emerald-500 bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-200 ring-2 ring-emerald-500/30 shadow-md shadow-emerald-500/10 -translate-y-0.5' : 'bg-zinc-50/80 dark:bg-zinc-800/60 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700/80 hover:bg-white dark:hover:bg-zinc-800 hover:border-emerald-400/60'"
+                            class="flex flex-col items-center gap-2 p-3.5 border rounded-xl transition-all duration-200 cursor-pointer text-center">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center transition" :class="signMode === 'absent' ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30' : 'bg-emerald-500/10 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'">
                                 <x-ui.icon name="whatsapp" class="w-4 h-4" />
                             </div>
                             <div>
-                                <div class="text-xs font-semibold">Cliente Ausente</div>
+                                <div class="text-xs font-bold">Cliente Ausente</div>
                                 <div class="text-[10px] opacity-75 mt-0.5">WhatsApp / Remoto</div>
                             </div>
                         </button>

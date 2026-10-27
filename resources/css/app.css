@@ -65,7 +65,9 @@
     --color-slate-500: #79709b;
     --color-slate-600: #5b527c;
     --color-slate-700: #443c64;
+    --color-slate-750: #3a3359;
     --color-slate-800: #2f284f;
+    --color-slate-850: #282147;
     --color-slate-900: #211b3e;
     --color-slate-950: #16112e;
 
@@ -79,6 +81,7 @@
     --color-zinc-700: #443c64;
     --color-zinc-750: #3a3359;
     --color-zinc-800: #2f284f;
+    --color-zinc-850: #282147;
     --color-zinc-900: #211b3e;
     --color-zinc-950: #16112e;
 
@@ -275,9 +278,17 @@ main .grid > *:nth-child(5) { animation-delay: 0.16s; }
 main .grid > *:nth-child(6) { animation-delay: 0.20s; }
 main .grid > *:nth-child(n+7) { animation-delay: 0.24s; }
 
-/* Inputs: foco con halo morado */
+/* Inputs: foco con halo morado y soporte autofill en modo oscuro */
 input:focus, select:focus, textarea:focus {
     box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.18);
+}
+
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #f3effc;
+    -webkit-box-shadow: 0 0 0px 1000px #282147 inset;
+    transition: background-color 5000s ease-in-out 0s;
 }
 
 /* Navegación lateral activa con barra degradada */
