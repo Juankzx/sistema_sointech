@@ -156,24 +156,6 @@ class LandingPage extends Component
         $settings = null;
         if (Schema::hasTable('settings')) {
             $settings = Setting::first();
-            if ($settings) {
-                $dirty = false;
-                if ($settings->company_phone !== '+56 9 4529 6314') {
-                    $settings->company_phone = '+56 9 4529 6314';
-                    $dirty = true;
-                }
-                if ($settings->company_instagram !== 'https://www.instagram.com/soin_tech') {
-                    $settings->company_instagram = 'https://www.instagram.com/soin_tech';
-                    $dirty = true;
-                }
-                if (stripos((string) $settings->company_address, 'Casimiro') !== false) {
-                    $settings->company_address = null;
-                    $dirty = true;
-                }
-                if ($dirty) {
-                    $settings->save();
-                }
-            }
         }
 
         $instagramPosts = self::defaultInstagramPosts();
