@@ -41,8 +41,8 @@ class LandingPage extends Component
             [
                 'category'    => 'Microsoldadura SMD',
                 'title'       => 'Reparación de Placa Madre en Corto',
-                'caption'     => 'Diagnóstico térmico y reemplazo de IC de carga bajo microscopio trinocular. Salvamos la placa original sin perder datos. 🔬⚡ #Microsoldadura #Sointech',
-                'url'         => 'https://www.instagram.com/sointech.cl',
+                'caption'     => 'Diagnóstico térmico y reemplazo de IC de carga bajo microscopio trinocular. Salvamos la placa original sin perder datos. 🔬⚡ #Microsoldadura #SoinTech',
+                'url'         => 'https://www.instagram.com/soin_tech',
                 'image'       => null,
                 'asset_image' => '/images/landing/microsoldering.jpg',
                 'theme'       => 'purple',
@@ -53,7 +53,7 @@ class LandingPage extends Component
                 'category'    => 'Consolas · PS5 / Switch',
                 'title'       => 'Puerto HDMI 2.1 PS5 + Metal Líquido',
                 'caption'     => 'Recambio de conector HDMI 2.1 con reconstrucción de pistas y mantención térmica completa con metal líquido certificado. 🎮🔥 #PS5 #NintendoSwitch #Xbox',
-                'url'         => 'https://www.instagram.com/sointech.cl',
+                'url'         => 'https://www.instagram.com/soin_tech',
                 'image'       => null,
                 'asset_image' => '/images/landing/consoles.jpg',
                 'theme'       => 'cyan',
@@ -64,7 +64,7 @@ class LandingPage extends Component
                 'category'    => 'Notebooks & Mac',
                 'title'       => 'Mantención Pro + Upgrade SSD NVMe',
                 'caption'     => 'Limpieza ultrasónica, thermal pads de alto rendimiento y clonación a SSD NVMe Gen4 para máximo desempeño. 💻🚀 #MacBook #NotebookGamer',
-                'url'         => 'https://www.instagram.com/sointech.cl',
+                'url'         => 'https://www.instagram.com/soin_tech',
                 'image'       => null,
                 'asset_image' => '/images/landing/notebooks.jpg',
                 'theme'       => 'pink',
@@ -75,7 +75,7 @@ class LandingPage extends Component
                 'category'    => 'iPhone & Smartphones',
                 'title'       => 'Pantalla OLED Original & Carga Rápida',
                 'caption'     => 'Cambio de módulo OLED con sellado original, batería nueva al 100% y reparación de línea USB-C / Lightning. 📱✨ #iPhoneService #Smartphones',
-                'url'         => 'https://www.instagram.com/sointech.cl',
+                'url'         => 'https://www.instagram.com/soin_tech',
                 'image'       => null,
                 'asset_image' => '/images/landing/mobile.jpg',
                 'theme'       => 'blue',
@@ -86,7 +86,7 @@ class LandingPage extends Component
                 'category'    => 'Empresas & Soporte TI',
                 'title'       => 'Soporte Corporativo, Redes & Servidores',
                 'caption'     => 'Mantención preventiva de flotas de computadores, redes Wi-Fi empresariales, servidores Cloud y software POS/ERP. 🏢🌐 #SoporteTI #Empresas',
-                'url'         => 'https://www.instagram.com/sointech.cl',
+                'url'         => 'https://www.instagram.com/soin_tech',
                 'image'       => null,
                 'asset_image' => '/images/landing/b2b.jpg',
                 'theme'       => 'emerald',
@@ -97,7 +97,7 @@ class LandingPage extends Component
                 'category'    => 'Workstations & Rescate Datos',
                 'title'       => 'Armado Workstation & Recuperación SSD',
                 'caption'     => 'Ensamblaje profesional con refrigeración líquida ARGB, pruebas de estrés y rescate de información crítica. 🖥️💎 #Workstation #PCGaming',
-                'url'         => 'https://www.instagram.com/sointech.cl',
+                'url'         => 'https://www.instagram.com/soin_tech',
                 'image'       => null,
                 'asset_image' => '/images/landing/workstation.jpg',
                 'theme'       => 'purple',
@@ -156,6 +156,24 @@ class LandingPage extends Component
         $settings = null;
         if (Schema::hasTable('settings')) {
             $settings = Setting::first();
+            if ($settings) {
+                $dirty = false;
+                if ($settings->company_phone !== '+56 9 4529 6314') {
+                    $settings->company_phone = '+56 9 4529 6314';
+                    $dirty = true;
+                }
+                if ($settings->company_instagram !== 'https://www.instagram.com/soin_tech') {
+                    $settings->company_instagram = 'https://www.instagram.com/soin_tech';
+                    $dirty = true;
+                }
+                if (stripos((string) $settings->company_address, 'Casimiro') !== false) {
+                    $settings->company_address = null;
+                    $dirty = true;
+                }
+                if ($dirty) {
+                    $settings->save();
+                }
+            }
         }
 
         $instagramPosts = self::defaultInstagramPosts();

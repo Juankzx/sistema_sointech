@@ -1,12 +1,70 @@
-<div x-data="{ mobileMenu: false }" class="min-h-screen bg-[#16112e] text-slate-100 font-sans selection:bg-pink-500 selection:text-white overflow-x-hidden relative">
+<div
+    x-data="{
+        mobileMenu: false,
+        scrolled: false,
+        activeSlide: 0,
+        slides: [
+            {
+                tag: 'LABORATORIO MULTIMARCA',
+                title: 'Servicio Técnico Especializado de Computadores & Mac',
+                desc: 'Mantención térmica profunda con pasta de alta conductividad, pantallas, bisagras y upgrades SSD NVMe para portátiles y MacBook Air / Pro.',
+                img: '{{ asset('images/landing/notebooks.jpg') }}',
+                link: '#servicios',
+                color: 'cyan',
+                badge: 'Windows · MacBook · Gamer'
+            },
+            {
+                tag: 'ELECTRÓNICA AVANZADA',
+                title: 'Microsoldadura SMD/BGA & Reparación de Placas',
+                desc: 'Diagnosticamos a nivel componente con microscopio trinocular y termografía infrarroja para salvar la placa madre original de tu equipo.',
+                img: '{{ asset('images/landing/microsoldering.jpg') }}',
+                link: '#microsoldadura',
+                color: 'amber',
+                badge: 'Cortos · IC Carga · Reballing'
+            },
+            {
+                tag: 'CONSOLAS DE VIDEOJUEGOS',
+                title: 'PlayStation 5, Xbox Series & Nintendo Switch',
+                desc: 'Cambio de puerto HDMI 2.1 bajo microscopio, mantención térmica con Metal Líquido certificado y reparación de controles con drift.',
+                img: '{{ asset('images/landing/consoles.jpg') }}',
+                link: '#servicios',
+                color: 'purple',
+                badge: 'HDMI 2.1 · Metal Líquido · Drift'
+            },
+            {
+                tag: 'MÓVILES & PANTALLAS OLED',
+                title: 'Servicio Técnico iPhone, Smartphones & Tablets',
+                desc: 'Reemplazo de pantallas OLED de alta fidelidad, cambio de baterías certificadas, puertos USB-C/Lightning y tratamiento ultrasónico.',
+                img: '{{ asset('images/landing/mobile.jpg') }}',
+                link: '#servicios',
+                color: 'pink',
+                badge: 'iPhone · Samsung · iPad'
+            },
+            {
+                tag: 'DIVISIÓN CORPORATIVA B2B',
+                title: 'Soluciones Informáticas & Soporte TI para Empresas',
+                desc: 'Mantención preventiva de flotas de computadores, redes estructuradas Wi-Fi corporativas, servidores Cloud y desarrollo de software POS a medida.',
+                img: '{{ asset('images/landing/b2b.jpg') }}',
+                link: '#empresas',
+                color: 'emerald',
+                badge: 'Soporte Empresas · Redes · POS'
+            }
+        ],
+        init() {
+            setInterval(() => {
+                this.activeSlide = (this.activeSlide + 1) % this.slides.length;
+            }, 5000);
+        }
+    }"
+    @scroll.window="scrolled = (window.pageYOffset > 40)"
+    class="min-h-screen bg-[#16112e] text-slate-100 font-sans selection:bg-pink-500 selection:text-white overflow-x-hidden relative"
+>
 
     @php
-        $cleanPhone = preg_replace('/[^0-9]/', '', $settings->company_phone ?? '56975425132');
-        $whatsappUrl = 'https://wa.me/' . ($cleanPhone ?: '56975425132') . '?text=' . urlencode('Hola Sointech, necesito consultar por servicio técnico / soporte informático.');
-        $igProfileUrl = $settings->company_instagram ?: 'https://www.instagram.com/sointech.cl';
-        if (!str_starts_with($igProfileUrl, 'http')) {
-            $igProfileUrl = 'https://www.instagram.com/' . ltrim($igProfileUrl, '@/');
-        }
+        $whatsappNumber = '+56 9 4529 6314';
+        $whatsappClean  = '56945296314';
+        $whatsappUrl    = 'https://wa.me/56945296314?text=' . urlencode('Hola Soin Technology, necesito consultar por servicio técnico / soporte.');
+        $igProfileUrl   = 'https://www.instagram.com/soin_tech';
     @endphp
 
     <!-- Global Ambient Aurora Backdrop -->
@@ -18,23 +76,16 @@
         <div class="absolute inset-0 opacity-[0.035]" style="background-image: linear-gradient(to right, #38bdf8 1px, transparent 1px), linear-gradient(to bottom, #a855f7 1px, transparent 1px); background-size: 48px 48px;"></div>
     </div>
 
-    <!-- Top Status Bar -->
+    <!-- Top Status Bar (Cleaned: No address) -->
     <div class="relative z-40 border-b border-purple-400/15 bg-[#110d24]/90 backdrop-blur-md text-xs">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center justify-between gap-3">
-            <div class="flex flex-wrap items-center gap-4 text-purple-200/90">
+            <div class="flex items-center gap-3 text-purple-200/90">
                 <span class="inline-flex items-center gap-2 font-bold text-cyan-300">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                    Laboratorio Electrónico &amp; Soporte Empresas Activo
+                    Laboratorio Electrónico &amp; Soporte TI Activo
                 </span>
-                @if($settings && $settings->company_address)
-                    <span class="hidden md:inline-flex items-center gap-1.5 text-purple-200/75">
-                        <svg class="w-3.5 h-3.5 text-pink-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                        </svg>
-                        {{ $settings->company_address }}
-                    </span>
-                @endif
+                <span class="hidden sm:inline text-purple-400/40">|</span>
+                <span class="hidden sm:inline text-purple-200/70">Atención técnica garantizada y seguimiento digital</span>
             </div>
 
             <div class="flex items-center gap-4 ml-auto">
@@ -42,38 +93,37 @@
                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                     </svg>
-                    @sointech.cl
+                    @soin_tech
                 </a>
-                @if($settings && $settings->company_phone)
-                    <span class="text-purple-400/30">|</span>
-                    <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-emerald-300 hover:text-white font-bold transition">
-                        WhatsApp: {{ $settings->company_phone }}
-                    </a>
-                @endif
+                <span class="text-purple-400/30">|</span>
+                <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-emerald-400 hover:text-white font-bold transition">
+                    <!-- WhatsApp Official Logo -->
+                    <svg class="w-3.5 h-3.5 text-emerald-400 fill-current" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M8.53 7.33C8.37 7.33 8.1 7.39 7.87 7.64C7.65 7.89 7 8.5 7 9.71C7 10.93 7.89 12.1 8 12.27C8.14 12.44 9.76 14.94 12.25 16C12.84 16.27 13.3 16.42 13.66 16.53C14.25 16.72 14.79 16.69 15.22 16.63C15.7 16.56 16.68 16.03 16.89 15.45C17.1 14.87 17.1 14.38 17.04 14.27C16.97 14.17 16.81 14.11 16.56 14C16.31 13.86 15.09 13.26 14.87 13.18C14.64 13.1 14.5 13.06 14.31 13.3C14.15 13.55 13.67 14.11 13.53 14.27C13.38 14.44 13.24 14.46 13 14.34C12.74 14.21 11.94 13.95 11 13.11C10.26 12.45 9.77 11.64 9.62 11.39C9.5 11.15 9.61 11 9.73 10.89C9.84 10.78 10 10.6 10.1 10.45C10.23 10.31 10.27 10.2 10.35 10.04C10.43 9.87 10.39 9.73 10.33 9.61C10.27 9.5 9.77 8.26 9.56 7.77C9.36 7.29 9.16 7.35 9 7.34C8.86 7.34 8.7 7.33 8.53 7.33Z"/>
+                    </svg>
+                    <span>{{ $whatsappNumber }}</span>
+                </a>
             </div>
         </div>
     </div>
 
-    <!-- Main Sticky Navigation -->
-    <header class="sticky top-0 z-50 border-b border-purple-400/20 bg-[#16112e]/85 backdrop-blur-2xl shadow-[0_10px_35px_-10px_rgba(10,6,26,0.85)]">
+    <!-- Main Sticky Animated Header (Smooth animation on scroll) -->
+    <header
+        class="sticky top-0 z-50 transition-all duration-300"
+        :class="scrolled ? 'bg-[#16112e]/95 backdrop-blur-2xl shadow-[0_12px_35px_-8px_rgba(10,6,26,0.95)] border-b border-purple-400/30 py-1' : 'bg-[#16112e]/75 backdrop-blur-md border-b border-purple-400/20 py-2.5'"
+    >
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <!-- Brand Identity -->
+            <div class="flex justify-between items-center transition-all duration-300" :class="scrolled ? 'h-16' : 'h-20'">
+                <!-- Soin Technology Official Logo Brand -->
                 <a href="#inicio" class="flex items-center gap-3.5 group">
-                    @if($settings && $settings->company_logo)
-                        <img src="{{ Storage::url($settings->company_logo) }}" class="h-11 w-auto rounded-xl shadow-lg border border-purple-400/30 group-hover:scale-105 transition-transform" alt="{{ $settings->company_name }}">
-                    @else
-                        <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-purple-600 via-pink-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-purple-600/30 border border-white/20 group-hover:scale-105 transition-transform">
-                            <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
-                            </svg>
-                        </div>
-                    @endif
+                    <div class="p-1.5 rounded-2xl bg-[#140e29] border border-purple-400/30 shadow-lg group-hover:scale-105 group-hover:border-pink-400/60 transition-all flex items-center justify-center">
+                        <img src="{{ asset('images/logo-dark.png') }}" class="h-10 sm:h-11 w-auto object-contain" alt="Soin Technology Logo">
+                    </div>
                     <div class="flex flex-col">
-                        <span class="font-black text-xl sm:text-2xl tracking-tight text-white leading-none">
-                            {{ $settings->company_name ?? 'SOINTECH' }}
+                        <span class="font-black text-lg sm:text-2xl tracking-tight text-white leading-none flex items-center gap-1.5">
+                            SOIN <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-300">TECHNOLOGY</span>
                         </span>
-                        <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-300 mt-1">
+                        <span class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-cyan-300 mt-1">
                             Laboratorio &amp; Soluciones TI
                         </span>
                     </div>
@@ -81,6 +131,9 @@
 
                 <!-- Desktop Navigation Links -->
                 <nav class="hidden lg:flex items-center gap-1 xl:gap-2">
+                    <a href="#inicio" class="px-3.5 py-2 rounded-xl text-sm font-semibold text-purple-100/90 hover:text-white hover:bg-purple-500/15 transition">
+                        Inicio
+                    </a>
                     <a href="#rastreo" class="px-3.5 py-2 rounded-xl text-sm font-semibold text-purple-100/90 hover:text-white hover:bg-purple-500/15 transition">
                         Seguimiento OT
                     </a>
@@ -104,7 +157,7 @@
 
                 <!-- Action Buttons -->
                 <div class="hidden sm:flex items-center gap-3">
-                    <a href="#contacto" class="px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-500 text-white shadow-lg shadow-purple-600/25 hover:brightness-110 hover:-translate-y-0.5 transition">
+                    <a href="#contacto" class="px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-500 text-white shadow-lg shadow-purple-600/25 hover:brightness-110 hover:-translate-y-0.5 transition">
                         Cotizar Ahora
                     </a>
                     @auth
@@ -136,11 +189,12 @@
 
         <!-- Mobile Menu Drawer -->
         <div x-show="mobileMenu" x-transition style="display: none;" class="lg:hidden border-t border-purple-400/20 bg-[#1a1435]/98 backdrop-blur-2xl px-4 pt-3 pb-6 space-y-2">
-            <a @click="mobileMenu = false" href="#rastreo" class="block px-4 py-2.5 rounded-xl text-sm font-semibold text-purple-100 hover:bg-purple-500/20">🔍 Consultar Estado de Orden OT</a>
-            <a @click="mobileMenu = false" href="#servicios" class="block px-4 py-2.5 rounded-xl text-sm font-semibold text-purple-100 hover:bg-purple-500/20">💻 Servicio Técnico (PC · Celulares · Consolas)</a>
-            <a @click="mobileMenu = false" href="#microsoldadura" class="block px-4 py-2.5 rounded-xl text-sm font-semibold text-purple-100 hover:bg-purple-500/20">🔬 Microsoldadura &amp; Placas Madre</a>
-            <a @click="mobileMenu = false" href="#empresas" class="block px-4 py-2.5 rounded-xl text-sm font-semibold text-purple-100 hover:bg-purple-500/20">🏢 Soluciones Informáticas Empresas</a>
-            <a @click="mobileMenu = false" href="#instagram" class="block px-4 py-2.5 rounded-xl text-sm font-semibold text-pink-300 hover:bg-pink-500/20">📸 Casos en Instagram (@sointech.cl)</a>
+            <a @click="mobileMenu = false" href="#inicio" class="block px-4 py-2.5 rounded-xl text-sm font-semibold text-purple-100 hover:bg-purple-500/20">🏠 Inicio</a>
+            <a @click="mobileMenu = false" href="#rastreo" class="block px-4 py-2.5 rounded-xl text-sm font-semibold text-purple-100 hover:bg-purple-500/20">🔍 Consultar Orden OT</a>
+            <a @click="mobileMenu = false" href="#servicios" class="block px-4 py-2.5 rounded-xl text-sm font-semibold text-purple-100 hover:bg-purple-500/20">💻 Especialidades Técnicas</a>
+            <a @click="mobileMenu = false" href="#microsoldadura" class="block px-4 py-2.5 rounded-xl text-sm font-semibold text-purple-100 hover:bg-purple-500/20">🔬 Microsoldadura &amp; Placas</a>
+            <a @click="mobileMenu = false" href="#empresas" class="block px-4 py-2.5 rounded-xl text-sm font-semibold text-purple-100 hover:bg-purple-500/20">🏢 Soporte TI para Empresas</a>
+            <a @click="mobileMenu = false" href="#instagram" class="block px-4 py-2.5 rounded-xl text-sm font-semibold text-pink-300 hover:bg-pink-500/20">📸 Casos en Instagram (@soin_tech)</a>
             <a @click="mobileMenu = false" href="#contacto" class="block px-4 py-2.5 rounded-xl text-sm font-semibold text-cyan-300 hover:bg-cyan-500/20">⚡ Solicitar Diagnóstico</a>
             <div class="pt-3 border-t border-purple-400/20 flex gap-3">
                 @auth
@@ -153,113 +207,102 @@
     </header>
 
     <!-- ========================================== -->
-    <!-- HERO SECTION + VISUAL COLLAGE + TRACKER    -->
+    <!-- HERO SECTION WITH INTERACTIVE CAROUSEL     -->
     <!-- ========================================== -->
-    <section id="inicio" class="relative z-10 pt-8 pb-16 lg:pt-14 lg:pb-22 overflow-hidden">
+    <section id="inicio" class="relative z-10 pt-8 pb-16 lg:pt-12 lg:pb-20 overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-10 items-center">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
 
-                <!-- Left Column: Visual & Friendly Presentation -->
-                <div class="lg:col-span-7 space-y-6">
-                    <div class="inline-flex flex-wrap items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#241d42]/90 border border-purple-400/35 shadow-lg">
-                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 text-white">
-                            Laboratorio Certificado
-                        </span>
-                        <span class="text-xs font-bold text-purple-100">
-                            Computadores · Celulares · Consolas · Microsoldadura · Empresas
-                        </span>
-                    </div>
-
-                    <h1 class="text-3xl sm:text-5xl xl:text-[3.35rem] font-black tracking-tight text-white leading-[1.08]">
-                        Tu tecnología en manos de
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-pink-400 to-purple-300">
-                            especialistas en electrónica
-                        </span>
-                        y sistemas TI.
-                    </h1>
-
-                    <p class="text-base sm:text-lg text-purple-100/85 leading-relaxed max-w-2xl">
-                        Reparamos desde <strong class="text-white">Notebooks, Mac, iPhone y Consolas (PS5, Xbox, Switch)</strong> hasta <strong class="text-pink-300">placas madre con microsoldadura avanzada</strong> y <strong class="text-cyan-300">soporte informático para empresas</strong>.
-                    </p>
-
-                    <!-- Visual Photo Strip with Floating Animations -->
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
-                        <a href="#servicios" class="group relative h-28 rounded-2xl overflow-hidden border border-cyan-400/35 shadow-lg">
-                            <img src="{{ asset('images/landing/notebooks.jpg') }}" alt="Notebooks & Mac" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-[#120d26] via-[#120d26]/30 to-transparent"></div>
-                            <div class="absolute bottom-2 left-2.5 right-2.5">
-                                <span class="text-[10px] font-black uppercase tracking-wider text-cyan-300 block">PC &amp; Mac</span>
-                                <span class="text-xs font-bold text-white leading-tight block">Notebooks</span>
+                <!-- Left Column: Interactive Hero Carousel -->
+                <div class="lg:col-span-7 flex flex-col justify-between">
+                    <!-- Carousel Slide Container -->
+                    <div class="relative rounded-3xl overflow-hidden border border-purple-400/35 shadow-2xl bg-[#1d1738] min-h-[460px] sm:min-h-[500px] flex flex-col justify-end p-6 sm:p-9">
+                        <!-- Slide Background Images with Smooth Crossfade -->
+                        <template x-for="(slide, index) in slides" :key="index">
+                            <div
+                                x-show="activeSlide === index"
+                                x-transition:enter="transition-all duration-700 ease-out"
+                                x-transition:enter-start="opacity-0 scale-105"
+                                x-transition:enter-end="opacity-100 scale-100"
+                                x-transition:leave="transition-all duration-500 ease-in"
+                                x-transition:leave-start="opacity-100 scale-100"
+                                x-transition:leave-end="opacity-0 scale-95"
+                                class="absolute inset-0 z-0"
+                            >
+                                <img :src="slide.img" :alt="slide.title" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t from-[#140e29] via-[#140e29]/75 to-[#140e29]/25"></div>
                             </div>
-                        </a>
+                        </template>
 
-                        <a href="#servicios" class="group relative h-28 rounded-2xl overflow-hidden border border-pink-400/35 shadow-lg">
-                            <img src="{{ asset('images/landing/mobile.jpg') }}" alt="Celulares & iPhone" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-[#120d26] via-[#120d26]/30 to-transparent"></div>
-                            <div class="absolute bottom-2 left-2.5 right-2.5">
-                                <span class="text-[10px] font-black uppercase tracking-wider text-pink-300 block">OLED &amp; Carga</span>
-                                <span class="text-xs font-bold text-white leading-tight block">iPhone &amp; Móvil</span>
+                        <!-- Content on Top of Active Slide -->
+                        <div class="relative z-10 space-y-4">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span
+                                    class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#140e29]/80 backdrop-blur-md border border-cyan-400/40 text-cyan-300"
+                                    x-text="slides[activeSlide].tag"
+                                ></span>
+                                <span
+                                    class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-pink-500/20 backdrop-blur-md text-pink-300 border border-pink-400/30"
+                                    x-text="slides[activeSlide].badge"
+                                ></span>
                             </div>
-                        </a>
 
-                        <a href="#servicios" class="group relative h-28 rounded-2xl overflow-hidden border border-purple-400/35 shadow-lg">
-                            <img src="{{ asset('images/landing/consoles.jpg') }}" alt="Consolas PS5 Switch" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-[#120d26] via-[#120d26]/30 to-transparent"></div>
-                            <div class="absolute bottom-2 left-2.5 right-2.5">
-                                <span class="text-[10px] font-black uppercase tracking-wider text-purple-300 block">PS5 · Switch</span>
-                                <span class="text-xs font-bold text-white leading-tight block">Consolas</span>
+                            <h1
+                                class="text-2xl sm:text-4xl font-black text-white tracking-tight leading-tight transition-all duration-300"
+                                x-text="slides[activeSlide].title"
+                            ></h1>
+
+                            <p
+                                class="text-xs sm:text-sm text-purple-100/90 leading-relaxed max-w-xl"
+                                x-text="slides[activeSlide].desc"
+                            ></p>
+
+                            <!-- Carousel Buttons & Slide Controls -->
+                            <div class="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-purple-400/20">
+                                <div class="flex items-center gap-3">
+                                    <a :href="slides[activeSlide].link" class="px-5 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-500 text-white shadow-lg hover:brightness-110 transition inline-flex items-center gap-2">
+                                        <span>Explorar Especialidad</span>
+                                        <span>→</span>
+                                    </a>
+                                    <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider bg-[#231c42]/90 hover:bg-[#2e2554] text-emerald-400 border border-emerald-400/35 transition inline-flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M8.53 7.33C8.37 7.33 8.1 7.39 7.87 7.64C7.65 7.89 7 8.5 7 9.71C7 10.93 7.89 12.1 8 12.27C8.14 12.44 9.76 14.94 12.25 16C12.84 16.27 13.3 16.42 13.66 16.53C14.25 16.72 14.79 16.69 15.22 16.63C15.7 16.56 16.68 16.03 16.89 15.45C17.1 14.87 17.1 14.38 17.04 14.27C16.97 14.17 16.81 14.11 16.56 14C16.31 13.86 15.09 13.26 14.87 13.18C14.64 13.1 14.5 13.06 14.31 13.3C14.15 13.55 13.67 14.11 13.53 14.27C13.38 14.44 13.24 14.46 13 14.34C12.74 14.21 11.94 13.95 11 13.11C10.26 12.45 9.77 11.64 9.62 11.39C9.5 11.15 9.61 11 9.73 10.89C9.84 10.78 10 10.6 10.1 10.45C10.23 10.31 10.27 10.2 10.35 10.04C10.43 9.87 10.39 9.73 10.33 9.61C10.27 9.5 9.77 8.26 9.56 7.77C9.36 7.29 9.16 7.35 9 7.34C8.86 7.34 8.7 7.33 8.53 7.33Z"/></svg>
+                                        WhatsApp
+                                    </a>
+                                </div>
+
+                                <!-- Prev / Next / Indicator Pills -->
+                                <div class="flex items-center gap-2">
+                                    <template x-for="(slide, index) in slides" :key="'dot-'+index">
+                                        <button
+                                            @click="activeSlide = index"
+                                            type="button"
+                                            class="h-2 rounded-full transition-all duration-300"
+                                            :class="activeSlide === index ? 'w-7 bg-cyan-400' : 'w-2 bg-purple-400/40 hover:bg-purple-300'"
+                                            :title="slide.tag"
+                                        ></button>
+                                    </template>
+                                </div>
                             </div>
-                        </a>
-
-                        <a href="#microsoldadura" class="group relative h-28 rounded-2xl overflow-hidden border border-amber-400/35 shadow-lg">
-                            <img src="{{ asset('images/landing/microsoldering.jpg') }}" alt="Microsoldadura" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-[#120d26] via-[#120d26]/30 to-transparent"></div>
-                            <div class="absolute bottom-2 left-2.5 right-2.5">
-                                <span class="text-[10px] font-black uppercase tracking-wider text-amber-300 block">Nivel Placa</span>
-                                <span class="text-xs font-bold text-white leading-tight block">Microsoldadura</span>
-                            </div>
-                        </a>
-                    </div>
-
-                    <!-- Primary Hero CTAs -->
-                    <div class="flex flex-wrap items-center gap-3.5 pt-1">
-                        <a href="#contacto" class="px-6 py-3.5 rounded-2xl font-black text-sm bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-500 text-white shadow-xl shadow-purple-600/30 hover:brightness-110 hover:-translate-y-0.5 transition inline-flex items-center gap-2.5">
-                            <span>Cotizar mi Equipo o Proyecto</span>
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                            </svg>
-                        </a>
-                        <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener noreferrer" class="px-5 py-3.5 rounded-2xl font-bold text-sm bg-[#231c42] hover:bg-[#2e2554] text-emerald-300 border border-emerald-400/35 hover:-translate-y-0.5 transition inline-flex items-center gap-2">
-                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771z"/>
-                            </svg>
-                            Hablar por WhatsApp
-                        </a>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Right Column: Live Work Order Tracking Portal (#rastreo) -->
-                <div id="rastreo" class="lg:col-span-5 scroll-mt-28 relative">
-                    <!-- Floating Decorative Badge -->
-                    <div class="hidden sm:flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-[#251d47]/95 border border-cyan-400/40 shadow-xl absolute -top-5 right-6 z-20 animate-float">
-                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-                        <span class="text-xs font-extrabold text-white">Seguimiento en Vivo 24/7</span>
-                    </div>
-
+                <div id="rastreo" class="lg:col-span-5 scroll-mt-24 relative flex flex-col justify-center">
                     <div class="relative rounded-3xl p-[1.5px] bg-gradient-to-br from-cyan-400/70 via-purple-500/60 to-pink-500/70 shadow-[0_25px_70px_-15px_rgba(8,5,24,0.9)]">
-                        <div class="rounded-[22px] bg-[#1e1838]/95 backdrop-blur-2xl p-6 sm:p-8 space-y-5">
+                        <div class="rounded-[22px] bg-[#1e1838]/95 backdrop-blur-2xl p-6 sm:p-7 space-y-5">
 
-                            <div class="flex items-center gap-4 border-b border-purple-400/20 pb-4">
-                                <div class="w-13 h-13 rounded-2xl bg-gradient-to-br from-cyan-500/25 via-purple-500/25 to-pink-500/25 border border-cyan-400/40 flex items-center justify-center shrink-0 text-cyan-300 shadow-inner">
-                                    <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <div class="flex items-center gap-3.5 border-b border-purple-400/20 pb-4">
+                                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500/25 via-purple-500/25 to-pink-500/25 border border-cyan-400/40 flex items-center justify-center shrink-0 text-cyan-300 shadow-inner">
+                                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
                                     </svg>
                                 </div>
                                 <div>
-                                    <span class="text-[11px] font-extrabold uppercase tracking-widest text-cyan-300">
+                                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-cyan-300 block">
                                         Portal de Clientes
                                     </span>
-                                    <h2 class="text-xl sm:text-2xl font-black text-white leading-tight">
+                                    <h2 class="text-xl font-black text-white leading-tight">
                                         Rastrea tu Orden (OT)
                                     </h2>
                                     <p class="text-xs text-purple-200/75 mt-0.5">
@@ -270,25 +313,25 @@
 
                             <!-- Visual 4-Step Workflow Icons -->
                             <div class="grid grid-cols-4 gap-2 text-center">
-                                <div class="p-2.5 rounded-2xl bg-[#282147] border border-cyan-400/25 flex flex-col items-center">
+                                <div class="p-2 rounded-2xl bg-[#282147] border border-cyan-400/25 flex flex-col items-center">
                                     <div class="w-7 h-7 rounded-xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center mb-1">
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                     </div>
                                     <span class="text-[11px] font-bold text-white">Ingreso</span>
                                 </div>
-                                <div class="p-2.5 rounded-2xl bg-[#282147] border border-purple-400/25 flex flex-col items-center">
+                                <div class="p-2 rounded-2xl bg-[#282147] border border-purple-400/25 flex flex-col items-center">
                                     <div class="w-7 h-7 rounded-xl bg-purple-500/20 text-purple-300 flex items-center justify-center mb-1">
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                                     </div>
                                     <span class="text-[11px] font-bold text-white">Revisión</span>
                                 </div>
-                                <div class="p-2.5 rounded-2xl bg-[#282147] border border-pink-400/25 flex flex-col items-center">
+                                <div class="p-2 rounded-2xl bg-[#282147] border border-pink-400/25 flex flex-col items-center">
                                     <div class="w-7 h-7 rounded-xl bg-pink-500/20 text-pink-300 flex items-center justify-center mb-1">
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                                     </div>
                                     <span class="text-[11px] font-bold text-white">Taller</span>
                                 </div>
-                                <div class="p-2.5 rounded-2xl bg-[#282147] border border-emerald-400/25 flex flex-col items-center">
+                                <div class="p-2 rounded-2xl bg-[#282147] border border-emerald-400/25 flex flex-col items-center">
                                     <div class="w-7 h-7 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center mb-1">
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                                     </div>
@@ -363,7 +406,6 @@
     <section id="servicios" class="relative z-10 py-20 bg-[#191334]/75">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            <!-- Section Header -->
             <div class="text-center max-w-3xl mx-auto mb-14">
                 <span class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 text-xs font-extrabold uppercase tracking-widest">
                     Nuestras Especialidades
@@ -642,7 +684,7 @@
                     <div class="relative rounded-3xl overflow-hidden border border-purple-400/35 shadow-2xl">
                         <img
                             src="{{ asset('images/landing/microsoldering.jpg') }}"
-                            alt="Microsoldadura Avanzada Sointech"
+                            alt="Microsoldadura Avanzada Soin Technology"
                             class="w-full h-[360px] sm:h-[420px] object-cover"
                         >
                         <div class="absolute inset-0 bg-gradient-to-t from-[#140f29] via-transparent to-transparent"></div>
@@ -672,7 +714,7 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                         <div class="p-4 rounded-2xl bg-[#221b41] border border-purple-400/25 flex items-start gap-3.5 hover:border-cyan-400/50 transition">
-                            <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center shrink-0 font-black">🔬</div>
+                            <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center shrink-0 font-black text-lg">🔬</div>
                             <div>
                                 <h4 class="text-sm font-black text-white">Microscopía HD</h4>
                                 <p class="text-xs text-purple-100/75 mt-0.5">Reconstrucción de pistas, pads y soldadura de microchips SMD.</p>
@@ -680,7 +722,7 @@
                         </div>
 
                         <div class="p-4 rounded-2xl bg-[#221b41] border border-purple-400/25 flex items-start gap-3.5 hover:border-pink-400/50 transition">
-                            <div class="w-10 h-10 rounded-xl bg-pink-500/20 text-pink-300 flex items-center justify-center shrink-0 font-black">🌡️</div>
+                            <div class="w-10 h-10 rounded-xl bg-pink-500/20 text-pink-300 flex items-center justify-center shrink-0 font-black text-lg">🌡️</div>
                             <div>
                                 <h4 class="text-sm font-black text-white">Cámara Térmica IR</h4>
                                 <p class="text-xs text-purple-100/75 mt-0.5">Detección exacta de cortocircuitos y fugas de consumo en segundos.</p>
@@ -688,7 +730,7 @@
                         </div>
 
                         <div class="p-4 rounded-2xl bg-[#221b41] border border-purple-400/25 flex items-start gap-3.5 hover:border-amber-400/50 transition">
-                            <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center shrink-0 font-black">📐</div>
+                            <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center shrink-0 font-black text-lg">📐</div>
                             <div>
                                 <h4 class="text-sm font-black text-white">Boardview &amp; Planos</h4>
                                 <p class="text-xs text-purple-100/75 mt-0.5">Seguimiento de líneas de voltaje con esquemáticos oficiales.</p>
@@ -696,7 +738,7 @@
                         </div>
 
                         <div class="p-4 rounded-2xl bg-[#221b41] border border-purple-400/25 flex items-start gap-3.5 hover:border-emerald-400/50 transition">
-                            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center shrink-0 font-black">🛡️</div>
+                            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center shrink-0 font-black text-lg">🛡️</div>
                             <div>
                                 <h4 class="text-sm font-black text-white">Garantía Real</h4>
                                 <p class="text-xs text-purple-100/75 mt-0.5">Pruebas de estrés térmico y reporte completo en tu Orden OT.</p>
@@ -732,24 +774,24 @@
 
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-1">
                             <div class="p-4 rounded-2xl bg-[#181230] border border-cyan-400/25">
-                                <div class="text-lg mb-1">💻</div>
+                                <div class="text-2xl mb-1.5">💻</div>
                                 <div class="text-xs font-black text-cyan-300 uppercase">Flotas &amp; Soporte</div>
                                 <p class="text-xs text-purple-100/75 mt-1">Mantención preventiva y correctiva de PCs y notebooks corporativos.</p>
                             </div>
                             <div class="p-4 rounded-2xl bg-[#181230] border border-purple-400/25">
-                                <div class="text-lg mb-1">🌐</div>
+                                <div class="text-2xl mb-1.5">🌐</div>
                                 <div class="text-xs font-black text-purple-300 uppercase">Redes &amp; Cloud</div>
                                 <p class="text-xs text-purple-100/75 mt-1">Wi-Fi empresarial, servidores, respaldos y seguridad informática.</p>
                             </div>
                             <div class="p-4 rounded-2xl bg-[#181230] border border-pink-400/25">
-                                <div class="text-lg mb-1">🚀</div>
+                                <div class="text-2xl mb-1.5">🚀</div>
                                 <div class="text-xs font-black text-pink-300 uppercase">Software &amp; POS</div>
                                 <p class="text-xs text-purple-100/75 mt-1">Sistemas web a medida, control de inventario, ventas y páginas web.</p>
                             </div>
                         </div>
 
                         <div class="pt-2 flex flex-wrap gap-3">
-                            <a href="#contacto" wire:click="$set('device_type', 'Soluciones Informáticas / Soporte para Empresas')" class="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg hover:brightness-110 transition">
+                            <a href="#contacto" wire:click="$set('device_type', 'Soluciones Informáticas / Soporte para Empresas')" class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg hover:brightness-110 transition">
                                 Solicitar Reunión o Convenio Empresa →
                             </a>
                         </div>
@@ -757,7 +799,7 @@
 
                     <!-- Right High-Impact B2B Image -->
                     <div class="lg:col-span-5 relative h-72 lg:h-full min-h-[340px]">
-                        <img src="{{ asset('images/landing/b2b.jpg') }}" alt="Soluciones Informáticas Empresas Sointech" class="w-full h-full object-cover">
+                        <img src="{{ asset('images/landing/b2b.jpg') }}" alt="Soluciones Informáticas Empresas Soin Technology" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-gradient-to-r from-[#221b42] via-transparent to-transparent hidden lg:block"></div>
                         <div class="absolute bottom-4 right-4 px-4 py-2.5 rounded-2xl bg-[#140f29]/90 backdrop-blur-md border border-emerald-400/40 text-xs font-bold text-emerald-300 animate-float">
                             ✓ Facturación Empresas &amp; SLA Prioritario
@@ -771,7 +813,7 @@
     </section>
 
     <!-- ========================================================== -->
-    <!-- INSTAGRAM FEED & CASOS REALES (@sointech.cl) (#instagram)  -->
+    <!-- INSTAGRAM FEED & CASOS REALES (@soin_tech) (#instagram)   -->
     <!-- ========================================================== -->
     <section id="instagram" class="relative z-10 py-20 border-t border-purple-400/15 bg-[#16112e]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -781,21 +823,15 @@
                 <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
                     <div class="flex items-center gap-4 sm:gap-5">
                         <div class="p-1 rounded-2xl bg-gradient-to-tr from-amber-400 via-pink-500 to-purple-600 shrink-0 shadow-lg shadow-pink-500/25">
-                            <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-[#181230] flex items-center justify-center">
-                                @if($settings && $settings->company_logo)
-                                    <img src="{{ Storage::url($settings->company_logo) }}" alt="Instagram Sointech" class="w-12 h-12 object-contain">
-                                @else
-                                    <svg class="w-9 h-9 text-pink-400" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                                    </svg>
-                                @endif
+                            <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-[#181230] p-1.5 flex items-center justify-center">
+                                <img src="{{ asset('images/logo-dark.png') }}" alt="Instagram Soin Technology" class="w-full h-full object-contain">
                             </div>
                         </div>
 
                         <div>
                             <div class="flex flex-wrap items-center gap-2">
                                 <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                                    @sointech.cl
+                                    @soin_tech
                                 </h2>
                                 <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-pink-500/20 text-pink-300 border border-pink-400/30">
                                     Síguenos en Instagram
@@ -814,9 +850,9 @@
                         class="shrink-0 px-6 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider bg-gradient-to-r from-amber-500 via-pink-600 to-purple-600 text-white shadow-lg shadow-pink-600/30 hover:brightness-110 hover:-translate-y-0.5 transition inline-flex items-center gap-2.5"
                     >
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069z"/>
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                         </svg>
-                        <span>Ver Perfil @sointech.cl</span>
+                        <span>Ver Perfil @soin_tech</span>
                     </a>
                 </div>
             </div>
@@ -858,14 +894,16 @@
                             <div class="px-5 py-3.5 flex items-center justify-between border-b border-purple-400/15 bg-[#1b1534]">
                                 <div class="flex items-center gap-2.5">
                                     <span class="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-400 via-pink-500 to-purple-600 p-[1.5px] flex items-center justify-center">
-                                        <span class="w-full h-full rounded-full bg-[#181230] flex items-center justify-center text-[11px] font-black text-white">S</span>
+                                        <span class="w-full h-full rounded-full bg-[#181230] p-1 flex items-center justify-center">
+                                            <img src="{{ asset('images/logo-dark.png') }}" class="w-full h-full object-contain" alt="Soin">
+                                        </span>
                                     </span>
                                     <div>
                                         <div class="text-xs font-bold text-white leading-none flex items-center gap-1">
-                                            sointech.cl
+                                            soin_tech
                                             <svg class="w-3.5 h-3.5 text-cyan-400 fill-current" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
                                         </div>
-                                        <div class="text-[10px] text-purple-300/70 mt-0.5">{{ $post['date'] ?? 'Laboratorio Sointech' }}</div>
+                                        <div class="text-[10px] text-purple-300/70 mt-0.5">{{ $post['date'] ?? 'Laboratorio Soin Technology' }}</div>
                                     </div>
                                 </div>
                                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border {{ $badgeClass }}">
@@ -875,7 +913,7 @@
 
                             <!-- Instagram Square/Landscape Photo with Hover Overlay -->
                             <a href="{{ $postUrl }}" target="_blank" rel="noopener noreferrer" class="block relative h-56 overflow-hidden bg-[#151029]">
-                                <img src="{{ $photoSrc }}" alt="{{ $post['title'] ?? 'Post Instagram Sointech' }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                                <img src="{{ $photoSrc }}" alt="{{ $post['title'] ?? 'Post Instagram Soin Technology' }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                                 <div class="absolute inset-0 bg-gradient-to-t from-[#211b3e] via-transparent to-transparent opacity-85"></div>
 
                                 <!-- Instagram Hover Interaction Overlay -->
@@ -884,7 +922,7 @@
                                         <svg class="w-5 h-5 text-pink-400 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                                         {{ $post['likes'] ?? '150' }}
                                     </span>
-                                    <span class="px-3 py-1.5 rounded-xl bg-white/15 backdrop-blur-md text-xs">Ver Post ↗</span>
+                                    <span class="px-3 py-1.5 rounded-xl bg-white/15 backdrop-blur-md text-xs">Ver en Instagram ↗</span>
                                 </div>
 
                                 <div class="absolute bottom-3 left-4 right-4">
@@ -897,7 +935,7 @@
                             <!-- Short Caption -->
                             <div class="px-5 py-4">
                                 <p class="text-xs text-purple-100/80 leading-relaxed line-clamp-3">
-                                    <strong class="text-white">sointech.cl</strong> {{ $post['caption'] ?? '' }}
+                                    <strong class="text-white">soin_tech</strong> {{ $post['caption'] ?? '' }}
                                 </p>
                             </div>
                         </div>
@@ -938,27 +976,41 @@
                         ¿Hablamos sobre tu equipo o empresa?
                     </h2>
                     <p class="text-purple-100/80 text-sm sm:text-base">
-                        Escríbenos directamente por WhatsApp o completa el formulario para recibir respuesta prioritaria de un técnico especialista.
+                        Escríbenos directamente por WhatsApp o completa el formulario para recibir respuesta inmediata de un técnico especialista.
                     </p>
 
                     <div class="space-y-3 pt-2">
-                        @if($settings && $settings->company_phone)
-                            <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-4 p-4 rounded-2xl bg-[#221b41] hover:bg-[#2a2250] border border-emerald-400/35 transition group">
-                                <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300 shrink-0 group-hover:scale-110 transition-transform">
+                        <!-- WhatsApp Direct Card with Authentic WhatsApp Logo -->
+                        <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-4 p-4 rounded-2xl bg-[#221b41] hover:bg-[#2a2250] border border-emerald-400/35 transition group">
+                            <div class="w-13 h-13 rounded-2xl bg-[#25D366]/20 border border-[#25D366]/40 flex items-center justify-center text-[#25D366] shrink-0 group-hover:scale-110 transition-transform shadow-lg">
+                                <svg class="w-7 h-7 fill-current" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M8.53 7.33C8.37 7.33 8.1 7.39 7.87 7.64C7.65 7.89 7 8.5 7 9.71C7 10.93 7.89 12.1 8 12.27C8.14 12.44 9.76 14.94 12.25 16C12.84 16.27 13.3 16.42 13.66 16.53C14.25 16.72 14.79 16.69 15.22 16.63C15.7 16.56 16.68 16.03 16.89 15.45C17.1 14.87 17.1 14.38 17.04 14.27C16.97 14.17 16.81 14.11 16.56 14C16.31 13.86 15.09 13.26 14.87 13.18C14.64 13.1 14.5 13.06 14.31 13.3C14.15 13.55 13.67 14.11 13.53 14.27C13.38 14.44 13.24 14.46 13 14.34C12.74 14.21 11.94 13.95 11 13.11C10.26 12.45 9.77 11.64 9.62 11.39C9.5 11.15 9.61 11 9.73 10.89C9.84 10.78 10 10.6 10.1 10.45C10.23 10.31 10.27 10.2 10.35 10.04C10.43 9.87 10.39 9.73 10.33 9.61C10.27 9.5 9.77 8.26 9.56 7.77C9.36 7.29 9.16 7.35 9 7.34C8.86 7.34 8.7 7.33 8.53 7.33Z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="text-xs font-black uppercase tracking-wider text-emerald-400">WhatsApp Directo Taller</div>
+                                <div class="text-base font-black text-white mt-0.5">{{ $whatsappNumber }}</div>
+                            </div>
+                        </a>
+
+                        <!-- Instagram Profile Card -->
+                        <a href="{{ $igProfileUrl }}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-4 p-4 rounded-2xl bg-[#221b41] hover:bg-[#2a2250] border border-pink-400/35 transition group">
+                            <div class="w-13 h-13 rounded-2xl bg-gradient-to-tr from-amber-500 via-pink-600 to-purple-600 p-[1.5px] shrink-0 group-hover:scale-110 transition-transform shadow-lg">
+                                <div class="w-full h-full rounded-2xl bg-[#181230] flex items-center justify-center text-pink-400">
                                     <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
-                                        <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771z"/>
+                                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                                     </svg>
                                 </div>
-                                <div>
-                                    <div class="text-xs font-bold uppercase tracking-wider text-emerald-300">WhatsApp Directo Taller</div>
-                                    <div class="text-base font-black text-white mt-0.5">{{ $settings->company_phone }}</div>
-                                </div>
-                            </a>
-                        @endif
+                            </div>
+                            <div>
+                                <div class="text-xs font-black uppercase tracking-wider text-pink-300">Instagram Oficial</div>
+                                <div class="text-base font-black text-white mt-0.5">@soin_tech</div>
+                            </div>
+                        </a>
 
                         @if($settings && $settings->company_email)
                             <div class="flex items-center gap-4 p-4 rounded-2xl bg-[#221b41] border border-purple-400/25">
-                                <div class="w-12 h-12 rounded-xl bg-cyan-500/15 border border-cyan-400/35 flex items-center justify-center text-cyan-300 shrink-0">
+                                <div class="w-13 h-13 rounded-2xl bg-cyan-500/15 border border-cyan-400/35 flex items-center justify-center text-cyan-300 shrink-0">
                                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                                     </svg>
@@ -966,21 +1018,6 @@
                                 <div>
                                     <div class="text-xs font-bold uppercase tracking-wider text-cyan-300">Correo Corporativo</div>
                                     <div class="text-sm font-bold text-white mt-0.5">{{ $settings->company_email }}</div>
-                                </div>
-                            </div>
-                        @endif
-
-                        @if($settings && $settings->company_address)
-                            <div class="flex items-center gap-4 p-4 rounded-2xl bg-[#221b41] border border-purple-400/25">
-                                <div class="w-12 h-12 rounded-xl bg-pink-500/15 border border-pink-400/35 flex items-center justify-center text-pink-300 shrink-0">
-                                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <div class="text-xs font-bold uppercase tracking-wider text-pink-300">Ubicación Laboratorio</div>
-                                    <div class="text-sm font-bold text-white mt-0.5">{{ $settings->company_address }}</div>
                                 </div>
                             </div>
                         @endif
@@ -1005,7 +1042,8 @@
                                     <button wire:click="$set('quoteSubmitted', false)" type="button" class="px-5 py-2.5 rounded-xl bg-[#2d2454] text-xs font-bold uppercase tracking-wider text-purple-100 border border-purple-400/30">
                                         Enviar otra consulta
                                     </button>
-                                    <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 rounded-xl bg-emerald-500 text-slate-950 text-xs font-bold uppercase tracking-wider">
+                                    <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 rounded-xl bg-emerald-500 text-slate-950 text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2">
+                                        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M8.53 7.33C8.37 7.33 8.1 7.39 7.87 7.64C7.65 7.89 7 8.5 7 9.71C7 10.93 7.89 12.1 8 12.27C8.14 12.44 9.76 14.94 12.25 16C12.84 16.27 13.3 16.42 13.66 16.53C14.25 16.72 14.79 16.69 15.22 16.63C15.7 16.56 16.68 16.03 16.89 15.45C17.1 14.87 17.1 14.38 17.04 14.27C16.97 14.17 16.81 14.11 16.56 14C16.31 13.86 15.09 13.26 14.87 13.18C14.64 13.1 14.5 13.06 14.31 13.3C14.15 13.55 13.67 14.11 13.53 14.27C13.38 14.44 13.24 14.46 13 14.34C12.74 14.21 11.94 13.95 11 13.11C10.26 12.45 9.77 11.64 9.62 11.39C9.5 11.15 9.61 11 9.73 10.89C9.84 10.78 10 10.6 10.1 10.45C10.23 10.31 10.27 10.2 10.35 10.04C10.43 9.87 10.39 9.73 10.33 9.61C10.27 9.5 9.77 8.26 9.56 7.77C9.36 7.29 9.16 7.35 9 7.34C8.86 7.34 8.7 7.33 8.53 7.33Z"/></svg>
                                         Hablar ahora por WhatsApp
                                     </a>
                                 </div>
@@ -1064,33 +1102,102 @@
         </div>
     </section>
 
-    <!-- Floating Quick-Access WhatsApp Button -->
+    <!-- Floating Quick-Access WhatsApp Button with Official Logo -->
     <a
         href="{{ $whatsappUrl }}"
         target="_blank"
         rel="noopener noreferrer"
-        title="Hablar por WhatsApp con Sointech"
-        class="fixed bottom-5 right-5 z-50 flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black text-xs uppercase tracking-wider shadow-[0_10px_30px_rgba(16,185,129,0.5)] hover:scale-105 transition-transform"
+        title="Hablar por WhatsApp con Soin Technology"
+        class="fixed bottom-5 right-5 z-50 flex items-center gap-2.5 px-4 py-3 rounded-full bg-[#25D366] text-slate-950 font-black text-xs uppercase tracking-wider shadow-[0_10px_30px_rgba(37,211,102,0.6)] hover:scale-105 hover:bg-[#20bd5a] transition-all"
     >
         <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
-            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771z"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M8.53 7.33C8.37 7.33 8.1 7.39 7.87 7.64C7.65 7.89 7 8.5 7 9.71C7 10.93 7.89 12.1 8 12.27C8.14 12.44 9.76 14.94 12.25 16C12.84 16.27 13.3 16.42 13.66 16.53C14.25 16.72 14.79 16.69 15.22 16.63C15.7 16.56 16.68 16.03 16.89 15.45C17.1 14.87 17.1 14.38 17.04 14.27C16.97 14.17 16.81 14.11 16.56 14C16.31 13.86 15.09 13.26 14.87 13.18C14.64 13.1 14.5 13.06 14.31 13.3C14.15 13.55 13.67 14.11 13.53 14.27C13.38 14.44 13.24 14.46 13 14.34C12.74 14.21 11.94 13.95 11 13.11C10.26 12.45 9.77 11.64 9.62 11.39C9.5 11.15 9.61 11 9.73 10.89C9.84 10.78 10 10.6 10.1 10.45C10.23 10.31 10.27 10.2 10.35 10.04C10.43 9.87 10.39 9.73 10.33 9.61C10.27 9.5 9.77 8.26 9.56 7.77C9.36 7.29 9.16 7.35 9 7.34C8.86 7.34 8.7 7.33 8.53 7.33Z"/>
         </svg>
         <span class="hidden sm:inline">WhatsApp Directo</span>
     </a>
 
-    <!-- Footer -->
-    <footer class="relative z-10 border-t border-purple-400/20 bg-[#110d24] py-10 text-xs text-purple-200/70">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <span class="font-black text-white text-sm">{{ $settings->company_name ?? 'SOINTECH' }}</span>
-                <span>·</span>
-                <span>Servicio Técnico Especializado, Microsoldadura &amp; Soluciones TI</span>
+    <!-- ========================================================== -->
+    <!-- IMPROVED MULTI-COLUMN FOOTER                               -->
+    <!-- ========================================================== -->
+    <footer class="relative z-10 border-t border-purple-400/25 bg-[#0f0b21] pt-14 pb-10 text-xs text-purple-200/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-purple-400/15">
+
+                <!-- Col 1: Brand & Bio -->
+                <div class="lg:col-span-4 space-y-4">
+                    <a href="#inicio" class="flex items-center gap-3">
+                        <div class="p-1 rounded-xl bg-[#140e29] border border-purple-400/30">
+                            <img src="{{ asset('images/logo-dark.png') }}" class="h-9 w-auto object-contain" alt="Soin Technology Logo">
+                        </div>
+                        <span class="font-black text-xl text-white tracking-tight">SOIN TECHNOLOGY</span>
+                    </a>
+                    <p class="text-xs text-purple-200/70 leading-relaxed max-w-sm">
+                        Laboratorio electrónico especializado en computadores, Mac, consolas de videojuegos, celulares y microsoldadura SMD/BGA, junto a soluciones informáticas integrales para empresas.
+                    </p>
+                    <div class="flex items-center gap-3 pt-1">
+                        <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-xl bg-[#25D366]/15 hover:bg-[#25D366] text-[#25D366] hover:text-slate-950 border border-[#25D366]/35 flex items-center justify-center transition">
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M8.53 7.33C8.37 7.33 8.1 7.39 7.87 7.64C7.65 7.89 7 8.5 7 9.71C7 10.93 7.89 12.1 8 12.27C8.14 12.44 9.76 14.94 12.25 16C12.84 16.27 13.3 16.42 13.66 16.53C14.25 16.72 14.79 16.69 15.22 16.63C15.7 16.56 16.68 16.03 16.89 15.45C17.1 14.87 17.1 14.38 17.04 14.27C16.97 14.17 16.81 14.11 16.56 14C16.31 13.86 15.09 13.26 14.87 13.18C14.64 13.1 14.5 13.06 14.31 13.3C14.15 13.55 13.67 14.11 13.53 14.27C13.38 14.44 13.24 14.46 13 14.34C12.74 14.21 11.94 13.95 11 13.11C10.26 12.45 9.77 11.64 9.62 11.39C9.5 11.15 9.61 11 9.73 10.89C9.84 10.78 10 10.6 10.1 10.45C10.23 10.31 10.27 10.2 10.35 10.04C10.43 9.87 10.39 9.73 10.33 9.61C10.27 9.5 9.77 8.26 9.56 7.77C9.36 7.29 9.16 7.35 9 7.34C8.86 7.34 8.7 7.33 8.53 7.33Z"/></svg>
+                        </a>
+                        <a href="{{ $igProfileUrl }}" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-xl bg-pink-500/15 hover:bg-pink-600 text-pink-300 hover:text-white border border-pink-400/35 flex items-center justify-center transition">
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Col 2: Servicios -->
+                <div class="lg:col-span-3 space-y-3">
+                    <div class="text-xs font-black uppercase tracking-wider text-white">Servicio Técnico</div>
+                    <ul class="space-y-2 text-purple-200/75">
+                        <li><a href="#servicios" class="hover:text-cyan-300 transition">Computadores, Notebooks &amp; Mac</a></li>
+                        <li><a href="#servicios" class="hover:text-pink-300 transition">Celulares &amp; Pantallas OLED</a></li>
+                        <li><a href="#servicios" class="hover:text-purple-300 transition">PlayStation 5, Xbox &amp; Switch</a></li>
+                        <li><a href="#microsoldadura" class="hover:text-amber-300 transition">Microsoldadura &amp; Placas Madre</a></li>
+                        <li><a href="#servicios" class="hover:text-emerald-300 transition">Armado de PC &amp; Rescate de Datos</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Soluciones Empresas & Portal -->
+                <div class="lg:col-span-2 space-y-3">
+                    <div class="text-xs font-black uppercase tracking-wider text-white">Empresas &amp; Portal</div>
+                    <ul class="space-y-2 text-purple-200/75">
+                        <li><a href="#empresas" class="hover:text-cyan-300 transition">Soporte TI Flotas PC</a></li>
+                        <li><a href="#empresas" class="hover:text-purple-300 transition">Redes &amp; Servidores Cloud</a></li>
+                        <li><a href="#empresas" class="hover:text-pink-300 transition">Sistemas Web, POS &amp; ERP</a></li>
+                        <li><a href="#rastreo" class="hover:text-cyan-300 transition">Rastreo de Orden OT</a></li>
+                        <li><a href="{{ route('login') }}" class="hover:text-white transition">Acceso Interno Taller</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Atención Rápida -->
+                <div class="lg:col-span-3 space-y-3">
+                    <div class="text-xs font-black uppercase tracking-wider text-white">Atención Rápida</div>
+                    <div class="p-4 rounded-2xl bg-[#171131] border border-purple-400/20 space-y-2">
+                        <div class="flex items-center gap-2 text-emerald-400 font-bold">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            WhatsApp: {{ $whatsappNumber }}
+                        </div>
+                        <p class="text-[11px] text-purple-200/70">
+                            Escríbenos para presupuestos, estado de equipos y soporte en terreno.
+                        </p>
+                        <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener noreferrer" class="mt-2 block w-full text-center py-2 px-3 rounded-xl bg-[#25D366] text-slate-950 font-black text-xs uppercase tracking-wider hover:bg-[#20bd5a] transition">
+                            Escribir al WhatsApp →
+                        </a>
+                    </div>
+                </div>
+
             </div>
-            <div class="flex items-center gap-5">
-                <a href="#rastreo" class="hover:text-white transition">Seguimiento OT</a>
-                <a href="#servicios" class="hover:text-white transition">Especialidades</a>
-                <a href="#instagram" class="hover:text-white transition">Instagram</a>
-                <a href="{{ route('login') }}" class="text-cyan-300 hover:text-white font-semibold transition">Acceso Taller</a>
+
+            <!-- Bottom Copyright & Credits -->
+            <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-purple-300/60 text-xs">
+                <div>
+                    © {{ date('Y') }} <strong class="text-white">Soin Technology</strong>. Todos los derechos reservados.
+                </div>
+                <div class="flex items-center gap-6">
+                    <a href="#inicio" class="hover:text-white transition">Inicio</a>
+                    <a href="#servicios" class="hover:text-white transition">Especialidades</a>
+                    <a href="#rastreo" class="hover:text-white transition">Seguimiento OT</a>
+                    <a href="{{ $igProfileUrl }}" target="_blank" rel="noopener noreferrer" class="hover:text-pink-300 transition">Instagram</a>
+                </div>
             </div>
         </div>
     </footer>
