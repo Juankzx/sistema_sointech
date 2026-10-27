@@ -293,20 +293,20 @@
                                     </label>
                                     <div class="relative">
                                         <input
-                                            wire:model="search"
+                                            wire:model="searchQuery"
                                             type="text"
                                             placeholder="Ej: OT-202610-0012 o tu RUT"
                                             class="w-full px-4 py-3.5 rounded-xl bg-[#151029] border border-purple-400/35 text-white placeholder-purple-300/40 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 text-sm font-medium"
                                         >
                                     </div>
-                                    @error('search')
+                                    @if($searchError)
                                         <div class="mt-2 p-3 rounded-xl bg-rose-500/15 border border-rose-400/35 text-rose-200 text-xs font-semibold flex items-center gap-2">
                                             <svg class="w-4 h-4 text-rose-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                             </svg>
-                                            <span>{{ $message }}</span>
+                                            <span>{{ $searchError }}</span>
                                         </div>
-                                    @enderror
+                                    @endif
                                 </div>
 
                                 <button
@@ -1038,7 +1038,7 @@
                 <!-- Right Quote Request Form -->
                 <div class="lg:col-span-7">
                     <div class="rounded-3xl bg-[#221b41]/95 border border-purple-400/30 p-6 sm:p-9 shadow-2xl">
-                        @if($quoteSent)
+                        @if($quoteSubmitted)
                             <div class="py-10 text-center space-y-4">
                                 <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 flex items-center justify-center mx-auto">
                                     <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -1050,7 +1050,7 @@
                                     Nuestro equipo técnico ha recibido los datos de tu consulta y te contactará a la brevedad.
                                 </p>
                                 <div class="pt-3 flex flex-wrap justify-center gap-3">
-                                    <button wire:click="$set('quoteSent', false)" type="button" class="px-5 py-2.5 rounded-xl bg-[#2d2454] text-xs font-bold uppercase tracking-wider text-purple-100 border border-purple-400/30">
+                                    <button wire:click="$set('quoteSubmitted', false)" type="button" class="px-5 py-2.5 rounded-xl bg-[#2d2454] text-xs font-bold uppercase tracking-wider text-purple-100 border border-purple-400/30">
                                         Enviar otra consulta
                                     </button>
                                     <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 rounded-xl bg-emerald-500 text-slate-950 text-xs font-bold uppercase tracking-wider">
@@ -1063,21 +1063,21 @@
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-xs font-bold uppercase tracking-wider text-purple-200 mb-2">Nombre o Empresa *</label>
-                                        <input wire:model="name" type="text" placeholder="Ej: Juan Pérez / Constructora Atacama" class="w-full px-4 py-3 rounded-xl bg-[#16112e] border border-purple-400/35 text-white placeholder-purple-300/40 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400">
-                                        @error('name') <span class="text-rose-400 text-xs font-semibold mt-1 block">{{ $message }}</span> @enderror
+                                        <input wire:model="contact_name" type="text" placeholder="Ej: Juan Pérez / Constructora Atacama" class="w-full px-4 py-3 rounded-xl bg-[#16112e] border border-purple-400/35 text-white placeholder-purple-300/40 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400">
+                                        @error('contact_name') <span class="text-rose-400 text-xs font-semibold mt-1 block">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
                                         <label class="block text-xs font-bold uppercase tracking-wider text-purple-200 mb-2">WhatsApp / Teléfono *</label>
-                                        <input wire:model="phone" type="text" placeholder="+56 9 1234 5678" class="w-full px-4 py-3 rounded-xl bg-[#16112e] border border-purple-400/35 text-white placeholder-purple-300/40 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400">
-                                        @error('phone') <span class="text-rose-400 text-xs font-semibold mt-1 block">{{ $message }}</span> @enderror
+                                        <input wire:model="contact_phone" type="text" placeholder="+56 9 1234 5678" class="w-full px-4 py-3 rounded-xl bg-[#16112e] border border-purple-400/35 text-white placeholder-purple-300/40 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400">
+                                        @error('contact_phone') <span class="text-rose-400 text-xs font-semibold mt-1 block">{{ $message }}</span> @enderror
                                     </div>
                                 </div>
 
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-xs font-bold uppercase tracking-wider text-purple-200 mb-2">Correo Electrónico (Opcional)</label>
-                                        <input wire:model="email" type="email" placeholder="contacto@empresa.cl" class="w-full px-4 py-3 rounded-xl bg-[#16112e] border border-purple-400/35 text-white placeholder-purple-300/40 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400">
-                                        @error('email') <span class="text-rose-400 text-xs font-semibold mt-1 block">{{ $message }}</span> @enderror
+                                        <input wire:model="contact_email" type="email" placeholder="contacto@empresa.cl" class="w-full px-4 py-3 rounded-xl bg-[#16112e] border border-purple-400/35 text-white placeholder-purple-300/40 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400">
+                                        @error('contact_email') <span class="text-rose-400 text-xs font-semibold mt-1 block">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
                                         <label class="block text-xs font-bold uppercase tracking-wider text-purple-200 mb-2">Especialidad Requerida *</label>
