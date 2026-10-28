@@ -56,34 +56,34 @@
     --color-sky-900: #164e63;
     --color-sky-950: #083344;
 
-    /* Neutros cálidos lavanda (reemplazan grises fríos) */
+    /* Neutros cálidos lavanda premium (modo oscuro profundo + modo claro nítido) */
     --color-slate-50: #faf8ff;
-    --color-slate-100: #f3effc;
+    --color-slate-100: #f4effd;
     --color-slate-200: #e6e0f5;
     --color-slate-300: #d0c8e8;
-    --color-slate-400: #a299c2;
-    --color-slate-500: #79709b;
-    --color-slate-600: #5b527c;
-    --color-slate-700: #443c64;
-    --color-slate-750: #3a3359;
-    --color-slate-800: #2f284f;
-    --color-slate-850: #282147;
-    --color-slate-900: #211b3e;
-    --color-slate-950: #16112e;
+    --color-slate-400: #9e94c2;
+    --color-slate-500: #645c84;
+    --color-slate-600: #49416a;
+    --color-slate-700: #3a315e;
+    --color-slate-750: #302750;
+    --color-slate-800: #272044;
+    --color-slate-850: #201a3c;
+    --color-slate-900: #1a1435;
+    --color-slate-950: #120d26;
 
     --color-zinc-50: #faf8ff;
-    --color-zinc-100: #f3effc;
+    --color-zinc-100: #f4effd;
     --color-zinc-200: #e6e0f5;
     --color-zinc-300: #d0c8e8;
-    --color-zinc-400: #a299c2;
-    --color-zinc-500: #79709b;
-    --color-zinc-600: #5b527c;
-    --color-zinc-700: #443c64;
-    --color-zinc-750: #3a3359;
-    --color-zinc-800: #2f284f;
-    --color-zinc-850: #282147;
-    --color-zinc-900: #211b3e;
-    --color-zinc-950: #16112e;
+    --color-zinc-400: #9e94c2;
+    --color-zinc-500: #645c84;
+    --color-zinc-600: #49416a;
+    --color-zinc-700: #3a315e;
+    --color-zinc-750: #302750;
+    --color-zinc-800: #272044;
+    --color-zinc-850: #201a3c;
+    --color-zinc-900: #1a1435;
+    --color-zinc-950: #120d26;
 
     --animate-fade-in: fade-in-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
     --animate-float: float 7s ease-in-out infinite;
@@ -278,16 +278,24 @@ main .grid > *:nth-child(5) { animation-delay: 0.16s; }
 main .grid > *:nth-child(6) { animation-delay: 0.20s; }
 main .grid > *:nth-child(n+7) { animation-delay: 0.24s; }
 
-/* Inputs: foco con halo morado y soporte autofill en modo oscuro */
+/* Inputs: foco con halo morado y soporte autofill en modo claro y oscuro */
 input:focus, select:focus, textarea:focus {
     box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.18);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #1a1435;
+    -webkit-box-shadow: 0 0 0px 1000px #ffffff inset;
+    transition: background-color 5000s ease-in-out 0s;
 }
 
 .dark input:-webkit-autofill,
 .dark input:-webkit-autofill:hover,
 .dark input:-webkit-autofill:focus {
-    -webkit-text-fill-color: #f3effc;
-    -webkit-box-shadow: 0 0 0px 1000px #282147 inset;
+    -webkit-text-fill-color: #f4effd;
+    -webkit-box-shadow: 0 0 0px 1000px #272044 inset;
     transition: background-color 5000s ease-in-out 0s;
 }
 
@@ -427,4 +435,26 @@ input:focus, select:focus, textarea:focus {
         transition-duration: 0.01ms !important;
     }
 }
+
+/* ==========================================
+   PERFECCIONAMIENTO DE TEMAS (DARK & LIGHT)
+   ========================================== */
+html.dark {
+    color-scheme: dark;
+}
+
+html:not(.dark) {
+    color-scheme: light;
+}
+
+/* Transición suave y limpia entre cambio de temas */
+body, aside, header, nav, main {
+    transition: background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* En modo claro: nitidez garantizada en encabezados y superficies */
+html:not(.dark) table thead th {
+    color: #49416a;
+}
+
 
