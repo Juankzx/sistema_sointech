@@ -2,9 +2,9 @@
 
     <!-- 1. HEADER DE BIENVENIDA & ACCIONES RÁPIDAS -->
     <div class="relative overflow-hidden rounded-2xl p-5 sm:p-6 text-white shadow-lg shadow-purple-950/15 border border-white/15 flex flex-col md:flex-row md:items-center justify-between gap-4"
-         style="background: linear-gradient(125deg, #4c1d95 0%, #7c3aed 35%, #db2777 72%, #0284c7 100%);">
+         style="background: linear-gradient(135deg, #31104b 0%, #4c1d95 32%, #6366f1 68%, #0ea5e9 100%);">
         <div class="absolute -top-16 -right-16 w-56 h-56 rounded-full bg-cyan-300/25 blur-3xl pointer-events-none"></div>
-        <div class="absolute -bottom-16 left-1/3 w-56 h-56 rounded-full bg-pink-400/25 blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-16 left-1/3 w-56 h-56 rounded-full bg-indigo-400/20 blur-3xl pointer-events-none"></div>
 
         <div class="relative z-10">
             <div class="flex flex-wrap items-center gap-2">
@@ -23,7 +23,7 @@
         <div class="relative z-10 flex flex-wrap items-center gap-2.5">
             @if(auth()->user()->isAdmin() || auth()->user()->role === 'recepcionista')
                 <a href="{{ route('work-orders.create') }}" class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-white text-purple-900 hover:bg-purple-50 font-bold text-xs rounded-xl transition shadow-md hover:-translate-y-0.5">
-                    <x-ui.icon name="plus" class="w-4 h-4 text-pink-600" />
+                    <x-ui.icon name="plus" class="w-4 h-4 text-indigo-600" />
                     <span>Nueva Orden OT</span>
                 </a>
                 <a href="{{ route('pos.index') }}" class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-white/15 hover:bg-white/25 backdrop-blur-md text-white border border-white/30 font-bold text-xs rounded-xl transition shadow-sm hover:-translate-y-0.5">
@@ -62,15 +62,15 @@
             </div>
         </div>
 
-        <!-- Esperando Repuestos (Rosa Oscuro / Magenta) -->
-        <div class="bg-white dark:bg-zinc-900 border border-pink-200/80 dark:border-pink-800/50 rounded-2xl p-4 shadow-xs flex items-center justify-between relative overflow-hidden">
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-500 to-rose-500"></div>
+        <!-- Esperando Repuestos (Ámbar Cálido) -->
+        <div class="bg-white dark:bg-zinc-900 border border-amber-200/80 dark:border-amber-800/50 rounded-2xl p-4 shadow-xs flex items-center justify-between relative overflow-hidden">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-orange-400"></div>
             <div>
-                <span class="text-[11px] font-bold text-pink-600 dark:text-pink-300 uppercase tracking-wider block">Esp. Repuestos</span>
+                <span class="text-[11px] font-bold text-amber-600 dark:text-amber-300 uppercase tracking-wider block">Esp. Repuestos</span>
                 <span class="text-2xl font-extrabold font-mono text-zinc-900 dark:text-zinc-100 mt-0.5 block">{{ $esperandoRepuestos }}</span>
                 <span class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 block">A la espera de piezas</span>
             </div>
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-white shadow-md shadow-pink-500/30 shrink-0">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white shadow-md shadow-amber-500/30 shrink-0">
                 <x-ui.icon name="package" class="w-5 h-5" />
             </div>
         </div>
@@ -92,7 +92,7 @@
         <div class="col-span-2 sm:col-span-2 lg:col-span-1 bg-white dark:bg-zinc-900 border border-purple-200/80 dark:border-purple-800/50 rounded-2xl p-4 shadow-xs flex items-center justify-between relative overflow-hidden">
             <div class="absolute top-0 left-0 right-0 h-1 bg-aurora"></div>
             <div>
-                <span class="text-[11px] font-bold text-purple-600 dark:text-pink-300 uppercase tracking-wider block">Utilidad M. Obra</span>
+                <span class="text-[11px] font-bold text-purple-600 dark:text-purple-300 uppercase tracking-wider block">Utilidad M. Obra</span>
                 <span class="text-xl font-extrabold font-mono text-zinc-900 dark:text-zinc-100 mt-0.5 block">
                     ${{ number_format($totalRevenue, 0, ',', '.') }}
                 </span>
@@ -143,11 +143,11 @@
                                          label: 'Nuevas Órdenes',
                                          data: data,
                                          borderColor: '#8b5cf6',
-                                         backgroundColor: 'rgba(219, 39, 119, 0.10)',
+                                         backgroundColor: 'rgba(99, 102, 241, 0.12)',
                                          fill: true,
                                          tension: 0.3,
                                          borderWidth: 2,
-                                         pointBackgroundColor: '#db2777',
+                                         pointBackgroundColor: '#6366f1',
                                          pointRadius: 3
                                      }]
                                  },
@@ -207,7 +207,7 @@
                                      labels: statusLabels,
                                      datasets: [{
                                          data: statusValues,
-                                         backgroundColor: ['#8b5cf6', '#db2777', '#3b82f6', '#06b6d4', '#f59e0b', '#10b981'],
+                                         backgroundColor: ['#8b5cf6', '#6366f1', '#0ea5e9', '#06b6d4', '#f59e0b', '#10b981'],
                                          borderWidth: 0
                                      }]
                                  },

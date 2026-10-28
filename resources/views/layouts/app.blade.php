@@ -216,7 +216,7 @@
                 <div class="p-3 border-t border-slate-200/90 dark:border-slate-800 shrink-0">
                     <div class="flex items-center justify-between p-2 rounded-lg bg-slate-100/70 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-800">
                         <div class="flex items-center gap-2.5 min-w-0 pr-1">
-                            <div class="w-7 h-7 rounded-full bg-aurora text-white shadow-sm shadow-orange-500/30 text-xs font-semibold flex items-center justify-center shrink-0">
+                            <div class="w-7 h-7 rounded-full bg-aurora text-white shadow-sm shadow-indigo-500/30 text-xs font-semibold flex items-center justify-center shrink-0">
                                 {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
                             </div>
                             <div class="min-w-0">
@@ -485,7 +485,7 @@
                         <div class="pt-3 border-t border-slate-200 dark:border-slate-800 shrink-0">
                             <div class="flex items-center justify-between p-2 rounded-lg bg-slate-100/70 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-800">
                                 <div class="flex items-center gap-2.5 min-w-0 pr-1">
-                                    <div class="w-7 h-7 rounded-full bg-aurora text-white shadow-sm shadow-orange-500/30 text-xs font-semibold flex items-center justify-center shrink-0">
+                                    <div class="w-7 h-7 rounded-full bg-aurora text-white shadow-sm shadow-indigo-500/30 text-xs font-semibold flex items-center justify-center shrink-0">
                                         {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
                                     </div>
                                     <div class="min-w-0">
@@ -551,7 +551,7 @@
                         </a>
                         <!-- 3. Nueva OT (botón central flotante) -->
                         <a href="{{ route('work-orders.create') }}" class="flex flex-col items-center justify-center -mt-6 transition active:scale-90">
-                            <span class="w-13 h-13 w-[52px] h-[52px] rounded-2xl bg-aurora text-white flex items-center justify-center shadow-lg shadow-orange-500/40 ring-4 ring-white dark:ring-slate-950">
+                            <span class="w-13 h-13 w-[52px] h-[52px] rounded-2xl bg-aurora text-white flex items-center justify-center shadow-lg shadow-indigo-500/35 ring-4 ring-white dark:ring-slate-950">
                                 <x-ui.icon name="plus" class="w-6 h-6" />
                             </span>
                             <span class="text-[10px] mt-1 tracking-tight font-semibold text-slate-700 dark:text-slate-200">Nueva OT</span>

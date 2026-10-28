@@ -2,18 +2,18 @@
     <!-- Decorative Floating Color Orbs -->
     <div class="pointer-events-none fixed inset-0 overflow-hidden z-0">
         <div class="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-purple-600/25 dark:bg-purple-600/30 blur-3xl"></div>
-        <div class="absolute top-1/3 -right-24 w-96 h-96 rounded-full bg-pink-600/20 dark:bg-pink-600/25 blur-3xl"></div>
+        <div class="absolute top-1/3 -right-24 w-96 h-96 rounded-full bg-indigo-600/20 dark:bg-indigo-600/25 blur-3xl"></div>
         <div class="absolute -bottom-28 left-1/3 w-96 h-96 rounded-full bg-cyan-500/20 dark:bg-cyan-500/25 blur-3xl"></div>
     </div>
 
     <!-- Left Hero Column (MD+ Desktop) -->
     <div class="hidden md:flex md:w-1/2 relative flex-col justify-between p-12 select-none overflow-hidden z-10 border-r border-white/10"
-         style="background: linear-gradient(135deg, #2e1065 0%, #4c1d95 28%, #831843 64%, #1e3a8a 100%);">
+         style="background: linear-gradient(135deg, #2e1065 0%, #4c1d95 35%, #4338ca 70%, #1e3a8a 100%);">
         <!-- Subtle background photo with colorful blend -->
         <img src="/images/login-banner.png" alt="Sointech Workspace" class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-luminosity">
         
         <!-- Glowing Mesh Orbs inside Hero -->
-        <div class="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-pink-500/35 blur-3xl pointer-events-none"></div>
+        <div class="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-indigo-500/25 blur-3xl pointer-events-none"></div>
         <div class="absolute bottom-10 -left-20 w-96 h-96 rounded-full bg-cyan-400/30 blur-3xl pointer-events-none"></div>
 
         <!-- Top Brand Bar -->
@@ -35,14 +35,14 @@
 
         <!-- Center Hero Copy & Colorful Feature Cards -->
         <div class="relative z-10 max-w-xl space-y-6 my-auto py-8">
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 border border-pink-300/35 text-pink-100 text-xs font-bold tracking-wide uppercase shadow-sm backdrop-blur-md">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 border border-indigo-300/35 text-indigo-100 text-xs font-bold tracking-wide uppercase shadow-sm backdrop-blur-md">
                 <x-ui.icon name="sparkles" class="w-4 h-4 text-cyan-300" />
                 <span>Experiencia Rápida, Moderna y Multidispositivo</span>
             </div>
 
             <h1 class="text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight">
                 Control total y energía para tu
-                <span style="background: linear-gradient(90deg, #67e8f9 0%, #f9a8d4 50%, #c4b5fd 100%); -webkit-background-clip: text; background-clip: text; color: transparent;">taller técnico.</span>
+                <span style="background: linear-gradient(90deg, #67e8f9 0%, #818cf8 50%, #c4b5fd 100%); -webkit-background-clip: text; background-clip: text; color: transparent;">taller técnico.</span>
             </h1>
 
             <p class="text-sm text-purple-100/90 leading-relaxed">
@@ -64,7 +64,7 @@
 
                 <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/20 transition">
                     <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-md shrink-0"
-                         style="background: linear-gradient(135deg, #ec4899, #e11d48);">
+                         style="background: linear-gradient(135deg, #f59e0b, #ea580c);">
                         <x-ui.icon name="shopping-bag" class="w-5 h-5" />
                     </div>
                     <div>
@@ -153,7 +153,7 @@
         <div class="w-full max-w-md my-auto animate-fade-in">
             <!-- Mobile Colorful Hero Header Banner (Only on Mobile / iPhone) -->
             <div class="md:hidden relative overflow-hidden rounded-t-2xl p-6 text-white shadow-lg"
-                 style="background: linear-gradient(135deg, #5b21b6 0%, #db2777 55%, #0284c7 100%);">
+                 style="background: linear-gradient(135deg, #4c1d95 0%, #6366f1 55%, #0ea5e9 100%);">
                 <div class="relative z-10 flex items-center gap-3.5">
                     <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 shadow-md p-2 flex items-center justify-center shrink-0 overflow-hidden">
                         <img src="{{ asset('images/logo-dark-trans.png') }}" class="w-full h-full object-contain" alt="Sointech Logo">
@@ -170,19 +170,19 @@
             <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-b-2xl md:rounded-2xl p-8 sm:p-10 shadow-xl relative overflow-hidden">
                 <!-- Top Gradient Accent Bar -->
                 <div class="hidden md:block absolute top-0 left-0 right-0 h-2"
-                     style="background: linear-gradient(90deg, #7c3aed 0%, #db2777 50%, #06b6d4 100%);"></div>
+                     style="background: linear-gradient(90deg, #7c3aed 0%, #6366f1 50%, #06b6d4 100%);"></div>
 
                 <!-- Desktop Header -->
                 <div class="hidden md:flex flex-col items-center text-center mb-8">
                     <div class="w-14 h-14 rounded-2xl p-0.5 shadow-lg mb-3.5"
-                         style="background: linear-gradient(135deg, #7c3aed, #db2777, #06b6d4);">
+                         style="background: linear-gradient(135deg, #7c3aed, #6366f1, #06b6d4);">
                         <div class="w-full h-full bg-slate-100 dark:bg-slate-950 rounded-[14px] flex items-center justify-center p-2 overflow-hidden">
                             <img src="{{ asset('images/logo-light-trans.png') }}" class="w-full h-full object-contain dark:hidden" alt="Sointech Logo">
                             <img src="{{ asset('images/logo-dark-trans.png') }}" class="w-full h-full object-contain hidden dark:block" alt="Sointech Logo">
                         </div>
                     </div>
                     <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-                        Bienvenido a <span style="background: linear-gradient(90deg, #8b5cf6, #ec4899, #06b6d4); -webkit-background-clip: text; background-clip: text; color: transparent;">Sointech</span>
+                        Bienvenido a <span style="background: linear-gradient(90deg, #8b5cf6, #6366f1, #06b6d4); -webkit-background-clip: text; background-clip: text; color: transparent;">Sointech</span>
                     </h2>
                     <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
                         Ingresa a tu cuenta para gestionar el taller en tiempo real
@@ -214,9 +214,9 @@
                             Contraseña
                         </label>
                         <div class="relative">
-                            <x-ui.icon name="lock" class="w-4 h-4 text-pink-500 dark:text-pink-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                            <x-ui.icon name="lock" class="w-4 h-4 text-purple-500 dark:text-purple-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                             <input wire:model="password" id="password" :type="showPassword ? 'text' : 'password'" autocomplete="current-password" placeholder="••••••••"
-                                class="w-full pl-10 pr-10 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-500/25 transition">
+                                class="w-full pl-10 pr-10 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/25 transition">
                             <button type="button" @click="showPassword = !showPassword"
                                 class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1 cursor-pointer"
                                 tabindex="-1">
@@ -242,7 +242,7 @@
                             <input wire:model="remember" type="checkbox" class="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-brand-600 focus:ring-brand-500 cursor-pointer">
                             <span>Mantener sesión activa</span>
                         </label>
-                        <a href="{{ route('password.request') }}" class="text-xs font-semibold text-pink-600 dark:text-pink-400 hover:text-brand-600 dark:hover:text-brand-300 hover:underline transition">
+                        <a href="{{ route('password.request') }}" class="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-indigo-600 dark:hover:text-indigo-300 hover:underline transition">
                             ¿Olvidaste tu clave?
                         </a>
                     </div>
@@ -250,7 +250,7 @@
                     <!-- Vibrant Gradient Submit Button -->
                     <div class="pt-3">
                         <button type="submit"
-                            style="background: linear-gradient(135deg, #7c3aed 0%, #db2777 55%, #2563eb 100%);"
+                            style="background: linear-gradient(135deg, #7c3aed 0%, #6366f1 55%, #0284c7 100%);"
                             class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold text-white shadow-lg shadow-brand-500/30 hover:opacity-95 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer">
                             <span wire:loading.remove wire:target="login" class="flex items-center gap-2">
                                 <span>Ingresar a la Plataforma</span>
@@ -271,7 +271,7 @@
                         Web & iPhone PWA
                     </span>
                     <span class="flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full bg-pink-500"></span>
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
                         Acceso Seguro
                     </span>
                     <span class="flex items-center gap-1.5">
