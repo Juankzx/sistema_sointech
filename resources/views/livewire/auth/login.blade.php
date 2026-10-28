@@ -55,9 +55,8 @@
 
             <!-- Brand Icon & Header -->
             <div class="flex flex-col items-center text-center mb-8">
-                <div class="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-white/[0.06] border border-slate-200/80 dark:border-white/10 p-3 shadow-xs flex items-center justify-center mb-4 transition-transform hover:scale-105 duration-200">
-                    <img src="{{ asset('images/logo-light-trans.png') }}" class="w-full h-full object-contain dark:hidden" alt="Sointech Logo">
-                    <img src="{{ asset('images/logo-dark-trans.png') }}" class="w-full h-full object-contain hidden dark:block" alt="Sointech Logo">
+                <div class="w-16 h-16 rounded-2xl overflow-hidden shadow-md mb-4 transition-transform hover:scale-105 duration-200 border border-black/5 dark:border-white/10">
+                    <img src="{{ asset('apple-touch-icon.png') }}" class="w-full h-full object-contain" alt="Sointech Logo">
                 </div>
 
                 <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">

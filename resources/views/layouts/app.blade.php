@@ -33,12 +33,20 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-        <!-- Favicon & PWA Icons (iPhone / Mobile) -->
+        <!-- Favicon & PWA Icons (Apple Minimalist Suite) -->
         <link rel="manifest" href="{{ asset('manifest.json') }}">
         <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)">
         <meta name="theme-color" content="#090d16" media="(prefers-color-scheme: dark)">
-        <link rel="icon" type="image/png" href="{{ isset($appSettings) && $appSettings->favicon_path ? Storage::url($appSettings->favicon_path) : asset('images/logo-dark.png') }}">
-        <link rel="apple-touch-icon" sizes="180x180" href="{{ isset($appSettings) && $appSettings->favicon_path ? Storage::url($appSettings->favicon_path) : asset('images/logo-dark.png') }}">
+        @if(isset($appSettings) && $appSettings->favicon_path)
+            <link rel="icon" type="image/png" href="{{ Storage::url($appSettings->favicon_path) }}">
+            <link rel="apple-touch-icon" sizes="180x180" href="{{ Storage::url($appSettings->favicon_path) }}">
+        @else
+            <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+            <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+            <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+            <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+            <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+        @endif
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="default">
         <meta name="apple-mobile-web-app-title" content="{{ isset($appSettings) && $appSettings->trade_name ? $appSettings->trade_name : 'Sointech' }}">
@@ -91,12 +99,11 @@
                 <!-- Sidebar Brand Header -->
                 <div class="h-16 px-5 border-b border-slate-200/90 dark:border-slate-800 flex items-center justify-between shrink-0">
                     <div class="flex items-center gap-3 min-w-0">
-                        <div class="w-10 h-10 rounded-2xl bg-slate-100 dark:bg-slate-800/90 p-1.5 border border-slate-200 dark:border-slate-700/60 shadow-xs flex items-center justify-center shrink-0 overflow-hidden">
+                        <div class="w-10 h-10 rounded-2xl overflow-hidden shadow-xs flex items-center justify-center shrink-0 border border-slate-200 dark:border-white/10">
                             @if(isset($appSettings) && $appSettings->logo_path)
                                 <img src="{{ Storage::url($appSettings->logo_path) }}" class="w-full h-full object-contain" alt="Logo">
                             @else
-                                <img src="{{ asset('images/logo-light-trans.png') }}" class="w-full h-full object-contain dark:hidden" alt="Sointech Logo">
-                                <img src="{{ asset('images/logo-dark-trans.png') }}" class="w-full h-full object-contain hidden dark:block" alt="Sointech Logo">
+                                <img src="{{ asset('apple-touch-icon.png') }}" class="w-full h-full object-contain" alt="Sointech Logo">
                             @endif
                         </div>
                         <div class="min-w-0">
@@ -279,12 +286,11 @@
                 <header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 md:hidden">
                     <div class="px-4 h-14 flex items-center justify-between">
                         <div class="flex items-center gap-2.5 min-w-0">
-                            <div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/90 p-1.5 border border-slate-200 dark:border-slate-700/60 shadow-xs flex items-center justify-center shrink-0 overflow-hidden">
+                            <div class="w-9 h-9 rounded-xl overflow-hidden shadow-xs flex items-center justify-center shrink-0 border border-slate-200 dark:border-white/10">
                                 @if(isset($appSettings) && $appSettings->logo_path)
                                     <img src="{{ Storage::url($appSettings->logo_path) }}" class="w-full h-full object-contain" alt="Logo">
                                 @else
-                                    <img src="{{ asset('images/logo-light-trans.png') }}" class="w-full h-full object-contain dark:hidden" alt="Sointech Logo">
-                                    <img src="{{ asset('images/logo-dark-trans.png') }}" class="w-full h-full object-contain hidden dark:block" alt="Sointech Logo">
+                                    <img src="{{ asset('apple-touch-icon.png') }}" class="w-full h-full object-contain" alt="Sointech Logo">
                                 @endif
                             </div>
                             <div class="min-w-0">
@@ -360,12 +366,11 @@
                         <!-- Drawer Header -->
                         <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
                             <div class="flex items-center gap-2.5 min-w-0">
-                                <div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/90 p-1.5 border border-slate-200 dark:border-slate-700/60 shadow-xs flex items-center justify-center shrink-0 overflow-hidden">
+                                <div class="w-9 h-9 rounded-xl overflow-hidden shadow-xs flex items-center justify-center shrink-0 border border-slate-200 dark:border-white/10">
                                     @if(isset($appSettings) && $appSettings->logo_path)
                                         <img src="{{ Storage::url($appSettings->logo_path) }}" class="w-full h-full object-contain" alt="Logo">
                                     @else
-                                        <img src="{{ asset('images/logo-light-trans.png') }}" class="w-full h-full object-contain dark:hidden" alt="Sointech Logo">
-                                        <img src="{{ asset('images/logo-dark-trans.png') }}" class="w-full h-full object-contain hidden dark:block" alt="Sointech Logo">
+                                        <img src="{{ asset('apple-touch-icon.png') }}" class="w-full h-full object-contain" alt="Sointech Logo">
                                     @endif
                                 </div>
                                 <div class="min-w-0">

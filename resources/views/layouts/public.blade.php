@@ -20,12 +20,20 @@
         </script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
         <title>{{ $title ?? (isset($appSettings) && $appSettings->trade_name ? $appSettings->trade_name : config('app.name', 'SOINTECH') . ' - Servicio Técnico') }}</title>
-        <!-- Favicon & PWA Icons (iPhone / Mobile) -->
+        <!-- Favicon & PWA Icons (Apple Minimalist Suite) -->
         <link rel="manifest" href="{{ asset('manifest.json') }}">
         <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)">
         <meta name="theme-color" content="#090d16" media="(prefers-color-scheme: dark)">
-        <link rel="icon" type="image/png" href="{{ isset($appSettings) && $appSettings->favicon_path ? Storage::url($appSettings->favicon_path) : asset('images/logo-dark.png') }}">
-        <link rel="apple-touch-icon" sizes="180x180" href="{{ isset($appSettings) && $appSettings->favicon_path ? Storage::url($appSettings->favicon_path) : asset('images/logo-dark.png') }}">
+        @if(isset($appSettings) && $appSettings->favicon_path)
+            <link rel="icon" type="image/png" href="{{ Storage::url($appSettings->favicon_path) }}">
+            <link rel="apple-touch-icon" sizes="180x180" href="{{ Storage::url($appSettings->favicon_path) }}">
+        @else
+            <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+            <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+            <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+            <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+            <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+        @endif
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="default">
         @vite(['resources/css/app.css', 'resources/js/app.js'])
