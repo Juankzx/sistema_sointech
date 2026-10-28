@@ -217,7 +217,7 @@
                                         'Rechazado' => 'danger',
                                         'En Reparación' => 'info',
                                         'Listo para Entrega' => 'success',
-                                        'Entregado' => 'purple',
+                                        'Entregado' => 'default',
                                     ];
                                     $variant = $statusVariants[$order->status] ?? 'default';
                                 @endphp
@@ -378,7 +378,7 @@
                             'Rechazado' => 'danger',
                             'En Reparación' => 'info',
                             'Listo para Entrega' => 'success',
-                            'Entregado' => 'purple',
+                            'Entregado' => 'default',
                         ];
                         $variant = $statusVariants[$order->status] ?? 'default';
                     @endphp
@@ -665,7 +665,7 @@
                                     'Esperando Repuestos' => 'warning',
                                     'Rechazado' => 'danger',
                                     'En Reparación' => 'info',
-                                    'En Verificación' => 'purple',
+                                    'En Verificación' => 'info',
                                     'Listo para Entrega' => 'success',
                                     'Entregado' => 'default',
                                     'Anulada' => 'danger',
@@ -724,7 +724,7 @@
                                             'Esperando Repuestos' => ['label' => 'Esperando Repuestos', 'variant' => 'warning'],
                                             'Rechazado' => ['label' => 'Rechazado', 'variant' => 'danger'],
                                             'En Reparación' => ['label' => 'En Reparación', 'variant' => 'info'],
-                                            'En Verificación' => ['label' => 'En Verificación', 'variant' => 'purple'],
+                                            'En Verificación' => ['label' => 'En Verificación', 'variant' => 'info'],
                                             'Listo para Entrega' => ['label' => 'Listo para Entrega', 'variant' => 'success'],
                                             'Entregado' => ['label' => 'Entregado', 'variant' => 'default'],
                                         ];

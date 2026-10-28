@@ -9,26 +9,27 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ==========================================================
-   PALETA SOINTECH "AURORA"
-   Morado (brand) · Rosa oscuro (orange→pink) · Azul · Celeste
-   Los neutros (slate/zinc) se tiñen de lavanda para que la
-   interfaz se sienta cálida y alegre en vez de gris/fría.
+   PALETA SOINTECH "APPLE TECH BLUE & CYAN"
+   Azul Tech Apple (brand) · Cyan Eléctrico (sky) · Ámbar (orange)
+   Neutros Deep Slate puro en modo oscuro (#090d16 / #0f172a / #1e293b)
+   y Blanco / Slate nítido en modo claro (#f8fafc / #ffffff).
+   Cero morado, cero rosado: 100% minimalista y profesional.
    ========================================================== */
 @theme {
     --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 
-    /* Brand: morado vibrante */
-    --color-brand-50: #f5f3ff;
-    --color-brand-100: #ede9fe;
-    --color-brand-200: #ddd6fe;
-    --color-brand-300: #c4b5fd;
-    --color-brand-400: #a78bfa;
-    --color-brand-500: #8b5cf6;
-    --color-brand-600: #7c3aed;
-    --color-brand-700: #6d28d9;
-    --color-brand-800: #5b21b6;
-    --color-brand-900: #4c1d95;
-    --color-brand-950: #2e1065;
+    /* Brand: Apple Tech Blue / Electric Blue (#2563eb / #0071e3 / #0284c7) */
+    --color-brand-50: #eff6ff;
+    --color-brand-100: #dbeafe;
+    --color-brand-200: #bfdbfe;
+    --color-brand-300: #93c5fd;
+    --color-brand-400: #60a5fa;
+    --color-brand-500: #3b82f6;
+    --color-brand-600: #2563eb;
+    --color-brand-700: #1d4ed8;
+    --color-brand-800: #1e40af;
+    --color-brand-900: #1e3a8a;
+    --color-brand-950: #172554;
 
     /* "orange" (acento cálido / avisos y repuestos) → Ámbar dorado y sunset cálido suave */
     --color-orange-50: #fffbeb;
@@ -43,12 +44,12 @@
     --color-orange-900: #78350f;
     --color-orange-950: #451a03;
 
-    /* Info → azul/celeste más vivo */
-    --color-sky-50: #ecfeff;
-    --color-sky-100: #cffafe;
-    --color-sky-200: #a5f3fc;
-    --color-sky-300: #67e8f9;
-    --color-sky-400: #22d3ee;
+    /* Sky / Cyan Eléctrico */
+    --color-sky-50: #f0fdfa;
+    --color-sky-100: #ccfbf1;
+    --color-sky-200: #99f6e4;
+    --color-sky-300: #5eead4;
+    --color-sky-400: #2dd4bf;
     --color-sky-500: #06b6d4;
     --color-sky-600: #0891b2;
     --color-sky-700: #0e7490;
@@ -56,34 +57,34 @@
     --color-sky-900: #164e63;
     --color-sky-950: #083344;
 
-    /* Neutros cálidos lavanda premium (modo oscuro profundo + modo claro nítido) */
-    --color-slate-50: #faf8ff;
-    --color-slate-100: #f4effd;
-    --color-slate-200: #e6e0f5;
-    --color-slate-300: #d0c8e8;
-    --color-slate-400: #9e94c2;
-    --color-slate-500: #645c84;
-    --color-slate-600: #49416a;
-    --color-slate-700: #3a315e;
-    --color-slate-750: #302750;
-    --color-slate-800: #272044;
-    --color-slate-850: #201a3c;
-    --color-slate-900: #1a1435;
-    --color-slate-950: #120d26;
+    /* Neutros Deep Slate & Titanium (Modo oscuro grafito puro + Modo claro nítido Apple) */
+    --color-slate-50: #f8fafc;
+    --color-slate-100: #f1f5f9;
+    --color-slate-200: #e2e8f0;
+    --color-slate-300: #cbd5e1;
+    --color-slate-400: #94a3b8;
+    --color-slate-500: #64748b;
+    --color-slate-600: #475569;
+    --color-slate-700: #334155;
+    --color-slate-750: #243044;
+    --color-slate-800: #1e293b;
+    --color-slate-850: #141d2e;
+    --color-slate-900: #0f172a;
+    --color-slate-950: #090d16;
 
-    --color-zinc-50: #faf8ff;
-    --color-zinc-100: #f4effd;
-    --color-zinc-200: #e6e0f5;
-    --color-zinc-300: #d0c8e8;
-    --color-zinc-400: #9e94c2;
-    --color-zinc-500: #645c84;
-    --color-zinc-600: #49416a;
-    --color-zinc-700: #3a315e;
-    --color-zinc-750: #302750;
-    --color-zinc-800: #272044;
-    --color-zinc-850: #201a3c;
-    --color-zinc-900: #1a1435;
-    --color-zinc-950: #120d26;
+    --color-zinc-50: #f8fafc;
+    --color-zinc-100: #f1f5f9;
+    --color-zinc-200: #e2e8f0;
+    --color-zinc-300: #cbd5e1;
+    --color-zinc-400: #94a3b8;
+    --color-zinc-500: #64748b;
+    --color-zinc-600: #475569;
+    --color-zinc-700: #334155;
+    --color-zinc-750: #243044;
+    --color-zinc-800: #1e293b;
+    --color-zinc-850: #141d2e;
+    --color-zinc-900: #0f172a;
+    --color-zinc-950: #090d16;
 
     --animate-fade-in: fade-in-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
     --animate-float: float 7s ease-in-out infinite;
@@ -139,23 +140,23 @@ body::before {
     z-index: -1;
     pointer-events: none;
     background:
-        radial-gradient(40% 35% at 10% 5%,  rgba(139, 92, 246, 0.18), transparent 70%),
-        radial-gradient(35% 30% at 90% 10%, rgba(99, 102, 241, 0.14), transparent 70%),
-        radial-gradient(40% 35% at 15% 95%, rgba(34, 211, 238, 0.14), transparent 70%),
-        radial-gradient(35% 35% at 90% 90%, rgba(59, 130, 246, 0.14), transparent 70%);
+        radial-gradient(40% 35% at 10% 5%,  rgba(37, 99, 235, 0.08), transparent 70%),
+        radial-gradient(35% 30% at 90% 10%, rgba(6, 182, 212, 0.06), transparent 70%),
+        radial-gradient(40% 35% at 15% 95%, rgba(14, 165, 233, 0.06), transparent 70%),
+        radial-gradient(35% 35% at 90% 90%, rgba(37, 99, 235, 0.07), transparent 70%);
     animation: aurora 22s ease-in-out infinite;
 }
 
 .dark body::before {
     background:
-        radial-gradient(40% 35% at 10% 5%,  rgba(139, 92, 246, 0.24), transparent 70%),
-        radial-gradient(35% 30% at 90% 10%, rgba(99, 102, 241, 0.18), transparent 70%),
-        radial-gradient(40% 35% at 15% 95%, rgba(6, 182, 212, 0.15), transparent 70%),
-        radial-gradient(35% 35% at 90% 90%, rgba(59, 130, 246, 0.18), transparent 70%);
+        radial-gradient(40% 35% at 10% 5%,  rgba(37, 99, 235, 0.15), transparent 70%),
+        radial-gradient(35% 30% at 90% 10%, rgba(6, 182, 212, 0.12), transparent 70%),
+        radial-gradient(40% 35% at 15% 95%, rgba(14, 165, 233, 0.10), transparent 70%),
+        radial-gradient(35% 35% at 90% 90%, rgba(37, 99, 235, 0.12), transparent 70%);
 }
 
 ::selection {
-    background: #6366f1;
+    background: #2563eb;
     color: #fff;
 }
 
@@ -163,7 +164,7 @@ body::before {
    UTILIDADES DE MARCA
    ========================================== */
 .text-gradient {
-    background-image: linear-gradient(120deg, #8b5cf6, #6366f1 50%, #06b6d4);
+    background-image: linear-gradient(120deg, #38bdf8, #2563eb 50%, #06b6d4);
     background-size: 200% 200%;
     -webkit-background-clip: text;
     background-clip: text;
@@ -172,8 +173,8 @@ body::before {
 }
 
 .bg-aurora {
-    background-color: #6366f1;
-    background-image: linear-gradient(135deg, #4c1d95 0%, #7c3aed 35%, #6366f1 65%, #0ea5e9 100%);
+    background-color: #2563eb;
+    background-image: linear-gradient(135deg, #0f172a 0%, #1e3a8a 35%, #2563eb 65%, #06b6d4 100%);
     background-size: 200% 200%;
     animation: gradient-shift 12s ease infinite;
 }
@@ -189,11 +190,11 @@ label.bg-brand-600 {
     position: relative;
     overflow: hidden;
     border-color: transparent !important;
-    background-color: #7c3aed;
-    background-image: linear-gradient(135deg, #7c3aed 0%, #6366f1 55%, #0284c7 100%);
+    background-color: #2563eb;
+    background-image: linear-gradient(135deg, #2563eb 0%, #0284c7 55%, #0ea5e9 100%);
     background-size: 160% 160%;
     background-position: 0% 50%;
-    box-shadow: 0 6px 18px -6px rgba(99, 102, 241, 0.45);
+    box-shadow: 0 6px 18px -6px rgba(37, 99, 235, 0.45);
     transition: transform 0.18s ease, box-shadow 0.18s ease, background-position 0.5s ease, filter 0.18s ease;
 }
 
@@ -203,7 +204,7 @@ button.bg-orange-600:hover, a.bg-orange-600:hover,
 label.bg-brand-600:hover {
     background-position: 100% 50%;
     transform: translateY(-1px);
-    box-shadow: 0 10px 24px -8px rgba(219, 39, 119, 0.6);
+    box-shadow: 0 10px 24px -8px rgba(6, 182, 212, 0.5);
 }
 
 button.bg-brand-500:active, a.bg-brand-500:active,
@@ -252,8 +253,8 @@ button:disabled, button[disabled] {
     main .grid > .rounded-xl:hover,
     main .grid > .rounded-2xl:hover {
         transform: translateY(-2px);
-        box-shadow: 0 14px 30px -14px rgba(124, 58, 237, 0.35);
-        border-color: rgba(167, 139, 250, 0.55);
+        box-shadow: 0 14px 30px -14px rgba(37, 99, 235, 0.25);
+        border-color: rgba(56, 189, 248, 0.4);
     }
 }
 
@@ -278,15 +279,15 @@ main .grid > *:nth-child(5) { animation-delay: 0.16s; }
 main .grid > *:nth-child(6) { animation-delay: 0.20s; }
 main .grid > *:nth-child(n+7) { animation-delay: 0.24s; }
 
-/* Inputs: foco con halo morado y soporte autofill en modo claro y oscuro */
+/* Inputs: foco con halo azul tech y soporte autofill en modo claro y oscuro */
 input:focus, select:focus, textarea:focus {
-    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.18);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
 
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
-    -webkit-text-fill-color: #1a1435;
+    -webkit-text-fill-color: #0f172a;
     -webkit-box-shadow: 0 0 0px 1000px #ffffff inset;
     transition: background-color 5000s ease-in-out 0s;
 }
@@ -294,8 +295,8 @@ input:-webkit-autofill:focus {
 .dark input:-webkit-autofill,
 .dark input:-webkit-autofill:hover,
 .dark input:-webkit-autofill:focus {
-    -webkit-text-fill-color: #f4effd;
-    -webkit-box-shadow: 0 0 0px 1000px #272044 inset;
+    -webkit-text-fill-color: #f8fafc;
+    -webkit-box-shadow: 0 0 0px 1000px #1e293b inset;
     transition: background-color 5000s ease-in-out 0s;
 }
 
@@ -309,7 +310,7 @@ input:-webkit-autofill:focus {
     left: 0; top: 20%; bottom: 20%;
     width: 3px;
     border-radius: 9999px;
-    background: linear-gradient(180deg, #7c3aed, #6366f1);
+    background: linear-gradient(180deg, #2563eb, #06b6d4);
 }
 
 /* ==========================================
@@ -336,19 +337,19 @@ input:-webkit-autofill:focus {
 
 .theme-scrollbar::-webkit-scrollbar-thumb,
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: rgba(139, 92, 246, 0.35);
+    background-color: rgba(37, 99, 235, 0.35);
     border-radius: 9999px;
 }
 
 .theme-scrollbar::-webkit-scrollbar-thumb:hover,
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(139, 92, 246, 0.6);
+    background-color: rgba(37, 99, 235, 0.6);
 }
 
 .theme-scrollbar,
 .custom-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: rgba(139, 92, 246, 0.35) transparent;
+    scrollbar-color: rgba(37, 99, 235, 0.35) transparent;
 }
 
 /* ==========================================
@@ -368,7 +369,7 @@ input:-webkit-autofill:focus {
         font-size: 16px !important;
     }
     html {
-        -webkit-tap-highlight-color: rgba(139, 92, 246, 0.15);
+        -webkit-tap-highlight-color: rgba(37, 99, 235, 0.15);
     }
 }
 
@@ -454,7 +455,7 @@ body, aside, header, nav, main {
 
 /* En modo claro: nitidez garantizada en encabezados y superficies */
 html:not(.dark) table thead th {
-    color: #49416a;
+    color: #475569;
 }
 
 

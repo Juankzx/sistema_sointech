@@ -59,7 +59,7 @@
                             <td class="px-5 py-3.5">
                                 @php
                                     $roleColors = [
-                                        'admin' => 'purple',
+                                        'admin' => 'brand',
                                         'tecnico' => 'blue',
                                         'recepcionista' => 'emerald',
                                         'cliente' => 'amber',
@@ -129,7 +129,7 @@
                         <div>
                             @php
                                 $roleColors = [
-                                    'admin' => 'purple',
+                                    'admin' => 'brand',
                                     'tecnico' => 'blue',
                                     'recepcionista' => 'emerald',
                                     'cliente' => 'amber',

@@ -808,8 +808,8 @@
                         <div>
                             <label class="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">Color de Acento</label>
                             <select wire:model="ig_theme" class="w-full px-3 py-2 text-xs rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
-                                <option value="purple">Morado Laboratorio</option>
-                                <option value="pink">Rosa / Magenta</option>
+                                <option value="purple">Azul Apple Tech</option>
+                                <option value="pink">Ámbar Sunset</option>
                                 <option value="cyan">Celeste / Cian</option>
                                 <option value="blue">Azul Real</option>
                                 <option value="emerald">Esmeralda Corporativo</option>
@@ -852,7 +852,7 @@
                             </div>
                             <div class="flex items-center justify-between pt-2 border-t border-zinc-100 dark:border-zinc-800 text-[10px] text-zinc-400">
                                 <span>❤️ {{ $post['likes'] ?? '120' }}</span>
-                                <a href="{{ $post['url'] ?? '#' }}" target="_blank" class="text-pink-500 hover:underline font-medium truncate max-w-[160px]">
+                                <a href="{{ $post['url'] ?? '#' }}" target="_blank" class="text-sky-500 hover:underline font-medium truncate max-w-[160px]">
                                     Ver enlace ↗
                                 </a>
                             </div>

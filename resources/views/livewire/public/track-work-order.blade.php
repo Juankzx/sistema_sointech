@@ -44,7 +44,7 @@
                         'En Revisión' => 'blue',
                         'Presupuestado' => 'amber',
                         'Aprobado' => 'orange',
-                        'Esperando Repuestos' => 'purple',
+                        'Esperando Repuestos' => 'amber',
                         'Rechazado' => 'red',
                         'En Reparación' => 'blue',
                         'Listo para Entrega' => 'emerald',
@@ -403,7 +403,7 @@
         </div>
 
         @if($workOrder->status === 'Esperando Repuestos')
-            <div class="p-3 rounded-xl border border-purple-200 dark:border-purple-800/60 bg-purple-50/50 dark:bg-purple-950/20 text-purple-800 dark:text-purple-300 text-xs font-medium text-center">
+            <div class="p-3 rounded-xl border border-amber-200 dark:border-amber-800/60 bg-amber-50/50 dark:bg-amber-950/20 text-amber-800 dark:text-amber-300 text-xs font-medium text-center">
                 Tu equipo se encuentra a la espera de repuestos específicos para proceder con la reparación.
             </div>
         @endif

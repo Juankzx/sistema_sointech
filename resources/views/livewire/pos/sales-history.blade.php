@@ -159,7 +159,7 @@
                                     $badgeVariant = match(true) {
                                         str_contains($method, 'efectivo') => 'success',
                                         str_contains($method, 'transf') => 'info',
-                                        str_contains($method, 'débito') || str_contains($method, 'credito') || str_contains($method, 'tarjeta') => 'purple',
+                                        str_contains($method, 'débito') || str_contains($method, 'credito') || str_contains($method, 'tarjeta') => 'blue',
                                         default => 'neutral'
                                     };
                                 @endphp
@@ -311,7 +311,7 @@
                                 $badgeVariant = match(true) {
                                     str_contains($method, 'efectivo') => 'success',
                                     str_contains($method, 'transf') => 'info',
-                                    str_contains($method, 'débito') || str_contains($method, 'credito') || str_contains($method, 'tarjeta') => 'purple',
+                                    str_contains($method, 'débito') || str_contains($method, 'credito') || str_contains($method, 'tarjeta') => 'blue',
                                     default => 'neutral'
                                 };
                             @endphp

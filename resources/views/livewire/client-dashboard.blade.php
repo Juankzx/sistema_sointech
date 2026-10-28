@@ -123,7 +123,7 @@
                     'En Revisión' => 'blue',
                     'Presupuestado' => 'amber',
                     'Aprobado' => 'orange',
-                    'Esperando Repuestos' => 'purple',
+                    'Esperando Repuestos' => 'amber',
                     'En Reparación' => 'blue',
                     'Listo para Entrega' => 'emerald',
                     'Entregado' => 'zinc',

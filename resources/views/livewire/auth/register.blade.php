@@ -7,7 +7,7 @@
         
         <!-- Premium dark neon overlay -->
         <div class="absolute inset-0 bg-gradient-to-tr from-gray-950 via-gray-950/70 to-transparent"></div>
-        <div class="absolute inset-0 bg-gradient-to-b from-blue-500/10 via-transparent to-purple-500/10"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-blue-500/10 via-transparent to-cyan-500/10"></div>
         
         <!-- Content Overlay -->
         <div class="relative z-10 flex flex-col justify-between p-12 w-full h-full">
@@ -47,7 +47,7 @@
     <div class="w-full md:w-1/2 flex flex-col justify-center items-center px-6 py-8 md:px-16 bg-gray-955/90 relative">
         <!-- Tech detail circles -->
         <div class="absolute top-20 right-20 w-72 h-72 bg-blue-600/5 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute bottom-20 left-20 w-72 h-72 bg-purple-600/5 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-20 left-20 w-72 h-72 bg-cyan-600/5 rounded-full blur-3xl pointer-events-none"></div>
         
         <div class="w-full max-w-md bg-gray-900/60 backdrop-blur-xl border border-gray-800 rounded-3xl p-8 shadow-2xl relative overflow-hidden transition-all duration-300 hover:border-blue-500/30">
             <!-- Form Header -->

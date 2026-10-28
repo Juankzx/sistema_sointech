@@ -165,7 +165,7 @@
 
                                     <!-- Convertir a OT -->
                                     @if($quote->status !== 'convertida')
-                                        <button type="button" wire:click="convertToWorkOrder({{ $quote->id }})" title="Convertir a Orden de Trabajo" class="p-1.5 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/30 rounded transition cursor-pointer">
+                                        <button type="button" wire:click="convertToWorkOrder({{ $quote->id }})" title="Convertir a Orden de Trabajo" class="p-1.5 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/30 rounded transition cursor-pointer">
                                             <x-ui.icon name="check-square" class="w-3.5 h-3.5" />
                                         </button>
                                     @endif
@@ -289,7 +289,7 @@
                             <button 
                                 type="button" 
                                 wire:click="convertToWorkOrder({{ $quote->id }})" 
-                                class="py-1.5 px-2 bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-800/60 rounded-lg text-xs font-medium transition flex items-center justify-center gap-1"
+                                class="py-1.5 px-2 bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-400 border border-sky-200 dark:border-sky-800/60 rounded-lg text-xs font-medium transition flex items-center justify-center gap-1"
                             >
                                 <x-ui.icon name="check-square" class="w-3.5 h-3.5" />
                                 <span>A Orden</span>

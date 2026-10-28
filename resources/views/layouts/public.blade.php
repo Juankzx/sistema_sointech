@@ -22,8 +22,8 @@
         <title>{{ $title ?? (isset($appSettings) && $appSettings->trade_name ? $appSettings->trade_name : config('app.name', 'SOINTECH') . ' - Servicio Técnico') }}</title>
         <!-- Favicon & PWA Icons (iPhone / Mobile) -->
         <link rel="manifest" href="{{ asset('manifest.json') }}">
-        <meta name="theme-color" content="#7c3aed" media="(prefers-color-scheme: light)">
-        <meta name="theme-color" content="#16112e" media="(prefers-color-scheme: dark)">
+        <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)">
+        <meta name="theme-color" content="#090d16" media="(prefers-color-scheme: dark)">
         <link rel="icon" type="image/png" href="{{ isset($appSettings) && $appSettings->favicon_path ? Storage::url($appSettings->favicon_path) : asset('images/logo-dark.png') }}">
         <link rel="apple-touch-icon" sizes="180x180" href="{{ isset($appSettings) && $appSettings->favicon_path ? Storage::url($appSettings->favicon_path) : asset('images/logo-dark.png') }}">
         <meta name="apple-mobile-web-app-capable" content="yes">

@@ -9,11 +9,11 @@
 
 @php
     $variants = [
-        'primary' => 'bg-aurora text-white shadow-md shadow-brand-500/25 hover:shadow-lg hover:shadow-indigo-500/30 hover:-translate-y-0.5 focus-visible:ring-brand-500/40 border border-white/15',
+        'primary' => 'bg-aurora text-white shadow-md shadow-brand-500/25 hover:shadow-lg hover:shadow-blue-500/30 hover:-translate-y-0.5 focus-visible:ring-brand-500/40 border border-white/15',
         'secondary' => 'bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-100 border border-slate-200/80 dark:border-slate-700 focus-visible:ring-brand-400/30 hover:-translate-y-0.5',
         'outline' => 'bg-white/60 dark:bg-slate-900/60 hover:bg-brand-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 hover:border-brand-400 focus-visible:ring-brand-400/30',
         'ghost' => 'bg-transparent hover:bg-brand-500/10 text-slate-600 dark:text-slate-300 hover:text-brand-700 dark:hover:text-brand-200 border border-transparent',
-        'danger' => 'bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white shadow-md shadow-rose-500/25 focus-visible:ring-rose-500/30 border border-rose-500/30 hover:-translate-y-0.5',
+        'danger' => 'bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white shadow-md shadow-rose-500/25 focus-visible:ring-rose-500/30 border border-rose-500/30 hover:-translate-y-0.5',
         'success' => 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white shadow-md shadow-emerald-500/25 focus-visible:ring-emerald-500/30 border border-emerald-500/30 hover:-translate-y-0.5',
     ];
 

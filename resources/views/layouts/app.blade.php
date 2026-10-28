@@ -35,8 +35,8 @@
 
         <!-- Favicon & PWA Icons (iPhone / Mobile) -->
         <link rel="manifest" href="{{ asset('manifest.json') }}">
-        <meta name="theme-color" content="#faf8ff" media="(prefers-color-scheme: light)">
-        <meta name="theme-color" content="#120d26" media="(prefers-color-scheme: dark)">
+        <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)">
+        <meta name="theme-color" content="#090d16" media="(prefers-color-scheme: dark)">
         <link rel="icon" type="image/png" href="{{ isset($appSettings) && $appSettings->favicon_path ? Storage::url($appSettings->favicon_path) : asset('images/logo-dark.png') }}">
         <link rel="apple-touch-icon" sizes="180x180" href="{{ isset($appSettings) && $appSettings->favicon_path ? Storage::url($appSettings->favicon_path) : asset('images/logo-dark.png') }}">
         <meta name="apple-mobile-web-app-capable" content="yes">
@@ -72,13 +72,13 @@
                     document.documentElement.style.colorScheme = 'dark';
                     localStorage.setItem('theme', 'dark');
                     const metaTheme = document.querySelector('meta[name=\'theme-color\']');
-                    if (metaTheme) metaTheme.setAttribute('content', '#120d26');
+                    if (metaTheme) metaTheme.setAttribute('content', '#090d16');
                 } else {
                     document.documentElement.classList.remove('dark');
                     document.documentElement.style.colorScheme = 'light';
                     localStorage.setItem('theme', 'light');
                     const metaTheme = document.querySelector('meta[name=\'theme-color\']');
-                    if (metaTheme) metaTheme.setAttribute('content', '#faf8ff');
+                    if (metaTheme) metaTheme.setAttribute('content', '#f8fafc');
                 }
             }
         }"
@@ -117,7 +117,7 @@
                     <div>
                         <div class="px-3 pb-1.5 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Principal</div>
                         <div class="space-y-0.5">
-                            <a href="{{ route('dashboard') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('dashboard') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
+                            <a href="{{ route('dashboard') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('dashboard') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
                                 <x-ui.icon name="dashboard" class="w-4 h-4 {{ Route::is('dashboard') ? 'text-brand-600 dark:text-brand-300' : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200' }}" />
                                 <span>Panel de Control</span>
                             </a>
@@ -129,15 +129,15 @@
                     <div>
                         <div class="px-3 pb-1.5 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Ventas & POS</div>
                         <div class="space-y-0.5">
-                            <a href="{{ route('cash-registers.index') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('cash-registers.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
+                            <a href="{{ route('cash-registers.index') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('cash-registers.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
                                 <x-ui.icon name="caja" class="w-4 h-4 {{ Route::is('cash-registers.index') ? 'text-brand-600 dark:text-brand-300' : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200' }}" />
                                 <span>Caja Diaria</span>
                             </a>
-                            <a href="{{ route('pos.index') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('pos.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
+                            <a href="{{ route('pos.index') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('pos.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
                                 <x-ui.icon name="pos" class="w-4 h-4 {{ Route::is('pos.index') ? 'text-brand-600 dark:text-brand-300' : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200' }}" />
                                 <span>Punto de Venta</span>
                             </a>
-                            <a href="{{ route('sales.history') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('sales.history') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
+                            <a href="{{ route('sales.history') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('sales.history') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
                                 <x-ui.icon name="history" class="w-4 h-4 {{ Route::is('sales.history') ? 'text-brand-600 dark:text-brand-300' : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200' }}" />
                                 <span>Historial de Ventas</span>
                             </a>
@@ -148,15 +148,15 @@
                     <div>
                         <div class="px-3 pb-1.5 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Taller & Servicio</div>
                         <div class="space-y-0.5">
-                            <a href="{{ route('work-orders.create') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('work-orders.create') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
+                            <a href="{{ route('work-orders.create') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('work-orders.create') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
                                 <x-ui.icon name="plus" class="w-4 h-4 {{ Route::is('work-orders.create') ? 'text-brand-600 dark:text-brand-300' : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200' }}" />
                                 <span>Nueva Orden</span>
                             </a>
-                            <a href="{{ route('work-orders.index') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('work-orders.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
+                            <a href="{{ route('work-orders.index') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('work-orders.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
                                 <x-ui.icon name="work-orders" class="w-4 h-4 {{ Route::is('work-orders.index') ? 'text-brand-600 dark:text-brand-300' : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200' }}" />
                                 <span>Órdenes de Trabajo</span>
                             </a>
-                            <a href="{{ route('quotations.index') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('quotations.*') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
+                            <a href="{{ route('quotations.index') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('quotations.*') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
                                 <x-ui.icon name="quote" class="w-4 h-4 {{ Route::is('quotations.*') ? 'text-brand-600 dark:text-brand-300' : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200' }}" />
                                 <span>Cotizaciones Rápidas</span>
                             </a>
@@ -167,19 +167,19 @@
                     <div>
                         <div class="px-3 pb-1.5 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Inventario & Clientes</div>
                         <div class="space-y-0.5">
-                            <a href="{{ route('inventory.index') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('inventory.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
+                            <a href="{{ route('inventory.index') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('inventory.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
                                 <x-ui.icon name="box" class="w-4 h-4 {{ Route::is('inventory.index') ? 'text-brand-600 dark:text-brand-300' : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200' }}" />
                                 <span>Inventario & Stock</span>
                             </a>
-                            <a href="{{ route('services.index') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('services.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
+                            <a href="{{ route('services.index') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('services.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
                                 <x-ui.icon name="tools" class="w-4 h-4 {{ Route::is('services.index') ? 'text-brand-600 dark:text-brand-300' : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200' }}" />
                                 <span>Catálogo de Servicios</span>
                             </a>
-                            <a href="{{ route('clients.index') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('clients.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
+                            <a href="{{ route('clients.index') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('clients.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
                                 <x-ui.icon name="clients" class="w-4 h-4 {{ Route::is('clients.index') ? 'text-brand-600 dark:text-brand-300' : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200' }}" />
                                 <span>Clientes</span>
                             </a>
-                            <a href="{{ route('suppliers.index') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('suppliers.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
+                            <a href="{{ route('suppliers.index') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('suppliers.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
                                 <x-ui.icon name="truck" class="w-4 h-4 {{ Route::is('suppliers.index') ? 'text-brand-600 dark:text-brand-300' : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200' }}" />
                                 <span>Proveedores</span>
                             </a>
@@ -190,19 +190,19 @@
                     <div>
                         <div class="px-3 pb-1.5 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Finanzas & Contabilidad</div>
                         <div class="space-y-0.5">
-                            <a href="{{ route('finance.dashboard') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('finance.dashboard') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
+                            <a href="{{ route('finance.dashboard') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('finance.dashboard') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
                                 <x-ui.icon name="finance" class="w-4 h-4 {{ Route::is('finance.dashboard') ? 'text-brand-600 dark:text-brand-300' : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200' }}" />
                                 <span>Dashboard Financiero</span>
                             </a>
-                            <a href="{{ route('finance.sales-book') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('finance.sales-book') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
+                            <a href="{{ route('finance.sales-book') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('finance.sales-book') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
                                 <x-ui.icon name="book" class="w-4 h-4 {{ Route::is('finance.sales-book') ? 'text-brand-600 dark:text-brand-300' : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200' }}" />
                                 <span>Libro de Ventas</span>
                             </a>
-                            <a href="{{ route('finance.purchases') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('finance.purchases') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
+                            <a href="{{ route('finance.purchases') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('finance.purchases') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
                                 <x-ui.icon name="purchases" class="w-4 h-4 {{ Route::is('finance.purchases') ? 'text-brand-600 dark:text-brand-300' : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200' }}" />
                                 <span>Compras & Gastos</span>
                             </a>
-                            <a href="{{ route('reports.index') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('reports.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
+                            <a href="{{ route('reports.index') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('reports.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
                                 <x-ui.icon name="reports" class="w-4 h-4 {{ Route::is('reports.index') ? 'text-brand-600 dark:text-brand-300' : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200' }}" />
                                 <span>Reportes Consolidados</span>
                             </a>
@@ -213,12 +213,12 @@
                     <div>
                         <div class="px-3 pb-1.5 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Sistema</div>
                         <div class="space-y-0.5">
-                            <a href="{{ route('settings.index') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('settings.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
+                            <a href="{{ route('settings.index') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('settings.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
                                 <x-ui.icon name="settings" class="w-4 h-4 {{ Route::is('settings.index') ? 'text-brand-600 dark:text-brand-300' : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200' }}" />
                                 <span>Configuración</span>
                             </a>
                             @if(auth()->user()->isAdmin())
-                            <a href="{{ route('users.index') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('users.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
+                            <a href="{{ route('users.index') }}" class="group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 {{ Route::is('users.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/60' }}">
                                 <x-ui.icon name="shield" class="w-4 h-4 {{ Route::is('users.index') ? 'text-brand-600 dark:text-brand-300' : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200' }}" />
                                 <span>Usuarios & Roles</span>
                             </a>
@@ -254,7 +254,7 @@
                                 :title="isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
                                 aria-label="Cambiar tema de color"
                             >
-                                <x-ui.icon x-show="!isDark" name="moon" class="w-3.5 h-3.5 text-indigo-600" />
+                                <x-ui.icon x-show="!isDark" name="moon" class="w-3.5 h-3.5 text-sky-600" />
                                 <x-ui.icon x-show="isDark" name="sun" class="w-3.5 h-3.5 text-amber-400" />
                             </button>
 
@@ -304,7 +304,7 @@
                                 :title="isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
                                 aria-label="Cambiar tema de color"
                             >
-                                <x-ui.icon x-show="!isDark" name="moon" class="w-4 h-4 text-indigo-600" />
+                                <x-ui.icon x-show="!isDark" name="moon" class="w-4 h-4 text-sky-600" />
                                 <x-ui.icon x-show="isDark" name="sun" class="w-4 h-4 text-amber-400" />
                             </button>
 
@@ -388,7 +388,7 @@
                             <div>
                                 <div class="px-3 pb-1 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Principal</div>
                                 <div class="space-y-0.5">
-                                    <a href="{{ route('dashboard') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('dashboard') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+                                    <a href="{{ route('dashboard') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('dashboard') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
                                         <x-ui.icon name="dashboard" class="w-4 h-4" />
                                         <span>Panel de Control</span>
                                     </a>
@@ -400,15 +400,15 @@
                             <div>
                                 <div class="px-3 pb-1 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Ventas & POS</div>
                                 <div class="space-y-0.5">
-                                    <a href="{{ route('cash-registers.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('cash-registers.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+                                    <a href="{{ route('cash-registers.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('cash-registers.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
                                         <x-ui.icon name="caja" class="w-4 h-4" />
                                         <span>Caja Diaria</span>
                                     </a>
-                                    <a href="{{ route('pos.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('pos.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+                                    <a href="{{ route('pos.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('pos.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
                                         <x-ui.icon name="pos" class="w-4 h-4" />
                                         <span>Punto de Venta</span>
                                     </a>
-                                    <a href="{{ route('sales.history') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('sales.history') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+                                    <a href="{{ route('sales.history') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('sales.history') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
                                         <x-ui.icon name="history" class="w-4 h-4" />
                                         <span>Historial de Ventas</span>
                                     </a>
@@ -419,15 +419,15 @@
                             <div>
                                 <div class="px-3 pb-1 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Taller & Servicio</div>
                                 <div class="space-y-0.5">
-                                    <a href="{{ route('work-orders.create') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('work-orders.create') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+                                    <a href="{{ route('work-orders.create') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('work-orders.create') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
                                         <x-ui.icon name="plus" class="w-4 h-4" />
                                         <span>Nueva Orden</span>
                                     </a>
-                                    <a href="{{ route('work-orders.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('work-orders.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+                                    <a href="{{ route('work-orders.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('work-orders.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
                                         <x-ui.icon name="work-orders" class="w-4 h-4" />
                                         <span>Órdenes de Trabajo</span>
                                     </a>
-                                    <a href="{{ route('quotations.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('quotations.*') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+                                    <a href="{{ route('quotations.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('quotations.*') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
                                         <x-ui.icon name="quote" class="w-4 h-4" />
                                         <span>Cotizaciones Rápidas</span>
                                     </a>
@@ -438,19 +438,19 @@
                             <div>
                                 <div class="px-3 pb-1 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Inventario & Clientes</div>
                                 <div class="space-y-0.5">
-                                    <a href="{{ route('inventory.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('inventory.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+                                    <a href="{{ route('inventory.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('inventory.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
                                         <x-ui.icon name="box" class="w-4 h-4" />
                                         <span>Inventario & Stock</span>
                                     </a>
-                                    <a href="{{ route('services.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('services.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+                                    <a href="{{ route('services.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('services.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
                                         <x-ui.icon name="tools" class="w-4 h-4" />
                                         <span>Catálogo de Servicios</span>
                                     </a>
-                                    <a href="{{ route('clients.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('clients.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+                                    <a href="{{ route('clients.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('clients.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
                                         <x-ui.icon name="clients" class="w-4 h-4" />
                                         <span>Clientes</span>
                                     </a>
-                                    <a href="{{ route('suppliers.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('suppliers.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+                                    <a href="{{ route('suppliers.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('suppliers.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
                                         <x-ui.icon name="truck" class="w-4 h-4" />
                                         <span>Proveedores</span>
                                     </a>
@@ -461,19 +461,19 @@
                             <div>
                                 <div class="px-3 pb-1 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Finanzas & Contabilidad</div>
                                 <div class="space-y-0.5">
-                                    <a href="{{ route('finance.dashboard') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('finance.dashboard') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+                                    <a href="{{ route('finance.dashboard') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('finance.dashboard') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
                                         <x-ui.icon name="finance" class="w-4 h-4" />
                                         <span>Dashboard Financiero</span>
                                     </a>
-                                    <a href="{{ route('finance.sales-book') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('finance.sales-book') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+                                    <a href="{{ route('finance.sales-book') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('finance.sales-book') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
                                         <x-ui.icon name="book" class="w-4 h-4" />
                                         <span>Libro de Ventas</span>
                                     </a>
-                                    <a href="{{ route('finance.purchases') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('finance.purchases') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+                                    <a href="{{ route('finance.purchases') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('finance.purchases') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
                                         <x-ui.icon name="purchases" class="w-4 h-4" />
                                         <span>Compras & Gastos</span>
                                     </a>
-                                    <a href="{{ route('reports.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('reports.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+                                    <a href="{{ route('reports.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('reports.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
                                         <x-ui.icon name="reports" class="w-4 h-4" />
                                         <span>Reportes Consolidados</span>
                                     </a>
@@ -484,12 +484,12 @@
                             <div>
                                 <div class="px-3 pb-1 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Sistema</div>
                                 <div class="space-y-0.5">
-                                    <a href="{{ route('settings.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('settings.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+                                    <a href="{{ route('settings.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('settings.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
                                         <x-ui.icon name="settings" class="w-4 h-4" />
                                         <span>Configuración</span>
                                     </a>
                                     @if(auth()->user()->isAdmin())
-                                    <a href="{{ route('users.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('users.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-indigo-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+                                    <a href="{{ route('users.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ Route::is('users.index') ? 'nav-active bg-linear-to-r from-brand-500/15 via-sky-500/10 to-transparent text-brand-700 dark:text-brand-300 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800' }}">
                                         <x-ui.icon name="shield" class="w-4 h-4" />
                                         <span>Usuarios & Roles</span>
                                     </a>
@@ -503,7 +503,7 @@
                         <div class="pt-3 border-t border-slate-200 dark:border-slate-800 shrink-0">
                             <div class="flex items-center justify-between p-2 rounded-lg bg-slate-100/70 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-800">
                                 <div class="flex items-center gap-2.5 min-w-0 pr-1">
-                                    <div class="w-7 h-7 rounded-full bg-aurora text-white shadow-sm shadow-indigo-500/30 text-xs font-semibold flex items-center justify-center shrink-0">
+                                    <div class="w-7 h-7 rounded-full bg-aurora text-white shadow-sm shadow-blue-500/30 text-xs font-semibold flex items-center justify-center shrink-0">
                                         {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
                                     </div>
                                     <div class="min-w-0">
@@ -525,7 +525,7 @@
                                         :title="isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
                                         aria-label="Cambiar tema de color"
                                     >
-                                        <x-ui.icon x-show="!isDark" name="moon" class="w-4 h-4 text-indigo-600" />
+                                        <x-ui.icon x-show="!isDark" name="moon" class="w-4 h-4 text-sky-600" />
                                         <x-ui.icon x-show="isDark" name="sun" class="w-4 h-4 text-amber-400" />
                                     </button>
 
@@ -569,7 +569,7 @@
                         $bnActive = 'text-brand-600 dark:text-brand-300 font-semibold';
                         $bnIdle = 'text-slate-500 dark:text-slate-400 font-medium';
                     @endphp
-                    <div class="pointer-events-auto grid grid-cols-5 max-w-lg mx-auto items-end px-1 pt-1.5 pb-1.5 rounded-2xl bg-white/90 dark:bg-slate-900/85 backdrop-blur-xl border border-slate-200/90 dark:border-slate-700/60 shadow-lg shadow-purple-950/10 dark:shadow-[0_10px_30px_-10px_rgba(124,58,237,0.45)]">
+                    <div class="pointer-events-auto grid grid-cols-5 max-w-lg mx-auto items-end px-1 pt-1.5 pb-1.5 rounded-2xl bg-white/90 dark:bg-slate-900/85 backdrop-blur-xl border border-slate-200/90 dark:border-slate-700/60 shadow-lg shadow-slate-900/5 dark:shadow-[0_10px_30px_-10px_rgba(37,99,235,0.35)]">
                         <!-- 1. Inicio -->
                         <a href="{{ route('dashboard') }}" class="flex flex-col items-center justify-center py-1 transition active:scale-90 {{ Route::is('dashboard') ? $bnActive : $bnIdle }}">
                             <x-ui.icon name="dashboard" class="w-5 h-5 shrink-0" />
@@ -582,7 +582,7 @@
                         </a>
                         <!-- 3. Nueva OT (botón central flotante) -->
                         <a href="{{ route('work-orders.create') }}" class="flex flex-col items-center justify-center -mt-6 transition active:scale-90">
-                            <span class="w-13 h-13 w-[52px] h-[52px] rounded-2xl bg-aurora text-white flex items-center justify-center shadow-lg shadow-indigo-500/35 ring-4 ring-white dark:ring-slate-950">
+                            <span class="w-13 h-13 w-[52px] h-[52px] rounded-2xl bg-aurora text-white flex items-center justify-center shadow-lg shadow-blue-500/35 ring-4 ring-white dark:ring-slate-950">
                                 <x-ui.icon name="plus" class="w-6 h-6" />
                             </span>
                             <span class="text-[10px] mt-1 tracking-tight font-semibold text-slate-700 dark:text-slate-200">Nueva OT</span>

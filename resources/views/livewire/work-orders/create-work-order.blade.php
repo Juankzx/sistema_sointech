@@ -566,18 +566,18 @@
                             </div>
                         </button>
 
-                        <!-- En Revisión (Morado Vibrante) -->
+                        <!-- En Revisión (Cyan / Azul Tech) -->
                         <button type="button" wire:click="$set('initial_status', 'En Revisión')"
-                            class="relative flex flex-col items-center gap-2 py-3.5 px-3 rounded-xl border text-center transition-all duration-200 cursor-pointer {{ $initial_status === 'En Revisión' ? 'border-brand-500 bg-brand-500/15 dark:bg-brand-500/20 text-brand-800 dark:text-brand-200 ring-2 ring-brand-500/30 shadow-md shadow-brand-500/15 -translate-y-0.5' : 'border-zinc-200 dark:border-zinc-700/80 bg-zinc-50/80 dark:bg-zinc-800/60 hover:bg-white dark:hover:bg-zinc-800 hover:border-brand-400/60 text-zinc-700 dark:text-zinc-300' }}">
+                            class="relative flex flex-col items-center gap-2 py-3.5 px-3 rounded-xl border text-center transition-all duration-200 cursor-pointer {{ $initial_status === 'En Revisión' ? 'border-cyan-500 bg-cyan-500/15 dark:bg-cyan-500/20 text-cyan-800 dark:text-cyan-200 ring-2 ring-cyan-500/30 shadow-md shadow-cyan-500/15 -translate-y-0.5' : 'border-zinc-200 dark:border-zinc-700/80 bg-zinc-50/80 dark:bg-zinc-800/60 hover:bg-white dark:hover:bg-zinc-800 hover:border-cyan-400/60 text-zinc-700 dark:text-zinc-300' }}">
                             @if($initial_status === 'En Revisión')
-                                <span class="w-2 h-2 rounded-full bg-purple-400 absolute top-2.5 right-2.5 animate-pulse"></span>
+                                <span class="w-2 h-2 rounded-full bg-cyan-400 absolute top-2.5 right-2.5 animate-pulse"></span>
                             @endif
-                            <div class="w-9 h-9 rounded-xl flex items-center justify-center transition {{ $initial_status === 'En Revisión' ? 'bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-md shadow-purple-500/30' : 'bg-purple-500/10 dark:bg-purple-500/15 text-purple-600 dark:text-purple-400' }}">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center transition {{ $initial_status === 'En Revisión' ? 'bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/30' : 'bg-cyan-500/10 dark:bg-cyan-500/15 text-cyan-600 dark:text-cyan-400' }}">
                                 <x-ui.icon name="search" class="w-4 h-4" />
                             </div>
                             <div>
                                 <div class="text-xs font-bold leading-tight">En Revisión</div>
-                                <div class="text-[10px] {{ $initial_status === 'En Revisión' ? 'text-purple-700/80 dark:text-purple-300/80' : 'text-zinc-500 dark:text-zinc-400' }} mt-0.5">Diagnóstico directo</div>
+                                <div class="text-[10px] {{ $initial_status === 'En Revisión' ? 'text-cyan-700/80 dark:text-cyan-300/80' : 'text-zinc-500 dark:text-zinc-400' }} mt-0.5">Diagnóstico directo</div>
                             </div>
                         </button>
 
@@ -596,18 +596,18 @@
                             </div>
                         </button>
 
-                        <!-- Garantía (Rosa Oscuro / Magenta) -->
+                        <!-- Garantía (Ámbar Cálido) -->
                         <button type="button" wire:click="$set('initial_status', 'Garantía')"
-                            class="relative flex flex-col items-center gap-2 py-3.5 px-3 rounded-xl border text-center transition-all duration-200 cursor-pointer {{ $initial_status === 'Garantía' ? 'border-pink-500 bg-pink-500/15 dark:bg-pink-500/20 text-pink-800 dark:text-pink-200 ring-2 ring-pink-500/30 shadow-md shadow-pink-500/15 -translate-y-0.5' : 'border-zinc-200 dark:border-zinc-700/80 bg-zinc-50/80 dark:bg-zinc-800/60 hover:bg-white dark:hover:bg-zinc-800 hover:border-pink-400/60 text-zinc-700 dark:text-zinc-300' }}">
+                            class="relative flex flex-col items-center gap-2 py-3.5 px-3 rounded-xl border text-center transition-all duration-200 cursor-pointer {{ $initial_status === 'Garantía' ? 'border-amber-500 bg-amber-500/15 dark:bg-amber-500/20 text-amber-800 dark:text-amber-200 ring-2 ring-amber-500/30 shadow-md shadow-amber-500/15 -translate-y-0.5' : 'border-zinc-200 dark:border-zinc-700/80 bg-zinc-50/80 dark:bg-zinc-800/60 hover:bg-white dark:hover:bg-zinc-800 hover:border-amber-400/60 text-zinc-700 dark:text-zinc-300' }}">
                             @if($initial_status === 'Garantía')
-                                <span class="w-2 h-2 rounded-full bg-pink-400 absolute top-2.5 right-2.5 animate-pulse"></span>
+                                <span class="w-2 h-2 rounded-full bg-amber-400 absolute top-2.5 right-2.5 animate-pulse"></span>
                             @endif
-                            <div class="w-9 h-9 rounded-xl flex items-center justify-center transition {{ $initial_status === 'Garantía' ? 'bg-gradient-to-br from-pink-500 to-rose-600 text-white shadow-md shadow-pink-500/30' : 'bg-pink-500/10 dark:bg-pink-500/15 text-pink-600 dark:text-pink-400' }}">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center transition {{ $initial_status === 'Garantía' ? 'bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-md shadow-amber-500/30' : 'bg-amber-500/10 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400' }}">
                                 <x-ui.icon name="shield" class="w-4 h-4" />
                             </div>
                             <div>
                                 <div class="text-xs font-bold leading-tight">Garantía</div>
-                                <div class="text-[10px] {{ $initial_status === 'Garantía' ? 'text-pink-700/80 dark:text-pink-300/80' : 'text-zinc-500 dark:text-zinc-400' }} mt-0.5">Reingreso revisión</div>
+                                <div class="text-[10px] {{ $initial_status === 'Garantía' ? 'text-amber-700/80 dark:text-amber-300/80' : 'text-zinc-500 dark:text-zinc-400' }} mt-0.5">Reingreso revisión</div>
                             </div>
                         </button>
                     </div>
@@ -1207,10 +1207,11 @@
 
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                         <!-- Opción 1: QR (Morado) -->
+                        <!-- Opción 1: QR Smartphone (Azul Tech) -->
                         <button type="button" @click="setMode('qr'); $wire.generateSignatureToken()"
-                            :class="signMode === 'qr' ? 'border-purple-500 bg-purple-500/15 dark:bg-purple-500/20 text-purple-800 dark:text-purple-200 ring-2 ring-purple-500/30 shadow-md shadow-purple-500/15 -translate-y-0.5' : 'bg-zinc-50/80 dark:bg-zinc-800/60 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700/80 hover:bg-white dark:hover:bg-zinc-800 hover:border-purple-400/60'"
+                            :class="signMode === 'qr' ? 'border-blue-500 bg-blue-500/15 dark:bg-blue-500/20 text-blue-800 dark:text-blue-200 ring-2 ring-blue-500/30 shadow-md shadow-blue-500/15 -translate-y-0.5' : 'bg-zinc-50/80 dark:bg-zinc-800/60 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700/80 hover:bg-white dark:hover:bg-zinc-800 hover:border-blue-400/60'"
                             class="flex flex-col items-center gap-2 p-3.5 border rounded-xl transition-all duration-200 cursor-pointer text-center">
-                            <div class="w-9 h-9 rounded-xl flex items-center justify-center transition" :class="signMode === 'qr' ? 'bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-md shadow-purple-500/30' : 'bg-purple-500/10 dark:bg-purple-500/15 text-purple-600 dark:text-purple-400'">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center transition" :class="signMode === 'qr' ? 'bg-gradient-to-br from-blue-600 to-cyan-500 text-white shadow-md shadow-blue-500/30' : 'bg-blue-500/10 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400'">
                                 <x-ui.icon name="qr-code" class="w-4 h-4" />
                             </div>
                             <div>
@@ -1232,11 +1233,11 @@
                             </div>
                         </button>
 
-                        <!-- Opción 3: Firma en mostrador (Rosa Oscuro) -->
+                        <!-- Opción 3: Firma en mostrador (Esmeralda / Teal) -->
                         <button type="button" @click="setMode('counter')"
-                            :class="signMode === 'counter' ? 'border-pink-500 bg-pink-500/15 dark:bg-pink-500/20 text-pink-800 dark:text-pink-200 ring-2 ring-pink-500/30 shadow-md shadow-pink-500/15 -translate-y-0.5' : 'bg-zinc-50/80 dark:bg-zinc-800/60 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700/80 hover:bg-white dark:hover:bg-zinc-800 hover:border-pink-400/60'"
+                            :class="signMode === 'counter' ? 'border-emerald-500 bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-200 ring-2 ring-emerald-500/30 shadow-md shadow-emerald-500/15 -translate-y-0.5' : 'bg-zinc-50/80 dark:bg-zinc-800/60 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700/80 hover:bg-white dark:hover:bg-zinc-800 hover:border-emerald-400/60'"
                             class="flex flex-col items-center gap-2 p-3.5 border rounded-xl transition-all duration-200 cursor-pointer text-center">
-                            <div class="w-9 h-9 rounded-xl flex items-center justify-center transition" :class="signMode === 'counter' ? 'bg-gradient-to-br from-pink-500 to-rose-600 text-white shadow-md shadow-pink-500/30' : 'bg-pink-500/10 dark:bg-pink-500/15 text-pink-600 dark:text-pink-400'">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center transition" :class="signMode === 'counter' ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30' : 'bg-emerald-500/10 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'">
                                 <x-ui.icon name="edit-3" class="w-4 h-4" />
                             </div>
                             <div>

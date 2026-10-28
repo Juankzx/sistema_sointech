@@ -1,29 +1,29 @@
 <div class="space-y-6 animate-fade-in max-w-full overflow-x-hidden" wire:poll.visible.10s>
 
     <!-- 1. HEADER DE BIENVENIDA & ACCIONES RÁPIDAS -->
-    <div class="relative overflow-hidden rounded-2xl p-5 sm:p-6 text-white shadow-lg shadow-purple-950/15 border border-white/15 flex flex-col md:flex-row md:items-center justify-between gap-4"
-         style="background: linear-gradient(135deg, #31104b 0%, #4c1d95 32%, #6366f1 68%, #0ea5e9 100%);">
-        <div class="absolute -top-16 -right-16 w-56 h-56 rounded-full bg-cyan-300/25 blur-3xl pointer-events-none"></div>
-        <div class="absolute -bottom-16 left-1/3 w-56 h-56 rounded-full bg-indigo-400/20 blur-3xl pointer-events-none"></div>
+    <div class="relative overflow-hidden rounded-2xl p-5 sm:p-6 text-white shadow-lg shadow-slate-950/15 border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4"
+         style="background: linear-gradient(135deg, #090d16 0%, #0f172a 35%, #1e3a8a 70%, #0284c7 100%);">
+        <div class="absolute -top-16 -right-16 w-56 h-56 rounded-full bg-cyan-300/20 blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-16 left-1/3 w-56 h-56 rounded-full bg-blue-500/15 blur-3xl pointer-events-none"></div>
 
         <div class="relative z-10">
             <div class="flex flex-wrap items-center gap-2">
-                <span class="px-2.5 py-0.5 bg-white/20 backdrop-blur-md text-white border border-white/25 text-[10px] font-bold uppercase tracking-wider rounded-full">
+                <span class="px-2.5 py-0.5 bg-white/15 backdrop-blur-md text-white border border-white/20 text-[10px] font-bold uppercase tracking-wider rounded-full">
                     {{ ucfirst(auth()->user()->role) }}
                 </span>
-                <span class="text-xs text-purple-100/90 font-medium">{{ ucfirst(\Carbon\Carbon::now()->locale('es')->isoFormat('dddd, D [de] MMMM [de] YYYY')) }}</span>
+                <span class="text-xs text-slate-300 font-medium">{{ ucfirst(\Carbon\Carbon::now()->locale('es')->isoFormat('dddd, D [de] MMMM [de] YYYY')) }}</span>
             </div>
             <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight mt-1.5">
                 ¡Hola, {{ auth()->user()->name }}! 👋
             </h1>
-            <p class="text-xs text-purple-100/90 mt-0.5">Resumen de operaciones del taller y estado en tiempo real.</p>
+            <p class="text-xs text-slate-300 mt-0.5">Resumen de operaciones del taller y estado en tiempo real.</p>
         </div>
 
         <!-- Quick Action Buttons -->
         <div class="relative z-10 flex flex-wrap items-center gap-2.5">
             @if(auth()->user()->isAdmin() || auth()->user()->role === 'recepcionista')
-                <a href="{{ route('work-orders.create') }}" class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-white text-purple-900 hover:bg-purple-50 font-bold text-xs rounded-xl transition shadow-md hover:-translate-y-0.5">
-                    <x-ui.icon name="plus" class="w-4 h-4 text-indigo-600" />
+                <a href="{{ route('work-orders.create') }}" class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-white text-blue-900 hover:bg-blue-50 font-bold text-xs rounded-xl transition shadow-md hover:-translate-y-0.5">
+                    <x-ui.icon name="plus" class="w-4 h-4 text-blue-600" />
                     <span>Nueva Orden OT</span>
                 </a>
                 <a href="{{ route('pos.index') }}" class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-white/15 hover:bg-white/25 backdrop-blur-md text-white border border-white/30 font-bold text-xs rounded-xl transition shadow-sm hover:-translate-y-0.5">
@@ -36,15 +36,15 @@
 
     <!-- 2. TARJETAS DE KPIS PRINCIPALES (GRID 5 COLS) -->
     <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
-        <!-- Total Órdenes (Morado Vibrante) -->
-        <div class="bg-white dark:bg-zinc-900 border border-purple-200/80 dark:border-purple-800/50 rounded-2xl p-4 shadow-xs flex items-center justify-between relative overflow-hidden">
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-500"></div>
+        <!-- Total Órdenes (Azul Tech) -->
+        <div class="bg-white dark:bg-zinc-900 border border-blue-200/80 dark:border-blue-800/50 rounded-2xl p-4 shadow-xs flex items-center justify-between relative overflow-hidden">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 to-cyan-500"></div>
             <div>
-                <span class="text-[11px] font-bold text-purple-600 dark:text-purple-300 uppercase tracking-wider block">Órdenes Totales</span>
+                <span class="text-[11px] font-bold text-blue-600 dark:text-blue-300 uppercase tracking-wider block">Órdenes Totales</span>
                 <span class="text-2xl font-extrabold font-mono text-zinc-900 dark:text-zinc-100 mt-0.5 block">{{ $totalOrders }}</span>
                 <span class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 block">{{ $ingresadas }} en recepción</span>
             </div>
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-purple-500/30 shrink-0">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center text-white shadow-md shadow-blue-500/30 shrink-0">
                 <x-ui.icon name="clipboard" class="w-5 h-5" />
             </div>
         </div>
@@ -88,11 +88,11 @@
             </div>
         </div>
 
-        <!-- Utilidad Mano de Obra / Finanzas (Aurora Morado-Rosa-Celeste) -->
-        <div class="col-span-2 sm:col-span-2 lg:col-span-1 bg-white dark:bg-zinc-900 border border-purple-200/80 dark:border-purple-800/50 rounded-2xl p-4 shadow-xs flex items-center justify-between relative overflow-hidden">
+        <!-- Utilidad Mano de Obra / Finanzas -->
+        <div class="col-span-2 sm:col-span-2 lg:col-span-1 bg-white dark:bg-zinc-900 border border-sky-200/80 dark:border-sky-800/50 rounded-2xl p-4 shadow-xs flex items-center justify-between relative overflow-hidden">
             <div class="absolute top-0 left-0 right-0 h-1 bg-aurora"></div>
             <div>
-                <span class="text-[11px] font-bold text-purple-600 dark:text-purple-300 uppercase tracking-wider block">Utilidad M. Obra</span>
+                <span class="text-[11px] font-bold text-sky-600 dark:text-sky-300 uppercase tracking-wider block">Utilidad M. Obra</span>
                 <span class="text-xl font-extrabold font-mono text-zinc-900 dark:text-zinc-100 mt-0.5 block">
                     ${{ number_format($totalRevenue, 0, ',', '.') }}
                 </span>
