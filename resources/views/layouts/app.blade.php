@@ -67,11 +67,20 @@
                 padding-bottom: env(safe-area-inset-bottom, 0px);
             }
             main.page-enter,
-            main.page-enter > :not(.fixed) {
+            main.page-enter > :not(.fixed),
+            *:has(.fixed.inset-0) {
                 transform: none !important;
+                translate: none !important;
+                scale: none !important;
+                rotate: none !important;
                 filter: none !important;
                 perspective: none !important;
                 backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+                contain: none !important;
+                content-visibility: visible !important;
+                will-change: auto !important;
+                animation: none !important;
             }
             main .fixed.inset-0 {
                 position: fixed !important;
@@ -82,16 +91,15 @@
                 width: 100vw !important;
                 height: 100dvh !important;
                 max-height: 100dvh !important;
+                z-index: 9999 !important;
             }
-            html:has(main .fixed.inset-0),
-            body:has(main .fixed.inset-0),
-            html:has(body.modal-open),
+            body:has(main .fixed.inset-0:not(.hidden):not([style*="display: none"]):not([style*="display:none"])),
             body.modal-open {
                 overflow: hidden !important;
                 overscroll-behavior: none !important;
             }
             body.modal-open .pwa-bottom-nav,
-            body:has(main .fixed.inset-0) .pwa-bottom-nav {
+            body:has(main .fixed.inset-0:not(.hidden):not([style*="display: none"]):not([style*="display:none"])) .pwa-bottom-nav {
                 display: none !important;
             }
         </style>
@@ -851,9 +859,20 @@
 
         <script>
             // ===== PWA SERVICE WORKER & STANDALONE DETECTOR =====
+            if ('caches' in window) {
+                caches.keys().then(function(keys) {
+                    keys.forEach(function(key) {
+                        if (key !== 'sointech-pwa-v3') {
+                            caches.delete(key);
+                        }
+                    });
+                });
+            }
+
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', function() {
-                    navigator.serviceWorker.register('/sw.js').then(function(reg) {
+                    navigator.serviceWorker.register('/sw.js?v=3', { updateViaCache: 'none' }).then(function(reg) {
+                        reg.update();
                         console.log('PWA ServiceWorker registrado con éxito:', reg.scope);
                     }).catch(function(err) {
                         console.log('PWA ServiceWorker error:', err);
@@ -909,12 +928,40 @@
                         return style.display !== 'none' && style.visibility !== 'hidden';
                     });
                     if (activeModals.length > 0) {
+                        activeModals.forEach(modal => {
+                            modal.style.setProperty('position', 'fixed', 'important');
+                            modal.style.setProperty('top', '0px', 'important');
+                            modal.style.setProperty('left', '0px', 'important');
+                            modal.style.setProperty('right', '0px', 'important');
+                            modal.style.setProperty('bottom', '0px', 'important');
+                            modal.style.setProperty('width', '100vw', 'important');
+                            modal.style.setProperty('height', '100dvh', 'important');
+                            modal.style.setProperty('max-height', '100dvh', 'important');
+                            modal.style.setProperty('z-index', '9999', 'important');
+
+                            let parent = modal.parentElement;
+                            while (parent && parent !== document.body && parent !== document.documentElement) {
+                                parent.style.setProperty('transform', 'none', 'important');
+                                parent.style.setProperty('translate', 'none', 'important');
+                                parent.style.setProperty('scale', 'none', 'important');
+                                parent.style.setProperty('rotate', 'none', 'important');
+                                parent.style.setProperty('animation', 'none', 'important');
+                                parent.style.setProperty('filter', 'none', 'important');
+                                parent.style.setProperty('backdrop-filter', 'none', 'important');
+                                parent.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
+                                parent.style.setProperty('perspective', 'none', 'important');
+                                parent.style.setProperty('contain', 'none', 'important');
+                                parent.style.setProperty('will-change', 'auto', 'important');
+                                parent = parent.parentElement;
+                            }
+                        });
                         document.body.classList.add('modal-open');
                         document.body.style.overflow = 'hidden';
-                        document.documentElement.style.overflow = 'hidden';
+                        document.documentElement.style.overflow = '';
                     } else {
                         document.body.classList.remove('modal-open');
                         document.body.style.overflow = '';
+                        document.body.style.touchAction = '';
                         document.documentElement.style.overflow = '';
                     }
                 };

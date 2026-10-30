@@ -265,24 +265,30 @@ button:disabled, button[disabled] {
     animation: fade-in-up 0.25s ease-out;
 }
 
-/* Garantizar que main y el contenedor raíz de Livewire nunca creen un containing block
-   (transform/filter/perspective) que rompa position:fixed en los modales */
+/* Garantizar que main y cualquier ancestro de un modal nunca creen un containing block
+   (transform/filter/perspective/animation) que rompa position:fixed en los modales */
 main.page-enter,
-main.page-enter > :not(.fixed) {
+main.page-enter > :not(.fixed),
+*:has(.fixed.inset-0) {
     transform: none !important;
+    translate: none !important;
+    scale: none !important;
+    rotate: none !important;
     filter: none !important;
     perspective: none !important;
     backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    contain: none !important;
+    content-visibility: visible !important;
     will-change: auto !important;
+    animation: none !important;
 }
 
 /* Cuando cualquier modal fijo está abierto dentro de main:
-   1. Bloquear por completo el scroll de la página de fondo (html y body)
+   1. Bloquear el scroll de la página de fondo en body (sin bloquear html para evitar que iOS Safari recorte el viewport al hacer scroll)
    2. Ocultar la barra de navegación inferior móvil (PWA bottom nav)
    3. Anclar el overlay del modal exactamente a la ventana visible actual (viewport) */
-html:has(main .fixed.inset-0:not(.hidden):not([style*="display: none"]):not([style*="display:none"])),
 body:has(main .fixed.inset-0:not(.hidden):not([style*="display: none"]):not([style*="display:none"])),
-html:has(body.modal-open),
 body.modal-open {
     overflow: hidden !important;
     overscroll-behavior: none !important;
@@ -302,6 +308,7 @@ main .fixed.inset-0 {
     width: 100vw !important;
     height: 100dvh !important;
     max-height: 100dvh !important;
+    z-index: 9999 !important;
     overscroll-behavior: contain;
 }
 

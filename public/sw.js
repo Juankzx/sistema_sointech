@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sointech-pwa-v2';
+const CACHE_NAME = 'sointech-pwa-v3';
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',
@@ -31,12 +31,12 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch Event - Stale While Revalidate for static assets, network-first for navigation
+// Fetch Event - Network-first for HTML and Vite build assets
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   
-  // Skip non-GET requests or Livewire/API requests from caching
-  if (req.method !== 'GET' || req.url.includes('/livewire/') || req.url.includes('/api/')) {
+  // Skip non-GET requests, sw.js, build assets, or Livewire/API requests from cache-first
+  if (req.method !== 'GET' || req.url.includes('/livewire/') || req.url.includes('/api/') || req.url.includes('/sw.js') || req.url.includes('/build/')) {
     return;
   }
 

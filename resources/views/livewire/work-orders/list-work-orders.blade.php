@@ -4,7 +4,7 @@
      x-effect="
          if ($wire.isManaging || $wire.isDelivering) {
              document.body.style.overflow = 'hidden';
-             document.documentElement.style.overflow = 'hidden';
+             document.documentElement.style.overflow = '';
              document.body.classList.add('modal-open');
          } else {
              document.body.style.overflow = '';
@@ -564,7 +564,7 @@
             <div x-data="{ previewImage: null, zoomLevel: 1, mobileMenuOpen: false }" 
                  x-init="
                      document.body.style.overflow = 'hidden';
-                     document.documentElement.style.overflow = 'hidden';
+                     document.documentElement.style.overflow = '';
                      document.body.classList.add('modal-open');
                  " 
                  x-on:destroy="
@@ -576,9 +576,10 @@
                      }
                  " 
                  @keydown.escape.window="if(!previewImage) $wire.closeManagingModal()"
-                 class="fixed inset-0 w-screen h-dvh bg-black/60 dark:bg-black/80 backdrop-blur-sm z-[100] flex flex-col items-center justify-center p-0 md:p-6 overflow-hidden overscroll-none">
-                <div class="bg-white dark:bg-zinc-900 md:border border-zinc-200 dark:border-zinc-800 rounded-none md:rounded-xl w-full h-dvh md:h-[90vh] md:max-w-6xl overflow-hidden shadow-2xl animate-fade-in flex flex-col min-w-0 min-h-0 overscroll-contain relative"
-                     style="touch-action: pan-y; -webkit-overflow-scrolling: touch;">
+                 class="fixed inset-0 w-screen h-dvh bg-black/60 dark:bg-black/80 backdrop-blur-sm z-[100] flex flex-col items-center justify-center p-0 md:p-6 overflow-hidden overscroll-none"
+                 style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100dvh; max-height: 100dvh; z-index: 9999;">
+                <div class="bg-white dark:bg-zinc-900 md:border border-zinc-200 dark:border-zinc-800 rounded-none md:rounded-xl w-full h-dvh md:h-[90vh] md:max-w-6xl overflow-hidden shadow-2xl flex flex-col min-w-0 min-h-0 overscroll-contain relative"
+                     style="touch-action: pan-y; -webkit-overflow-scrolling: touch; width: 100%; height: 100dvh; max-height: 100dvh;">
                     
                     <!-- Modal Header -->
                     <div class="flex justify-between items-center border-b border-zinc-200 dark:border-zinc-800 px-4 py-3 md:px-6 md:py-4 shrink-0 bg-white dark:bg-zinc-900">
@@ -1534,8 +1535,6 @@
                                             </div>
                                             @endif
                                             </form>
-                                            
-                                        </div>
                                     @else
                                         <!-- Readonly technical view for receptionist -->
                                         <div class="space-y-4 text-xs">
@@ -2264,7 +2263,6 @@
                 
                 {{-- Lightbox removed from here - now handled globally via openGlobalLightbox() in app.blade.php --}}
             </div>
-            </div>
         
         <!-- PLANTILLAS DE IMPRESIÓN OCULTAS EN EL DOM PARA EL MODAL -->
         <div wire:key="modal-print-templates-{{ $managingOrder->id }}" style="display: none;">
@@ -2347,7 +2345,7 @@
         <div x-data
              x-init="
                  document.body.style.overflow = 'hidden';
-                 document.documentElement.style.overflow = 'hidden';
+                 document.documentElement.style.overflow = '';
                  document.body.classList.add('modal-open');
              "
              x-on:destroy="
@@ -2357,9 +2355,11 @@
                      document.body.classList.remove('modal-open');
                  }
              "
-             class="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto overscroll-contain animate-fade-in">
+             class="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto overscroll-contain"
+             style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100dvh; max-height: 100dvh; z-index: 9999;">
             <div class="fixed inset-0 bg-zinc-950/70 backdrop-blur-xs" wire:click="$set('isDelivering', false)"></div>
-            <div class="relative z-10 w-full max-w-lg max-h-[90dvh] overflow-y-auto overscroll-contain bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-2xl p-5 sm:p-6 my-auto">
+            <div class="relative z-10 w-full max-w-lg max-h-[90dvh] overflow-y-auto overscroll-contain bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-2xl p-5 sm:p-6 my-auto"
+                 style="touch-action: pan-y; -webkit-overflow-scrolling: touch;">
                 
                 <div class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-4 mb-5">
                     <h2 class="text-base font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight flex items-center gap-2">
@@ -2500,19 +2500,18 @@
             </div>
         </div>
     @endif
-</div>
-<script>
 
-
-    document.addEventListener('livewire:initialized', () => {
-        Livewire.on('payment-registered', (event) => {
-            const paymentId = event.paymentId;
-            const orderId = @this.get('editingOrderId') || @this.get('deliveringOrderId');
-            if (paymentId && orderId) {
-                // Abre el comprobante en una nueva ventana para impresión
-                const printUrl = `/ot/${orderId}/print-payment/${paymentId}`;
-                window.open(printUrl, '_blank', 'width=400,height=600');
-            }
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('payment-registered', (event) => {
+                const paymentId = event.paymentId;
+                const orderId = @this.get('editingOrderId') || @this.get('deliveringOrderId');
+                if (paymentId && orderId) {
+                    // Abre el comprobante en una nueva ventana para impresión
+                    const printUrl = `/ot/${orderId}/print-payment/${paymentId}`;
+                    window.open(printUrl, '_blank', 'width=400,height=600');
+                }
+            });
         });
-    });
-</script>
+    </script>
+</div>
