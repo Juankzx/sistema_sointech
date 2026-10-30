@@ -381,8 +381,8 @@
 
     <!-- VOID CONFIRMATION MODAL -->
     @if($showVoidModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/60 backdrop-blur-xs">
-            <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-xl w-full max-w-md p-5 space-y-4">
+        <div class="fixed inset-0 z-[100] overflow-y-auto overscroll-contain flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-xs">
+            <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-2xl w-full max-w-md max-h-[90dvh] overflow-y-auto overscroll-contain p-5 space-y-4 my-auto">
                 <!-- Header -->
                 <div class="flex items-center gap-3">
                     <div class="p-2.5 rounded-lg bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/50">

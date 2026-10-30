@@ -209,8 +209,8 @@
 
         <!-- MODAL CERRAR CAJA -->
         @if($showCloseModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-zinc-950/60 backdrop-blur-xs">
-            <div class="bg-white dark:bg-zinc-900 rounded-xl max-w-md w-full border border-zinc-200 dark:border-zinc-800 shadow-xl p-5 relative">
+        <div class="fixed inset-0 z-[100] overflow-y-auto overscroll-contain flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-xs">
+            <div class="bg-white dark:bg-zinc-900 rounded-xl max-w-md w-full max-h-[90dvh] overflow-y-auto overscroll-contain border border-zinc-200 dark:border-zinc-800 shadow-2xl p-5 relative my-auto">
                 <button wire:click="$set('showCloseModal', false)" class="absolute top-4 right-4 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer">
                     <x-ui.icon name="x" class="w-5 h-5" />
                 </button>
@@ -419,8 +419,8 @@
 
     <!-- MODAL ABRIR CAJA -->
     @if($showOpenModal)
-    <div class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-zinc-950/60 backdrop-blur-xs">
-        <div class="bg-white dark:bg-zinc-900 rounded-xl max-w-sm w-full border border-zinc-200 dark:border-zinc-800 shadow-xl p-5 relative">
+    <div class="fixed inset-0 z-[100] overflow-y-auto overscroll-contain flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-xs">
+        <div class="bg-white dark:bg-zinc-900 rounded-xl max-w-sm w-full max-h-[90dvh] overflow-y-auto overscroll-contain border border-zinc-200 dark:border-zinc-800 shadow-2xl p-5 relative my-auto">
             <button wire:click="$set('showOpenModal', false)" class="absolute top-4 right-4 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer">
                 <x-ui.icon name="x" class="w-5 h-5" />
             </button>

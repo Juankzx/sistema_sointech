@@ -66,6 +66,34 @@
                 padding-top: env(safe-area-inset-top, 0px);
                 padding-bottom: env(safe-area-inset-bottom, 0px);
             }
+            main.page-enter,
+            main.page-enter > :not(.fixed) {
+                transform: none !important;
+                filter: none !important;
+                perspective: none !important;
+                backdrop-filter: none !important;
+            }
+            main .fixed.inset-0 {
+                position: fixed !important;
+                top: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                width: 100vw !important;
+                height: 100dvh !important;
+                max-height: 100dvh !important;
+            }
+            html:has(main .fixed.inset-0),
+            body:has(main .fixed.inset-0),
+            html:has(body.modal-open),
+            body.modal-open {
+                overflow: hidden !important;
+                overscroll-behavior: none !important;
+            }
+            body.modal-open .pwa-bottom-nav,
+            body:has(main .fixed.inset-0) .pwa-bottom-nav {
+                display: none !important;
+            }
         </style>
     </head>
     <body 
@@ -870,6 +898,33 @@
                         }
                     } else {
                         lastActiveTimestamp = Date.now();
+                    }
+                });
+
+                const syncModalScrollLock = () => {
+                    const mainEl = document.querySelector('main');
+                    if (!mainEl) return;
+                    const activeModals = Array.from(mainEl.querySelectorAll('.fixed.inset-0')).filter(el => {
+                        const style = window.getComputedStyle(el);
+                        return style.display !== 'none' && style.visibility !== 'hidden';
+                    });
+                    if (activeModals.length > 0) {
+                        document.body.classList.add('modal-open');
+                        document.body.style.overflow = 'hidden';
+                        document.documentElement.style.overflow = 'hidden';
+                    } else {
+                        document.body.classList.remove('modal-open');
+                        document.body.style.overflow = '';
+                        document.documentElement.style.overflow = '';
+                    }
+                };
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    const mainEl = document.querySelector('main');
+                    if (mainEl) {
+                        const observer = new MutationObserver(syncModalScrollLock);
+                        observer.observe(mainEl, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+                        syncModalScrollLock();
                     }
                 });
             })();

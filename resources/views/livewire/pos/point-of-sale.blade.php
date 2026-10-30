@@ -381,8 +381,8 @@
 
     {{-- RECEIPT MODAL --}}
     @if($showReceiptModal && $completedSale)
-        <div class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-            <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl w-full max-w-md overflow-hidden shadow-xl animate-fade-in flex flex-col">
+        <div class="fixed inset-0 bg-zinc-950/70 backdrop-blur-xs z-[100] overflow-y-auto overscroll-contain flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl w-full max-w-md max-h-[90dvh] overflow-y-auto overscroll-contain shadow-2xl animate-fade-in flex flex-col my-auto">
                 <div class="p-5 text-center border-b border-zinc-100 dark:border-zinc-800">
                     <div class="w-12 h-12 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-3 border border-emerald-500/20">
                         <x-ui.icon name="check" class="w-6 h-6" />

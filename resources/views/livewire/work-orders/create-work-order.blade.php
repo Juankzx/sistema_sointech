@@ -1382,9 +1382,9 @@
 
     <!-- MODAL CLIENTE KIOSCO (FIRMA EN PANTALLA) -->
     @if($kiosk_mode)
-        <div class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-zinc-950/80 backdrop-blur-xs animate-fade-in"
+        <div class="fixed inset-0 z-[100] overflow-y-auto overscroll-contain flex items-center justify-center p-4 bg-zinc-950/80 backdrop-blur-xs animate-fade-in"
             x-data="kioskSignaturePad()">
-            <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl max-w-lg w-full p-6 space-y-5 shadow-xl relative">
+            <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl max-w-lg w-full max-h-[90dvh] overflow-y-auto overscroll-contain p-6 space-y-5 shadow-2xl relative my-auto">
 
                 <div class="text-center">
                     <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-brand-500/10 border border-brand-500/20 text-brand-600 dark:text-brand-400 text-xs font-medium uppercase tracking-wider">

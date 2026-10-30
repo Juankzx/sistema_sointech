@@ -346,8 +346,8 @@
 
     <!-- MODAL BITÁCORA Y FOTOS -->
     @if($isLogging)
-    <div class="fixed inset-0 z-50 overflow-y-auto bg-zinc-950/60 backdrop-blur-xs flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 max-w-xl w-full shadow-xl relative space-y-4">
+    <div class="fixed inset-0 z-[100] overflow-y-auto overscroll-contain bg-zinc-950/70 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 max-w-xl w-full max-h-[90dvh] overflow-y-auto overscroll-contain shadow-2xl relative space-y-4 my-auto">
             <div class="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800">
                 <h3 class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                     Bitácora de Trabajo - Orden #{{ $loggingOrderCode }}

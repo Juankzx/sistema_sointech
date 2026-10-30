@@ -2,7 +2,11 @@
      wire:poll.visible.8s
      x-data
      x-effect="
-         if (!$wire.isManaging && !$wire.isDelivering) {
+         if ($wire.isManaging || $wire.isDelivering) {
+             document.body.style.overflow = 'hidden';
+             document.documentElement.style.overflow = 'hidden';
+             document.body.classList.add('modal-open');
+         } else {
              document.body.style.overflow = '';
              document.body.style.touchAction = '';
              document.documentElement.style.overflow = '';
@@ -560,20 +564,20 @@
             <div x-data="{ previewImage: null, zoomLevel: 1, mobileMenuOpen: false }" 
                  x-init="
                      document.body.style.overflow = 'hidden';
-                     document.body.style.touchAction = 'none';
                      document.documentElement.style.overflow = 'hidden';
                      document.body.classList.add('modal-open');
                  " 
                  x-on:destroy="
-                     document.body.style.overflow = '';
-                     document.body.style.touchAction = '';
-                     document.documentElement.style.overflow = '';
-                     document.body.classList.remove('modal-open');
+                     if (!$wire.isDelivering) {
+                         document.body.style.overflow = '';
+                         document.body.style.touchAction = '';
+                         document.documentElement.style.overflow = '';
+                         document.body.classList.remove('modal-open');
+                     }
                  " 
                  @keydown.escape.window="if(!previewImage) $wire.closeManagingModal()"
-                 class="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center p-0 md:p-6 overflow-hidden overscroll-none"
-                 style="touch-action: none;">
-                <div class="bg-white dark:bg-zinc-900 md:border border-zinc-200 dark:border-zinc-800 rounded-none md:rounded-xl w-full h-full md:h-[90vh] md:max-w-6xl overflow-hidden shadow-2xl animate-fade-in flex flex-col min-w-0 overscroll-contain relative"
+                 class="fixed inset-0 w-screen h-dvh bg-black/60 dark:bg-black/80 backdrop-blur-sm z-[100] flex flex-col items-center justify-center p-0 md:p-6 overflow-hidden overscroll-none">
+                <div class="bg-white dark:bg-zinc-900 md:border border-zinc-200 dark:border-zinc-800 rounded-none md:rounded-xl w-full h-dvh md:h-[90vh] md:max-w-6xl overflow-hidden shadow-2xl animate-fade-in flex flex-col min-w-0 min-h-0 overscroll-contain relative"
                      style="touch-action: pan-y; -webkit-overflow-scrolling: touch;">
                     
                     <!-- Modal Header -->
@@ -705,10 +709,10 @@
                     @endif
 
                     <!-- Main Grid -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 p-4 sm:p-5 lg:p-6 overflow-y-auto flex-1 theme-scrollbar min-w-0 w-full pb-24 md:pb-6 overscroll-contain" style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
+                    <div id="managing-modal-scroll" class="grid grid-cols-1 lg:grid-cols-12 gap-5 p-4 sm:p-5 lg:p-6 overflow-y-auto flex-1 min-h-0 theme-scrollbar min-w-0 w-full pb-24 md:pb-6 overscroll-contain" style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
                         
                         <!-- LEFT COLUMN: Summary & Financials (4 cols) -->
-                        <div class="col-span-12 lg:col-span-4 space-y-4 min-w-0 w-full">
+                        <div class="col-span-12 lg:col-span-4 space-y-4 min-w-0 w-full {{ $activeTab !== 'details' ? 'hidden lg:block' : '' }}">
                             
                             <!-- Status Selector Card -->
                             <div class="bg-zinc-50/60 dark:bg-zinc-900/40 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-2.5">
@@ -2214,6 +2218,7 @@
                              <!-- 1. Costos (Details) -->
                              <button 
                                  wire:click="$set('activeTab', 'details')" 
+                                 @click="document.getElementById('managing-modal-scroll')?.scrollTo({ top: 0, behavior: 'smooth' })"
                                  type="button"
                                  class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all duration-150 active:scale-95 cursor-pointer {{ $activeTab === 'details' ? 'text-brand-500 font-semibold bg-brand-500/10' : 'text-zinc-500 font-medium hover:text-zinc-900 dark:hover:text-zinc-200' }}"
                              >
@@ -2224,6 +2229,7 @@
                              <!-- 2. Bitácora (Logs) -->
                              <button 
                                  wire:click="$set('activeTab', 'logs')" 
+                                 @click="document.getElementById('managing-modal-scroll')?.scrollTo({ top: 0, behavior: 'smooth' })"
                                  type="button"
                                  class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all duration-150 active:scale-95 cursor-pointer {{ $activeTab === 'logs' ? 'text-brand-500 font-semibold bg-brand-500/10' : 'text-zinc-500 font-medium hover:text-zinc-900 dark:hover:text-zinc-200' }}"
                              >
@@ -2234,6 +2240,7 @@
                              <!-- 3. Links / Compartir -->
                              <button 
                                  wire:click="$set('activeTab', 'share')" 
+                                 @click="document.getElementById('managing-modal-scroll')?.scrollTo({ top: 0, behavior: 'smooth' })"
                                  type="button"
                                  class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all duration-150 active:scale-95 cursor-pointer {{ $activeTab === 'share' ? 'text-brand-500 font-semibold bg-brand-500/10' : 'text-zinc-500 font-medium hover:text-zinc-900 dark:hover:text-zinc-200' }}"
                              >
@@ -2244,6 +2251,7 @@
                              <!-- 4. Pagos -->
                              <button 
                                  wire:click="$set('activeTab', 'payments')" 
+                                 @click="document.getElementById('managing-modal-scroll')?.scrollTo({ top: 0, behavior: 'smooth' })"
                                  type="button"
                                  class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all duration-150 active:scale-95 cursor-pointer {{ $activeTab === 'payments' ? 'text-brand-500 font-semibold bg-brand-500/10' : 'text-zinc-500 font-medium hover:text-zinc-900 dark:hover:text-zinc-200' }}"
                              >
@@ -2336,9 +2344,22 @@
 
     <!-- DELIVERY MODAL (GARANTÍA Y ENTREGA) -->
     @if($isDelivering)
-        <div class="fixed inset-0 z-[100] flex items-center justify-center animate-fade-in">
-            <div class="absolute inset-0 bg-zinc-950/60 backdrop-blur-xs" wire:click="$set('isDelivering', false)"></div>
-            <div class="relative w-full max-w-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-xl p-6 mx-4">
+        <div x-data
+             x-init="
+                 document.body.style.overflow = 'hidden';
+                 document.documentElement.style.overflow = 'hidden';
+                 document.body.classList.add('modal-open');
+             "
+             x-on:destroy="
+                 if (!$wire.isManaging) {
+                     document.body.style.overflow = '';
+                     document.documentElement.style.overflow = '';
+                     document.body.classList.remove('modal-open');
+                 }
+             "
+             class="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto overscroll-contain animate-fade-in">
+            <div class="fixed inset-0 bg-zinc-950/70 backdrop-blur-xs" wire:click="$set('isDelivering', false)"></div>
+            <div class="relative z-10 w-full max-w-lg max-h-[90dvh] overflow-y-auto overscroll-contain bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-2xl p-5 sm:p-6 my-auto">
                 
                 <div class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-4 mb-5">
                     <h2 class="text-base font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight flex items-center gap-2">

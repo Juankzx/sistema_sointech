@@ -160,10 +160,9 @@
 
     <!-- Modal: Add/Edit User -->
     @if($showModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <div class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs transition-opacity"></div>
-            <div class="flex min-h-screen items-center justify-center p-4">
-                <div class="relative w-full max-w-lg rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden animate-scale-up">
+        <div class="fixed inset-0 z-[100] overflow-y-auto overscroll-contain flex items-center justify-center p-4" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div class="fixed inset-0 bg-zinc-950/70 backdrop-blur-xs transition-opacity"></div>
+            <div class="relative z-10 w-full max-w-lg max-h-[90dvh] overflow-y-auto overscroll-contain rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl my-auto">
                     <div class="flex items-center justify-between p-5 border-b border-zinc-200 dark:border-zinc-800">
                         <div class="flex items-center gap-2">
                             <x-ui.icon name="user" class="w-4 h-4 text-zinc-500" />
@@ -240,16 +239,14 @@
                         </div>
                     </form>
                 </div>
-            </div>
         </div>
     @endif
 
     <!-- Reset Password Modal -->
     @if($showResetModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true">
-            <div class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs transition-opacity"></div>
-            <div class="flex min-h-screen items-center justify-center p-4">
-                <div class="relative w-full max-w-md rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden animate-scale-up">
+        <div class="fixed inset-0 z-[100] overflow-y-auto overscroll-contain flex items-center justify-center p-4" role="dialog" aria-modal="true">
+            <div class="fixed inset-0 bg-zinc-950/70 backdrop-blur-xs transition-opacity"></div>
+            <div class="relative z-10 w-full max-w-md max-h-[90dvh] overflow-y-auto overscroll-contain rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl my-auto">
                     <div class="flex items-center justify-between p-5 border-b border-zinc-200 dark:border-zinc-800">
                         <div class="flex items-center gap-2 text-zinc-900 dark:text-zinc-100">
                             <x-ui.icon name="key" class="w-4 h-4 text-zinc-500" />
@@ -292,7 +289,6 @@
                         </form>
                     </div>
                 </div>
-            </div>
         </div>
     @endif
 </div>

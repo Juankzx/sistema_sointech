@@ -257,8 +257,8 @@
 
     {{-- MODAL: AGREGAR REPUESTO --}}
     @if($showModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-zinc-950/60 backdrop-blur-xs">
-            <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-xl p-5 max-w-lg w-full relative">
+        <div class="fixed inset-0 z-[100] overflow-y-auto overscroll-contain flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-xs">
+            <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-2xl p-5 max-w-lg w-full max-h-[90dvh] overflow-y-auto overscroll-contain relative my-auto">
                 <div class="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800 mb-4">
                     <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
                         <x-ui.icon name="package" class="w-4 h-4 text-orange-500" />
@@ -324,8 +324,8 @@
 
     {{-- MODAL: AJUSTAR STOCK --}}
     @if($showAdjustModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-zinc-950/60 backdrop-blur-xs">
-            <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-xl p-5 max-w-md w-full relative">
+        <div class="fixed inset-0 z-[100] overflow-y-auto overscroll-contain flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-xs">
+            <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-2xl p-5 max-w-md w-full max-h-[90dvh] overflow-y-auto overscroll-contain relative my-auto">
                 <div class="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800 mb-3">
                     <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
                         <x-ui.icon name="sliders" class="w-4 h-4 text-orange-500" />
